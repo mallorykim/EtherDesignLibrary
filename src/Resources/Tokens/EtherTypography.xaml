@@ -1,0 +1,190 @@
+<!--
+    EtherTypography.xaml = Ether Design System · Typography Styles
+
+    All Ether text styles as named TextBlock Styles.
+    All styles are StaticResource = typography is mode=invariant.
+
+    FONTS REQUIRED:
+      Instrument Sans (headers/display) = Google Fonts
+        https://fonts.google.com/specimen/Instrument+Sans
+      Inter (body/UI) = Google Fonts
+        https://fonts.google.com/specimen/Inter
+
+    FONT REFERENCES:
+      The FontFamily keys below use system=font names (simplest form).
+      If bundling fonts as WinUI3 project assets, replace with:
+        ms=appx:///Fonts/InstrumentSans=SemiBold.ttf#Instrument Sans
+        ms=appx:///Fonts/Inter=Regular.ttf#Inter
+
+    USAGE:
+      <TextBlock Style="{StaticResource EtherH1}" Text="Page Title"/>
+      <TextBlock Style="{StaticResource EtherBodyMRegular}" Text="Body"/>
+
+    RULE:
+      Instrument Sans = for all titles, headers, labels, button text
+      Inter          = for body copy, metadata, descriptions, fine print
+      Never hand=set font sizes. Always reference a named style.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============================================================
+         FONT FAMILY REFERENCES
+         Using variable fonts = one file covers all weights per family.
+
+         For a WinUI3 project:
+           1. Copy the Fonts/ folder into your project
+           2. Set Build Action = Content on each .ttf file in .csproj
+           3. The ms=appx:// paths below will resolve at runtime
+
+         Actual files (variable fonts = preferred):
+           Fonts/Instrument_Sans/InstrumentSans=VariableFont_wdth,wght.ttf
+           Fonts/Inter/Inter=VariableFont_opsz,wght.ttf
+
+         Internal family name (the #Name part) must match the font's
+         embedded name. If XAML designer shows "Unknown font", verify
+         the family name by opening the .ttf in Windows Font Viewer.
+    ================================================================ -->
+    <FontFamily x:Key="InstrumentSans">ms-appx:///Fonts/Instrument_Sans/InstrumentSans-VariableFont_wdth,wght.ttf#Instrument Sans</FontFamily>
+    <FontFamily x:Key="InterFont">ms-appx:///Fonts/Inter/Inter-VariableFont_opsz,wght.ttf#Inter</FontFamily>
+
+    <!-- ============================================================
+         INSTRUMENT SANS = Display and Headers
+         Use for page titles, section headers, card titles, CTAs.
+         Always SemiBold (600) except Display which uses Bold (700).
+    ================================================================ -->
+
+    <!-- Display/96 = hero wordmarks only -->
+    <Style x:Key="EtherDisplay96" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontSize"   Value="96"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <!-- Display/48 = large display moments, large stat numbers -->
+    <Style x:Key="EtherDisplay48" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontSize"   Value="48"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <!-- H1 = page titles -->
+    <Style x:Key="EtherH1" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontSize"   Value="24"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- H2 = section headers -->
+    <Style x:Key="EtherH2" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontSize"   Value="20"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- H3 = card titles -->
+    <Style x:Key="EtherH3" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontSize"   Value="18"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- H4 = sub=section labels -->
+    <Style x:Key="EtherH4" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontSize"   Value="16"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- H5 = small labels, button text -->
+    <Style x:Key="EtherH5" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontSize"   Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- H6 = micro labels -->
+    <Style x:Key="EtherH6" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontSize"   Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- ============================================================
+         INTER = Body and UI Text
+         Use for descriptive text, metadata, tooltips, form copy,
+         navigation labels, status messages. Never for titles.
+    ================================================================ -->
+
+    <!-- Body/XL Regular = large introductory body text -->
+    <Style x:Key="EtherBodyXLRegular" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="18"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <!-- Body/XL SemiBold = large emphasis, callouts -->
+    <Style x:Key="EtherBodyXLSemiBold" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="18"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- Body/L Regular = standard body copy -->
+    <Style x:Key="EtherBodyLRegular" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="16"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <!-- Body/L SemiBold = standard emphasis -->
+    <Style x:Key="EtherBodyLSemiBold" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="16"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- Body/M Regular = default UI text (most commonly used) -->
+    <Style x:Key="EtherBodyMRegular" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="14"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <!-- Body/M SemiBold = form labels, emphasized UI text -->
+    <Style x:Key="EtherBodyMSemiBold" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- Body/S Regular = secondary text, helper copy -->
+    <Style x:Key="EtherBodySRegular" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="12"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <!-- Body/S SemiBold = small labels, badge text -->
+    <Style x:Key="EtherBodySSemiBold" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- Micro/Regular = timestamps, metadata, fine print -->
+    <Style x:Key="EtherMicroRegular" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="11"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <!-- Micro/SemiBold = micro labels, version numbers -->
+    <Style x:Key="EtherMicroSemiBold" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"   Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+</ResourceDictionary>

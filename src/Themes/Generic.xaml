@@ -1,0 +1,31 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:EtherSandbox.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <!-- Design tokens first: components below reference these. -->
+        <ResourceDictionary Source="ms-appx:///src/Resources/Tokens/EtherPrimitives.xaml"/>
+        <ResourceDictionary Source="ms-appx:///src/Resources/Tokens/EtherColors.xaml"/>
+        <ResourceDictionary Source="ms-appx:///src/Resources/Tokens/EtherSpacing.xaml"/>
+        <ResourceDictionary Source="ms-appx:///src/Resources/Tokens/EtherTypography.xaml"/>
+
+        <!-- Components that need their template/style dictionaries merged app-wide. -->
+        <controls:EtherScrollBar/>
+        <ResourceDictionary Source="ms-appx:///EtherButton.xaml"/>
+        <ResourceDictionary Source="ms-appx:///src/Resources/Foundations/EtherLabel.xaml"/>
+        <controls:EtherSwitch/>
+        <ResourceDictionary Source="ms-appx:///EtherCheckbox.xaml"/>
+        <ResourceDictionary Source="ms-appx:///EtherRadioButton.xaml"/>
+        <ResourceDictionary Source="ms-appx:///EtherProgressBar.xaml"/>
+        <ResourceDictionary Source="ms-appx:///EtherSteeringBar.xaml"/>
+        <ResourceDictionary Source="ms-appx:///EtherSegmentedControl.xaml"/>
+        <ResourceDictionary Source="ms-appx:///EtherDropdown.xaml"/>
+        <ResourceDictionary Source="ms-appx:///EtherInput.xaml"/>
+        <ResourceDictionary Source="ms-appx:///src/Resources/Foundations/EtherCard.xaml"/>
+        <ResourceDictionary Source="ms-appx:///EtherIntelligenceButton.xaml"/>
+        <ResourceDictionary Source="ms-appx:///src/Resources/Visuals/EtherPageTitleGradient.xaml"/>
+        <ResourceDictionary Source="ms-appx:///src/Resources/Visuals/EtherDataGraphics.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

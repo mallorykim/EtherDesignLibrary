@@ -1,0 +1,109 @@
+﻿using EtherSandbox.Views;
+using EtherSandbox.Views.Controls;
+using EtherSandbox.Views.DataDisplay;
+using EtherSandbox.Views.Navigation;
+using EtherSandbox.Views.Surfaces;
+using Foundations = EtherSandbox.Views.Foundations;
+
+namespace EtherSandbox;
+
+/// <summary>
+/// One entry in the catalog: a display name, the Page type that shows it, whether it
+/// belongs to the AI family of components (informational only — see <see cref="CatalogLeaf"/>
+/// remarks), and whether it has been reworked in its own branch (<see cref="IsUpdated"/>,
+/// surfaced as an "UPDATED" badge in the nav, the Home cards and the component page).
+/// </summary>
+public sealed record ComponentEntry(string Name, Type PageType, bool IsAiFamily = false, bool IsUpdated = false);
+
+/// <summary>Base type for a top-level slot in the navigation tree.</summary>
+public abstract record CatalogNode;
+
+/// <summary>A category header (e.g. "Controls") with its component pages underneath it.</summary>
+public sealed record CatalogCategory(string Header, IReadOnlyList<ComponentEntry> Items) : CatalogNode;
+
+/// <summary>
+/// A single top-level entry with no header of its own, e.g. "AI Design Language" —
+/// it sits alongside the category headers rather than inside one.
+/// </summary>
+public sealed record CatalogLeaf(ComponentEntry Entry) : CatalogNode;
+
+/// <summary>
+/// Single source of truth for the sandbox's navigation tree: category → component name →
+/// page Type. Both the NavigationView's menu items (MainWindow) and the Home page index
+/// are generated from <see cref="Nodes"/>, so they cannot drift from each other. Adding a
+/// component later is one line here plus one page file — no edit to MainWindow.
+/// </summary>
+public static class ComponentCatalog
+{
+    /// <summary>The index/landing page. Not part of <see cref="Nodes"/> — it is always first.</summary>
+    public static ComponentEntry Home { get; } = new("Home", typeof(HomePage));
+
+    public static IReadOnlyList<CatalogNode> Nodes { get; } = new CatalogNode[]
+    {
+        new CatalogCategory("Foundations", new[]
+        {
+            new ComponentEntry("Colors", typeof(Foundations.ColorsPage)),
+            new ComponentEntry("Typography", typeof(Foundations.TypographyPage)),
+        }),
+        new CatalogCategory("Controls", new[]
+        {
+            new ComponentEntry("Button", typeof(ButtonPage), IsUpdated: true),
+            new ComponentEntry("Checkbox", typeof(CheckboxPage), IsUpdated: true),
+            new ComponentEntry("Dropdown", typeof(DropdownPage), IsUpdated: true),
+            new ComponentEntry("Input", typeof(InputPage), IsUpdated: true),
+            new ComponentEntry("Intelligence Button", typeof(IntelligenceButtonPage), IsAiFamily: true, IsUpdated: true),
+            new ComponentEntry("Label / Filter Chip", typeof(LabelFilterChipPage)),
+            new ComponentEntry("Radio Button", typeof(RadioButtonPage), IsUpdated: true),
+            new ComponentEntry("Scroll Bar", typeof(Foundations.ScrollBarPage), IsUpdated: true),
+            new ComponentEntry("Segmented Control", typeof(SegmentedControlPage), IsUpdated: true),
+            new ComponentEntry("Slider", typeof(SliderPage), IsUpdated: true),
+            new ComponentEntry("Steering Bar", typeof(SteeringBarPage), IsUpdated: true),
+            new ComponentEntry("Toggle Switch", typeof(ToggleSwitchPage), IsUpdated: true),
+        }),
+        new CatalogCategory("Surfaces", new[]
+        {
+            new ComponentEntry("AI Recommendation", typeof(AIRecommendationPage), IsAiFamily: true),
+            new ComponentEntry("Card", typeof(CardPage), IsUpdated: true),
+            new ComponentEntry("Express Charge", typeof(ExpressChargePage)),
+        }),
+        new CatalogCategory("Navigation", new[]
+        {
+            new ComponentEntry("Device Menu Bar", typeof(DeviceMenuBarPage)),
+            new ComponentEntry("Masthead", typeof(MastheadPage), IsUpdated: true),
+            new ComponentEntry("Nav Rail (101px)", typeof(NavRailPage)),
+            new ComponentEntry("Right Panel (362px)", typeof(RightPanelPage)),
+            new ComponentEntry("Wide Nav (230px)", typeof(WideNavPage)),
+        }),
+        new CatalogCategory("Data Display", new[]
+        {
+            new ComponentEntry("Bar Chart — Single", typeof(BarChartSinglePage)),
+            new ComponentEntry("Bar Chart — Tiered", typeof(BarChartTieredPage)),
+            new ComponentEntry("Data Blocks", typeof(DataBlocksPage)),
+            new ComponentEntry("Line Chart", typeof(LineChartPage)),
+            new ComponentEntry("Progress Bar", typeof(ProgressBarPage), IsUpdated: true),
+        }),
+        new CatalogLeaf(new ComponentEntry("AI Design Language", typeof(AIDesignLanguagePage), IsAiFamily: true)),
+    };
+
+    /// <summary>Whether the component shown by <paramref name="pageType"/> is flagged
+    /// <see cref="ComponentEntry.IsUpdated"/>. Lets a component page surface its own badge
+    /// without each page hard-coding the flag — the catalog stays the single source.</summary>
+    public static bool IsUpdated(Type pageType)
+    {
+        if (Home.PageType == pageType) return Home.IsUpdated;
+        foreach (var node in Nodes)
+        {
+            switch (node)
+            {
+                case CatalogCategory category:
+                    foreach (var entry in category.Items)
+                        if (entry.PageType == pageType) return entry.IsUpdated;
+                    break;
+                case CatalogLeaf leaf:
+                    if (leaf.Entry.PageType == pageType) return leaf.Entry.IsUpdated;
+                    break;
+            }
+        }
+        return false;
+    }
+}

@@ -1,0 +1,132 @@
+<!--
+    EtherLabel.xaml = Ether Design System · Label / Filter=Chip / Badge Style
+    ===========================================================================
+
+    USAGE
+      Single chip (mutually independent toggle):
+        <ToggleButton Style="{StaticResource EtherLabel}" Content="Overview"  IsChecked="True"/>
+        <ToggleButton Style="{StaticResource EtherLabel}" Content="Details"   IsChecked="False"/>
+
+      In a segmented chip row (wrap in StackPanel + manage mutual exclusivity in code):
+        <StackPanel Orientation="Horizontal" Spacing="0">
+            <ToggleButton Style="{StaticResource EtherLabel}" Content="Label 1" IsChecked="True"/>
+            <ToggleButton Style="{StaticResource EtherLabel}" Content="Label 2"/>
+            <ToggleButton Style="{StaticResource EtherLabel}" Content="Label 3"/>
+        </StackPanel>
+
+    VISUAL STATES  (ToggleButton CommonStates)
+      Unchecked default:    transparent bg · TextSecondary · Padding 12
+      Unchecked PointerOver via ActionTertiaryBgHover
+      Checked default:      BackgroundBrand · TextOnBrand  · Padding 16,12,16,12 · radius 4
+      Checked PointerOver:  ActionPrimaryBgHover
+      Checked Pressed:      ActionPrimaryBgPressed
+      Disabled:             TextDisabled · transparent bg
+      Focus ring:           BorderFocus 2 px outset
+
+    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F · node 1210:1488)
+      Selected   px=16, py=12, CornerRadius=4 (RadiusControlSm)
+      Unselected p=12 (uniform), no background, no border
+      Font       Instrument Sans SemiBold 12 px, centred
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ControlTemplate x:Key="EtherLabelTemplate" TargetType="ToggleButton">
+        <Grid>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal"/>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Target="Bg.Background" Value="{ThemeResource ActionTertiaryBgHover}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Target="Bg.Background" Value="{ThemeResource ActionSecondaryBgPressed}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource TextDisabled}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Checked">
+                        <VisualState.Setters>
+                            <Setter Target="Bg.Background"   Value="{StaticResource BackgroundBrand}"/>
+                            <Setter Target="Bg.Padding"      Value="16,12,16,12"/>
+                            <Setter Target="Bg.CornerRadius" Value="{StaticResource RadiusControlSm}"/>
+                            <Setter Target="Cp.Foreground"   Value="{StaticResource TextOnBrand}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="CheckedPointerOver">
+                        <VisualState.Setters>
+                            <Setter Target="Bg.Background"   Value="{ThemeResource ActionPrimaryBgHover}"/>
+                            <Setter Target="Bg.Padding"      Value="16,12,16,12"/>
+                            <Setter Target="Bg.CornerRadius" Value="{StaticResource RadiusControlSm}"/>
+                            <Setter Target="Cp.Foreground"   Value="{StaticResource TextOnBrand}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="CheckedPressed">
+                        <VisualState.Setters>
+                            <Setter Target="Bg.Background"   Value="{ThemeResource ActionPrimaryBgPressed}"/>
+                            <Setter Target="Bg.Padding"      Value="16,12,16,12"/>
+                            <Setter Target="Bg.CornerRadius" Value="{StaticResource RadiusControlSm}"/>
+                            <Setter Target="Cp.Foreground"   Value="{StaticResource TextOnBrand}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="CheckedDisabled">
+                        <VisualState.Setters>
+                            <Setter Target="Bg.Background"   Value="{ThemeResource ActionPrimaryBgDisabled}"/>
+                            <Setter Target="Bg.Padding"      Value="16,12,16,12"/>
+                            <Setter Target="Bg.CornerRadius" Value="{StaticResource RadiusControlSm}"/>
+                            <Setter Target="Cp.Foreground"   Value="{ThemeResource ActionPrimaryFgDisabled}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Indeterminate"/>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="FocusStates">
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Unfocused"/>
+                    <VisualState x:Name="PointerFocused"/>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+            <Border x:Name="Bg"
+                    Background="Transparent"
+                    CornerRadius="0"
+                    Padding="{TemplateBinding Padding}">
+                <ContentPresenter x:Name="Cp"
+                                  Content="{TemplateBinding Content}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Foreground="{ThemeResource TextSecondary}"
+                                  FontFamily="{StaticResource InstrumentSans}"
+                                  FontSize="12"
+                                  FontWeight="SemiBold"/>
+            </Border>
+
+            <Border x:Name="FocusRing"
+                    Margin="-3"
+                    BorderBrush="{ThemeResource BorderFocus}"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    IsHitTestVisible="False"
+                    Visibility="Collapsed"/>
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="EtherLabel" TargetType="ToggleButton">
+        <Setter Property="Padding"                    Value="12"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment"   Value="Center"/>
+        <Setter Property="UseSystemFocusVisuals"      Value="False"/>
+        <Setter Property="Template" Value="{StaticResource EtherLabelTemplate}"/>
+    </Style>
+
+</ResourceDictionary>

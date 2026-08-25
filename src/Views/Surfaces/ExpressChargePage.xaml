@@ -1,0 +1,36 @@
+<Page
+    x:Class="EtherSandbox.Views.Surfaces.ExpressChargePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:EtherSandbox.Controls"
+    xmlns:views="using:EtherSandbox.Views">
+
+    <views:ComponentPage
+        Title="Express Charge"
+        Description="EtherCardNormal surface used as a feature card: title, description, and a primary/tertiary action pair.">
+
+        <views:ComponentPage.InteractiveContent>
+            <Border Style="{StaticResource EtherCardNormal}" MaxWidth="480">
+                <Border Style="{StaticResource EtherCardNormalBody}">
+                    <StackPanel Spacing="12">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Express Charge"
+                                       Style="{StaticResource EtherH4}"
+                                       Foreground="{ThemeResource TextPrimary}"/>
+                            <TextBlock Text="Charges your battery to 80% in under an hour using boosted charging cycles."
+                                       FontFamily="{StaticResource InterFont}"
+                                       FontSize="14"
+                                       Foreground="{ThemeResource TextSecondary}"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <controls:EtherButton Content="Enable" Style="{StaticResource EtherButtonPrimarySmall}"/>
+                            <controls:EtherButton Content="Learn more" Style="{StaticResource EtherButtonTertiarySmall}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Border>
+        </views:ComponentPage.InteractiveContent>
+
+    </views:ComponentPage>
+</Page>

@@ -1,0 +1,470 @@
+<Page
+    x:Class="EtherSandbox.Views.Controls.ButtonPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:EtherSandbox.Controls"
+    xmlns:views="using:EtherSandbox.Views">
+
+    <views:ComponentPage
+        Title="Button"
+        HasDisabledToggle="True"
+        Description="Updated primary, secondary, and tertiary buttons in large and small sizes. Hover, pressed, and disabled treatments are shown side by side for quick comparison.">
+
+        <views:ComponentPage.InteractiveControls>
+            <!-- Trailing icon is optional; this checkbox adds / removes it on every specimen
+                 (code-behind sets or clears each EtherButton.RightIcon). -->
+            <controls:EtherCheckbox x:Name="IconToggle"
+                      Content="Trailing icon"
+                      IsChecked="True"
+                      Checked="IconToggle_Changed"
+                      Unchecked="IconToggle_Changed"/>
+        </views:ComponentPage.InteractiveControls>
+
+        <views:ComponentPage.InteractiveContent>
+            <StackPanel Spacing="24">
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="PRIMARY"
+                               Style="{StaticResource EtherMicroSemiBold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Large"
+                                       Style="{StaticResource EtherMicroRegular}"
+                                       Foreground="{ThemeResource TextTertiary}"
+                                       HorizontalAlignment="Center"/>
+                            <controls:EtherButton x:Name="PrimaryLargeDemo"
+                                                 Content="Primary Action"
+                                                 Style="{StaticResource EtherButtonPrimary}"
+                                                 HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Small"
+                                       Style="{StaticResource EtherMicroRegular}"
+                                       Foreground="{ThemeResource TextTertiary}"
+                                       HorizontalAlignment="Center"/>
+                            <controls:EtherButton x:Name="PrimarySmallDemo"
+                                                 Content="Primary Action"
+                                                 Style="{StaticResource EtherButtonPrimarySmall}"
+                                                 HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="SECONDARY"
+                               Style="{StaticResource EtherMicroSemiBold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Large"
+                                       Style="{StaticResource EtherMicroRegular}"
+                                       Foreground="{ThemeResource TextTertiary}"
+                                       HorizontalAlignment="Center"/>
+                            <controls:EtherButton x:Name="SecondaryLargeDemo"
+                                                 Content="Secondary Action"
+                                                 Style="{StaticResource EtherButtonSecondary}"
+                                                 HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Small"
+                                       Style="{StaticResource EtherMicroRegular}"
+                                       Foreground="{ThemeResource TextTertiary}"
+                                       HorizontalAlignment="Center"/>
+                            <controls:EtherButton x:Name="SecondarySmallDemo"
+                                                 Content="Secondary Action"
+                                                 Style="{StaticResource EtherButtonSecondarySmall}"
+                                                 HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="TERTIARY"
+                               Style="{StaticResource EtherMicroSemiBold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Large"
+                                       Style="{StaticResource EtherMicroRegular}"
+                                       Foreground="{ThemeResource TextTertiary}"
+                                       HorizontalAlignment="Center"/>
+                            <controls:EtherButton x:Name="TertiaryLargeDemo"
+                                                 Content="Tertiary Action"
+                                                 Style="{StaticResource EtherButtonTertiary}"
+                                                 HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Small"
+                                       Style="{StaticResource EtherMicroRegular}"
+                                       Foreground="{ThemeResource TextTertiary}"
+                                       HorizontalAlignment="Center"/>
+                            <controls:EtherButton x:Name="TertiarySmallDemo"
+                                                 Content="Tertiary Action"
+                                                 Style="{StaticResource EtherButtonTertiarySmall}"
+                                                 HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </views:ComponentPage.InteractiveContent>
+
+        <views:ComponentPage.StatesContent>
+            <StackPanel Spacing="24">
+
+                <!-- =
+                     PRIMARY
+                = -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="PRIMARY"
+                               Style="{StaticResource EtherMicroSemiBold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="LARGE"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" FontWeight="SemiBold"
+                                   CharacterSpacing="80"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <StackPanel Orientation="Horizontal" Spacing="24">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Default"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton Content="Primary Action"
+                                        Style="{StaticResource EtherButtonPrimary}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Hover"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="PrimaryHoverState"
+                                        Content="Primary Action"
+                                        Style="{StaticResource EtherButtonPrimary}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Pressed"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="PrimaryPressedState"
+                                        Content="Primary Action"
+                                        Style="{StaticResource EtherButtonPrimary}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Disabled"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="PrimaryDisabledState"
+                                        Content="Primary Action"
+                                        Style="{StaticResource EtherButtonPrimary}"
+                                        IsEnabled="False"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="SMALL"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" FontWeight="SemiBold"
+                                   CharacterSpacing="80"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Default"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton Content="Primary Action"
+                                        Style="{StaticResource EtherButtonPrimarySmall}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Hover"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="PrimarySmallHoverState"
+                                        Content="Primary Action"
+                                        Style="{StaticResource EtherButtonPrimarySmall}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Pressed"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="PrimarySmallPressedState"
+                                        Content="Primary Action"
+                                        Style="{StaticResource EtherButtonPrimarySmall}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Disabled"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="PrimarySmallDisabledState"
+                                        Content="Primary Action"
+                                        Style="{StaticResource EtherButtonPrimarySmall}"
+                                        IsEnabled="False"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- =
+                     SECONDARY
+                = -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="SECONDARY"
+                               Style="{StaticResource EtherMicroSemiBold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="LARGE"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" FontWeight="SemiBold"
+                                   CharacterSpacing="80"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <StackPanel Orientation="Horizontal" Spacing="24">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Default"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton Content="Secondary Action"
+                                        Style="{StaticResource EtherButtonSecondary}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Hover"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="SecondaryHoverState"
+                                        Content="Secondary Action"
+                                        Style="{StaticResource EtherButtonSecondary}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Pressed"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="SecondaryPressedState"
+                                        Content="Secondary Action"
+                                        Style="{StaticResource EtherButtonSecondary}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Disabled"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="SecondaryDisabledState"
+                                        Content="Secondary Action"
+                                        Style="{StaticResource EtherButtonSecondary}"
+                                        IsEnabled="False"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="SMALL"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" FontWeight="SemiBold"
+                                   CharacterSpacing="80"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Default"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton Content="Secondary Action"
+                                        Style="{StaticResource EtherButtonSecondarySmall}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Hover"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="SecondarySmallHoverState"
+                                        Content="Secondary Action"
+                                        Style="{StaticResource EtherButtonSecondarySmall}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Pressed"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="SecondarySmallPressedState"
+                                        Content="Secondary Action"
+                                        Style="{StaticResource EtherButtonSecondarySmall}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Disabled"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="SecondarySmallDisabledState"
+                                        Content="Secondary Action"
+                                        Style="{StaticResource EtherButtonSecondarySmall}"
+                                        IsEnabled="False"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- =
+                     TERTIARY
+                = -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="TERTIARY"
+                               Style="{StaticResource EtherMicroSemiBold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="LARGE"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" FontWeight="SemiBold"
+                                   CharacterSpacing="80"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <StackPanel Orientation="Horizontal" Spacing="24">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Default"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton Content="Tertiary Action"
+                                        Style="{StaticResource EtherButtonTertiary}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Hover"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="TertiaryHoverState"
+                                        Content="Tertiary Action"
+                                        Style="{StaticResource EtherButtonTertiary}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Pressed"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="TertiaryPressedState"
+                                        Content="Tertiary Action"
+                                        Style="{StaticResource EtherButtonTertiary}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Disabled"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="TertiaryDisabledState"
+                                        Content="Tertiary Action"
+                                        Style="{StaticResource EtherButtonTertiary}"
+                                        IsEnabled="False"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="SMALL"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" FontWeight="SemiBold"
+                                   CharacterSpacing="80"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Default"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton Content="Tertiary Action"
+                                        Style="{StaticResource EtherButtonTertiarySmall}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Hover"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="TertiarySmallHoverState"
+                                        Content="Tertiary Action"
+                                        Style="{StaticResource EtherButtonTertiarySmall}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Pressed"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="TertiarySmallPressedState"
+                                        Content="Tertiary Action"
+                                        Style="{StaticResource EtherButtonTertiarySmall}"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Disabled"
+                                           Style="{StaticResource EtherMicroRegular}"
+                                           Foreground="{ThemeResource TextTertiary}"
+                                           HorizontalAlignment="Center"/>
+                                <controls:EtherButton x:Name="TertiarySmallDisabledState"
+                                        Content="Tertiary Action"
+                                        Style="{StaticResource EtherButtonTertiarySmall}"
+                                        IsEnabled="False"
+                                        IsHitTestVisible="False"
+                                        IsTabStop="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+            </StackPanel>
+        </views:ComponentPage.StatesContent>
+
+    </views:ComponentPage>
+</Page>

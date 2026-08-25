@@ -1,0 +1,82 @@
+<Window
+    x:Class="EtherSandbox.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Ether Component Sandbox">
+
+    <!--
+        Shell layout: a stock NavigationView (default appearance — not retemplated)
+        supplies the pane, built from ComponentCatalog in code-behind so it can never
+        drift from the Home index. NavigationView.Content hosts the masthead strip and
+        the page Frame; the theme toggle lives in the pane footer.
+
+        RequestedTheme on RootGrid drives Light/Dark for the entire app, and its
+        Background paints the shell canvas. The NavigationView's expanded pane is
+        transparent by framework default (NavigationViewExpandedPaneBackground =
+        SolidBackgroundFillColorTransparent), so it shows RootGrid straight through —
+        without this theme-aware Background the pane would sit on the bare window
+        backdrop and its text would vanish in dark mode. Masthead and Frame paint the
+        same token, so the whole shell reads as one seamless canvas in both themes.
+    -->
+    <Grid x:Name="RootGrid"
+          RequestedTheme="Light"
+          Background="{ThemeResource BackgroundCanvas}">
+
+        <NavigationView x:Name="NavView"
+                         IsSettingsVisible="False"
+                         IsBackButtonVisible="Collapsed"
+                         SelectionChanged="NavView_SelectionChanged">
+
+            <NavigationView.PaneFooter>
+                <Button x:Name="ThemeToggle"
+                        Click="ThemeToggle_Click"
+                        Content="☀ Light"
+                        FontFamily="{StaticResource InterFont}"
+                        FontSize="11" FontWeight="SemiBold"
+                        Padding="8,4,8,4"
+                        Margin="8"
+                        CornerRadius="4"
+                        HorizontalAlignment="Stretch"
+                        Foreground="{ThemeResource TextSecondary}"/>
+            </NavigationView.PaneFooter>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <!-- Masthead / title bar area (48px) -->
+                    <RowDefinition Height="48"/>
+                    <!-- Page content -->
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Masthead strip (matches EtherMasthead spec: px=24, py=16) -->
+                <Border Grid.Row="0"
+                        Background="{ThemeResource BackgroundCanvas}"
+                        BorderBrush="{ThemeResource BorderSubtle}"
+                        BorderThickness="0,0,0,1"
+                        Padding="24,0,24,0">
+                    <Grid>
+                        <TextBlock x:Name="PageTitle"
+                                   Text="Ether Component Sandbox"
+                                   FontFamily="{StaticResource InstrumentSans}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextPrimary}"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="v1.0 = Ether Design System"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="11"
+                                   Foreground="{ThemeResource TextTertiary}"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <!-- Content frame (page content lives here) -->
+                <Frame x:Name="ContentFrame"
+                       Grid.Row="1"
+                       Background="{ThemeResource BackgroundCanvas}"
+                       Navigated="ContentFrame_Navigated"
+                       NavigationFailed="ContentFrame_NavigationFailed"/>
+            </Grid>
+        </NavigationView>
+    </Grid>
+</Window>

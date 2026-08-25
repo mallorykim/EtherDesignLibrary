@@ -1,0 +1,148 @@
+using System.Numerics;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Windows.UI;
+
+namespace EtherSandbox.Controls;
+
+/// <summary>
+/// Hosts segmented buttons and renders the Figma-defined composition shadows.
+/// </summary>
+public class EtherSegmentedControl : ContentControl
+{
+    private const string ShadowHostPartName = "ShadowHost";
+    private const string TrackSurfacePartName = "TrackSurface";
+    private const float TrackCornerRadius = 8f;
+
+    private Canvas? _shadowHost;
+    private Border? _trackSurface;
+    private ContainerVisual? _shadowContainer;
+    private ShadowLayer? _nearShadow;
+    private ShadowLayer? _farShadow;
+
+    public EtherSegmentedControl()
+    {
+        Loaded += OnLoaded;
+        SizeChanged += OnSizeChanged;
+        ActualThemeChanged += OnActualThemeChanged;
+    }
+
+    private void OnActualThemeChanged(FrameworkElement sender, object args) => ApplyCasterColor();
+
+    /// <summary>
+    /// The shadow caster is an opaque shape sitting behind the track surface. In light the
+    /// surface (BackgroundSegmentTrack) is fully opaque and hides it, but in dark that token
+    /// is only 10% alpha, so the caster shows straight through. It must therefore match the
+    /// SURFACE the control sits on (BackgroundSurface), not the canvas — otherwise the
+    /// translucent track reads a different shade over the caster than over the surface next to
+    /// it, producing the patchy "grey base" (only in dark, and only where the caster reaches).
+    /// Matching the surface makes the caster invisible regardless of how it is sized. The drop
+    /// shadow casts from the shape's alpha, so its colour is unaffected.
+    /// </summary>
+    private void ApplyCasterColor()
+    {
+        var casterColor = ActualTheme == ElementTheme.Dark
+            ? Color.FromArgb(0xFF, 0x12, 0x12, 0x15)   // BackgroundSurface (dark)
+            : Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF);   // BackgroundSurface (light)
+        _nearShadow?.SetFill(casterColor);
+        _farShadow?.SetFill(casterColor);
+    }
+
+    protected override void OnApplyTemplate()
+    {
+        _shadowContainer = null;
+        _nearShadow = null;
+        _farShadow = null;
+        _shadowHost = GetTemplateChild(ShadowHostPartName) as Canvas;
+        _trackSurface = GetTemplateChild(TrackSurfacePartName) as Border;
+
+        base.OnApplyTemplate();
+        InitializeShadows();
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs args) => InitializeShadows();
+
+    private void OnSizeChanged(object sender, SizeChangedEventArgs args) => UpdateShadowSize();
+
+    private void InitializeShadows()
+    {
+        if (_shadowContainer is not null || _shadowHost is null || _trackSurface is null ||
+            _trackSurface.ActualWidth <= 0 || _trackSurface.ActualHeight <= 0)
+            return;
+
+        var compositor = ElementCompositionPreview.GetElementVisual(_shadowHost).Compositor;
+        // WinUI Composition's blur spread is wider than Figma's CSS shadow blur.
+        // These calibrated values visually match Figma's 0 24px 36px layer.
+        _farShadow = CreateShadowLayer(compositor, blurRadius: 18f, offsetY: 12f, opacity: 0.08f);
+        _nearShadow = CreateShadowLayer(compositor, blurRadius: 4f, offsetY: 2f, opacity: 0.10f);
+
+        _shadowContainer = compositor.CreateContainerVisual();
+        _shadowContainer.Children.InsertAtBottom(_farShadow.Layer);
+        _shadowContainer.Children.InsertAtTop(_nearShadow.Layer);
+        ElementCompositionPreview.SetElementChildVisual(_shadowHost, _shadowContainer);
+
+        ApplyCasterColor();
+        UpdateShadowSize();
+    }
+
+    private void UpdateShadowSize()
+    {
+        if (_shadowContainer is null || _nearShadow is null || _farShadow is null ||
+            _shadowHost is null || _trackSurface is null)
+            return;
+
+        var size = new Vector2((float)_trackSurface.ActualWidth, (float)_trackSurface.ActualHeight);
+        var origin = _trackSurface.TransformToVisual(_shadowHost).TransformPoint(new Windows.Foundation.Point());
+        _shadowContainer.Offset = new Vector3((float)origin.X, (float)origin.Y, 0);
+        _shadowContainer.Size = size;
+        _nearShadow.Resize(size);
+        _farShadow.Resize(size);
+    }
+
+    private static ShadowLayer CreateShadowLayer(Compositor compositor, float blurRadius, float offsetY, float opacity)
+    {
+        var geometry = compositor.CreateRoundedRectangleGeometry();
+        geometry.CornerRadius = new Vector2(TrackCornerRadius);
+
+        var shape = compositor.CreateSpriteShape(geometry);
+        // Colour is set per-theme via ApplyCasterColor; this shape only exists to cast the
+        // shadow, so its own fill must blend with the canvas showing through the track.
+        var fillBrush = compositor.CreateColorBrush(Color.FromArgb(255, 255, 255, 255));
+        shape.FillBrush = fillBrush;
+
+        var shapeVisual = compositor.CreateShapeVisual();
+        shapeVisual.Shapes.Add(shape);
+
+        var dropShadow = compositor.CreateDropShadow();
+        // Encode Figma's 8% / 10% alpha in the color itself. This remains stable
+        // when Composition inherits the source visual's alpha content.
+        dropShadow.Color = Color.FromArgb((byte)Math.Round(opacity * byte.MaxValue), 0, 84, 229);
+        dropShadow.BlurRadius = blurRadius;
+        dropShadow.Offset = new Vector3(0, offsetY, 0);
+        dropShadow.Opacity = 1f;
+        dropShadow.SourcePolicy = CompositionDropShadowSourcePolicy.InheritFromVisualContent;
+
+        var layer = compositor.CreateLayerVisual();
+        layer.Children.InsertAtTop(shapeVisual);
+        layer.Shadow = dropShadow;
+        return new ShadowLayer(layer, shapeVisual, geometry, fillBrush);
+    }
+
+    private sealed record ShadowLayer(
+        LayerVisual Layer,
+        ShapeVisual ShapeVisual,
+        CompositionRoundedRectangleGeometry Geometry,
+        CompositionColorBrush Fill)
+    {
+        public void Resize(Vector2 size)
+        {
+            Layer.Size = size;
+            ShapeVisual.Size = size;
+            Geometry.Size = size;
+        }
+
+        public void SetFill(Color color) => Fill.Color = color;
+    }
+}

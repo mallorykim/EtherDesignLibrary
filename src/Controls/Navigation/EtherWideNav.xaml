@@ -1,0 +1,236 @@
+<!--
+    EtherWideNav.xaml = Ether Design System = Wide Navigation (230 px)
+    =
+
+    USAGE
+      Place as the leftmost column in your root page Grid.
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="230"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <local:EtherWideNav Grid.Column="0"/>
+            <Frame x:Name="ContentFrame" Grid.Column="1"/>
+        </Grid>
+
+    CUSTOMISING NAV ITEMS
+      Replace icon placeholder Borders with Image or FontIcon elements.
+      Set the active item by applying Background="#FF090d15" and CornerRadius=4.
+      Inactive items have no background, pl=16, py=12.
+
+    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F = node 1212:2533)
+      Rail width          230 px  = NOTE: components.md previously stated 280 = corrected to 230 per Figma
+      Padding             px=8, py=24
+      Gap header = items  48 px
+      Active item         full=width = 48 = CornerRadius 4 = Background #090d15
+      Active icon         24=24
+      Inactive icon       20=20
+      Item padding        pl=16, py=12
+      Label font          Inter SemiBold 14 px
+      Label active        White (#FFFFFFFF, static)
+      Label inactive      TextNavInactive (ThemeResource)
+      Bottom section      Settings + Help, pinned to bottom via spacer
+
+    BACKGROUND
+      Same 25 px backdrop blur as NavRail = use BackgroundInteractionModel
+      as a solid fallback, or replace with AcrylicBrush for production:
+        <AcrylicBrush BackgroundSource="Backdrop"
+                      TintColor="#191D25" TintOpacity="0.85"/>
+
+    TOKENS
+      Active bg:   #FF090D15 (literal from Figma, slightly darker than BackgroundInteractionModel)
+      Inactive fg: TextNavInactive (ThemeResource)
+      Active fg:   White (#FFFFFFFF, static)
+      Rail bg:     BackgroundInteractionModel (ThemeResource)
+-->
+<UserControl
+    x:Class="EtherSandbox.Controls.EtherWideNav"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Width="230">
+
+    <Grid Background="{ThemeResource BackgroundInteractionModel}">
+        <StackPanel Orientation="Vertical"
+                    Padding="8,24,8,24">
+
+            <!-- Header: Dell Logo + App name -->
+            <StackPanel Orientation="Vertical"
+                        Spacing="16"
+                        Padding="16,0,16,0"
+                        Margin="0,0,0,48">
+                <Image x:Name="DellLogo"
+                       Width="61" Height="21"
+                       HorizontalAlignment="Left"
+                       Stretch="Uniform"/>
+                <!--  Replace Source with: Source="ms=appx:///Assets/DellLogo.png"  -->
+                <TextBlock Text="Device Management Console"
+                           FontFamily="{StaticResource InterFont}"
+                           FontSize="16" FontWeight="Medium"
+                           Opacity="0.70"
+                           Foreground="{ThemeResource TextPrimary}"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <!-- Main nav items (stretch to fill, bottom items pinned below) -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Primary nav items -->
+                <StackPanel Grid.Row="0" Orientation="Vertical">
+
+                    <!-- HOME = ACTIVE STATE EXAMPLE -->
+                    <Border Background="#FF090D15"
+                            CornerRadius="{StaticResource RadiusControlSm}"
+                            Height="48">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8"
+                                    Padding="16,0,16,0"
+                                    VerticalAlignment="Center">
+                            <!-- Icon placeholder 24=24 = replace with Image -->
+                            <Border Width="24" Height="24" Background="White"
+                                    CornerRadius="2" Opacity="0.85"/>
+                            <TextBlock Text="Home"
+                                       FontFamily="{StaticResource InterFont}"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- PCs = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="PCs"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- THIN CLIENTS = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="Thin Clients"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- PERIPHERALS = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="Peripherals"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- GROUPS = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="Groups"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- DEPLOYMENT = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="Deployment"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- EVENTS = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="Events"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- REPORTS = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="Reports"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- RULES = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="Rules"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <!-- Bottom nav items (Settings + Help) -->
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+
+                    <!-- SETTINGS = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="Settings"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- HELP = INACTIVE -->
+                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                Padding="16,12,16,12">
+                        <Border Width="20" Height="20" CornerRadius="2"
+                                Background="{ThemeResource TextNavInactive}" Opacity="0.6"/>
+                        <TextBlock Text="Help"
+                                   FontFamily="{StaticResource InterFont}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource TextNavInactive}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </Grid>
+
+        </StackPanel>
+    </Grid>
+
+</UserControl>
+

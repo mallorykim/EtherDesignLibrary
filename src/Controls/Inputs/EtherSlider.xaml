@@ -1,0 +1,43 @@
+<!--
+    EtherSlider.xaml = SANDBOX VERSION
+    Bars are rendered programmatically in EtherSlider.xaml.cs.
+    Set the Value property (0=100) to control which bars are lit.
+
+    USAGE:
+      <local:EtherSlider Value="50" Width="330"/>
+
+    KEY MEASUREMENTS:
+      Total width  330px, bar count 63, gap 3px between bars
+      Bar (tick)   2x40 px
+      Knob         4x45 px, CornerRadius 2, solid ActionPrimaryBg
+      Highlighted  bar fill ActionPrimaryBg, full opacity (same color as the knob)
+      Unselected   bar fill BackgroundTrack
+
+    TOKENS (resolved live from the current theme via GetThemeColor, not hardcoded):
+      Knob fill:        ActionPrimaryBg (#FF0D62FF in Light/Dark; both currently identical)
+      Knob fill, pressed: ActionPrimaryBgPressed (#FF0054E5)
+      Highlight fill:   ActionPrimaryBg, same as knob fill, full opacity
+      Unselected fill:  BackgroundTrack (differs by theme: #FFBECCD7 Light / #FF242930 Dark)
+-->
+<UserControl
+    x:Class="EtherSandbox.Controls.EtherSlider"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        BarCanvas is populated entirely in EtherSlider.xaml.cs via RenderBars().
+        Click or drag anywhere on the canvas to set a new Value (0=100).
+    -->
+    <StackPanel>
+        <TextBlock
+            x:Name="ValueText"
+            HorizontalAlignment="Left"
+            Foreground="{ThemeResource TextPrimary}"
+            FontSize="14"/>
+        <Canvas x:Name="BarCanvas"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Background="Transparent"/>
+    </StackPanel>
+
+</UserControl>

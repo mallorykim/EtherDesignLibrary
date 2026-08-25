@@ -1,0 +1,23 @@
+<UserControl
+    x:Class="EtherSandbox.Controls.UpdatedBadge"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Small "UPDATED" pill, shown on components that have been reworked in their own
+        branch (ComponentEntry.IsUpdated). One control, reused in the nav pane, the Home
+        cards and the component page header, so the badge stays identical everywhere.
+        Brand-blue on a faint brand-blue fill; the literal hex reads on light and dark.
+    -->
+    <Border Background="#22196FFF"
+            CornerRadius="4"
+            Padding="6,1,6,2"
+            VerticalAlignment="Center">
+        <TextBlock Text="UPDATED"
+                   FontFamily="{StaticResource InterFont}"
+                   FontSize="9"
+                   FontWeight="SemiBold"
+                   CharacterSpacing="80"
+                   Foreground="#FF196FFF"/>
+    </Border>
+</UserControl>

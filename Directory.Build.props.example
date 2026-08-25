@@ -1,0 +1,17 @@
+<!--
+  This file is no longer required.
+
+  The sandbox is now self-contained — all Resource XAML files and fonts are
+  checked in under Resources\ and Fonts\ in this repo. No path to
+  agora-design-context is needed.
+
+  When the sandbox is in a good state, copy the updated files back to
+  agora-design-context/design-system/coded-components/ manually to update
+  the source of truth there.
+-->
+<Project>
+  <PropertyGroup>
+    <!-- AgoraRoot is unused — kept here for historical reference only -->
+    <!-- <AgoraRoot>C:\Code\Agora\agora-design-context</AgoraRoot> -->
+  </PropertyGroup>
+</Project>

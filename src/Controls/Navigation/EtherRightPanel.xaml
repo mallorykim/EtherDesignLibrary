@@ -1,0 +1,115 @@
+<!--
+    EtherRightPanel.xaml = Ether Design System = Right Side Panel
+    =
+
+    USAGE
+      Place in a content area Grid as a right=side column.
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="362"/>
+            </Grid.ColumnDefinitions>
+            <ContentArea Grid.Column="0"/>
+            <local:EtherRightPanel Grid.Column="1"/>
+        </Grid>
+
+      Or paste the inline XAML structure below directly into your page.
+
+    STRUCTURE
+      =  = 362 px wide
+      =  [ Label ] [ Label ] [ Label ]     =  Segmented Control (optional)
+      =                                    =
+      =                                    =  Slot (314=654 content area)
+      =                                    =
+      =  = New =  =  Primary button (optional, full=width)
+      =
+
+    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F = node 58074:2674)
+      Width         362 px = Height 837 px (or stretch)
+      Padding       px=16, py=32
+      CornerRadius  8 (RadiusControl)
+      Shadow        0 24px 4px rgba(18,68,130,0.1) = subtle drop=shadow downward
+      Slot          314=654 inner content area
+      Button        full=width (314 px) = style EtherButtonPrimary
+
+    TOKENS
+      Background:   BackgroundSurface (ThemeResource) = not set in Figma, inherits canvas
+      Segmented:    use EtherSegmentedControl.xaml styles
+      Button:       use EtherButtonPrimary style
+
+    NOTE: The Figma button uses "Inter Medium" rather than Instrument Sans SemiBold.
+          EtherButtonPrimary uses Instrument Sans SemiBold per the component spec.
+          For exact Figma fidelity override FontFamily on the button Content TextBlock.
+-->
+<UserControl
+    x:Class="EtherSandbox.Controls.EtherRightPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Width="362">
+
+    <Border Background="{ThemeResource BackgroundSurface}"
+            CornerRadius="{StaticResource RadiusControl}"
+            Padding="16,32,16,32">
+        <!-- WinUI3: use ThemeShadow + Translation="0,0,8" on host element for production shadow -->
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Segmented Control = optional, remove if not needed -->
+            <Border Grid.Row="0"
+                    Margin="0,0,0,16"
+                    Padding="4"
+                    CornerRadius="{StaticResource RadiusControl}"
+                    Background="{ThemeResource BackgroundSegmentTrack}">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton GroupName="RightPanelSeg"
+                                 Content="Label" IsChecked="True"
+                                 Padding="12" HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center">
+                        <!--  Apply EtherSegment style when resources are merged  -->
+                    </RadioButton>
+                    <RadioButton GroupName="RightPanelSeg"
+                                 Content="Label"
+                                 Padding="12" HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"/>
+                    <RadioButton GroupName="RightPanelSeg"
+                                 Content="Label"
+                                 Padding="12" HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Slot = replace comment with actual content -->
+            <Border Grid.Row="1"
+                    x:Name="ContentSlot">
+                <!-- INSERT CONTENT HERE -->
+            </Border>
+
+            <!-- Action Button = optional, remove if not needed -->
+            <Button Grid.Row="2"
+                    Content="New"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,16,0,0"
+                    Padding="12"
+                    FontFamily="{StaticResource InstrumentSans}"
+                    FontSize="14" FontWeight="SemiBold"
+                    Foreground="White">
+                <Button.Background>
+                    <SolidColorBrush Color="#FF0077FF"/>
+                </Button.Background>
+                <!--  Apply Style="{StaticResource EtherButtonPrimary}" when resources are merged  -->
+            </Button>
+
+        </Grid>
+    </Border>
+
+</UserControl>
+

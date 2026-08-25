@@ -1,0 +1,258 @@
+<Page
+    x:Class="EtherSandbox.Views.Foundations.TypographyPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:views="using:EtherSandbox.Views">
+
+    <views:ComponentPage
+        Title="Typography"
+        Description="Full Ether type scale. Instrument Sans for display and headings — Inter for body and UI text.">
+
+        <views:ComponentPage.InteractiveContent>
+            <StackPanel Spacing="0">
+                <TextBlock Text="Instrument Sans"
+                           FontFamily="{StaticResource InstrumentSans}"
+                           FontSize="11" FontWeight="SemiBold"
+                           Foreground="{ThemeResource TextTertiary}"
+                           Margin="0,0,0,20"/>
+
+                <!-- Each row: meta label left, specimen right -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Bottom" Spacing="2">
+                        <TextBlock Text="Display XL"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="96 px — Bold — −40 ls" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Agora"
+                               Style="{StaticResource EtherDeviceTitle}"
+                               FontSize="64"/>
+                </Grid>
+
+                <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="0,1,0,0" Margin="0,0,0,16"/>
+
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="H1"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="32 px — SemiBold" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Battery &amp; Power"
+                               FontFamily="{StaticResource InstrumentSans}"
+                               FontSize="32" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                </Grid>
+
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="H2"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="24 px — SemiBold" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Express Charge"
+                               FontFamily="{StaticResource InstrumentSans}"
+                               FontSize="24" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                </Grid>
+
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="H3"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="20 px — SemiBold" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Charge Limit Settings"
+                               FontFamily="{StaticResource InstrumentSans}"
+                               FontSize="20" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                </Grid>
+
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="H4"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="18 px — SemiBold" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Current Status"
+                               FontFamily="{StaticResource InstrumentSans}"
+                               FontSize="18" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                </Grid>
+
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="H5"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="16 px — SemiBold" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Scheduled Charging"
+                               FontFamily="{StaticResource InstrumentSans}"
+                               FontSize="16" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="H6"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="14 px — SemiBold" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Section Label"
+                               FontFamily="{StaticResource InstrumentSans}"
+                               FontSize="14" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                </Grid>
+            </StackPanel>
+        </views:ComponentPage.InteractiveContent>
+
+        <views:ComponentPage.StatesContent>
+            <StackPanel Spacing="0">
+                <TextBlock Text="Inter"
+                           FontFamily="{StaticResource InterFont}"
+                           FontSize="11" FontWeight="SemiBold"
+                           Foreground="{ThemeResource TextTertiary}"
+                           Margin="0,0,0,20"/>
+
+                <!-- Body XL -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Body XL Regular"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="18 px — Regular" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Your battery is performing well above average for this device model."
+                               FontFamily="{StaticResource InterFont}"
+                               FontSize="18" TextWrapping="Wrap"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                </Grid>
+
+                <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="0,1,0,0" Margin="0,0,0,16"/>
+
+                <!-- Body M Regular -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Body M Regular"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="14 px — Regular" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Charges your battery to 80% in under an hour using boosted charging cycles optimised for your usage pattern."
+                               FontFamily="{StaticResource InterFont}"
+                               FontSize="14" TextWrapping="Wrap"
+                               Foreground="{ThemeResource TextSecondary}"/>
+                </Grid>
+
+                <!-- Body M SemiBold -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Body M SemiBold"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="14 px — SemiBold" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="94% Battery Health — Good Condition"
+                               FontFamily="{StaticResource InterFont}"
+                               FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                </Grid>
+
+                <!-- Body S Regular -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Body S Regular"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="12 px — Regular" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="Last updated 12 minutes ago — Automatic updates enabled"
+                               FontFamily="{StaticResource InterFont}"
+                               FontSize="12" TextWrapping="Wrap"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                </Grid>
+
+                <!-- Micro SemiBold -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Micro SemiBold"
+                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="11 px — SemiBold" FontFamily="{StaticResource InterFont}"
+                                   FontSize="10" Foreground="{ThemeResource TextTertiary}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="NORMAL  —  HOVER + PRESS TO TEST  —  DISABLED"
+                               FontFamily="{StaticResource InterFont}"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextTertiary}"
+                               CharacterSpacing="40"/>
+                </Grid>
+            </StackPanel>
+        </views:ComponentPage.StatesContent>
+
+    </views:ComponentPage>
+</Page>

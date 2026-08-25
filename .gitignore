@@ -1,0 +1,40 @@
+# Per-developer local config (copy Directory.Build.props.example and customize)
+Directory.Build.props
+
+# Build outputs
+bin/
+obj/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Auto-generated files
+*.log
+*.tlog
+
+# Package directories
+packages/
+
+# Publish profiles
+*.pubxml
+*.pubxml.user
+
+# Windows
+*.dll
+*.exe
+*.pdb
+
+# Rider
+.idea/
+
+# MSIX / App packages
+AppPackages/
+BundleArtifacts/
+
+# Local test results
+TestResults/

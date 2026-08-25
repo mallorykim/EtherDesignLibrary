@@ -1,0 +1,80 @@
+<Page
+    x:Class="EtherSandbox.Views.DataDisplay.ProgressBarPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:views="using:EtherSandbox.Views"
+    xmlns:controls="using:EtherSandbox.Controls">
+
+    <views:ComponentPage
+        Title="Progress Bar"
+        Description="Updated progress bar with a rounded track, gradient fill, and independently toggled title and value labels. The four content combinations below show the supported variants."
+        StatesTitle="TYPES">
+
+        <!-- INTERACTIVE is a little simulator: it plays once on open (Replay re-runs it) and
+             drives the bar from a simulated data stream whose throughput varies over time, so
+             the fill moves at the data's pace rather than a fixed duration; the value label
+             counts up with it. See ProgressBarPage.xaml.cs. -->
+        <views:ComponentPage.InteractiveContent>
+            <StackPanel Spacing="16" Width="480">
+                <controls:EtherProgressBar x:Name="SimBar"
+                                           Title="Downloading"
+                                           ValueContent="0%"
+                                           Maximum="100"
+                                           Value="0"/>
+                <Button x:Name="ReplayButton"
+                        Click="Replay_Click"
+                        Content="▶ Replay"
+                        HorizontalAlignment="Left"
+                        FontFamily="{StaticResource InterFont}"
+                        FontSize="12"/>
+            </StackPanel>
+        </views:ComponentPage.InteractiveContent>
+
+        <views:ComponentPage.StatesContent>
+            <StackPanel Spacing="24" Width="480">
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="TITLE + VALUE"
+                               FontFamily="{StaticResource InterFont}"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherProgressBar Title="Storage" ValueContent="65%"
+                                               Value="65"
+                                               ShowTitle="True" ShowValue="True"/>
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="TITLE ONLY"
+                               FontFamily="{StaticResource InterFont}"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherProgressBar Title="Storage" ValueContent="65%"
+                                               Value="65"
+                                               ShowTitle="True" ShowValue="False"/>
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="VALUE ONLY"
+                               FontFamily="{StaticResource InterFont}"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherProgressBar Title="Storage" ValueContent="65%"
+                                               Value="65"
+                                               ShowTitle="False" ShowValue="True"/>
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="BAR ONLY"
+                               FontFamily="{StaticResource InterFont}"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherProgressBar Title="Storage" ValueContent="65%"
+                                               Value="65"
+                                               ShowTitle="False" ShowValue="False"/>
+                </StackPanel>
+
+            </StackPanel>
+        </views:ComponentPage.StatesContent>
+
+    </views:ComponentPage>
+</Page>

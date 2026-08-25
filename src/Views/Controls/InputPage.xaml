@@ -1,0 +1,78 @@
+<Page
+    x:Class="EtherSandbox.Views.Controls.InputPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:views="using:EtherSandbox.Views"
+    xmlns:controls="using:EtherSandbox.Controls">
+
+    <views:ComponentPage
+        Title="Input"
+        HasDisabledToggle="True"
+        Description="Updated single-line text field with theme-aware fill, brand-blue focus treatment, and disabled dimming. Default, hover, focused, and disabled states are all shown on the page.">
+
+        <views:ComponentPage.InteractiveContent>
+            <controls:EtherInput PlaceholderText="Enter text"
+                                 Width="280"/>
+        </views:ComponentPage.InteractiveContent>
+
+        <views:ComponentPage.StatesContent>
+            <StackPanel Orientation="Horizontal" Spacing="24">
+
+                <!-- DEFAULT -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Default"
+                               Style="{StaticResource EtherMicroRegular}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherInput PlaceholderText="Default"
+                                         Width="195"
+                                         IsHitTestVisible="False" IsTabStop="False"/>
+                </StackPanel>
+
+                <!-- HOVER -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Hover"
+                               Style="{StaticResource EtherMicroRegular}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherInput x:Name="HoverInput"
+                                         PlaceholderText="Default"
+                                         Width="195"
+                                         IsHitTestVisible="False" IsTabStop="False"/>
+                </StackPanel>
+
+                <!-- ACTIVE (focus) -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Active"
+                               Style="{StaticResource EtherMicroRegular}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherInput x:Name="ActiveInput"
+                                         PlaceholderText="Default"
+                                         Width="195"
+                                         IsHitTestVisible="False" IsTabStop="False"/>
+                </StackPanel>
+
+                <!-- FILLED -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Filled"
+                               Style="{StaticResource EtherMicroRegular}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherInput Text="Input text"
+                                         Width="195"
+                                         IsHitTestVisible="False" IsTabStop="False"/>
+                </StackPanel>
+
+                <!-- DISABLED -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Disabled"
+                               Style="{StaticResource EtherMicroRegular}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherInput PlaceholderText="Default"
+                                         Width="195"
+                                         IsEnabled="False"
+                                         IsHitTestVisible="False" IsTabStop="False"/>
+                </StackPanel>
+
+            </StackPanel>
+        </views:ComponentPage.StatesContent>
+
+    </views:ComponentPage>
+</Page>
