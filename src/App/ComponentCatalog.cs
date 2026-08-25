@@ -10,10 +10,12 @@ namespace EtherSandbox;
 /// <summary>
 /// One entry in the catalog: a display name, the Page type that shows it, whether it
 /// belongs to the AI family of components (informational only — see <see cref="CatalogLeaf"/>
-/// remarks), and whether it has been reworked in its own branch (<see cref="IsUpdated"/>,
-/// surfaced as an "UPDATED" badge in the nav, the Home cards and the component page).
+/// remarks), whether it has been reworked in its own branch (<see cref="IsUpdated"/>,
+/// surfaced as an "UPDATED" badge in the nav, the Home cards and the component page), and
+/// whether it's a raw primitive-token page rather than a component (<see cref="IsPrimitive"/>,
+/// surfaced the same way as a "PRIMITIVE TOKEN" badge).
 /// </summary>
-public sealed record ComponentEntry(string Name, Type PageType, bool IsAiFamily = false, bool IsUpdated = false);
+public sealed record ComponentEntry(string Name, Type PageType, bool IsAiFamily = false, bool IsUpdated = false, bool IsPrimitive = false);
 
 /// <summary>Base type for a top-level slot in the navigation tree.</summary>
 public abstract record CatalogNode;
@@ -42,8 +44,10 @@ public static class ComponentCatalog
     {
         new CatalogCategory("Foundations", new[]
         {
-            new ComponentEntry("Colors", typeof(Foundations.ColorsPage)),
-            new ComponentEntry("Typography", typeof(Foundations.TypographyPage)),
+            new ComponentEntry("Colors", typeof(Foundations.ColorsPage), IsPrimitive: true),
+            new ComponentEntry("Typography", typeof(Foundations.TypographyPage), IsPrimitive: true),
+            new ComponentEntry("Spacing", typeof(Foundations.SpacingPage), IsPrimitive: true),
+            new ComponentEntry("Radius", typeof(Foundations.RadiusPage), IsPrimitive: true),
         }),
         new CatalogCategory("Controls", new[]
         {
@@ -88,22 +92,28 @@ public static class ComponentCatalog
     /// <summary>Whether the component shown by <paramref name="pageType"/> is flagged
     /// <see cref="ComponentEntry.IsUpdated"/>. Lets a component page surface its own badge
     /// without each page hard-coding the flag — the catalog stays the single source.</summary>
-    public static bool IsUpdated(Type pageType)
+    public static bool IsUpdated(Type pageType) => Find(pageType)?.IsUpdated ?? false;
+
+    /// <summary>Whether the page shown by <paramref name="pageType"/> is flagged
+    /// <see cref="ComponentEntry.IsPrimitive"/>. Same lookup as <see cref="IsUpdated"/>.</summary>
+    public static bool IsPrimitive(Type pageType) => Find(pageType)?.IsPrimitive ?? false;
+
+    private static ComponentEntry? Find(Type pageType)
     {
-        if (Home.PageType == pageType) return Home.IsUpdated;
+        if (Home.PageType == pageType) return Home;
         foreach (var node in Nodes)
         {
             switch (node)
             {
                 case CatalogCategory category:
                     foreach (var entry in category.Items)
-                        if (entry.PageType == pageType) return entry.IsUpdated;
+                        if (entry.PageType == pageType) return entry;
                     break;
                 case CatalogLeaf leaf:
-                    if (leaf.Entry.PageType == pageType) return leaf.Entry.IsUpdated;
+                    if (leaf.Entry.PageType == pageType) return leaf.Entry;
                     break;
             }
         }
-        return false;
+        return null;
     }
 }

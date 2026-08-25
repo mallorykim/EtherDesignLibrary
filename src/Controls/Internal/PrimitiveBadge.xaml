@@ -1,0 +1,23 @@
+<UserControl
+    x:Class="EtherSandbox.Controls.PrimitiveBadge"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Small "PRIMITIVE TOKEN" pill, shown on pages that list raw design tokens rather than a
+        component (ComponentEntry.IsPrimitive) — Colors, Typography, Spacing, Radius. Mirrors
+        UpdatedBadge's structure exactly; a neutral gray fill keeps it visually distinct from the
+        brand-blue "UPDATED" pill so the two badges never read as the same thing.
+    -->
+    <Border Background="{ThemeResource BackgroundSurfaceMuted}"
+            CornerRadius="4"
+            Padding="6,1,6,2"
+            VerticalAlignment="Center">
+        <TextBlock Text="PRIMITIVE TOKEN"
+                   FontFamily="{StaticResource InterFont}"
+                   FontSize="9"
+                   FontWeight="SemiBold"
+                   CharacterSpacing="80"
+                   Foreground="{ThemeResource TextSecondary}"/>
+    </Border>
+</UserControl>

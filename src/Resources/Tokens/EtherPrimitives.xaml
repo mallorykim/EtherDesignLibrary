@@ -69,4 +69,52 @@
     <Color x:Key="Red500">#FFF1595B</Color>
     <Color x:Key="Red600">#FFFF3C3C</Color>
     <Color x:Key="Red700">#FFFF1E1E</Color>
+
+    <!-- type / size -->
+    <x:Double x:Key="Size11">11</x:Double>
+    <x:Double x:Key="Size12">12</x:Double>
+    <x:Double x:Key="Size14">14</x:Double>
+    <x:Double x:Key="Size16">16</x:Double>
+    <x:Double x:Key="Size18">18</x:Double>
+    <x:Double x:Key="Size20">20</x:Double>
+    <x:Double x:Key="Size24">24</x:Double>
+    <x:Double x:Key="Size32">32</x:Double>
+    <x:Double x:Key="Size48">48</x:Double>
+    <x:Double x:Key="Size96">96</x:Double>
+
+    <!-- type / weight -->
+    <FontWeight x:Key="WeightRegular">Normal</FontWeight>
+    <FontWeight x:Key="WeightMedium">Medium</FontWeight>
+    <FontWeight x:Key="WeightSemibold">SemiBold</FontWeight>
+    <FontWeight x:Key="WeightBold">Bold</FontWeight>
+
+    <!-- spacing -->
+    <x:Double x:Key="Spacing0">0</x:Double>
+    <x:Double x:Key="Spacing2">2</x:Double>
+    <x:Double x:Key="Spacing4">4</x:Double>
+    <x:Double x:Key="Spacing6">6</x:Double>
+    <x:Double x:Key="Spacing8">8</x:Double>
+    <x:Double x:Key="Spacing10">10</x:Double>
+    <x:Double x:Key="Spacing12">12</x:Double>
+    <x:Double x:Key="Spacing16">16</x:Double>
+    <x:Double x:Key="Spacing20">20</x:Double>
+    <x:Double x:Key="Spacing24">24</x:Double>
+    <x:Double x:Key="Spacing32">32</x:Double>
+    <x:Double x:Key="Spacing40">40</x:Double>
+    <x:Double x:Key="Spacing48">48</x:Double>
+    <x:Double x:Key="Spacing56">56</x:Double>
+    <x:Double x:Key="Spacing64">64</x:Double>
+    <x:Double x:Key="Spacing80">80</x:Double>
+    <x:Double x:Key="Spacing96">96</x:Double>
+
+    <!-- radius -->
+    <x:Double x:Key="RadiusNone">0</x:Double>
+    <x:Double x:Key="RadiusXs">2</x:Double>
+    <x:Double x:Key="RadiusSm">4</x:Double>
+    <x:Double x:Key="RadiusMd">8</x:Double>
+    <x:Double x:Key="RadiusLg">12</x:Double>
+    <x:Double x:Key="RadiusXl">16</x:Double>
+    <x:Double x:Key="Radius2xl">24</x:Double>
+    <x:Double x:Key="Radius3xl">32</x:Double>
+    <x:Double x:Key="RadiusFull">9999</x:Double>
 </ResourceDictionary>

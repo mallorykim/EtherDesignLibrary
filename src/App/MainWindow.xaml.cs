@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using EtherSandbox.Views;
@@ -96,20 +97,26 @@ public sealed partial class MainWindow : Window
                     });
                     foreach (var entry in category.Items)
                     {
-                        NavView.MenuItems.Add(new NavigationViewItem
+                        var item = new NavigationViewItem
                         {
                             Content = BuildNavContent(entry),
                             Tag = entry.PageType,
-                        });
+                        };
+                        AutomationProperties.SetName(item, entry.Name);
+                        NavView.MenuItems.Add(item);
                     }
                     break;
 
                 case CatalogLeaf leaf:
-                    NavView.MenuItems.Add(new NavigationViewItem
                     {
-                        Content = BuildNavContent(leaf.Entry),
-                        Tag = leaf.Entry.PageType,
-                    });
+                        var item = new NavigationViewItem
+                        {
+                            Content = BuildNavContent(leaf.Entry),
+                            Tag = leaf.Entry.PageType,
+                        };
+                        AutomationProperties.SetName(item, leaf.Entry.Name);
+                        NavView.MenuItems.Add(item);
+                    }
                     break;
             }
         }
@@ -118,13 +125,13 @@ public sealed partial class MainWindow : Window
     }
 
     /// <summary>
-    /// A nav item's content: just the name, or the name plus an UPDATED badge for a reworked
-    /// component. The TextBlock sets no font or foreground so it inherits the nav item's own —
+    /// A nav item's content: just the name, or the name plus an UPDATED and/or PRIMITIVE TOKEN
+    /// badge. The TextBlock sets no font or foreground so it inherits the nav item's own —
     /// including the selected-state colour — exactly like the plain-string items.
     /// </summary>
     private static object BuildNavContent(ComponentEntry entry)
     {
-        if (!entry.IsUpdated) return entry.Name;
+        if (!entry.IsUpdated && !entry.IsPrimitive) return entry.Name;
 
         var panel = new StackPanel
         {
@@ -133,7 +140,8 @@ public sealed partial class MainWindow : Window
             VerticalAlignment = VerticalAlignment.Center,
         };
         panel.Children.Add(new TextBlock { Text = entry.Name, VerticalAlignment = VerticalAlignment.Center });
-        panel.Children.Add(new EtherSandbox.Controls.UpdatedBadge());
+        if (entry.IsUpdated) panel.Children.Add(new EtherSandbox.Controls.UpdatedBadge());
+        if (entry.IsPrimitive) panel.Children.Add(new EtherSandbox.Controls.PrimitiveBadge());
         return panel;
     }
 

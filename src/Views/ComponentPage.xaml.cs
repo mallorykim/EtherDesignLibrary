@@ -85,17 +85,22 @@ public sealed partial class ComponentPage : UserControl
     {
         this.InitializeComponent();
 
-        // Show the UPDATED badge when the hosting page's component is flagged in the catalog.
-        // Resolved from the hosting Page's type (walked up the tree) so the catalog stays the
-        // single source — the page itself never hard-codes the flag.
+        // Show the UPDATED / PRIMITIVE TOKEN badges when the hosting page is flagged in the
+        // catalog. Resolved from the hosting Page's type (walked up the tree) so the catalog
+        // stays the single source — the page itself never hard-codes the flag.
         this.Loaded += (_, _) =>
         {
             DependencyObject? node = this;
             while (node is not null and not Page)
                 node = VisualTreeHelper.GetParent(node);
 
-            if (node is Page page && ComponentCatalog.IsUpdated(page.GetType()))
-                UpdatedBadgeElement.Visibility = Visibility.Visible;
+            if (node is Page page)
+            {
+                if (ComponentCatalog.IsUpdated(page.GetType()))
+                    UpdatedBadgeElement.Visibility = Visibility.Visible;
+                if (ComponentCatalog.IsPrimitive(page.GetType()))
+                    PrimitiveBadgeElement.Visibility = Visibility.Visible;
+            }
         };
     }
 

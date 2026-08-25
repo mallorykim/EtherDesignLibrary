@@ -70,10 +70,12 @@
                                                            Foreground="{ThemeResource TextPrimary}"
                                                            VerticalAlignment="Center"
                                                            TextWrapping="Wrap"/>
-                                                <controls:UpdatedBadge Grid.Column="1"
-                                                                       Margin="8,0,0,0"
-                                                                       VerticalAlignment="Center"
-                                                                       Visibility="{x:Bind IsUpdated, Converter={StaticResource BoolToVisibility}}"/>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="8,0,0,0">
+                                                    <controls:UpdatedBadge VerticalAlignment="Center"
+                                                                           Visibility="{x:Bind IsUpdated, Converter={StaticResource BoolToVisibility}}"/>
+                                                    <controls:PrimitiveBadge VerticalAlignment="Center"
+                                                                             Visibility="{x:Bind IsPrimitive, Converter={StaticResource BoolToVisibility}}"/>
+                                                </StackPanel>
                                             </Grid>
                                         </Button>
                                     </DataTemplate>

@@ -43,6 +43,9 @@
                         <controls:UpdatedBadge x:Name="UpdatedBadgeElement"
                                                Visibility="Collapsed"
                                                VerticalAlignment="Center"/>
+                        <controls:PrimitiveBadge x:Name="PrimitiveBadgeElement"
+                                                 Visibility="Collapsed"
+                                                 VerticalAlignment="Center"/>
                     </StackPanel>
                     <TextBlock Text="{x:Bind Description, Mode=OneTime}"
                                FontFamily="{StaticResource InterFont}"
