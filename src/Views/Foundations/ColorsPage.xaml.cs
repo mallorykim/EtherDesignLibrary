@@ -49,8 +49,7 @@ public sealed partial class ColorsPage : Page
             .Select(group => new PrimitiveColorGroup(
                 group,
                 groups[group]
-                    .OrderByDescending(item => GetDisplayedBrightness(item.Color))
-                    .ThenByDescending(item => item.Color.A)
+                    .OrderBy(item => GetSeriesNumber(item.Key))
                     .ThenBy(item => item.Key, StringComparer.OrdinalIgnoreCase)
                     .ToArray()))
             .ToArray();
@@ -65,13 +64,17 @@ public sealed partial class ColorsPage : Page
         return split == 0 ? "Other" : key[..split];
     }
 
-    private static double GetDisplayedBrightness(Color color)
+    private static int GetSeriesNumber(string key)
     {
-        double alpha = color.A / 255.0;
-        double r = color.R * alpha + 255.0 * (1 - alpha);
-        double g = color.G * alpha + 255.0 * (1 - alpha);
-        double b = color.B * alpha + 255.0 * (1 - alpha);
-        return 0.299 * r + 0.587 * g + 0.114 * b;
+        int start = 0;
+        while (start < key.Length && char.IsLetter(key[start]))
+            start++;
+
+        int end = start;
+        while (end < key.Length && char.IsDigit(key[end]))
+            end++;
+
+        return end > start && int.TryParse(key[start..end], out var number) ? number : int.MaxValue;
     }
 
     private static ResourceDictionary? FindPrimitiveDictionary(ResourceDictionary root)

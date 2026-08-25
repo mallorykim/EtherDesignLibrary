@@ -24,116 +24,116 @@
         <ResourceDictionary x:Key="Light">
 
             <!-- Background -->
-            <SolidColorBrush x:Key="BackgroundCanvas"           Color="{StaticResource White100}"/>
-            <SolidColorBrush x:Key="BackgroundSurface"          Color="{StaticResource White100}"/>
-            <SolidColorBrush x:Key="BackgroundSurfaceRaised"    Color="{StaticResource Gray20}"/>
-            <SolidColorBrush x:Key="BackgroundSurfaceSunken"    Color="{StaticResource Gray40}"/>
-            <SolidColorBrush x:Key="BackgroundSurfaceMuted"     Color="{StaticResource Gray60}"/>
+            <SolidColorBrush x:Key="BackgroundCanvas"           Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundSurface"          Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundSurfaceRaised"    Color="{StaticResource Gray25}"/>
+            <SolidColorBrush x:Key="BackgroundSurfaceSunken"    Color="{StaticResource Gray50}"/>
+            <SolidColorBrush x:Key="BackgroundSurfaceMuted"     Color="{StaticResource Gray75}"/>
 
-            <SolidColorBrush x:Key="BackgroundSurfaceInverse"   Color="{StaticResource Black100}"/>
-            <SolidColorBrush x:Key="BackgroundInteractionModel" Color="{StaticResource Gray70}"/>
-            <SolidColorBrush x:Key="BackgroundOverlayScrim"     Color="{StaticResource Black60}"/>
-            <SolidColorBrush x:Key="BackgroundGlassLight"       Color="{StaticResource White70}"/>
-            <SolidColorBrush x:Key="BackgroundGlassDark"        Color="{StaticResource Black40}"/>
-            <SolidColorBrush x:Key="BackgroundBrandSubtle"      Color="{StaticResource Blue600Alpha10}"/>
-            <SolidColorBrush x:Key="BackgroundDivider"          Color="{StaticResource Gray100}"/>
-            <SolidColorBrush x:Key="BackgroundPlaceholder"      Color="{StaticResource Gray80}"/>
-            <SolidColorBrush x:Key="BackgroundTrack"            Color="{StaticResource Gray100}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownScrollThumb" Color="{StaticResource Gray300}"/>
+            <SolidColorBrush x:Key="BackgroundSurfaceInverse"   Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BackgroundInteractionModel" Color="{StaticResource Gray100}"/>
+            <SolidColorBrush x:Key="BackgroundOverlayScrim"     Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BackgroundGlassLight"       Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundGlassDark"        Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BackgroundBrandSubtle"      Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="BackgroundDivider"          Color="{StaticResource Gray300}"/>
+            <SolidColorBrush x:Key="BackgroundPlaceholder"      Color="{StaticResource Gray200}"/>
+            <SolidColorBrush x:Key="BackgroundTrack"            Color="{StaticResource Gray300}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownScrollThumb" Color="{StaticResource Gray400}"/>
             <SolidColorBrush x:Key="BackgroundDropdownScrollThumbHover" Color="{StaticResource Gray500}"/>
             <!-- Toggle switch OFF track: Figma uses black at 10%, independent of slider tracks. -->
-            <SolidColorBrush x:Key="BackgroundSwitchOff"        Color="{StaticResource Black10}"/>
-            <SolidColorBrush x:Key="BackgroundSwitchKnobDisabled" Color="{StaticResource Gray05}"/>
-            <SolidColorBrush x:Key="BackgroundSegmentTrack"     Color="{StaticResource Gray20}"/>
-            <SolidColorBrush x:Key="BackgroundSegmentHover"     Color="{StaticResource Blue600Alpha06}"/>
-            <SolidColorBrush x:Key="BackgroundSegmentPressed"   Color="{StaticResource Blue600Alpha10}"/>
-            <SolidColorBrush x:Key="BackgroundAiInput"           Color="{StaticResource Gray90Alpha40}"/>
-            <SolidColorBrush x:Key="BackgroundDropdown"          Color="{StaticResource Black08}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownHover"     Color="{StaticResource Black14}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownPressed"   Color="{StaticResource Black20}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownMenu"      Color="{StaticResource Gray50}"/>
+            <SolidColorBrush x:Key="BackgroundSwitchOff"        Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BackgroundSwitchKnobDisabled" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundSegmentTrack"     Color="{StaticResource Gray25}"/>
+            <SolidColorBrush x:Key="BackgroundSegmentHover"     Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="BackgroundSegmentPressed"   Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="BackgroundAiInput"           Color="{StaticResource Gray300}"/>
+            <SolidColorBrush x:Key="BackgroundDropdown"          Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownHover"     Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownPressed"   Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownMenu"      Color="{StaticResource Gray75}"/>
             <SolidColorBrush x:Key="BackgroundDropdownItemSelected"        Color="{StaticResource Gray25}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownItemSelectedHover"   Color="{StaticResource Gray30}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownItemSelectedPressed" Color="{StaticResource Gray10}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownItemSelectedHover"   Color="{StaticResource Gray50}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownItemSelectedPressed" Color="{StaticResource Gray25}"/>
 
             <!-- Text -->
-            <SolidColorBrush x:Key="TextPrimary"   Color="{StaticResource Black100}"/>
-            <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource Black70}"/>
-            <SolidColorBrush x:Key="TextTertiary"  Color="{StaticResource Black50}"/>
-            <SolidColorBrush x:Key="TextDisabled"  Color="{StaticResource Black30}"/>
-            <SolidColorBrush x:Key="TextInverse"   Color="{StaticResource White100}"/>
+            <SolidColorBrush x:Key="TextPrimary"   Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="TextTertiary"  Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="TextDisabled"  Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="TextInverse"   Color="{StaticResource Gray0}"/>
             <SolidColorBrush x:Key="TextBrand"     Color="{StaticResource Blue600}"/>
-            <SolidColorBrush x:Key="TextSuccess"   Color="{StaticResource Green700}"/>
-            <SolidColorBrush x:Key="TextWarning"   Color="{StaticResource Yellow700}"/>
-            <SolidColorBrush x:Key="TextDanger"    Color="{StaticResource Red600}"/>
+            <SolidColorBrush x:Key="TextSuccess"   Color="{StaticResource Green600}"/>
+            <SolidColorBrush x:Key="TextWarning"   Color="{StaticResource Orange600}"/>
+            <SolidColorBrush x:Key="TextDanger"    Color="{StaticResource Red500}"/>
             <SolidColorBrush x:Key="TextAi"        Color="{StaticResource Purple500}"/>
-            <SolidColorBrush x:Key="TextNavNarrowInactive" Color="{StaticResource Black60}"/>
-            <SolidColorBrush x:Key="TextNavInactive"       Color="{StaticResource Gray850}"/>
+            <SolidColorBrush x:Key="TextNavNarrowInactive" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="TextNavInactive"       Color="{StaticResource Gray900}"/>
 
             <!-- Icon (mirrors Text roles) -->
-            <SolidColorBrush x:Key="IconPrimary"   Color="{StaticResource Black100}"/>
-            <SolidColorBrush x:Key="IconSecondary" Color="{StaticResource Black70}"/>
-            <SolidColorBrush x:Key="IconTertiary"  Color="{StaticResource Black50}"/>
-            <SolidColorBrush x:Key="IconDisabled"  Color="{StaticResource Black30}"/>
-            <SolidColorBrush x:Key="IconInverse"   Color="{StaticResource White100}"/>
+            <SolidColorBrush x:Key="IconPrimary"   Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="IconSecondary" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="IconTertiary"  Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="IconDisabled"  Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="IconInverse"   Color="{StaticResource Gray0}"/>
             <SolidColorBrush x:Key="IconBrand"     Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="IconAi"        Color="{StaticResource Purple500}"/>
 
             <!-- Border -->
-            <SolidColorBrush x:Key="BorderSubtle"   Color="{StaticResource Navy900Alpha12}"/>
-            <SolidColorBrush x:Key="BorderDefault"  Color="{StaticResource Navy900Alpha20}"/>
-            <SolidColorBrush x:Key="BorderStrong"   Color="{StaticResource Navy900Alpha40}"/>
+            <SolidColorBrush x:Key="BorderSubtle"   Color="{StaticResource Navy500}"/>
+            <SolidColorBrush x:Key="BorderDefault"  Color="{StaticResource Navy500}"/>
+            <SolidColorBrush x:Key="BorderStrong"   Color="{StaticResource Navy500}"/>
             <SolidColorBrush x:Key="BorderFocus"    Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="BorderBrand"    Color="{StaticResource Blue600}"/>
-            <SolidColorBrush x:Key="BorderInverse"  Color="{StaticResource Black100}"/>
-            <SolidColorBrush x:Key="BorderDanger"   Color="{StaticResource Red600}"/>
+            <SolidColorBrush x:Key="BorderInverse"  Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BorderDanger"   Color="{StaticResource Red500}"/>
             <SolidColorBrush x:Key="BorderSuccess"  Color="{StaticResource Green500}"/>
 
             <!-- Action / Primary -->
-            <SolidColorBrush x:Key="ActionPrimaryBg"         Color="{StaticResource Blue550}"/>
-            <SolidColorBrush x:Key="ActionPrimaryBgHover"    Color="{StaticResource Blue650}"/>
-            <SolidColorBrush x:Key="ActionPrimaryBgPressed"  Color="{StaticResource Blue700}"/>
-            <SolidColorBrush x:Key="ActionPrimaryBgDisabled" Color="{StaticResource Blue550Alpha40}"/>
-            <SolidColorBrush x:Key="ActionPrimaryFg"         Color="{StaticResource White100}"/>
-            <SolidColorBrush x:Key="ActionPrimaryFgDisabled" Color="{StaticResource White100}"/>
+            <SolidColorBrush x:Key="ActionPrimaryBg"         Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="ActionPrimaryBgHover"    Color="{StaticResource Blue700}"/>
+            <SolidColorBrush x:Key="ActionPrimaryBgPressed"  Color="{StaticResource Blue800}"/>
+            <SolidColorBrush x:Key="ActionPrimaryBgDisabled" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="ActionPrimaryFg"         Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="ActionPrimaryFgDisabled" Color="{StaticResource Gray0}"/>
 
             <!-- Action / Secondary -->
-            <SolidColorBrush x:Key="ActionSecondaryBg"        Color="{StaticResource White00}"/>
-            <SolidColorBrush x:Key="ActionSecondaryBgHover"   Color="{StaticResource Gray20}"/>
-            <SolidColorBrush x:Key="ActionSecondaryBgPressed" Color="{StaticResource Gray40}"/>
-            <SolidColorBrush x:Key="ActionSecondaryBorder"    Color="{StaticResource Navy900Alpha20}"/>
-            <SolidColorBrush x:Key="ActionSecondaryFg"        Color="{StaticResource Black100}"/>
+            <SolidColorBrush x:Key="ActionSecondaryBg"        Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="ActionSecondaryBgHover"   Color="{StaticResource Gray25}"/>
+            <SolidColorBrush x:Key="ActionSecondaryBgPressed" Color="{StaticResource Gray50}"/>
+            <SolidColorBrush x:Key="ActionSecondaryBorder"    Color="{StaticResource Navy500}"/>
+            <SolidColorBrush x:Key="ActionSecondaryFg"        Color="{StaticResource Gray1000}"/>
 
             <!-- Action / Tertiary -->
-            <SolidColorBrush x:Key="ActionTertiaryBgHover"   Color="{StaticResource Black04}"/>
-            <SolidColorBrush x:Key="ActionTertiaryFg"       Color="{StaticResource Blue700}"/>
-            <SolidColorBrush x:Key="ActionTertiaryFgHover"   Color="{StaticResource Blue650}"/>
-            <SolidColorBrush x:Key="ActionTertiaryFgPressed" Color="{StaticResource Blue700}"/>
-            <SolidColorBrush x:Key="ActionTertiaryFgDisabled" Color="{StaticResource Blue550}"/>
+            <SolidColorBrush x:Key="ActionTertiaryBgHover"   Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="ActionTertiaryFg"       Color="{StaticResource Blue800}"/>
+            <SolidColorBrush x:Key="ActionTertiaryFgHover"   Color="{StaticResource Blue700}"/>
+            <SolidColorBrush x:Key="ActionTertiaryFgPressed" Color="{StaticResource Blue800}"/>
+            <SolidColorBrush x:Key="ActionTertiaryFgDisabled" Color="{StaticResource Blue600}"/>
 
             <!-- Action / Danger -->
-            <SolidColorBrush x:Key="ActionDangerBg"      Color="{StaticResource Red600}"/>
-            <SolidColorBrush x:Key="ActionDangerBgHover" Color="{StaticResource Red400}"/>
-            <SolidColorBrush x:Key="ActionDangerFg"      Color="{StaticResource White100}"/>
+            <SolidColorBrush x:Key="ActionDangerBg"      Color="{StaticResource Red500}"/>
+            <SolidColorBrush x:Key="ActionDangerBgHover" Color="{StaticResource Red600}"/>
+            <SolidColorBrush x:Key="ActionDangerFg"      Color="{StaticResource Gray0}"/>
 
             <!-- Status / Success -->
-            <SolidColorBrush x:Key="StatusSuccessFg"     Color="{StaticResource Green700}"/>
-            <SolidColorBrush x:Key="StatusSuccessBg"     Color="{StaticResource Green500Alpha12}"/>
+            <SolidColorBrush x:Key="StatusSuccessFg"     Color="{StaticResource Green600}"/>
+            <SolidColorBrush x:Key="StatusSuccessBg"     Color="{StaticResource Green500}"/>
             <SolidColorBrush x:Key="StatusSuccessBorder" Color="{StaticResource Green500}"/>
 
             <!-- Status / Warning -->
-            <SolidColorBrush x:Key="StatusWarningFg"     Color="{StaticResource Yellow700}"/>
-            <SolidColorBrush x:Key="StatusWarningBg"     Color="{StaticResource Yellow500Alpha20}"/>
-            <SolidColorBrush x:Key="StatusWarningBorder" Color="{StaticResource Orange600}"/>
+            <SolidColorBrush x:Key="StatusWarningFg"     Color="{StaticResource Orange600}"/>
+            <SolidColorBrush x:Key="StatusWarningBg"     Color="{StaticResource Orange300}"/>
+            <SolidColorBrush x:Key="StatusWarningBorder" Color="{StaticResource Orange500}"/>
 
             <!-- Status / Danger -->
-            <SolidColorBrush x:Key="StatusDangerFg"     Color="{StaticResource Red600}"/>
-            <SolidColorBrush x:Key="StatusDangerBg"     Color="{StaticResource Red450Alpha12}"/>
-            <SolidColorBrush x:Key="StatusDangerBorder" Color="{StaticResource Red600}"/>
+            <SolidColorBrush x:Key="StatusDangerFg"     Color="{StaticResource Red500}"/>
+            <SolidColorBrush x:Key="StatusDangerBg"     Color="{StaticResource Red400}"/>
+            <SolidColorBrush x:Key="StatusDangerBorder" Color="{StaticResource Red500}"/>
 
             <!-- Status / Info -->
             <SolidColorBrush x:Key="StatusInfoFg"     Color="{StaticResource Blue600}"/>
-            <SolidColorBrush x:Key="StatusInfoBg"     Color="{StaticResource Blue600Alpha10}"/>
+            <SolidColorBrush x:Key="StatusInfoBg"     Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="StatusInfoBorder" Color="{StaticResource Blue600}"/>
 
             <!-- AI Accents -->
@@ -146,115 +146,115 @@
         <ResourceDictionary x:Key="Dark">
 
             <!-- Background -->
-            <SolidColorBrush x:Key="BackgroundCanvas"           Color="{StaticResource Black100}"/>
+            <SolidColorBrush x:Key="BackgroundCanvas"           Color="{StaticResource Gray1000}"/>
             <SolidColorBrush x:Key="BackgroundSurface"          Color="{StaticResource Gray900}"/>
-            <SolidColorBrush x:Key="BackgroundSurfaceRaised"    Color="{StaticResource Gray700}"/>
-            <SolidColorBrush x:Key="BackgroundSurfaceSunken"    Color="{StaticResource Gray950}"/>
-            <SolidColorBrush x:Key="BackgroundSurfaceMuted"     Color="{StaticResource Gray800}"/>
-            <SolidColorBrush x:Key="BackgroundSurfaceInverse"   Color="{StaticResource White100}"/>
-            <SolidColorBrush x:Key="BackgroundInteractionModel" Color="{StaticResource Gray750}"/>
-            <SolidColorBrush x:Key="BackgroundOverlayScrim"     Color="{StaticResource Black70}"/>
-            <SolidColorBrush x:Key="BackgroundGlassLight"       Color="{StaticResource White08}"/>
-            <SolidColorBrush x:Key="BackgroundGlassDark"        Color="{StaticResource Black60}"/>
-            <SolidColorBrush x:Key="BackgroundBrandSubtle"      Color="{StaticResource Blue600Alpha16}"/>
-            <SolidColorBrush x:Key="BackgroundDivider"          Color="{StaticResource White16}"/>
-            <SolidColorBrush x:Key="BackgroundPlaceholder"      Color="{StaticResource Gray600}"/>
-            <SolidColorBrush x:Key="BackgroundTrack"            Color="{StaticResource Gray650}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownScrollThumb" Color="{StaticResource Gray80}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownScrollThumbHover" Color="{StaticResource Gray20}"/>
+            <SolidColorBrush x:Key="BackgroundSurfaceRaised"    Color="{StaticResource Gray800}"/>
+            <SolidColorBrush x:Key="BackgroundSurfaceSunken"    Color="{StaticResource Gray975}"/>
+            <SolidColorBrush x:Key="BackgroundSurfaceMuted"     Color="{StaticResource Gray850}"/>
+            <SolidColorBrush x:Key="BackgroundSurfaceInverse"   Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundInteractionModel" Color="{StaticResource Gray800}"/>
+            <SolidColorBrush x:Key="BackgroundOverlayScrim"     Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BackgroundGlassLight"       Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundGlassDark"        Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="BackgroundBrandSubtle"      Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="BackgroundDivider"          Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundPlaceholder"      Color="{StaticResource Gray700}"/>
+            <SolidColorBrush x:Key="BackgroundTrack"            Color="{StaticResource Gray750}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownScrollThumb" Color="{StaticResource Gray200}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownScrollThumbHover" Color="{StaticResource Gray25}"/>
             <!-- Toggle switch OFF track: 10% white on dark surfaces. -->
-            <SolidColorBrush x:Key="BackgroundSwitchOff"        Color="{StaticResource White10}"/>
-            <SolidColorBrush x:Key="BackgroundSwitchKnobDisabled" Color="{StaticResource Gray82}"/>
-            <SolidColorBrush x:Key="BackgroundSegmentTrack"     Color="{StaticResource White10}"/>
-            <SolidColorBrush x:Key="BackgroundSegmentHover"     Color="{StaticResource White06}"/>
-            <SolidColorBrush x:Key="BackgroundSegmentPressed"   Color="{StaticResource White10}"/>
-            <SolidColorBrush x:Key="BackgroundAiInput"           Color="{StaticResource White25}"/>
-            <SolidColorBrush x:Key="BackgroundDropdown"          Color="{StaticResource White08}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownHover"     Color="{StaticResource White14}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownPressed"   Color="{StaticResource White20}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownMenu"      Color="{StaticResource Gray875}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownItemSelected"        Color="{StaticResource Gray320}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownItemSelectedHover"   Color="{StaticResource Gray400}"/>
-            <SolidColorBrush x:Key="BackgroundDropdownItemSelectedPressed" Color="{StaticResource Gray200}"/>
+            <SolidColorBrush x:Key="BackgroundSwitchOff"        Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundSwitchKnobDisabled" Color="{StaticResource Gray200}"/>
+            <SolidColorBrush x:Key="BackgroundSegmentTrack"     Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundSegmentHover"     Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundSegmentPressed"   Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundAiInput"           Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundDropdown"          Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownHover"     Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownPressed"   Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownMenu"      Color="{StaticResource Gray900}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownItemSelected"        Color="{StaticResource Gray400}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownItemSelectedHover"   Color="{StaticResource Gray500}"/>
+            <SolidColorBrush x:Key="BackgroundDropdownItemSelectedPressed" Color="{StaticResource Gray400}"/>
 
             <!-- Text -->
-            <SolidColorBrush x:Key="TextPrimary"   Color="{StaticResource White100}"/>
-            <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource White70}"/>
-            <SolidColorBrush x:Key="TextTertiary"  Color="{StaticResource White50}"/>
-            <SolidColorBrush x:Key="TextDisabled"  Color="{StaticResource White30}"/>
-            <SolidColorBrush x:Key="TextInverse"   Color="{StaticResource Black100}"/>
+            <SolidColorBrush x:Key="TextPrimary"   Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="TextTertiary"  Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="TextDisabled"  Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="TextInverse"   Color="{StaticResource Gray1000}"/>
             <SolidColorBrush x:Key="TextBrand"     Color="{StaticResource Blue500}"/>
             <SolidColorBrush x:Key="TextSuccess"   Color="{StaticResource Green400}"/>
-            <SolidColorBrush x:Key="TextWarning"   Color="{StaticResource Yellow500}"/>
-            <SolidColorBrush x:Key="TextDanger"    Color="{StaticResource Red500}"/>
+            <SolidColorBrush x:Key="TextWarning"   Color="{StaticResource Orange300}"/>
+            <SolidColorBrush x:Key="TextDanger"    Color="{StaticResource Red300}"/>
             <SolidColorBrush x:Key="TextAi"        Color="{StaticResource Purple400}"/>
-            <SolidColorBrush x:Key="TextNavNarrowInactive" Color="{StaticResource White60}"/>
-            <SolidColorBrush x:Key="TextNavInactive"       Color="{StaticResource White50}"/>            
+            <SolidColorBrush x:Key="TextNavNarrowInactive" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="TextNavInactive"       Color="{StaticResource Gray0}"/>            
 
             <!-- Icon (mirrors Text roles) -->
-            <SolidColorBrush x:Key="IconPrimary"   Color="{StaticResource White100}"/>
-            <SolidColorBrush x:Key="IconSecondary" Color="{StaticResource White70}"/>
-            <SolidColorBrush x:Key="IconTertiary"  Color="{StaticResource White50}"/>
-            <SolidColorBrush x:Key="IconDisabled"  Color="{StaticResource White30}"/>
-            <SolidColorBrush x:Key="IconInverse"   Color="{StaticResource Black100}"/>
+            <SolidColorBrush x:Key="IconPrimary"   Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="IconSecondary" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="IconTertiary"  Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="IconDisabled"  Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="IconInverse"   Color="{StaticResource Gray1000}"/>
             <SolidColorBrush x:Key="IconBrand"     Color="{StaticResource Blue500}"/>
             <SolidColorBrush x:Key="IconAi"        Color="{StaticResource Purple400}"/>
 
             <!-- Border -->
-            <SolidColorBrush x:Key="BorderSubtle"   Color="{StaticResource White08}"/>
-            <SolidColorBrush x:Key="BorderDefault"  Color="{StaticResource White12}"/>
-            <SolidColorBrush x:Key="BorderStrong"   Color="{StaticResource White25}"/>
+            <SolidColorBrush x:Key="BorderSubtle"   Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BorderDefault"  Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BorderStrong"   Color="{StaticResource Gray0}"/>
             <SolidColorBrush x:Key="BorderFocus"    Color="{StaticResource Blue500}"/>
             <SolidColorBrush x:Key="BorderBrand"    Color="{StaticResource Blue500}"/>
-            <SolidColorBrush x:Key="BorderInverse"  Color="{StaticResource White100}"/>
-            <SolidColorBrush x:Key="BorderDanger"   Color="{StaticResource Red450}"/>
+            <SolidColorBrush x:Key="BorderInverse"  Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="BorderDanger"   Color="{StaticResource Red400}"/>
             <SolidColorBrush x:Key="BorderSuccess"  Color="{StaticResource Green400}"/>
 
             <!-- Action / Primary -->
-            <SolidColorBrush x:Key="ActionPrimaryBg"         Color="{StaticResource Blue550}"/>
-            <SolidColorBrush x:Key="ActionPrimaryBgHover"    Color="{StaticResource Blue650}"/>
-            <SolidColorBrush x:Key="ActionPrimaryBgPressed"  Color="{StaticResource Blue700}"/>
-            <SolidColorBrush x:Key="ActionPrimaryBgDisabled" Color="{StaticResource Blue550Alpha40}"/>
-            <SolidColorBrush x:Key="ActionPrimaryFg"         Color="{StaticResource White100}"/>
-            <SolidColorBrush x:Key="ActionPrimaryFgDisabled" Color="{StaticResource White100}"/>
+            <SolidColorBrush x:Key="ActionPrimaryBg"         Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="ActionPrimaryBgHover"    Color="{StaticResource Blue700}"/>
+            <SolidColorBrush x:Key="ActionPrimaryBgPressed"  Color="{StaticResource Blue800}"/>
+            <SolidColorBrush x:Key="ActionPrimaryBgDisabled" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="ActionPrimaryFg"         Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="ActionPrimaryFgDisabled" Color="{StaticResource Gray0}"/>
 
             <!-- Action / Secondary -->
-            <SolidColorBrush x:Key="ActionSecondaryBg"        Color="{StaticResource White00}"/>
-            <SolidColorBrush x:Key="ActionSecondaryBgHover"   Color="{StaticResource Gray650}"/>
-            <SolidColorBrush x:Key="ActionSecondaryBgPressed" Color="{StaticResource Gray725}"/>
-            <SolidColorBrush x:Key="ActionSecondaryBorder"    Color="{StaticResource White20}"/>
-            <SolidColorBrush x:Key="ActionSecondaryFg"        Color="{StaticResource White100}"/>
+            <SolidColorBrush x:Key="ActionSecondaryBg"        Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="ActionSecondaryBgHover"   Color="{StaticResource Gray750}"/>
+            <SolidColorBrush x:Key="ActionSecondaryBgPressed" Color="{StaticResource Gray800}"/>
+            <SolidColorBrush x:Key="ActionSecondaryBorder"    Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="ActionSecondaryFg"        Color="{StaticResource Gray0}"/>
 
             <!-- Action / Tertiary -->
-            <SolidColorBrush x:Key="ActionTertiaryBgHover"   Color="{StaticResource White04}"/>
-            <SolidColorBrush x:Key="ActionTertiaryFg"       Color="{StaticResource Blue700}"/>
-            <SolidColorBrush x:Key="ActionTertiaryFgHover"   Color="{StaticResource Blue650}"/>
-            <SolidColorBrush x:Key="ActionTertiaryFgPressed" Color="{StaticResource Blue700}"/>
-            <SolidColorBrush x:Key="ActionTertiaryFgDisabled" Color="{StaticResource Blue550}"/>
+            <SolidColorBrush x:Key="ActionTertiaryBgHover"   Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="ActionTertiaryFg"       Color="{StaticResource Blue800}"/>
+            <SolidColorBrush x:Key="ActionTertiaryFgHover"   Color="{StaticResource Blue700}"/>
+            <SolidColorBrush x:Key="ActionTertiaryFgPressed" Color="{StaticResource Blue800}"/>
+            <SolidColorBrush x:Key="ActionTertiaryFgDisabled" Color="{StaticResource Blue600}"/>
 
             <!-- Action / Danger -->
-            <SolidColorBrush x:Key="ActionDangerBg"      Color="{StaticResource Red600}"/>
-            <SolidColorBrush x:Key="ActionDangerBgHover" Color="{StaticResource Red450}"/>
-            <SolidColorBrush x:Key="ActionDangerFg"      Color="{StaticResource White100}"/>
+            <SolidColorBrush x:Key="ActionDangerBg"      Color="{StaticResource Red500}"/>
+            <SolidColorBrush x:Key="ActionDangerBgHover" Color="{StaticResource Red400}"/>
+            <SolidColorBrush x:Key="ActionDangerFg"      Color="{StaticResource Gray0}"/>
 
             <!-- Status / Success -->
             <SolidColorBrush x:Key="StatusSuccessFg"     Color="{StaticResource Green400}"/>
-            <SolidColorBrush x:Key="StatusSuccessBg"     Color="{StaticResource Green500Alpha16}"/>
+            <SolidColorBrush x:Key="StatusSuccessBg"     Color="{StaticResource Green500}"/>
             <SolidColorBrush x:Key="StatusSuccessBorder" Color="{StaticResource Green400}"/>
 
             <!-- Status / Warning -->
-            <SolidColorBrush x:Key="StatusWarningFg"     Color="{StaticResource Yellow500}"/>
-            <SolidColorBrush x:Key="StatusWarningBg"     Color="{StaticResource Yellow500Alpha16}"/>
-            <SolidColorBrush x:Key="StatusWarningBorder" Color="{StaticResource Yellow500}"/>
+            <SolidColorBrush x:Key="StatusWarningFg"     Color="{StaticResource Orange300}"/>
+            <SolidColorBrush x:Key="StatusWarningBg"     Color="{StaticResource Orange300}"/>
+            <SolidColorBrush x:Key="StatusWarningBorder" Color="{StaticResource Orange300}"/>
 
             <!-- Status / Danger -->
-            <SolidColorBrush x:Key="StatusDangerFg"     Color="{StaticResource Red500}"/>
-            <SolidColorBrush x:Key="StatusDangerBg"     Color="{StaticResource Red450Alpha16}"/>
-            <SolidColorBrush x:Key="StatusDangerBorder" Color="{StaticResource Red450}"/>
+            <SolidColorBrush x:Key="StatusDangerFg"     Color="{StaticResource Red300}"/>
+            <SolidColorBrush x:Key="StatusDangerBg"     Color="{StaticResource Red400}"/>
+            <SolidColorBrush x:Key="StatusDangerBorder" Color="{StaticResource Red400}"/>
 
             <!-- Status / Info -->
             <SolidColorBrush x:Key="StatusInfoFg"     Color="{StaticResource Blue500}"/>
-            <SolidColorBrush x:Key="StatusInfoBg"     Color="{StaticResource Blue600Alpha16}"/>
+            <SolidColorBrush x:Key="StatusInfoBg"     Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="StatusInfoBorder" Color="{StaticResource Blue500}"/>
 
             <!-- AI Accents -->
@@ -393,17 +393,17 @@
 
     <!-- Background / brand -->
     <!-- Card Intelligence: always black regardless of theme -->
-    <SolidColorBrush x:Key="BackgroundCardIntelligence" Color="{StaticResource Black100}"/>
+    <SolidColorBrush x:Key="BackgroundCardIntelligence" Color="{StaticResource Gray1000}"/>
     <SolidColorBrush x:Key="BackgroundBrand"     Color="{StaticResource Blue600}"/>
-    <SolidColorBrush x:Key="BackgroundBrandSoft" Color="{StaticResource Blue600Alpha60}"/>
-    <SolidColorBrush x:Key="BackgroundBrandGlow" Color="{StaticResource Blue400Alpha65}"/>
+    <SolidColorBrush x:Key="BackgroundBrandSoft" Color="{StaticResource Blue600}"/>
+    <SolidColorBrush x:Key="BackgroundBrandGlow" Color="{StaticResource Blue500}"/>
 
     <!-- Text / Icon on=brand (always white) -->
-    <SolidColorBrush x:Key="TextOnBrand" Color="{StaticResource White100}"/>
-    <SolidColorBrush x:Key="IconOnBrand" Color="{StaticResource White100}"/>
+    <SolidColorBrush x:Key="TextOnBrand" Color="{StaticResource Gray0}"/>
+    <SolidColorBrush x:Key="IconOnBrand" Color="{StaticResource Gray0}"/>
 
     <!-- AI Accent / Cyan -->
-    <SolidColorBrush x:Key="AiAccentCyan" Color="{StaticResource Cyan300}"/>
+    <SolidColorBrush x:Key="AiAccentCyan" Color="{StaticResource Cyan500}"/>
     <!-- Intelligence button stacked stroke gradients (Figma node 60438:579).
          Figma applies these two linear strokes in order, both 1 px inside. -->
     <RadialGradientBrush x:Key="BorderIntelligenceBlue"
@@ -412,9 +412,9 @@
                          RadiusX="0.5"
                          RadiusY="1">
         <GradientStop Offset="0" Color="{StaticResource Purple200}"/>
-        <GradientStop Offset="0.13" Color="{StaticResource Blue550}"/>
-        <GradientStop Offset="0.4" Color="{StaticResource Blue550}"/>
-        <GradientStop Offset="0.66" Color="{StaticResource Blue550}"/>
+        <GradientStop Offset="0.13" Color="{StaticResource Blue600}"/>
+        <GradientStop Offset="0.4" Color="{StaticResource Blue600}"/>
+        <GradientStop Offset="0.66" Color="{StaticResource Blue600}"/>
         <GradientStop Offset="0.94" Color="{StaticResource Purple500}"/>
     </RadialGradientBrush>
     <RadialGradientBrush x:Key="BorderIntelligence"
@@ -423,17 +423,17 @@
                          RadiusX="0.5"
                          RadiusY="1">
         <GradientStop Offset="0" Color="{StaticResource Purple200}"/>
-        <GradientStop Offset="0.13" Color="{StaticResource Blue550}"/>
-        <GradientStop Offset="0.4" Color="{StaticResource Blue550}"/>
-        <GradientStop Offset="0.66" Color="{StaticResource Blue550}"/>
+        <GradientStop Offset="0.13" Color="{StaticResource Blue600}"/>
+        <GradientStop Offset="0.4" Color="{StaticResource Blue600}"/>
+        <GradientStop Offset="0.66" Color="{StaticResource Blue600}"/>
         <GradientStop Offset="0.94" Color="{StaticResource Purple500}"/>
     </RadialGradientBrush>
     <!-- Intelligence button hover stroke (Figma node 60377:541). -->
     <LinearGradientBrush x:Key="BorderIntelligenceHover"
                          StartPoint="0,0"
                          EndPoint="1,0">
-        <GradientStop Offset="0" Color="{StaticResource White100}"/>
-        <GradientStop Offset="1" Color="{StaticResource Gray250}"/>
+        <GradientStop Offset="0" Color="{StaticResource Gray0}"/>
+        <GradientStop Offset="1" Color="{StaticResource Gray400}"/>
     </LinearGradientBrush>
 
     <!-- Dropdown active stroke (Figma Gradient-100, node 60525:5290). -->
@@ -441,15 +441,15 @@
                          StartPoint="1,0.51923561"
                          EndPoint="0,0.51923561">
         <GradientStop Offset="0" Color="{StaticResource Cyan400}"/>
-        <GradientStop Offset="0.09789021" Color="{StaticResource Cyan500}"/>
-        <GradientStop Offset="0.8" Color="{StaticResource Blue950}"/>
-        <GradientStop Offset="1" Color="{StaticResource Blue900}"/>
+        <GradientStop Offset="0.09789021" Color="{StaticResource Cyan600}"/>
+        <GradientStop Offset="0.8" Color="{StaticResource Blue700}"/>
+        <GradientStop Offset="1" Color="{StaticResource Blue800}"/>
     </LinearGradientBrush>
 
     <!-- Data Visualization ramp = use in order 01?04 for chart series -->
-    <SolidColorBrush x:Key="Dataviz01" Color="{StaticResource Navy800}"/>
-    <SolidColorBrush x:Key="Dataviz02" Color="{StaticResource Blue800}"/>
+    <SolidColorBrush x:Key="Dataviz01" Color="{StaticResource Navy700}"/>
+    <SolidColorBrush x:Key="Dataviz02" Color="{StaticResource Blue950}"/>
     <SolidColorBrush x:Key="Dataviz03" Color="{StaticResource Blue600}"/>
-    <SolidColorBrush x:Key="Dataviz04" Color="{StaticResource Cyan300}"/>
+    <SolidColorBrush x:Key="Dataviz04" Color="{StaticResource Cyan500}"/>
 
 </ResourceDictionary>
