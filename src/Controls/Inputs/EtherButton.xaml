@@ -101,10 +101,10 @@
                     Background="{ThemeResource ActionPrimaryBg}"
                     BorderBrush="#40FFFFFF"
                     BorderThickness="1"
-                    CornerRadius="8"
+                    CornerRadius="{StaticResource RadiusMd}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
-                            Spacing="6"
+                            Spacing="{StaticResource Spacing6}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                     <TextBlock x:Name="Cp"
@@ -112,7 +112,7 @@
                                       Foreground="{ThemeResource ActionPrimaryFg}"
                                       FontFamily="Inter"
                                       FontSize="{TemplateBinding FontSize}"
-                                      FontWeight="SemiBold"
+                                      FontWeight="{StaticResource WeightSemibold}"
                                       VerticalAlignment="Center">
                         <!-- Nudge the label down (FontSize x 0.096): XAML centers the full line
                              box (incl. descent leading), which leaves an empty descent
@@ -178,10 +178,10 @@
                     Background="{ThemeResource ActionSecondaryBg}"
                     BorderBrush="{ThemeResource ActionSecondaryBorder}"
                     BorderThickness="1"
-                    CornerRadius="8"
+                    CornerRadius="{StaticResource RadiusMd}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
-                            Spacing="6"
+                            Spacing="{StaticResource Spacing6}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                     <TextBlock x:Name="Cp"
@@ -189,7 +189,7 @@
                                       Foreground="{ThemeResource ActionSecondaryFg}"
                                       FontFamily="Inter"
                                       FontSize="{TemplateBinding FontSize}"
-                                      FontWeight="SemiBold"
+                                      FontWeight="{StaticResource WeightSemibold}"
                                       VerticalAlignment="Center">
                         <!-- Nudge the label down (FontSize x 0.096): XAML centers the full line
                              box (incl. descent leading), which leaves an empty descent
@@ -257,7 +257,7 @@
                     CornerRadius="{StaticResource RadiusControlSm}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
-                            Spacing="6"
+                            Spacing="{StaticResource Spacing6}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                     <TextBlock x:Name="Cp"
@@ -265,7 +265,7 @@
                                       Foreground="{ThemeResource ActionTertiaryFg}"
                                       FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
-                                      FontWeight="SemiBold"
+                                      FontWeight="{StaticResource WeightSemibold}"
                                       VerticalAlignment="Center">
                         <!-- Nudge the label down (FontSize x 0.096): XAML centers the full line
                              box (incl. descent leading), which leaves an empty descent
@@ -298,9 +298,9 @@
     =============================================================== -->
 
     <Style x:Key="EtherButtonPrimary" TargetType="controls:EtherButton">
-        <Setter Property="MinHeight"                  Value="40"/>
+        <Setter Property="MinHeight"                  Value="{StaticResource Spacing40}"/>
         <Setter Property="Padding"                    Value="16,10,16,10"/>
-        <Setter Property="FontSize"                   Value="13"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>
@@ -308,9 +308,9 @@
     </Style>
 
     <Style x:Key="EtherButtonPrimarySmall" TargetType="controls:EtherButton">
-        <Setter Property="MinHeight"                  Value="32"/>
+        <Setter Property="MinHeight"                  Value="{StaticResource Spacing32}"/>
         <Setter Property="Padding"                    Value="12,8,12,8"/>
-        <Setter Property="FontSize"                   Value="12"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size12}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>
@@ -318,9 +318,9 @@
     </Style>
 
     <Style x:Key="EtherButtonSecondary" TargetType="controls:EtherButton">
-        <Setter Property="MinHeight"                  Value="40"/>
+        <Setter Property="MinHeight"                  Value="{StaticResource Spacing40}"/>
         <Setter Property="Padding"                    Value="16,10,16,10"/>
-        <Setter Property="FontSize"                   Value="13"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>
@@ -328,9 +328,9 @@
     </Style>
 
     <Style x:Key="EtherButtonSecondarySmall" TargetType="controls:EtherButton">
-        <Setter Property="MinHeight"                  Value="32"/>
+        <Setter Property="MinHeight"                  Value="{StaticResource Spacing32}"/>
         <Setter Property="Padding"                    Value="12,8,12,8"/>
-        <Setter Property="FontSize"                   Value="12"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size12}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>
@@ -338,8 +338,8 @@
     </Style>
 
     <Style x:Key="EtherButtonTertiary" TargetType="controls:EtherButton">
-        <Setter Property="Padding"                    Value="4"/>
-        <Setter Property="FontSize"                   Value="14"/>
+        <Setter Property="Padding"                    Value="{StaticResource Padding4}"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>
@@ -347,8 +347,8 @@
     </Style>
 
     <Style x:Key="EtherButtonTertiarySmall" TargetType="controls:EtherButton">
-        <Setter Property="Padding"                    Value="4"/>
-        <Setter Property="FontSize"                   Value="12"/>
+        <Setter Property="Padding"                    Value="{StaticResource Padding4}"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size12}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>

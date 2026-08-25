@@ -28,13 +28,14 @@ public sealed partial class RadiusPage : Page
 
         foreach (var key in primitives.Keys)
         {
-            if (key is not string name || primitives[key] is not double value)
+            if (key is not string name || primitives[key] is not CornerRadius cornerRadius)
                 continue;
 
             if (name.StartsWith("Radius", StringComparison.Ordinal))
             {
+                var value = cornerRadius.TopLeft;
                 radius.Add(new SpacingPrimitiveItem(
-                    name["Radius".Length..].ToLowerInvariant(), value.ToString(), 40, 40, new CornerRadius(value)));
+                    name["Radius".Length..].ToLowerInvariant(), value.ToString(), 40, 40, cornerRadius));
             }
         }
 

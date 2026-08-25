@@ -52,7 +52,7 @@
         <Style x:Key="MastheadCaptionButtonStyle" TargetType="controls:EtherButton">
             <Setter Property="Width" Value="44"/>
             <Setter Property="Height" Value="44"/>
-            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Padding" Value="{StaticResource Padding0}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -95,7 +95,7 @@
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="0">
+                                    CornerRadius="{StaticResource RadiusNone}">
                                 <ContentPresenter HorizontalAlignment="Center"
                                                   VerticalAlignment="Center"/>
                             </Border>
@@ -104,7 +104,7 @@
                                     Margin="-3"
                                     BorderBrush="{ThemeResource BorderFocus}"
                                     BorderThickness="2"
-                                    CornerRadius="5"
+                                    CornerRadius="{StaticResource RadiusSm}"
                                     IsHitTestVisible="False"
                                     Visibility="Collapsed"/>
                         </Grid>
@@ -114,10 +114,10 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Padding="12"
+    <Grid Padding="{StaticResource Padding12}"
           Background="Transparent">
         <StackPanel Orientation="Horizontal"
-                    Spacing="0"
+                    Spacing="{StaticResource Spacing0}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center">
 
@@ -127,7 +127,7 @@
                   Visibility="Collapsed">
                 <FontIcon Glyph="&#xE700;"
                           FontFamily="Segoe MDL2 Assets"
-                          FontSize="16"
+                          FontSize="{StaticResource Size16}"
                           Foreground="{ThemeResource TextPrimary}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
@@ -140,7 +140,7 @@
                   Visibility="Collapsed">
                 <FontIcon Glyph="&#xE721;"
                           FontFamily="Segoe MDL2 Assets"
-                          FontSize="16"
+                          FontSize="{StaticResource Size16}"
                           Foreground="{ThemeResource TextPrimary}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
@@ -153,7 +153,7 @@
                   Visibility="Visible">
                 <FontIcon Glyph="&#xE713;"
                           FontFamily="Segoe MDL2 Assets"
-                          FontSize="16"
+                          FontSize="{StaticResource Size16}"
                           Foreground="{ThemeResource TextPrimary}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
@@ -166,7 +166,7 @@
                   Visibility="Collapsed">
                 <FontIcon Glyph="&#xE70D;"
                           FontFamily="Segoe MDL2 Assets"
-                          FontSize="14"
+                          FontSize="{StaticResource Size14}"
                           Foreground="{ThemeResource TextPrimary}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
@@ -178,7 +178,7 @@
                                   Click="MinimizeButton_Click"
                                   AutomationProperties.Name="Minimize window">
                 <Grid>
-                    <Rectangle Width="12"
+                    <Rectangle Width="{StaticResource Spacing12}"
                                Height="1"
                                Fill="{ThemeResource TextPrimary}"
                                RadiusX="0.5"
@@ -192,18 +192,18 @@
                                   Style="{StaticResource MastheadCaptionButtonStyle}"
                                   Click="MaximizeRestoreButton_Click"
                                   AutomationProperties.Name="Maximize window">
-                <Grid Width="10"
-                      Height="10">
+                <Grid Width="{StaticResource Spacing10}"
+                      Height="{StaticResource Spacing10}">
                     <Rectangle x:Name="MaximizeIcon"
-                               Width="10"
-                               Height="10"
+                               Width="{StaticResource Spacing10}"
+                               Height="{StaticResource Spacing10}"
                                Stroke="{ThemeResource TextPrimary}"
                                StrokeThickness="1"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"/>
                     <Grid x:Name="RestoreIcon"
-                          Width="10"
-                          Height="10"
+                          Width="{StaticResource Spacing10}"
+                          Height="{StaticResource Spacing10}"
                           Visibility="Collapsed">
                         <Rectangle Width="7"
                                    Height="7"
@@ -225,8 +225,8 @@
                                   Style="{StaticResource MastheadCaptionButtonStyle}"
                                   Click="CloseButton_Click"
                                   AutomationProperties.Name="Close window">
-                <Grid Width="10"
-                      Height="10"
+                <Grid Width="{StaticResource Spacing10}"
+                      Height="{StaticResource Spacing10}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center">
                     <Path Data="M 0 0 L 10 10"

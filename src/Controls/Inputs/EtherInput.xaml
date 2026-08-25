@@ -111,7 +111,7 @@
                             Content="{TemplateBinding PlaceholderText}"
                             Foreground="{ThemeResource TextTertiary}"
                             FontFamily="{StaticResource InterFont}"
-                            FontSize="14"
+                            FontSize="{StaticResource Size14}"
                             IsHitTestVisible="False"
                             IsTabStop="False"
                             Padding="{TemplateBinding Padding}"
@@ -141,11 +141,11 @@
         <Setter Property="Foreground" Value="{ThemeResource TextPrimary}"/>
         <Setter Property="SelectionHighlightColor" Value="{ThemeResource ActionPrimaryBg}"/>
         <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="FontSize" Value="{StaticResource Size14}"/>
+        <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>
         <Setter Property="Padding" Value="{StaticResource PaddingMd}"/>
-        <Setter Property="MinWidth" Value="0"/>
-        <Setter Property="MinHeight" Value="0"/>
+        <Setter Property="MinWidth" Value="{StaticResource Spacing0}"/>
+        <Setter Property="MinHeight" Value="{StaticResource Spacing0}"/>
         <Setter Property="UseSystemFocusVisuals" Value="False"/>
         <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Auto"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>

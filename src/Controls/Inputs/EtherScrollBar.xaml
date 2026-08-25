@@ -89,7 +89,7 @@
                         <!-- ScrollBar shows whichever root matches its Orientation and
                              collapses the other, so both must be present and named. -->
                         <Grid x:Name="VerticalRoot"
-                              Width="6"
+                              Width="{StaticResource Spacing6}"
                               HorizontalAlignment="Right">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="0"/>
@@ -107,13 +107,13 @@
                                           Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
                             <RepeatButton x:Name="VerticalLargeDecrease"
                                           Grid.Row="1"
-                                          Height="0"
+                                          Height="{StaticResource Spacing0}"
                                           Opacity="0"
                                           IsTabStop="False"
                                           Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
                             <Thumb x:Name="VerticalThumb"
                                    Grid.Row="2"
-                                   Width="6"
+                                   Width="{StaticResource Spacing6}"
                                    MinHeight="60"
                                    HorizontalAlignment="Right"
                                    Template="{StaticResource EtherScrollBarThumbTemplate}"/>
@@ -129,7 +129,7 @@
                         </Grid>
 
                         <Grid x:Name="HorizontalRoot"
-                              Height="6"
+                              Height="{StaticResource Spacing6}"
                               VerticalAlignment="Bottom">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0"/>
@@ -145,13 +145,13 @@
                                           Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
                             <RepeatButton x:Name="HorizontalLargeDecrease"
                                           Grid.Column="1"
-                                          Width="0"
+                                          Width="{StaticResource Spacing0}"
                                           Opacity="0"
                                           IsTabStop="False"
                                           Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
                             <Thumb x:Name="HorizontalThumb"
                                    Grid.Column="2"
-                                   Height="6"
+                                   Height="{StaticResource Spacing6}"
                                    MinWidth="60"
                                    VerticalAlignment="Bottom"
                                    Template="{StaticResource EtherScrollBarThumbTemplate}"/>

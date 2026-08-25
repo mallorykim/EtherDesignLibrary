@@ -33,7 +33,7 @@
             x:Name="ValueText"
             HorizontalAlignment="Left"
             Foreground="{ThemeResource TextPrimary}"
-            FontSize="14"/>
+            FontSize="{StaticResource Size14}"/>
         <Canvas x:Name="BarCanvas"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"

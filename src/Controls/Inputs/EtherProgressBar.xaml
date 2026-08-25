@@ -45,15 +45,15 @@
                                               Content="{TemplateBinding Title}"
                                               HorizontalAlignment="Left"
                                               FontFamily="{StaticResource InstrumentSans}"
-                                              FontSize="14"
-                                              FontWeight="SemiBold"
+                                              FontSize="{StaticResource Size14}"
+                                              FontWeight="{StaticResource WeightSemibold}"
                                               Foreground="{ThemeResource TextPrimary}"/>
                             <ContentPresenter x:Name="ValueLabel"
                                               Content="{TemplateBinding ValueContent}"
                                               HorizontalAlignment="Right"
                                               FontFamily="{StaticResource InstrumentSans}"
-                                              FontSize="14"
-                                              FontWeight="SemiBold"
+                                              FontSize="{StaticResource Size14}"
+                                              FontWeight="{StaticResource WeightSemibold}"
                                               Foreground="{ThemeResource TextSecondary}"/>
                         </Grid>
 
@@ -61,7 +61,7 @@
                              actual laid-out star column (not a scale transform) so its 2 px rounded
                              ends stay round at any value; the gradient spans the fill, keeping the
                              cyan leading edge. Motion comes from Value changing over time. -->
-                        <Grid Grid.Row="1" Height="4">
+                        <Grid Grid.Row="1" Height="{StaticResource Spacing4}">
                             <Border Background="{ThemeResource BackgroundTrack}" CornerRadius="2"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>

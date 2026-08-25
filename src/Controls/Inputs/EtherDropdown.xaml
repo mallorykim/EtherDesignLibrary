@@ -225,7 +225,7 @@
                         Background="{ThemeResource BackgroundDropdownMenu}"
                         CornerRadius="{StaticResource RadiusControlSm}"
                         MinWidth="{StaticResource DropdownMinWidth}"
-                        Padding="4">
+                        Padding="{StaticResource Padding4}">
                     <ScrollViewer x:Name="ScrollViewer"
                                   VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled">
@@ -240,12 +240,12 @@
     </ControlTemplate>
 
     <Style x:Key="EtherDropdownItem" TargetType="ComboBoxItem">
-        <Setter Property="Height" Value="26"/>
+        <Setter Property="Height" Value="{StaticResource Spacing24}"/>
         <Setter Property="Padding" Value="6,0"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
-        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontSize" Value="{StaticResource Size11}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBoxItem">
@@ -317,14 +317,14 @@
     <!-- Implicit default style for the control: every <controls:EtherDropdown/> picks it up
          without naming a key. Scoped to our own type, so it cannot restyle stock ComboBoxes. -->
     <Style TargetType="controls:EtherDropdown">
-        <Setter Property="Padding"                    Value="8"/>
+        <Setter Property="Padding"                    Value="{StaticResource Padding8}"/>
         <Setter Property="HorizontalAlignment"       Value="Left"/>
         <Setter Property="MinWidth"                   Value="{StaticResource DropdownMinWidth}"/>
-        <Setter Property="MinHeight"                  Value="32"/>
+        <Setter Property="MinHeight"                  Value="{StaticResource Spacing32}"/>
         <Setter Property="FontFamily"                 Value="{StaticResource InterFont}"/>
-        <Setter Property="FontSize"                   Value="11"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size11}"/>
         <Setter Property="MaxVisibleItems"            Value="6"/>
-        <Setter Property="MenuGap"                    Value="4"/>
+        <Setter Property="MenuGap"                    Value="{StaticResource Spacing4}"/>
         <Setter Property="ItemContainerStyle"          Value="{StaticResource EtherDropdownItem}"/>
         <!-- ComboBox's default items panel is CarouselPanel, which centres the menu on the
              selected item and takes scrolling over itself — leaving the host ScrollViewer
@@ -333,7 +333,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical" Spacing="4"/>
+                    <StackPanel Orientation="Vertical" Spacing="{StaticResource Spacing4}"/>
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
