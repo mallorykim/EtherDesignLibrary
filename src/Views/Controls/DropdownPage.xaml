@@ -57,7 +57,7 @@
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="8">
                     <TextBlock Text="Default"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherDropdown
@@ -68,7 +68,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Hover"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherDropdown x:Name="DropdownHoverState"
@@ -79,7 +79,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Pressed"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherDropdown x:Name="DropdownPressedState"
@@ -90,7 +90,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Open (active)"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <!-- Driven into the real Opened visual state from code-behind, so
@@ -104,7 +104,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Open / item hover"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <Border Style="{StaticResource DropdownMenuPreviewContainer}">
@@ -121,7 +121,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Open / item pressed"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <Border Style="{StaticResource DropdownMenuPreviewContainer}">
@@ -138,7 +138,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Open / scrollbar"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <!-- Six items: the menu's cap, which is the only point at which a
@@ -163,7 +163,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Disabled"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherDropdown

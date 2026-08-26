@@ -12,7 +12,7 @@
 
         <views:ComponentPage.InteractiveContent>
             <StackPanel Spacing="12">
-                <TextBlock Text="Size" Style="{StaticResource EtherH4}" Foreground="{ThemeResource TextPrimary}"/>
+                <TextBlock Text="Size" Style="{StaticResource headers/h4}" Foreground="{ThemeResource TextPrimary}"/>
                 <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
                         CornerRadius="{StaticResource radius/control-sm}">
                     <ItemsControl x:Name="SizeItems">
@@ -40,10 +40,10 @@
                     </ItemsControl>
                 </Border>
 
-                <TextBlock Text="Icons" Style="{StaticResource EtherH4}" Foreground="{ThemeResource TextPrimary}"
+                <TextBlock Text="Icons" Style="{StaticResource headers/h4}" Foreground="{ThemeResource TextPrimary}"
                            Margin="0,8,0,0"/>
                 <TextBlock x:Name="CountText"
-                           Style="{StaticResource EtherMicroSemiBold}"
+                           Style="{StaticResource micro/semibold}"
                            Foreground="{ThemeResource TextTertiary}"/>
                 <ItemsControl x:Name="IconRows">
                     <ItemsControl.ItemsPanel>

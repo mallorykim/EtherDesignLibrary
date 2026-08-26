@@ -19,7 +19,7 @@
             <StackPanel Spacing="20">
                 <StackPanel Spacing="8">
                     <TextBlock Text="Vertical (drag or hover the thumb)"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <Border Width="320" Height="240"
                             BorderBrush="{ThemeResource BorderSubtle}"
@@ -46,7 +46,7 @@
 
                 <StackPanel Spacing="8">
                     <TextBlock Text="Horizontal (drag or hover the thumb)"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <Border Width="420" Height="80"
                             BorderBrush="{ThemeResource BorderSubtle}"
@@ -74,7 +74,7 @@
             <StackPanel Orientation="Horizontal" Spacing="80">
                 <StackPanel Spacing="8" HorizontalAlignment="Center">
                     <TextBlock Text="Default"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <Border Width="6" Height="150"
@@ -83,7 +83,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8" HorizontalAlignment="Center">
                     <TextBlock Text="Hover"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <Border Width="6" Height="150"

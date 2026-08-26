@@ -22,7 +22,7 @@
                     <DataTemplate x:DataType="local:PrimitiveColorGroup">
                         <StackPanel Spacing="10">
                             <TextBlock Text="{x:Bind Header}"
-                                       Style="{StaticResource EtherH4}"
+                                       Style="{StaticResource headers/h4}"
                                        Foreground="{ThemeResource TextPrimary}"/>
                             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                           HorizontalScrollMode="Enabled"

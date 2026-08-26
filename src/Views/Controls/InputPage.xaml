@@ -21,7 +21,7 @@
                 <!-- DEFAULT -->
                 <StackPanel Spacing="8">
                     <TextBlock Text="Default"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherInput PlaceholderText="Default"
                                          Width="195"
@@ -31,7 +31,7 @@
                 <!-- HOVER -->
                 <StackPanel Spacing="8">
                     <TextBlock Text="Hover"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherInput x:Name="HoverInput"
                                          PlaceholderText="Default"
@@ -42,7 +42,7 @@
                 <!-- ACTIVE (focus) -->
                 <StackPanel Spacing="8">
                     <TextBlock Text="Active"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherInput x:Name="ActiveInput"
                                          PlaceholderText="Default"
@@ -53,7 +53,7 @@
                 <!-- FILLED -->
                 <StackPanel Spacing="8">
                     <TextBlock Text="Filled"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherInput Text="Input text"
                                          Width="195"
@@ -63,7 +63,7 @@
                 <!-- DISABLED -->
                 <StackPanel Spacing="8">
                     <TextBlock Text="Disabled"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherInput PlaceholderText="Default"
                                          Width="195"

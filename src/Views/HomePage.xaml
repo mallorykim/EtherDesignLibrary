@@ -38,7 +38,7 @@
                     <DataTemplate x:DataType="local:HomeSection">
                         <StackPanel Spacing="12">
                             <TextBlock Text="{x:Bind Header}"
-                                       Style="{StaticResource EtherMicroSemiBold}"
+                                       Style="{StaticResource micro/semibold}"
                                        CharacterSpacing="80"
                                        Foreground="{ThemeResource TextTertiary}"/>
                             <ItemsRepeater ItemsSource="{x:Bind Items}">

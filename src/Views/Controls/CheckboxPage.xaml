@@ -20,12 +20,12 @@
                 <!-- UNCHECKED states -->
                 <StackPanel Spacing="8">
                     <TextBlock Text="UNCHECKED"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
                             <TextBlock Text="Default"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherCheckbox
@@ -35,7 +35,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Hover"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherCheckbox x:Name="UncheckedHover"
@@ -45,7 +45,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Pressed"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherCheckbox x:Name="UncheckedPressed"
@@ -55,7 +55,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Disabled"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherCheckbox
@@ -70,12 +70,12 @@
                 <!-- CHECKED states -->
                 <StackPanel Spacing="8">
                     <TextBlock Text="CHECKED"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
                             <TextBlock Text="Default"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherCheckbox
@@ -85,7 +85,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Hover"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherCheckbox x:Name="CheckedHover"
@@ -95,7 +95,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Disabled"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherCheckbox

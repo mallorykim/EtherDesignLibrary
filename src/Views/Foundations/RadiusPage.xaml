@@ -16,7 +16,7 @@
                 <!-- ============ SEMANTIC RADIUS ============ -->
                 <StackPanel Spacing="12">
                     <TextBlock Text="Radius (semantic)"
-                               Style="{StaticResource EtherH3}"
+                               Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource TextPrimary}"/>
                     <ItemsControl x:Name="SemanticGroups">
                         <ItemsControl.ItemsPanel>
@@ -28,7 +28,7 @@
                             <DataTemplate x:DataType="local:SpacingPrimitiveGroup">
                                 <StackPanel Spacing="10">
                                     <TextBlock Text="{x:Bind Header}"
-                                               Style="{StaticResource EtherH4}"
+                                               Style="{StaticResource headers/h4}"
                                                Foreground="{ThemeResource TextPrimary}"/>
                                     <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
                                             CornerRadius="{StaticResource radius/control-sm}">
@@ -70,7 +70,7 @@
                 <!-- ============ PRIMITIVE SCALE ============ -->
                 <StackPanel Spacing="12">
                     <TextBlock Text="Primitives"
-                               Style="{StaticResource EtherH3}"
+                               Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource TextPrimary}"/>
                     <ItemsControl x:Name="PrimitiveGroups">
                         <ItemsControl.ItemsPanel>
@@ -82,7 +82,7 @@
                             <DataTemplate x:DataType="local:SpacingPrimitiveGroup">
                                 <StackPanel Spacing="10">
                                     <TextBlock Text="{x:Bind Header}"
-                                               Style="{StaticResource EtherH4}"
+                                               Style="{StaticResource headers/h4}"
                                                Foreground="{ThemeResource TextPrimary}"/>
                                     <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
                                             CornerRadius="{StaticResource radius/control-sm}">

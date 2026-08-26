@@ -12,7 +12,7 @@
         <views:ComponentPage.InteractiveContent>
             <StackPanel Spacing="8">
                 <TextBlock Text="50% (interactive — drag me)"
-                           Style="{StaticResource EtherMicroRegular}"
+                           Style="{StaticResource micro/regular}"
                            Foreground="{ThemeResource TextTertiary}"/>
                 <controls:EtherSlider Value="50"/>
             </StackPanel>
@@ -22,13 +22,13 @@
             <StackPanel Orientation="Horizontal" Spacing="48">
                 <StackPanel Spacing="8">
                     <TextBlock Text="25%"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSlider Value="25"/>
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="75%"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSlider Value="75"/>
                 </StackPanel>

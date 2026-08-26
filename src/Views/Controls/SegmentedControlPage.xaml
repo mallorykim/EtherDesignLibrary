@@ -13,7 +13,7 @@
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="6">
                     <TextBlock Text="2 SEGMENTS"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}">
                         <StackPanel Orientation="Horizontal" Spacing="4">
@@ -27,7 +27,7 @@
                 </StackPanel>
                 <StackPanel Spacing="6">
                     <TextBlock Text="3 SEGMENTS"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}">
                         <StackPanel Orientation="Horizontal" Spacing="4">
@@ -43,7 +43,7 @@
                 </StackPanel>
                 <StackPanel Spacing="6">
                     <TextBlock Text="4 SEGMENTS"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}">
                         <StackPanel Orientation="Horizontal" Spacing="4">
@@ -66,7 +66,7 @@
             <StackPanel Orientation="Horizontal" Spacing="16">
                 <StackPanel Width="130" Spacing="8">
                     <TextBlock Text="Default"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:HandRadioButton Content="Default"
@@ -75,7 +75,7 @@
                 </StackPanel>
                 <StackPanel Width="130" Spacing="8">
                     <TextBlock Text="Selected"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:HandRadioButton Content="Selected"
@@ -85,7 +85,7 @@
                 </StackPanel>
                 <StackPanel Width="130" Spacing="8">
                     <TextBlock Text="Hover"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:HandRadioButton Content="Hover"
@@ -95,7 +95,7 @@
                 </StackPanel>
                 <StackPanel Width="130" Spacing="8">
                     <TextBlock Text="Pressed"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:HandRadioButton Content="Pressed"

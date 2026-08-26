@@ -14,7 +14,7 @@
             <StackPanel Spacing="16" Width="480">
                 <StackPanel Spacing="8">
                     <TextBlock Text="Continuous"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSteeringBar x:Name="DebugSteeringBar"
                                                Width="480"
@@ -24,7 +24,7 @@
 
                 <StackPanel Spacing="8">
                     <TextBlock Text="Custom stops with snapping"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSteeringBar x:Name="StopsDemo"
                                                Width="480"
@@ -40,7 +40,7 @@
                                               Click="DecreaseStops_Click"/>
                         <TextBlock x:Name="StopCountText"
                                    Text="5 stops"
-                                   Style="{StaticResource EtherMicroRegular}"
+                                   Style="{StaticResource micro/regular}"
                                    Foreground="{ThemeResource TextSecondary}"
                                    VerticalAlignment="Center"/>
                         <controls:EtherButton x:Name="IncreaseStopsButton"
@@ -56,7 +56,7 @@
             <StackPanel Spacing="24" Width="480">
                 <StackPanel Spacing="8">
                     <TextBlock Text="TITLE + VALUE"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSteeringBar Width="480"
                                                Title="Playback"
@@ -67,7 +67,7 @@
 
                 <StackPanel Spacing="8">
                     <TextBlock Text="TITLE ONLY"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSteeringBar Width="480"
                                                Title="Playback"
@@ -80,7 +80,7 @@
 
                 <StackPanel Spacing="8">
                     <TextBlock Text="VALUE ONLY"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSteeringBar Width="480"
                                                Title="Playback"
@@ -93,7 +93,7 @@
 
                 <StackPanel Spacing="8">
                     <TextBlock Text="BAR ONLY"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSteeringBar Width="480"
                                                Title="Playback"

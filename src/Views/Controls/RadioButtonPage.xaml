@@ -26,12 +26,12 @@
                      carries a unique GroupName so mutual exclusion never touches it. -->
                 <StackPanel Spacing="8">
                     <TextBlock Text="UNCHECKED"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
                             <TextBlock Text="Default"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherRadioButton
@@ -42,7 +42,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Hover"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherRadioButton x:Name="UncheckedHover"
@@ -53,7 +53,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Pressed"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherRadioButton x:Name="UncheckedPressed"
@@ -64,7 +64,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Disabled"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherRadioButton
@@ -80,12 +80,12 @@
                 <!-- CHECKED states -->
                 <StackPanel Spacing="8">
                     <TextBlock Text="CHECKED"
-                               Style="{StaticResource EtherMicroSemiBold}"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
                             <TextBlock Text="Default"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherRadioButton
@@ -96,7 +96,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Hover"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherRadioButton x:Name="CheckedHover"
@@ -107,7 +107,7 @@
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Disabled"
-                                       Style="{StaticResource EtherMicroRegular}"
+                                       Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
                             <controls:EtherRadioButton

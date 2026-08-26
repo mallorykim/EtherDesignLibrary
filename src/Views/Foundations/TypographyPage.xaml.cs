@@ -37,33 +37,33 @@ public sealed partial class TypographyPage : Page
         {
             new TypographySemanticGroup("Display", new[]
             {
-                Item("Display 96", "Instrument Sans / 96 epx / Bold", "EtherDisplay96"),
-                Item("Display 48", "Instrument Sans / 48 epx / Bold", "EtherDisplay48"),
+                Item("Display 96", "Instrument Sans / 96 epx / Bold", "display/96"),
+                Item("Display 48", "Instrument Sans / 48 epx / Bold", "display/48"),
             }),
             new TypographySemanticGroup("Headers", new[]
             {
-                Item("H1", "Instrument Sans / 24 epx / SemiBold", "EtherH1"),
-                Item("H2", "Instrument Sans / 20 epx / SemiBold", "EtherH2"),
-                Item("H3", "Instrument Sans / 18 epx / SemiBold", "EtherH3"),
-                Item("H4", "Instrument Sans / 16 epx / SemiBold", "EtherH4"),
-                Item("H5", "Instrument Sans / 14 epx / SemiBold", "EtherH5"),
-                Item("H6", "Instrument Sans / 12 epx / SemiBold", "EtherH6"),
+                Item("H1", "Instrument Sans / 24 epx / SemiBold", "headers/h1"),
+                Item("H2", "Instrument Sans / 20 epx / SemiBold", "headers/h2"),
+                Item("H3", "Instrument Sans / 18 epx / SemiBold", "headers/h3"),
+                Item("H4", "Instrument Sans / 16 epx / SemiBold", "headers/h4"),
+                Item("H5", "Instrument Sans / 14 epx / SemiBold", "headers/h5"),
+                Item("H6", "Instrument Sans / 12 epx / SemiBold", "headers/h6"),
             }),
             new TypographySemanticGroup("Body", new[]
             {
-                Item("Body XL Regular", "Inter / 18 epx / Regular", "EtherBodyXLRegular"),
-                Item("Body XL SemiBold", "Inter / 18 epx / SemiBold", "EtherBodyXLSemiBold"),
-                Item("Body L Regular", "Inter / 16 epx / Regular", "EtherBodyLRegular"),
-                Item("Body L SemiBold", "Inter / 16 epx / SemiBold", "EtherBodyLSemiBold"),
-                Item("Body M Regular", "Inter / 14 epx / Regular", "EtherBodyMRegular"),
-                Item("Body M SemiBold", "Inter / 14 epx / SemiBold", "EtherBodyMSemiBold"),
-                Item("Body S Regular", "Inter / 12 epx / Regular", "EtherBodySRegular"),
-                Item("Body S SemiBold", "Inter / 12 epx / SemiBold", "EtherBodySSemiBold"),
+                Item("Body XL Regular", "Inter / 18 epx / Regular", "body/xl-regular"),
+                Item("Body XL SemiBold", "Inter / 18 epx / SemiBold", "body/xl-semibold"),
+                Item("Body L Regular", "Inter / 16 epx / Regular", "body/l-regular"),
+                Item("Body L SemiBold", "Inter / 16 epx / SemiBold", "body/l-semibold"),
+                Item("Body M Regular", "Inter / 14 epx / Regular", "body/m-regular"),
+                Item("Body M SemiBold", "Inter / 14 epx / SemiBold", "body/m-semibold"),
+                Item("Body S Regular", "Inter / 12 epx / Regular", "body/s-regular"),
+                Item("Body S SemiBold", "Inter / 12 epx / SemiBold", "body/s-semibold"),
             }),
             new TypographySemanticGroup("Micro", new[]
             {
-                Item("Micro Regular", "Inter / 11 epx / Regular", "EtherMicroRegular"),
-                Item("Micro SemiBold", "Inter / 11 epx / SemiBold", "EtherMicroSemiBold"),
+                Item("Micro Regular", "Inter / 11 epx / Regular", "micro/regular"),
+                Item("Micro SemiBold", "Inter / 11 epx / SemiBold", "micro/semibold"),
             }),
         };
     }

@@ -12,7 +12,7 @@
         <views:ComponentPage.InteractiveContent>
             <StackPanel Width="1216" Spacing="24">
                 <TextBlock Text="TYPE PREVIEWS"
-                           Style="{StaticResource EtherMicroSemiBold}"
+                           Style="{StaticResource micro/semibold}"
                            Foreground="{ThemeResource TextTertiary}"/>
 
                 <Grid ColumnSpacing="14">
@@ -24,7 +24,7 @@
 
                     <StackPanel Grid.Column="0" Spacing="12">
                         <TextBlock Text="NORMAL"
-                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Style="{StaticResource micro/semibold}"
                                    Foreground="{ThemeResource TextSecondary}"/>
                         <Border Style="{StaticResource EtherCardNormal}">
                             <Border Style="{StaticResource EtherCardNormalBody}">
@@ -39,7 +39,7 @@
 
                     <StackPanel Grid.Column="1" Spacing="12">
                         <TextBlock Text="INTELLIGENCE"
-                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Style="{StaticResource micro/semibold}"
                                    Foreground="{ThemeResource TextSecondary}"/>
                         <Border Style="{StaticResource EtherCardIntelligence}">
                             <Border Style="{StaticResource EtherCardIntelligenceBody}">
@@ -54,7 +54,7 @@
 
                     <StackPanel Grid.Column="2" Spacing="12">
                         <TextBlock Text="CALLOUT"
-                                   Style="{StaticResource EtherMicroSemiBold}"
+                                   Style="{StaticResource micro/semibold}"
                                    Foreground="{ThemeResource TextSecondary}"/>
                         <Border Style="{StaticResource EtherCardCalloutShell}">
                             <Grid>

@@ -16,7 +16,7 @@
                 <!-- ============ SEMANTIC TEXT STYLES ============ -->
                 <StackPanel Spacing="12">
                     <TextBlock Text="Text styles"
-                               Style="{StaticResource EtherH3}"
+                               Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource TextPrimary}"/>
                     <ItemsControl x:Name="SemanticGroups">
                         <ItemsControl.ItemsPanel>
@@ -28,7 +28,7 @@
                             <DataTemplate x:DataType="local:TypographySemanticGroup">
                                 <StackPanel Spacing="10">
                                     <TextBlock Text="{x:Bind Header}"
-                                               Style="{StaticResource EtherH4}"
+                                               Style="{StaticResource headers/h4}"
                                                Foreground="{ThemeResource TextPrimary}"/>
                                     <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
                                             CornerRadius="{StaticResource radius/control-sm}">
@@ -42,10 +42,10 @@
                                                         </Grid.ColumnDefinitions>
                                                         <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
                                                             <TextBlock Text="{x:Bind Name}"
-                                                                       Style="{StaticResource EtherBodyMSemiBold}"
+                                                                       Style="{StaticResource body/m-semibold}"
                                                                        Foreground="{ThemeResource TextPrimary}"/>
                                                             <TextBlock Text="{x:Bind Spec}"
-                                                                       Style="{StaticResource EtherBodySRegular}"
+                                                                       Style="{StaticResource body/s-regular}"
                                                                        Foreground="{ThemeResource TextSecondary}"/>
                                                         </StackPanel>
                                                         <TextBlock Grid.Column="1" Text="{x:Bind PreviewText}"
@@ -68,7 +68,7 @@
                 <!-- ============ PRIMITIVE TOKENS ============ -->
                 <StackPanel Spacing="12">
                     <TextBlock Text="Primitives"
-                               Style="{StaticResource EtherH3}"
+                               Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource TextPrimary}"/>
                     <ItemsControl x:Name="PrimitiveGroups">
                         <ItemsControl.ItemsPanel>
@@ -80,7 +80,7 @@
                             <DataTemplate x:DataType="local:TypographyPrimitiveGroup">
                                 <StackPanel Spacing="10">
                                     <TextBlock Text="{x:Bind Header}"
-                                               Style="{StaticResource EtherH4}"
+                                               Style="{StaticResource headers/h4}"
                                                Foreground="{ThemeResource TextPrimary}"/>
                                     <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
                                             CornerRadius="{StaticResource radius/control-sm}">

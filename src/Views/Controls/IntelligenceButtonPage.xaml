@@ -14,7 +14,7 @@
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="8">
                     <TextBlock Text="Functional"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton Content="What's this mean?"
@@ -22,7 +22,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="With longer label"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton Content="=  Optimise my battery"
@@ -35,7 +35,7 @@
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="8">
                     <TextBlock Text="Default"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton Content="What's this mean?"
@@ -44,7 +44,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Hover"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton x:Name="IntelligenceHoverState"
@@ -54,7 +54,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Pressed"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton x:Name="IntelligencePressedState"
@@ -64,7 +64,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Disabled"
-                               Style="{StaticResource EtherMicroRegular}"
+                               Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton x:Name="IntelligenceDisabledState"
