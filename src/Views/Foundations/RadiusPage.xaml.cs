@@ -15,7 +15,39 @@ public sealed partial class RadiusPage : Page
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        SemanticGroups.ItemsSource = BuildSemanticGroups();
         PrimitiveGroups.ItemsSource = BuildGroups();
+    }
+
+    // Semantic radius tokens (EtherSpacing.xaml), each aliased to a primitive Radius* value.
+    // (name shown, primitive it links to, resource key). The CornerRadius is read back from
+    // the resolved resource so the preview and value can't drift from the token / its alias.
+    private static readonly (string Name, string Primitive, string Key)[] SemanticRadius =
+    {
+        ("control-sm", "radius/sm",   "RadiusControlSm"),
+        ("control",    "radius/md",   "RadiusControl"),
+        ("control-lg", "radius/lg",   "RadiusControlLg"),
+        ("surface",    "radius/lg",   "RadiusSurface"),
+        ("surface-lg", "radius/xl",   "RadiusSurfaceLg"),
+        ("pill",       "radius/full", "RadiusPill"),
+    };
+
+    private static IReadOnlyList<SpacingPrimitiveGroup> BuildSemanticGroups()
+    {
+        var res = Application.Current.Resources;
+        var items = new List<SpacingPrimitiveItem>();
+
+        foreach (var (name, primitive, key) in SemanticRadius)
+        {
+            if (res.TryGetValue(key, out var raw) && raw is CornerRadius cr)
+            {
+                var v = cr.TopLeft;
+                var label = v >= 9999 ? primitive : $"{primitive} = {v} epx";
+                items.Add(new SpacingPrimitiveItem(name, label, 40, 40, cr));
+            }
+        }
+
+        return new[] { new SpacingPrimitiveGroup("Radius", items) };
     }
 
     private static IReadOnlyList<SpacingPrimitiveGroup> BuildGroups()

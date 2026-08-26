@@ -64,17 +64,16 @@
     <Thickness x:Key="PaddingSmV">0,12,0,12</Thickness>
     <Thickness x:Key="PaddingMdV">0,16,0,16</Thickness>
 
-    <!-- ================ BORDER RADIUS = CornerRadius ================
-         Semantic radius tokens (by usage). Still literal values here;
-         a follow-up will link these to the primitive Radius* scale.
-         Use for Border.CornerRadius, Button.CornerRadius, etc.
+    <!-- ================ BORDER RADIUS = CornerRadius (semantic) =====
+         radius/* semantic tokens (by usage), each linked to a primitive
+         Radius* value. Use for Border.CornerRadius, Button.CornerRadius, etc.
     =============================================================== -->
-    <CornerRadius x:Key="RadiusControlSm">4</CornerRadius>     <!-- radius/control-sm - inputs, text fields -->
-    <CornerRadius x:Key="RadiusControl">8</CornerRadius>        <!-- radius/control    - buttons, tooltips, tags -->
-    <CornerRadius x:Key="RadiusControlLg">12</CornerRadius>     <!-- radius/control-lg - larger buttons -->
-    <CornerRadius x:Key="RadiusSurface">12</CornerRadius>       <!-- radius/surface    - cards, content tiles -->
-    <CornerRadius x:Key="RadiusSurfaceLg">16</CornerRadius>     <!-- radius/surface-lg - large panels, drawers -->
-    <CornerRadius x:Key="RadiusPill">9999</CornerRadius>        <!-- radius/pill       - chips, badges, toggles -->
+    <StaticResource x:Key="RadiusControlSm" ResourceKey="RadiusSm"/>    <!-- radius/control-sm -> radius/sm   =    4 epx (inputs, text fields) -->
+    <StaticResource x:Key="RadiusControl"   ResourceKey="RadiusMd"/>    <!-- radius/control    -> radius/md   =    8 epx (buttons, tooltips, tags) -->
+    <StaticResource x:Key="RadiusControlLg" ResourceKey="RadiusLg"/>    <!-- radius/control-lg -> radius/lg   =   12 epx (larger buttons) -->
+    <StaticResource x:Key="RadiusSurface"   ResourceKey="RadiusLg"/>    <!-- radius/surface    -> radius/lg   =   12 epx (cards, content tiles) -->
+    <StaticResource x:Key="RadiusSurfaceLg" ResourceKey="RadiusXl"/>    <!-- radius/surface-lg -> radius/xl   =   16 epx (large panels, drawers) -->
+    <StaticResource x:Key="RadiusPill"      ResourceKey="RadiusFull"/>  <!-- radius/pill       -> radius/full = 9999 epx (chips, badges, toggles) -->
 
     <!-- ================ BORDER RADIUS = x:Double ====================
          Use for Shape.RadiusX/Y, clip geometry, or numeric context.
