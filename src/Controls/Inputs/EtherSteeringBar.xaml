@@ -41,7 +41,7 @@
                                               FontFamily="{StaticResource InstrumentSans}"
                                               FontSize="{StaticResource Size14}"
                                               FontWeight="{StaticResource WeightSemibold}"
-                                              Foreground="{ThemeResource TextPrimary}"/>
+                                              Foreground="{ThemeResource text/primary}"/>
                             <ContentPresenter x:Name="ValueLabel"
                                               HorizontalAlignment="Right"
                                               FontFamily="{StaticResource InstrumentSans}"
@@ -58,7 +58,7 @@
                                     Height="{StaticResource Spacing4}"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
-                                    Background="{ThemeResource BackgroundTrack}"
+                                    Background="{ThemeResource background/track}"
                                     CornerRadius="{StaticResource RadiusXs}"/>
 
                             <Border x:Name="FillBorder"

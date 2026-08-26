@@ -47,7 +47,7 @@
                                               FontFamily="{StaticResource InstrumentSans}"
                                               FontSize="{StaticResource Size14}"
                                               FontWeight="{StaticResource WeightSemibold}"
-                                              Foreground="{ThemeResource TextPrimary}"/>
+                                              Foreground="{ThemeResource text/primary}"/>
                             <ContentPresenter x:Name="ValueLabel"
                                               Content="{TemplateBinding ValueContent}"
                                               HorizontalAlignment="Right"
@@ -62,7 +62,7 @@
                              ends stay round at any value; the gradient spans the fill, keeping the
                              cyan leading edge. Motion comes from Value changing over time. -->
                         <Grid Grid.Row="1" Height="{StaticResource Spacing4}">
-                            <Border Background="{ThemeResource BackgroundTrack}" CornerRadius="2"/>
+                            <Border Background="{ThemeResource background/track}" CornerRadius="2"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition x:Name="FillColumn" Width="0*"/>

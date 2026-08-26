@@ -29,7 +29,7 @@
                        FontFamily="{StaticResource InterFont}"
                        FontSize="11"
                        TextWrapping="Wrap"
-                       Foreground="{ThemeResource TextPrimary}"/>
+                       Foreground="{ThemeResource text/primary}"/>
             <TextBlock x:Name="ValueBlock"
                        FontFamily="{StaticResource InterFont}"
                        FontSize="10"

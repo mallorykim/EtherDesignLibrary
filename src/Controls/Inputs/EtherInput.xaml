@@ -83,7 +83,7 @@
                         <VisualState.Setters>
                             <!-- Active: fill returns to 40%; border turns brand blue. -->
                             <Setter Target="BorderElement.Background" Value="{ThemeResource InputFillDefault}"/>
-                            <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource BorderFocus}"/>
+                            <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource border/focus}"/>
                         </VisualState.Setters>
                     </VisualState>
 
@@ -138,8 +138,8 @@
     </ControlTemplate>
 
     <Style TargetType="controls:EtherInput">
-        <Setter Property="Foreground" Value="{ThemeResource TextPrimary}"/>
-        <Setter Property="SelectionHighlightColor" Value="{ThemeResource ActionPrimaryBg}"/>
+        <Setter Property="Foreground" Value="{ThemeResource text/primary}"/>
+        <Setter Property="SelectionHighlightColor" Value="{ThemeResource action/primary/bg}"/>
         <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
         <Setter Property="FontSize" Value="{StaticResource Size14}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>

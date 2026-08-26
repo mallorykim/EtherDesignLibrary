@@ -32,7 +32,7 @@
         <TextBlock
             x:Name="ValueText"
             HorizontalAlignment="Left"
-            Foreground="{ThemeResource TextPrimary}"
+            Foreground="{ThemeResource text/primary}"
             FontSize="{StaticResource Size14}"/>
         <Canvas x:Name="BarCanvas"
                 VerticalAlignment="Center"

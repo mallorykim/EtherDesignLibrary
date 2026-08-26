@@ -23,7 +23,7 @@
                         <StackPanel Spacing="10">
                             <TextBlock Text="{x:Bind Header}"
                                        Style="{StaticResource headers/h4}"
-                                       Foreground="{ThemeResource TextPrimary}"/>
+                                       Foreground="{ThemeResource text/primary}"/>
                             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                           HorizontalScrollMode="Enabled"
                                           VerticalScrollBarVisibility="Disabled"

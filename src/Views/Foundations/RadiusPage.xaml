@@ -17,7 +17,7 @@
                 <StackPanel Spacing="12">
                     <TextBlock Text="Radius (semantic)"
                                Style="{StaticResource headers/h3}"
-                               Foreground="{ThemeResource TextPrimary}"/>
+                               Foreground="{ThemeResource text/primary}"/>
                     <ItemsControl x:Name="SemanticGroups">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -29,7 +29,7 @@
                                 <StackPanel Spacing="10">
                                     <TextBlock Text="{x:Bind Header}"
                                                Style="{StaticResource headers/h4}"
-                                               Foreground="{ThemeResource TextPrimary}"/>
+                                               Foreground="{ThemeResource text/primary}"/>
                                     <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
                                             CornerRadius="{StaticResource radius/control-sm}">
                                         <ItemsControl ItemsSource="{x:Bind Items}">
@@ -48,14 +48,14 @@
                                                         <TextBlock Grid.Column="1" Text="{x:Bind Value}"
                                                                    HorizontalAlignment="Left"
                                                                    VerticalAlignment="Center"
-                                                                   Foreground="{ThemeResource TextBrand}"/>
+                                                                   Foreground="{ThemeResource text/brand}"/>
                                                         <Border Grid.Column="2"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Center"
                                                                 Width="{x:Bind PreviewWidth}"
                                                                 Height="{x:Bind PreviewHeight}"
                                                                 CornerRadius="{x:Bind PreviewRadius}"
-                                                                Background="{ThemeResource BackgroundBrand}"/>
+                                                                Background="{ThemeResource background/brand}"/>
                                                     </Grid>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -71,7 +71,7 @@
                 <StackPanel Spacing="12">
                     <TextBlock Text="Primitives"
                                Style="{StaticResource headers/h3}"
-                               Foreground="{ThemeResource TextPrimary}"/>
+                               Foreground="{ThemeResource text/primary}"/>
                     <ItemsControl x:Name="PrimitiveGroups">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -83,7 +83,7 @@
                                 <StackPanel Spacing="10">
                                     <TextBlock Text="{x:Bind Header}"
                                                Style="{StaticResource headers/h4}"
-                                               Foreground="{ThemeResource TextPrimary}"/>
+                                               Foreground="{ThemeResource text/primary}"/>
                                     <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
                                             CornerRadius="{StaticResource radius/control-sm}">
                                         <ItemsControl ItemsSource="{x:Bind Items}">
@@ -100,13 +100,13 @@
                                                                    Foreground="{ThemeResource TextSecondary}"/>
                                                         <TextBlock Grid.Column="1" Text="{x:Bind Value}"
                                                                    HorizontalAlignment="Left"
-                                                                   Foreground="{ThemeResource TextBrand}"/>
+                                                                   Foreground="{ThemeResource text/brand}"/>
                                                         <Border Grid.Column="2"
                                                                 HorizontalAlignment="Left"
                                                                 Width="{x:Bind PreviewWidth}"
                                                                 Height="{x:Bind PreviewHeight}"
                                                                 CornerRadius="{x:Bind PreviewRadius}"
-                                                                Background="{ThemeResource BackgroundBrand}"/>
+                                                                Background="{ThemeResource background/brand}"/>
                                                     </Grid>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

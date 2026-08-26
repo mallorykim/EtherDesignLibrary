@@ -12,7 +12,7 @@
 
         <views:ComponentPage.InteractiveContent>
             <StackPanel Spacing="12">
-                <TextBlock Text="Size" Style="{StaticResource headers/h4}" Foreground="{ThemeResource TextPrimary}"/>
+                <TextBlock Text="Size" Style="{StaticResource headers/h4}" Foreground="{ThemeResource text/primary}"/>
                 <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
                         CornerRadius="{StaticResource radius/control-sm}">
                     <ItemsControl x:Name="SizeItems">
@@ -29,18 +29,18 @@
                                                Foreground="{ThemeResource TextSecondary}"/>
                                     <TextBlock Grid.Column="1" Text="{x:Bind Size}"
                                                HorizontalAlignment="Left"
-                                               Foreground="{ThemeResource TextBrand}"/>
+                                               Foreground="{ThemeResource text/brand}"/>
                                     <PathIcon Grid.Column="2" Data="{x:Bind IconData}"
                                               Width="{x:Bind Size}" Height="{x:Bind Size}"
                                               HorizontalAlignment="Left"
-                                              Foreground="{ThemeResource IconPrimary}"/>
+                                              Foreground="{ThemeResource icon/primary}"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Border>
 
-                <TextBlock Text="Icons" Style="{StaticResource headers/h4}" Foreground="{ThemeResource TextPrimary}"
+                <TextBlock Text="Icons" Style="{StaticResource headers/h4}" Foreground="{ThemeResource text/primary}"
                            Margin="0,8,0,0"/>
                 <TextBlock x:Name="CountText"
                            Style="{StaticResource micro/semibold}"
@@ -66,7 +66,7 @@
                                             <PathIcon Style="{x:Bind IconStyle}"
                                                       Width="20" Height="20"
                                                       HorizontalAlignment="Center"
-                                                      Foreground="{ThemeResource IconPrimary}"/>
+                                                      Foreground="{ThemeResource icon/primary}"/>
                                             <TextBlock Text="{x:Bind Name}"
                                                        FontSize="10"
                                                        TextWrapping="Wrap"

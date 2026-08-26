@@ -39,7 +39,7 @@
                         <TextBlock Text="{x:Bind Title, Mode=OneTime}"
                                    FontFamily="{StaticResource InstrumentSans}"
                                    FontSize="32" FontWeight="SemiBold"
-                                   Foreground="{ThemeResource TextPrimary}"/>
+                                   Foreground="{ThemeResource text/primary}"/>
                         <controls:UpdatedBadge x:Name="UpdatedBadgeElement"
                                                Visibility="Collapsed"
                                                VerticalAlignment="Center"/>
@@ -57,7 +57,7 @@
                 <!-- =
                      INTERACTIVE
                 = -->
-                <Border Background="{ThemeResource BackgroundSurface}"
+                <Border Background="{ThemeResource background/surface}"
                         CornerRadius="{StaticResource radius/surface}"
                         Padding="24">
                     <StackPanel Spacing="16">
@@ -98,7 +98,7 @@
                      STATES
                 = -->
                 <Border Visibility="{x:Bind ConvertHasStates(StatesContent), Mode=OneTime}"
-                        Background="{ThemeResource BackgroundSurface}"
+                        Background="{ThemeResource background/surface}"
                         CornerRadius="{StaticResource radius/surface}"
                         Padding="24">
                     <StackPanel Spacing="16">

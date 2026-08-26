@@ -182,7 +182,7 @@
             </Border>
             <Border x:Name="FocusRing"
                     Margin="-3"
-                    BorderBrush="{ThemeResource AiAccentPurple}"
+                    BorderBrush="{ThemeResource ai/accent-purple}"
                     BorderThickness="2"
                     CornerRadius="14"
                     IsHitTestVisible="False"

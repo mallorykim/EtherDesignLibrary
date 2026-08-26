@@ -28,17 +28,17 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto"
                                       HorizontalScrollBarVisibility="Disabled">
                             <StackPanel Padding="12" Spacing="12">
-                                <TextBlock Text="Battery" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="Display" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="Storage" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="Network" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="Devices" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="Updates" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="Security" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="Performance" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="Accessibility" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="Support" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
-                                <TextBlock Text="About" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource TextPrimary}"/>
+                                <TextBlock Text="Battery" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="Display" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="Storage" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="Network" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="Devices" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="Updates" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="Security" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="Performance" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="Accessibility" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="Support" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock Text="About" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>

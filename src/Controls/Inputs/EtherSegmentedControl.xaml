@@ -99,17 +99,17 @@
                     </VisualState>
                     <VisualState x:Name="Checked">
                         <VisualState.Setters>
-                            <Setter Target="Cp.Foreground" Value="{StaticResource TextOnBrand}"/>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource text/on-brand}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="CheckedPointerOver">
                         <VisualState.Setters>
-                            <Setter Target="Cp.Foreground" Value="{StaticResource TextOnBrand}"/>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource text/on-brand}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="CheckedPressed">
                         <VisualState.Setters>
-                            <Setter Target="Cp.Foreground" Value="{StaticResource TextOnBrand}"/>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource text/on-brand}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Indeterminate"/>
@@ -135,7 +135,7 @@
                     CornerRadius="{StaticResource radius/control-sm}"
                     Opacity="0"/>
             <Border x:Name="CheckedLayer"
-                    Background="{StaticResource BackgroundBrand}"
+                    Background="{ThemeResource background/brand}"
                     CornerRadius="{StaticResource radius/control-sm}"
                     Opacity="0"/>
 
@@ -155,7 +155,7 @@
 
             <Border x:Name="FocusRing"
                     Margin="-3"
-                    BorderBrush="{ThemeResource BorderFocus}"
+                    BorderBrush="{ThemeResource border/focus}"
                     BorderThickness="2"
                     CornerRadius="{StaticResource RadiusSm}"
                     IsHitTestVisible="False"

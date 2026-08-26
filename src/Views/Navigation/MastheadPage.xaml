@@ -22,7 +22,7 @@
                                    FontFamily="{StaticResource InstrumentSans}"
                                    FontSize="16"
                                    FontWeight="SemiBold"
-                                   Foreground="{ThemeResource TextPrimary}"/>
+                                   Foreground="{ThemeResource text/primary}"/>
                         <Border CornerRadius="{StaticResource radius/surface}">
                             <controls:EtherMasthead ShowSettings="False"
                                                     PreviewIsMaximized="False"
@@ -41,7 +41,7 @@
                                    FontFamily="{StaticResource InstrumentSans}"
                                    FontSize="16"
                                    FontWeight="SemiBold"
-                                   Foreground="{ThemeResource TextPrimary}"/>
+                                   Foreground="{ThemeResource text/primary}"/>
                         <Border CornerRadius="{StaticResource radius/surface}">
                             <controls:EtherMasthead ShowSettings="False"
                                                     PreviewIsMaximized="True"

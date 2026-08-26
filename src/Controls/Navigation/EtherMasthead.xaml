@@ -102,7 +102,7 @@
 
                             <Border x:Name="FocusRing"
                                     Margin="-3"
-                                    BorderBrush="{ThemeResource BorderFocus}"
+                                    BorderBrush="{ThemeResource border/focus}"
                                     BorderThickness="2"
                                     CornerRadius="{StaticResource RadiusSm}"
                                     IsHitTestVisible="False"
@@ -128,7 +128,7 @@
                 <FontIcon Glyph="&#xE700;"
                           FontFamily="Segoe MDL2 Assets"
                           FontSize="{StaticResource Size16}"
-                          Foreground="{ThemeResource TextPrimary}"
+                          Foreground="{ThemeResource text/primary}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           AutomationProperties.AccessibilityView="Raw"/>
@@ -141,7 +141,7 @@
                 <FontIcon Glyph="&#xE721;"
                           FontFamily="Segoe MDL2 Assets"
                           FontSize="{StaticResource Size16}"
-                          Foreground="{ThemeResource TextPrimary}"
+                          Foreground="{ThemeResource text/primary}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           AutomationProperties.AccessibilityView="Raw"/>
@@ -154,7 +154,7 @@
                 <FontIcon Glyph="&#xE713;"
                           FontFamily="Segoe MDL2 Assets"
                           FontSize="{StaticResource Size16}"
-                          Foreground="{ThemeResource TextPrimary}"
+                          Foreground="{ThemeResource text/primary}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           AutomationProperties.AccessibilityView="Raw"/>
@@ -167,7 +167,7 @@
                 <FontIcon Glyph="&#xE70D;"
                           FontFamily="Segoe MDL2 Assets"
                           FontSize="{StaticResource Size14}"
-                          Foreground="{ThemeResource TextPrimary}"
+                          Foreground="{ThemeResource text/primary}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           AutomationProperties.AccessibilityView="Raw"/>
@@ -180,7 +180,7 @@
                 <Grid>
                     <Rectangle Width="{StaticResource Spacing12}"
                                Height="1"
-                               Fill="{ThemeResource TextPrimary}"
+                               Fill="{ThemeResource text/primary}"
                                RadiusX="0.5"
                                RadiusY="0.5"
                                HorizontalAlignment="Center"
@@ -197,7 +197,7 @@
                     <Rectangle x:Name="MaximizeIcon"
                                Width="{StaticResource Spacing10}"
                                Height="{StaticResource Spacing10}"
-                               Stroke="{ThemeResource TextPrimary}"
+                               Stroke="{ThemeResource text/primary}"
                                StrokeThickness="1"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"/>
@@ -207,13 +207,13 @@
                           Visibility="Collapsed">
                         <Rectangle Width="7"
                                    Height="7"
-                                   Stroke="{ThemeResource TextPrimary}"
+                                   Stroke="{ThemeResource text/primary}"
                                    StrokeThickness="1"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Top"/>
                         <Rectangle Width="7"
                                    Height="7"
-                                   Stroke="{ThemeResource TextPrimary}"
+                                   Stroke="{ThemeResource text/primary}"
                                    StrokeThickness="1"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Bottom"/>
@@ -230,12 +230,12 @@
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center">
                     <Path Data="M 0 0 L 10 10"
-                          Stroke="{ThemeResource TextPrimary}"
+                          Stroke="{ThemeResource text/primary}"
                           StrokeThickness="1"
                           StrokeStartLineCap="Square"
                           StrokeEndLineCap="Square"/>
                     <Path Data="M 10 0 L 0 10"
-                          Stroke="{ThemeResource TextPrimary}"
+                          Stroke="{ThemeResource text/primary}"
                           StrokeThickness="1"
                           StrokeStartLineCap="Square"
                           StrokeEndLineCap="Square"/>
