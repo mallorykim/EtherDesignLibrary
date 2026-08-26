@@ -70,6 +70,65 @@
     <Color x:Key="Red600">#FFFF3C3C</Color>
     <Color x:Key="Red700">#FFFF1E1E</Color>
 
+    <!-- color / alpha / black (base #000000) -->
+    <Color x:Key="AlphaBlack0">#00000000</Color>
+    <Color x:Key="AlphaBlack4">#0A000000</Color>
+    <Color x:Key="AlphaBlack5">#0D000000</Color>
+    <Color x:Key="AlphaBlack6">#0F000000</Color>
+    <Color x:Key="AlphaBlack8">#14000000</Color>
+    <Color x:Key="AlphaBlack10">#1A000000</Color>
+    <Color x:Key="AlphaBlack30">#4D000000</Color>
+    <Color x:Key="AlphaBlack40">#66000000</Color>
+    <Color x:Key="AlphaBlack50">#80000000</Color>
+    <Color x:Key="AlphaBlack60">#99000000</Color>
+    <Color x:Key="AlphaBlack70">#B3000000</Color>
+
+    <!-- color / alpha / white (base #FFFFFF) -->
+    <Color x:Key="AlphaWhite0">#00FFFFFF</Color>
+    <Color x:Key="AlphaWhite4">#0AFFFFFF</Color>
+    <Color x:Key="AlphaWhite6">#0FFFFFFF</Color>
+    <Color x:Key="AlphaWhite8">#14FFFFFF</Color>
+    <Color x:Key="AlphaWhite10">#1AFFFFFF</Color>
+    <Color x:Key="AlphaWhite12">#1FFFFFFF</Color>
+    <Color x:Key="AlphaWhite16">#29FFFFFF</Color>
+    <Color x:Key="AlphaWhite20">#33FFFFFF</Color>
+    <Color x:Key="AlphaWhite25">#40FFFFFF</Color>
+    <Color x:Key="AlphaWhite30">#4DFFFFFF</Color>
+    <Color x:Key="AlphaWhite40">#66FFFFFF</Color>
+    <Color x:Key="AlphaWhite50">#80FFFFFF</Color>
+    <Color x:Key="AlphaWhite60">#99FFFFFF</Color>
+    <Color x:Key="AlphaWhite70">#B3FFFFFF</Color>
+    <Color x:Key="AlphaWhite90">#E6FFFFFF</Color>
+
+    <!-- color / alpha / brand (base #0D62FF = Blue600; glow uses its own #0090FF base) -->
+    <Color x:Key="AlphaBrand6">#0F0D62FF</Color>
+    <Color x:Key="AlphaBrand10">#1A0D62FF</Color>
+    <Color x:Key="AlphaBrand16">#290D62FF</Color>
+    <Color x:Key="AlphaBrand60">#990D62FF</Color>
+    <Color x:Key="AlphaBrandGlow65">#A60090FF</Color>
+
+    <!-- color / alpha / status -->
+    <Color x:Key="AlphaSuccess12">#1F21CD52</Color>
+    <Color x:Key="AlphaSuccess16">#2921CD52</Color>
+    <Color x:Key="AlphaWarning16">#29FFB24D</Color>
+    <Color x:Key="AlphaWarning20">#33FFB24D</Color>
+    <Color x:Key="AlphaDanger12">#1FFF4D4D</Color>
+    <Color x:Key="AlphaDanger16">#29FF4D4D</Color>
+
+    <!-- color / alpha / navy (base #011C4B = Navy500) -->
+    <Color x:Key="AlphaNavy12">#1F011C4B</Color>
+    <Color x:Key="AlphaNavy20">#33011C4B</Color>
+    <Color x:Key="AlphaNavy40">#66011C4B</Color>
+
+    <!-- color / alpha / gray (mixed bases per source: 5/15/25 use #414553 = Gray600,
+         20 uses #8B96A1 = Gray400, 40/90 use #F5F7F8 = Gray25) -->
+    <Color x:Key="AlphaGray5">#0D414553</Color>
+    <Color x:Key="AlphaGray15">#26414553</Color>
+    <Color x:Key="AlphaGray20">#338B96A1</Color>
+    <Color x:Key="AlphaGray25">#40414553</Color>
+    <Color x:Key="AlphaGray40">#66F5F7F8</Color>
+    <Color x:Key="AlphaGray90">#E6F5F7F8</Color>
+
     <!-- type / size -->
     <x:Double x:Key="Size11">11</x:Double>
     <x:Double x:Key="Size12">12</x:Double>
