@@ -57,7 +57,6 @@ public static class ComponentCatalog
             new ComponentEntry("Dropdown", typeof(DropdownPage), IsUpdated: true),
             new ComponentEntry("Input", typeof(InputPage), IsUpdated: true),
             new ComponentEntry("Intelligence Button", typeof(IntelligenceButtonPage), IsAiFamily: true, IsUpdated: true),
-            new ComponentEntry("Label / Filter Chip", typeof(LabelFilterChipPage)),
             new ComponentEntry("Radio Button", typeof(RadioButtonPage), IsUpdated: true),
             new ComponentEntry("Scroll Bar", typeof(Foundations.ScrollBarPage), IsUpdated: true),
             new ComponentEntry("Segmented Control", typeof(SegmentedControlPage), IsUpdated: true),
@@ -67,27 +66,16 @@ public static class ComponentCatalog
         }),
         new CatalogCategory("Surfaces", new[]
         {
-            new ComponentEntry("AI Recommendation", typeof(AIRecommendationPage), IsAiFamily: true),
             new ComponentEntry("Card", typeof(CardPage), IsUpdated: true),
-            new ComponentEntry("Express Charge", typeof(ExpressChargePage)),
         }),
         new CatalogCategory("Navigation", new[]
         {
-            new ComponentEntry("Device Menu Bar", typeof(DeviceMenuBarPage)),
             new ComponentEntry("Masthead", typeof(MastheadPage), IsUpdated: true),
-            new ComponentEntry("Nav Rail (101px)", typeof(NavRailPage)),
-            new ComponentEntry("Right Panel (362px)", typeof(RightPanelPage)),
-            new ComponentEntry("Wide Nav (230px)", typeof(WideNavPage)),
         }),
         new CatalogCategory("Data Display", new[]
         {
-            new ComponentEntry("Bar Chart — Single", typeof(BarChartSinglePage)),
-            new ComponentEntry("Bar Chart — Tiered", typeof(BarChartTieredPage)),
-            new ComponentEntry("Data Blocks", typeof(DataBlocksPage)),
-            new ComponentEntry("Line Chart", typeof(LineChartPage)),
             new ComponentEntry("Progress Bar", typeof(ProgressBarPage), IsUpdated: true),
         }),
-        new CatalogLeaf(new ComponentEntry("AI Design Language", typeof(AIDesignLanguagePage), IsAiFamily: true)),
     };
 
     /// <summary>Whether the component shown by <paramref name="pageType"/> is flagged

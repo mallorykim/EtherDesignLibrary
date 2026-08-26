@@ -14,7 +14,6 @@
         <!-- Components that need their template/style dictionaries merged app-wide. -->
         <controls:EtherScrollBar/>
         <ResourceDictionary Source="ms-appx:///EtherButton.xaml"/>
-        <ResourceDictionary Source="ms-appx:///src/Resources/Foundations/EtherLabel.xaml"/>
         <controls:EtherSwitch/>
         <ResourceDictionary Source="ms-appx:///EtherCheckbox.xaml"/>
         <ResourceDictionary Source="ms-appx:///EtherRadioButton.xaml"/>
@@ -26,7 +25,6 @@
         <ResourceDictionary Source="ms-appx:///src/Resources/Foundations/EtherCard.xaml"/>
         <ResourceDictionary Source="ms-appx:///EtherIntelligenceButton.xaml"/>
         <ResourceDictionary Source="ms-appx:///src/Resources/Visuals/EtherPageTitleGradient.xaml"/>
-        <ResourceDictionary Source="ms-appx:///src/Resources/Visuals/EtherDataGraphics.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
