@@ -12,6 +12,36 @@
 
         <views:ComponentPage.InteractiveContent>
             <StackPanel Spacing="12">
+                <TextBlock Text="Size" Style="{StaticResource EtherH4}" Foreground="{ThemeResource TextPrimary}"/>
+                <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
+                        CornerRadius="{StaticResource RadiusControlSm}">
+                    <ItemsControl x:Name="SizeItems">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:IconSizeItem">
+                                <Grid Padding="12,10" ColumnSpacing="24">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{x:Bind Name}"
+                                               HorizontalAlignment="Left"
+                                               Foreground="{ThemeResource TextSecondary}"/>
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Size}"
+                                               HorizontalAlignment="Left"
+                                               Foreground="{ThemeResource TextBrand}"/>
+                                    <PathIcon Grid.Column="2" Data="{x:Bind IconData}"
+                                              Width="{x:Bind Size}" Height="{x:Bind Size}"
+                                              HorizontalAlignment="Left"
+                                              Foreground="{ThemeResource IconPrimary}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+
+                <TextBlock Text="Icons" Style="{StaticResource EtherH4}" Foreground="{ThemeResource TextPrimary}"
+                           Margin="0,8,0,0"/>
                 <TextBlock x:Name="CountText"
                            Style="{StaticResource EtherMicroSemiBold}"
                            Foreground="{ThemeResource TextTertiary}"/>
