@@ -9,6 +9,7 @@
         <ResourceDictionary Source="ms-appx:///src/Resources/Tokens/EtherColors.xaml"/>
         <ResourceDictionary Source="ms-appx:///src/Resources/Tokens/EtherSpacing.xaml"/>
         <ResourceDictionary Source="ms-appx:///src/Resources/Tokens/EtherTypography.xaml"/>
+        <ResourceDictionary Source="ms-appx:///src/Resources/Tokens/EtherIconGeometries.xaml"/>
 
         <!-- Components that need their template/style dictionaries merged app-wide. -->
         <controls:EtherScrollBar/>

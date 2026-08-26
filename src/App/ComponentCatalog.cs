@@ -48,6 +48,7 @@ public static class ComponentCatalog
             new ComponentEntry("Typography", typeof(Foundations.TypographyPage), IsPrimitive: true),
             new ComponentEntry("Spacing", typeof(Foundations.SpacingPage), IsPrimitive: true),
             new ComponentEntry("Radius", typeof(Foundations.RadiusPage), IsPrimitive: true),
+            new ComponentEntry("Icons", typeof(Foundations.IconsPage), IsPrimitive: true),
         }),
         new CatalogCategory("Controls", new[]
         {
