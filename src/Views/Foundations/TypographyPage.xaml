@@ -8,53 +8,115 @@
 
     <views:ComponentPage
         Title="Typography Tokens"
-        Description="Primitive typography tokens from EtherPrimitives.xaml, listed by type.">
+        Description="Semantic text styles and the primitive type tokens they build on. Sizes are in epx (effective pixels); line height uses the platform default.">
 
         <views:ComponentPage.InteractiveContent>
-            <ItemsControl x:Name="PrimitiveGroups">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical" Spacing="24"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="local:TypographyPrimitiveGroup">
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="{x:Bind Header}"
-                                       Style="{StaticResource EtherH4}"
-                                       Foreground="{ThemeResource TextPrimary}"/>
-                            <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
-                                    CornerRadius="{StaticResource RadiusControlSm}">
-                                <ItemsControl ItemsSource="{x:Bind Items}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="local:TypographyPrimitiveItem">
-                                            <Grid Padding="12,10" ColumnSpacing="24">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="80"/>
-                                                    <ColumnDefinition Width="140"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="{x:Bind Name}"
-                                                           HorizontalAlignment="Left"
-                                                           Foreground="{ThemeResource TextSecondary}"/>
-                                                <TextBlock Grid.Column="1" Text="{x:Bind Value}"
-                                                           HorizontalAlignment="Left"
-                                                           Foreground="{ThemeResource TextBrand}"/>
-                                                <TextBlock Grid.Column="2" Text="{x:Bind PreviewText}"
-                                                           HorizontalAlignment="Left"
-                                                           FontSize="{x:Bind PreviewSize}"
-                                                           FontWeight="{x:Bind PreviewWeight}"
-                                                           FontFamily="{x:Bind PreviewFamily}"
-                                                           Foreground="{ThemeResource TextPrimary}"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </Border>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <StackPanel Spacing="32">
+
+                <!-- ============ SEMANTIC TEXT STYLES ============ -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Text styles"
+                               Style="{StaticResource EtherH3}"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                    <ItemsControl x:Name="SemanticGroups">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" Spacing="24"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:TypographySemanticGroup">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Text="{x:Bind Header}"
+                                               Style="{StaticResource EtherH4}"
+                                               Foreground="{ThemeResource TextPrimary}"/>
+                                    <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
+                                            CornerRadius="{StaticResource RadiusControlSm}">
+                                        <ItemsControl ItemsSource="{x:Bind Items}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="local:TypographySemanticItem">
+                                                    <Grid Padding="16,12" ColumnSpacing="24">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="240"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+                                                            <TextBlock Text="{x:Bind Name}"
+                                                                       Style="{StaticResource EtherBodyMSemiBold}"
+                                                                       Foreground="{ThemeResource TextPrimary}"/>
+                                                            <TextBlock Text="{x:Bind Spec}"
+                                                                       Style="{StaticResource EtherBodySRegular}"
+                                                                       Foreground="{ThemeResource TextSecondary}"/>
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1" Text="{x:Bind PreviewText}"
+                                                                   Style="{x:Bind PreviewStyle}"
+                                                                   Foreground="{ThemeResource TextPrimary}"
+                                                                   VerticalAlignment="Center"
+                                                                   TextWrapping="NoWrap"
+                                                                   TextTrimming="CharacterEllipsis"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- ============ PRIMITIVE TOKENS ============ -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Primitives"
+                               Style="{StaticResource EtherH3}"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                    <ItemsControl x:Name="PrimitiveGroups">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" Spacing="24"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:TypographyPrimitiveGroup">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Text="{x:Bind Header}"
+                                               Style="{StaticResource EtherH4}"
+                                               Foreground="{ThemeResource TextPrimary}"/>
+                                    <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
+                                            CornerRadius="{StaticResource RadiusControlSm}">
+                                        <ItemsControl ItemsSource="{x:Bind Items}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="local:TypographyPrimitiveItem">
+                                                    <Grid Padding="12,10" ColumnSpacing="24">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="80"/>
+                                                            <ColumnDefinition Width="140"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="{x:Bind Name}"
+                                                                   HorizontalAlignment="Left"
+                                                                   Foreground="{ThemeResource TextSecondary}"/>
+                                                        <TextBlock Grid.Column="1" Text="{x:Bind Value}"
+                                                                   HorizontalAlignment="Left"
+                                                                   Foreground="{ThemeResource TextBrand}"/>
+                                                        <TextBlock Grid.Column="2" Text="{x:Bind PreviewText}"
+                                                                   HorizontalAlignment="Left"
+                                                                   FontSize="{x:Bind PreviewSize}"
+                                                                   FontWeight="{x:Bind PreviewWeight}"
+                                                                   FontFamily="{x:Bind PreviewFamily}"
+                                                                   Foreground="{ThemeResource TextPrimary}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+            </StackPanel>
         </views:ComponentPage.InteractiveContent>
 
     </views:ComponentPage>

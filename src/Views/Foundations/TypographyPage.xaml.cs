@@ -17,11 +17,56 @@ public sealed partial class TypographyPage : Page
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        SemanticGroups.ItemsSource = BuildSemanticGroups();
         PrimitiveGroups.ItemsSource = BuildGroups();
     }
 
     private const double PreviewSize = 20;
     private const string PreviewText = "Ag";
+    private const string SemanticPreview = "The quick brown fox";
+
+    // Semantic text styles from EtherTypography.xaml, grouped as in the Text styles panel.
+    // Each row previews the live Style resource so it can never drift from the token.
+    private static IReadOnlyList<TypographySemanticGroup> BuildSemanticGroups()
+    {
+        var res = Application.Current.Resources;
+        TypographySemanticItem Item(string name, string spec, string styleKey) =>
+            new(name, spec, SemanticPreview, (Style)res[styleKey]);
+
+        return new[]
+        {
+            new TypographySemanticGroup("Display", new[]
+            {
+                Item("Display 96", "Instrument Sans / 96 epx / Bold", "EtherDisplay96"),
+                Item("Display 48", "Instrument Sans / 48 epx / Bold", "EtherDisplay48"),
+            }),
+            new TypographySemanticGroup("Headers", new[]
+            {
+                Item("H1", "Instrument Sans / 24 epx / SemiBold", "EtherH1"),
+                Item("H2", "Instrument Sans / 20 epx / SemiBold", "EtherH2"),
+                Item("H3", "Instrument Sans / 18 epx / SemiBold", "EtherH3"),
+                Item("H4", "Instrument Sans / 16 epx / SemiBold", "EtherH4"),
+                Item("H5", "Instrument Sans / 14 epx / SemiBold", "EtherH5"),
+                Item("H6", "Instrument Sans / 12 epx / SemiBold", "EtherH6"),
+            }),
+            new TypographySemanticGroup("Body", new[]
+            {
+                Item("Body XL Regular", "Inter / 18 epx / Regular", "EtherBodyXLRegular"),
+                Item("Body XL SemiBold", "Inter / 18 epx / SemiBold", "EtherBodyXLSemiBold"),
+                Item("Body L Regular", "Inter / 16 epx / Regular", "EtherBodyLRegular"),
+                Item("Body L SemiBold", "Inter / 16 epx / SemiBold", "EtherBodyLSemiBold"),
+                Item("Body M Regular", "Inter / 14 epx / Regular", "EtherBodyMRegular"),
+                Item("Body M SemiBold", "Inter / 14 epx / SemiBold", "EtherBodyMSemiBold"),
+                Item("Body S Regular", "Inter / 12 epx / Regular", "EtherBodySRegular"),
+                Item("Body S SemiBold", "Inter / 12 epx / SemiBold", "EtherBodySSemiBold"),
+            }),
+            new TypographySemanticGroup("Micro", new[]
+            {
+                Item("Micro Regular", "Inter / 11 epx / Regular", "EtherMicroRegular"),
+                Item("Micro SemiBold", "Inter / 11 epx / SemiBold", "EtherMicroSemiBold"),
+            }),
+        };
+    }
 
     private static IReadOnlyList<TypographyPrimitiveGroup> BuildGroups()
     {
@@ -45,7 +90,7 @@ public sealed partial class TypographyPage : Page
                 int.TryParse(name.AsSpan(4), out var size) &&
                 primitives[key] is double)
             {
-                sizes.Add(new TypographyPrimitiveItem(size.ToString(), size.ToString(), PreviewText, size, regularWeight, displayFamily));
+                sizes.Add(new TypographyPrimitiveItem(size.ToString(), $"{size} epx", PreviewText, size, regularWeight, displayFamily));
             }
             else if (name.StartsWith("Weight", StringComparison.Ordinal) &&
                      primitives[key] is FontWeight weight)
@@ -95,3 +140,11 @@ public sealed record TypographyPrimitiveItem(
     FontFamily PreviewFamily);
 
 public sealed record TypographyPrimitiveGroup(string Header, IReadOnlyList<TypographyPrimitiveItem> Items);
+
+public sealed record TypographySemanticItem(
+    string Name,
+    string Spec,
+    string PreviewText,
+    Style PreviewStyle);
+
+public sealed record TypographySemanticGroup(string Header, IReadOnlyList<TypographySemanticItem> Items);
