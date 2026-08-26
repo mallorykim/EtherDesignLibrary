@@ -13,8 +13,8 @@
       This resolves because Generic.xaml merges EtherPrimitives before this
       file, so the aliases below can see the Spacing* keys.
 
-    NAMING:  space/xs         -> SpaceXs        (x:Double)
-             radius/control   -> RadiusControl  (CornerRadius)
+    NAMING:  space/xs         -> space/xs        (x:Double)
+             radius/control   -> radius/control  (CornerRadius)
 
     TOKEN TYPES:
       x:Double     -> Width, Height, Gap, ColumnSpacing, RowSpacing
@@ -29,16 +29,16 @@
          space/* semantic tokens, each linked to a primitive Spacing* value.
          Use for Width, Height, ColumnSpacing, RowSpacing, Gap.
     =============================================================== -->
-    <StaticResource x:Key="Space3xs" ResourceKey="Spacing2"/>    <!-- space/3xs -> spacing/2  =  2 epx -->
-    <StaticResource x:Key="Space2xs" ResourceKey="Spacing4"/>    <!-- space/2xs -> spacing/4  =  4 epx -->
-    <StaticResource x:Key="SpaceXs"  ResourceKey="Spacing8"/>    <!-- space/xs  -> spacing/8  =  8 epx (tight component padding) -->
-    <StaticResource x:Key="SpaceSm"  ResourceKey="Spacing12"/>   <!-- space/sm  -> spacing/12 = 12 epx (standard component padding) -->
-    <StaticResource x:Key="SpaceMd"  ResourceKey="Spacing16"/>   <!-- space/md  -> spacing/16 = 16 epx (card padding, row gap) -->
-    <StaticResource x:Key="SpaceLg"  ResourceKey="Spacing24"/>   <!-- space/lg  -> spacing/24 = 24 epx (section gap, card gutter) -->
-    <StaticResource x:Key="SpaceXl"  ResourceKey="Spacing32"/>   <!-- space/xl  -> spacing/32 = 32 epx (section separation) -->
-    <StaticResource x:Key="Space2xl" ResourceKey="Spacing48"/>   <!-- space/2xl -> spacing/48 = 48 epx (content area inset) -->
-    <StaticResource x:Key="Space3xl" ResourceKey="Spacing64"/>   <!-- space/3xl -> spacing/64 = 64 epx -->
-    <StaticResource x:Key="Space4xl" ResourceKey="Spacing96"/>   <!-- space/4xl -> spacing/96 = 96 epx -->
+    <StaticResource x:Key="space/3xs" ResourceKey="Spacing2"/>    <!-- space/3xs -> spacing/2  =  2 epx -->
+    <StaticResource x:Key="space/2xs" ResourceKey="Spacing4"/>    <!-- space/2xs -> spacing/4  =  4 epx -->
+    <StaticResource x:Key="space/xs"  ResourceKey="Spacing8"/>    <!-- space/xs  -> spacing/8  =  8 epx (tight component padding) -->
+    <StaticResource x:Key="space/sm"  ResourceKey="Spacing12"/>   <!-- space/sm  -> spacing/12 = 12 epx (standard component padding) -->
+    <StaticResource x:Key="space/md"  ResourceKey="Spacing16"/>   <!-- space/md  -> spacing/16 = 16 epx (card padding, row gap) -->
+    <StaticResource x:Key="space/lg"  ResourceKey="Spacing24"/>   <!-- space/lg  -> spacing/24 = 24 epx (section gap, card gutter) -->
+    <StaticResource x:Key="space/xl"  ResourceKey="Spacing32"/>   <!-- space/xl  -> spacing/32 = 32 epx (section separation) -->
+    <StaticResource x:Key="space/2xl" ResourceKey="Spacing48"/>   <!-- space/2xl -> spacing/48 = 48 epx (content area inset) -->
+    <StaticResource x:Key="space/3xl" ResourceKey="Spacing64"/>   <!-- space/3xl -> spacing/64 = 64 epx -->
+    <StaticResource x:Key="space/4xl" ResourceKey="Spacing96"/>   <!-- space/4xl -> spacing/96 = 96 epx -->
 
     <!-- ==================== SPACING = Thickness =====================
          Use for Padding and Margin properties (uniform, all sides).
@@ -68,12 +68,12 @@
          radius/* semantic tokens (by usage), each linked to a primitive
          Radius* value. Use for Border.CornerRadius, Button.CornerRadius, etc.
     =============================================================== -->
-    <StaticResource x:Key="RadiusControlSm" ResourceKey="RadiusSm"/>    <!-- radius/control-sm -> radius/sm   =    4 epx (inputs, text fields) -->
-    <StaticResource x:Key="RadiusControl"   ResourceKey="RadiusMd"/>    <!-- radius/control    -> radius/md   =    8 epx (buttons, tooltips, tags) -->
-    <StaticResource x:Key="RadiusControlLg" ResourceKey="RadiusLg"/>    <!-- radius/control-lg -> radius/lg   =   12 epx (larger buttons) -->
-    <StaticResource x:Key="RadiusSurface"   ResourceKey="RadiusLg"/>    <!-- radius/surface    -> radius/lg   =   12 epx (cards, content tiles) -->
-    <StaticResource x:Key="RadiusSurfaceLg" ResourceKey="RadiusXl"/>    <!-- radius/surface-lg -> radius/xl   =   16 epx (large panels, drawers) -->
-    <StaticResource x:Key="RadiusPill"      ResourceKey="RadiusFull"/>  <!-- radius/pill       -> radius/full = 9999 epx (chips, badges, toggles) -->
+    <StaticResource x:Key="radius/control-sm" ResourceKey="RadiusSm"/>    <!-- radius/control-sm -> radius/sm   =    4 epx (inputs, text fields) -->
+    <StaticResource x:Key="radius/control"    ResourceKey="RadiusMd"/>    <!-- radius/control    -> radius/md   =    8 epx (buttons, tooltips, tags) -->
+    <StaticResource x:Key="radius/control-lg" ResourceKey="RadiusLg"/>    <!-- radius/control-lg -> radius/lg   =   12 epx (larger buttons) -->
+    <StaticResource x:Key="radius/surface"    ResourceKey="RadiusLg"/>    <!-- radius/surface    -> radius/lg   =   12 epx (cards, content tiles) -->
+    <StaticResource x:Key="radius/surface-lg" ResourceKey="RadiusXl"/>    <!-- radius/surface-lg -> radius/xl   =   16 epx (large panels, drawers) -->
+    <StaticResource x:Key="radius/pill"       ResourceKey="RadiusFull"/>  <!-- radius/pill       -> radius/full = 9999 epx (chips, badges, toggles) -->
 
     <!-- ================ BORDER RADIUS = x:Double ====================
          Use for Shape.RadiusX/Y, clip geometry, or numeric context.

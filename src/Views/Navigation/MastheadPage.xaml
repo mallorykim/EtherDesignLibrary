@@ -15,7 +15,7 @@
                 <Border Background="{ThemeResource BackgroundSurfaceRaised}"
                         BorderBrush="{ThemeResource BorderSubtle}"
                         BorderThickness="1"
-                        CornerRadius="{StaticResource RadiusSurface}"
+                        CornerRadius="{StaticResource radius/surface}"
                         Padding="16">
                     <StackPanel Spacing="10">
                         <TextBlock Text="Default"
@@ -23,7 +23,7 @@
                                    FontSize="16"
                                    FontWeight="SemiBold"
                                    Foreground="{ThemeResource TextPrimary}"/>
-                        <Border CornerRadius="{StaticResource RadiusSurface}">
+                        <Border CornerRadius="{StaticResource radius/surface}">
                             <controls:EtherMasthead ShowSettings="False"
                                                     PreviewIsMaximized="False"
                                                     EnableWindowCommands="False"/>
@@ -34,7 +34,7 @@
                 <Border Background="{ThemeResource BackgroundSurfaceRaised}"
                         BorderBrush="{ThemeResource BorderSubtle}"
                         BorderThickness="1"
-                        CornerRadius="{StaticResource RadiusSurface}"
+                        CornerRadius="{StaticResource radius/surface}"
                         Padding="16">
                     <StackPanel Spacing="10">
                         <TextBlock Text="Maximized"
@@ -42,7 +42,7 @@
                                    FontSize="16"
                                    FontWeight="SemiBold"
                                    Foreground="{ThemeResource TextPrimary}"/>
-                        <Border CornerRadius="{StaticResource RadiusSurface}">
+                        <Border CornerRadius="{StaticResource radius/surface}">
                             <controls:EtherMasthead ShowSettings="False"
                                                     PreviewIsMaximized="True"
                                                     EnableWindowCommands="False"/>

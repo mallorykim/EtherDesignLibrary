@@ -127,12 +127,12 @@
                     <Grid Background="Transparent">
                     <Border x:Name="TrackOff"
                             Background="{ThemeResource BackgroundSwitchOff}"
-                            CornerRadius="{StaticResource RadiusControlSm}"
+                            CornerRadius="{StaticResource radius/control-sm}"
                             Visibility="Visible"/>
 
                     <Border x:Name="TrackOn"
                             Background="{StaticResource EtherIntelligenceGradient}"
-                            CornerRadius="{StaticResource RadiusControlSm}"
+                            CornerRadius="{StaticResource radius/control-sm}"
                             Visibility="Collapsed"/>
 
                     <!-- Soft white inset in the On state. -->
@@ -140,7 +140,7 @@
                             Background="#0FFFFFFF"
                             BorderBrush="#33FFFFFF"
                             BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusControlSm}"
+                            CornerRadius="{StaticResource radius/control-sm}"
                             IsHitTestVisible="False"
                             Visibility="Collapsed"/>
 

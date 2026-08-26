@@ -34,7 +34,7 @@
       Track bg:   BackgroundSegmentTrack
       Segment bg: BackgroundBrand (selected) / transparent (default)
       Text:       TextOnBrand (selected) / TextSecondary (unselected)
-      Radius:     RadiusControl (8) for track · RadiusControlSm (4) for segment pill
+      Radius:     radius/control (8) for track · radius/control-sm (4) for segment pill
 
     LOCATION
       This dictionary lives beside its class (Controls/EtherSegmentedTrack.cs) and is merged
@@ -56,7 +56,7 @@
                     Margin="0,8,0,30"
                     Background="{TemplateBinding Background}"
                     Padding="{TemplateBinding Padding}"
-                    CornerRadius="{StaticResource RadiusControl}">
+                    CornerRadius="{StaticResource radius/control}">
                 <ContentPresenter Content="{TemplateBinding Content}"
                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -128,20 +128,20 @@
             <!-- Background state layers (behind the text). Opacity toggled by the states above. -->
             <Border x:Name="HoverLayer"
                     Background="{ThemeResource BackgroundSegmentHover}"
-                    CornerRadius="{StaticResource RadiusControlSm}"
+                    CornerRadius="{StaticResource radius/control-sm}"
                     Opacity="0"/>
             <Border x:Name="PressedLayer"
                     Background="{ThemeResource BackgroundSegmentPressed}"
-                    CornerRadius="{StaticResource RadiusControlSm}"
+                    CornerRadius="{StaticResource radius/control-sm}"
                     Opacity="0"/>
             <Border x:Name="CheckedLayer"
                     Background="{StaticResource BackgroundBrand}"
-                    CornerRadius="{StaticResource RadiusControlSm}"
+                    CornerRadius="{StaticResource radius/control-sm}"
                     Opacity="0"/>
 
             <Border x:Name="Bg"
                     Background="Transparent"
-                    CornerRadius="{StaticResource RadiusControlSm}"
+                    CornerRadius="{StaticResource radius/control-sm}"
                     Padding="{TemplateBinding Padding}">
                 <ContentPresenter x:Name="Cp"
                                   Content="{TemplateBinding Content}"

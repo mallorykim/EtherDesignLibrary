@@ -254,7 +254,7 @@
 
             <Border x:Name="Bg"
                     Background="Transparent"
-                    CornerRadius="{StaticResource RadiusControlSm}"
+                    CornerRadius="{StaticResource radius/control-sm}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
                             Spacing="{StaticResource Spacing6}"

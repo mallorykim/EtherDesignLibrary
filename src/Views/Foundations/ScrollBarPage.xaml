@@ -24,7 +24,7 @@
                     <Border Width="320" Height="240"
                             BorderBrush="{ThemeResource BorderSubtle}"
                             BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusControl}">
+                            CornerRadius="{StaticResource radius/control}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto"
                                       HorizontalScrollBarVisibility="Disabled">
                             <StackPanel Padding="12" Spacing="12">
@@ -51,7 +51,7 @@
                     <Border Width="420" Height="80"
                             BorderBrush="{ThemeResource BorderSubtle}"
                             BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusControl}">
+                            CornerRadius="{StaticResource radius/control}">
                         <ScrollViewer VerticalScrollBarVisibility="Disabled"
                                       HorizontalScrollBarVisibility="Auto">
                             <StackPanel Orientation="Horizontal" Padding="12" Spacing="12">

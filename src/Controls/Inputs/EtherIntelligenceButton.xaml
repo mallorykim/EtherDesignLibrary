@@ -21,7 +21,7 @@
       Background   BackgroundCanvas (ThemeResource)
       Border       two 1 px inside linear-gradient strokes
       Glow shadow  top-left: #BB00FF @10%, bottom: #196FFF @50%
-      CornerRadius 12 (RadiusControlLg)
+      CornerRadius 12 (radius/control-lg)
       Padding      pl=8 pr=12 py=8 gap=4
       Font         Inter SemiBold 14 px (InterFont)
       Text colour  TextSecondary (ThemeResource)
@@ -36,7 +36,7 @@
       Padding     pl=8, pr=12, py=8 · gap between icon and text = 4
       Icon        24×24
       Label       Inter SemiBold 14 px · TextSecondary
-      CornerRadius 12 (RadiusControlLg)
+      CornerRadius 12 (radius/control-lg)
 
     TOKENS
       bg:         BackgroundCanvas (ThemeResource)
@@ -145,18 +145,18 @@
 
             <Border x:Name="Bg"
                     Background="{ThemeResource BackgroundCanvas}"
-                    CornerRadius="{StaticResource RadiusControlLg}">
+                    CornerRadius="{StaticResource radius/control-lg}">
                 <Grid>
                     <!-- Figma stacks two one-pixel, inside-aligned strokes. -->
                     <Border x:Name="BorderIntelligenceBlue"
                             BorderBrush="{StaticResource BorderIntelligenceBlue}"
                             BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusControlLg}"
+                            CornerRadius="{StaticResource radius/control-lg}"
                             IsHitTestVisible="False"/>
                     <Border x:Name="BorderIntelligenceGradient"
                             BorderBrush="{StaticResource BorderIntelligence}"
                             BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusControlLg}"
+                            CornerRadius="{StaticResource radius/control-lg}"
                             IsHitTestVisible="False"/>
                     <Border Padding="{TemplateBinding Padding}">
                         <StackPanel Orientation="Horizontal"

@@ -166,12 +166,12 @@
                     <Grid x:Name="UncheckedFace">
                         <Border x:Name="UncheckedFill"
                                 Background="{ThemeResource CheckboxFillDefault}"
-                                CornerRadius="{StaticResource RadiusControlSm}"/>
+                                CornerRadius="{StaticResource radius/control-sm}"/>
                         <Border x:Name="UncheckedStroke"
                                 Background="Transparent"
                                 BorderBrush="{ThemeResource CheckboxStroke}"
                                 BorderThickness="1.5"
-                                CornerRadius="{StaticResource RadiusControlSm}"
+                                CornerRadius="{StaticResource radius/control-sm}"
                                 IsHitTestVisible="False"/>
                     </Grid>
 
@@ -179,12 +179,12 @@
                     <Grid x:Name="CheckedFace" Visibility="Collapsed">
                         <Border x:Name="CheckedFill"
                                 Background="{ThemeResource CheckboxCheckedFillDefault}"
-                                CornerRadius="{StaticResource RadiusControlSm}"/>
+                                CornerRadius="{StaticResource radius/control-sm}"/>
                         <Border x:Name="CheckedStroke"
                                 Background="Transparent"
                                 BorderBrush="{ThemeResource CheckboxCheckedStroke}"
                                 BorderThickness="1.5"
-                                CornerRadius="{StaticResource RadiusControlSm}"
+                                CornerRadius="{StaticResource radius/control-sm}"
                                 IsHitTestVisible="False"/>
                         <Viewbox Width="11" Height="11"
                                  HorizontalAlignment="Center" VerticalAlignment="Center">

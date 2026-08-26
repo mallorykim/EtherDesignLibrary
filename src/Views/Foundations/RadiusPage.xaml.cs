@@ -24,12 +24,12 @@ public sealed partial class RadiusPage : Page
     // the resolved resource so the preview and value can't drift from the token / its alias.
     private static readonly (string Name, string Primitive, string Key)[] SemanticRadius =
     {
-        ("control-sm", "radius/sm",   "RadiusControlSm"),
-        ("control",    "radius/md",   "RadiusControl"),
-        ("control-lg", "radius/lg",   "RadiusControlLg"),
-        ("surface",    "radius/lg",   "RadiusSurface"),
-        ("surface-lg", "radius/xl",   "RadiusSurfaceLg"),
-        ("pill",       "radius/full", "RadiusPill"),
+        ("control-sm", "radius/sm",   "radius/control-sm"),
+        ("control",    "radius/md",   "radius/control"),
+        ("control-lg", "radius/lg",   "radius/control-lg"),
+        ("surface",    "radius/lg",   "radius/surface"),
+        ("surface-lg", "radius/xl",   "radius/surface-lg"),
+        ("pill",       "radius/full", "radius/pill"),
     };
 
     private static IReadOnlyList<SpacingPrimitiveGroup> BuildSemanticGroups()

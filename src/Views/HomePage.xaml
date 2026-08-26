@@ -54,7 +54,7 @@
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Left"
                                                 Padding="16,12"
-                                                CornerRadius="{StaticResource RadiusControl}"
+                                                CornerRadius="{StaticResource radius/control}"
                                                 Background="{ThemeResource BackgroundSurface}"
                                                 BorderBrush="{ThemeResource BorderSubtle}"
                                                 BorderThickness="1">

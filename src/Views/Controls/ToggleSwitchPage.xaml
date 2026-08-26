@@ -16,7 +16,7 @@
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>
-            <StackPanel Spacing="{StaticResource SpaceLg}">
+            <StackPanel Spacing="{StaticResource space/lg}">
 
                 <!-- OFF states -->
                 <StackPanel Spacing="8">

@@ -14,7 +14,7 @@
             <StackPanel Spacing="12">
                 <TextBlock Text="Size" Style="{StaticResource EtherH4}" Foreground="{ThemeResource TextPrimary}"/>
                 <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
-                        CornerRadius="{StaticResource RadiusControlSm}">
+                        CornerRadius="{StaticResource radius/control-sm}">
                     <ItemsControl x:Name="SizeItems">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="local:IconSizeItem">

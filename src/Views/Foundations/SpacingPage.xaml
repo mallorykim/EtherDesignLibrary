@@ -31,7 +31,7 @@
                                                Style="{StaticResource EtherH4}"
                                                Foreground="{ThemeResource TextPrimary}"/>
                                     <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
-                                            CornerRadius="{StaticResource RadiusControlSm}">
+                                            CornerRadius="{StaticResource radius/control-sm}">
                                         <ItemsControl ItemsSource="{x:Bind Items}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="local:SpacingSemanticItem">
@@ -85,7 +85,7 @@
                                                Style="{StaticResource EtherH4}"
                                                Foreground="{ThemeResource TextPrimary}"/>
                                     <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
-                                            CornerRadius="{StaticResource RadiusControlSm}">
+                                            CornerRadius="{StaticResource radius/control-sm}">
                                         <ItemsControl ItemsSource="{x:Bind Items}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="local:SpacingPrimitiveItem">

@@ -20,7 +20,7 @@
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>
-            <StackPanel Spacing="{StaticResource SpaceLg}">
+            <StackPanel Spacing="{StaticResource space/lg}">
 
                 <!-- UNCHECKED states. Each specimen is display-only (IsHitTestVisible=False) and
                      carries a unique GroupName so mutual exclusion never touches it. -->

@@ -22,7 +22,7 @@
       Width       max(130 px, longest option + icon + padding)
       Height      32 px (MinHeight)
       Padding     8 all sides
-      CornerRadius 4 (RadiusControlSm)
+      CornerRadius 4 (radius/control-sm)
       Font        Inter Medium 11 px · letter=spacing 0.22 px
       Arrow icon  16×16
 
@@ -132,7 +132,7 @@
             <!-- Fill while the menu is closed; CommonStates repaints this one. -->
             <Border x:Name="StateFill"
                     Background="{ThemeResource BackgroundDropdown}"
-                    CornerRadius="{StaticResource RadiusControlSm}"
+                    CornerRadius="{StaticResource radius/control-sm}"
                     IsHitTestVisible="False"/>
 
             <!-- Fill while the menu is open. Always the default colour, and out of reach of
@@ -140,13 +140,13 @@
                  two fills is ever visible, so the translucent tokens never stack. -->
             <Border x:Name="OpenFill"
                     Background="{ThemeResource BackgroundDropdown}"
-                    CornerRadius="{StaticResource RadiusControlSm}"
+                    CornerRadius="{StaticResource radius/control-sm}"
                     IsHitTestVisible="False"
                     Visibility="Collapsed"/>
 
             <Border x:Name="Bg"
                     Background="Transparent"
-                    CornerRadius="{StaticResource RadiusControlSm}"
+                    CornerRadius="{StaticResource radius/control-sm}"
                     Padding="{TemplateBinding Padding}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -198,7 +198,7 @@
             <Border x:Name="ActiveStroke"
                     BorderBrush="{StaticResource BorderDropdownActive}"
                     BorderThickness="1"
-                    CornerRadius="{StaticResource RadiusControlSm}"
+                    CornerRadius="{StaticResource radius/control-sm}"
                     IsHitTestVisible="False"
                     Visibility="Collapsed"/>
 
@@ -223,7 +223,7 @@
                 </Popup.ChildTransitions>
                 <Border x:Name="PopupBorder"
                         Background="{ThemeResource BackgroundDropdownMenu}"
-                        CornerRadius="{StaticResource RadiusControlSm}"
+                        CornerRadius="{StaticResource radius/control-sm}"
                         MinWidth="{StaticResource DropdownMinWidth}"
                         Padding="{StaticResource Padding4}">
                     <ScrollViewer x:Name="ScrollViewer"
@@ -251,7 +251,7 @@
                 <ControlTemplate TargetType="ComboBoxItem">
                     <Grid x:Name="ItemBackground"
                           Background="Transparent"
-                          CornerRadius="{StaticResource RadiusControlSm}"
+                          CornerRadius="{StaticResource radius/control-sm}"
                           Padding="{TemplateBinding Padding}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">

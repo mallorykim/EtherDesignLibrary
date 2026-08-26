@@ -23,13 +23,13 @@
       NORMAL
         Background    BackgroundSurfaceRaised (#FFF5F7F8 L / #FF1E2025 D)
         Border        2 px BorderDefault
-        CornerRadius  8 (RadiusControl)
+        CornerRadius  8 (radius/control)
         Size          390�220 min (content stretches)
 
       INTELLIGENCE
         Background    BackgroundCardIntelligence (#FF000000 = mode=invariant)
         Border        2 px AiAccentPurple
-        CornerRadius  8 (RadiusControl)
+        CornerRadius  8 (radius/control)
         Size          390�220 min
 
       CALLOUT WRAPPER

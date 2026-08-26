@@ -102,7 +102,7 @@
                     Background="{ThemeResource InputFillDefault}"
                     BorderBrush="{ThemeResource BorderDefault}"
                     BorderThickness="1"
-                    CornerRadius="{StaticResource RadiusControl}"
+                    CornerRadius="{StaticResource radius/control}"
                     Control.IsTemplateFocusTarget="True"/>
 
             <!-- Placeholder sits behind the editable text; TextBox toggles its visibility. -->

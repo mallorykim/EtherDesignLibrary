@@ -34,7 +34,7 @@
 
     KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F = node 58074:2926)
       Total container  px=24, py=16
-      Icon row         right=aligned = gap 24 px (SpaceXl)
+      Icon row         right=aligned = gap 24 px (space/xl)
       Each icon        16=16 = DDS2 icon library
       Close icon       10=10 (inset inside 16=16 hit target + 3 px padding)
 

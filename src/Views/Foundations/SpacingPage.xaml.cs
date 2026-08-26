@@ -24,16 +24,16 @@ public sealed partial class SpacingPage : Page
     // resolved resource so it can never drift from the token / the alias it points at.
     private static readonly (string Name, string Primitive, string Key)[] SemanticSpace =
     {
-        ("3xs", "spacing/2",  "Space3xs"),
-        ("2xs", "spacing/4",  "Space2xs"),
-        ("xs",  "spacing/8",  "SpaceXs"),
-        ("sm",  "spacing/12", "SpaceSm"),
-        ("md",  "spacing/16", "SpaceMd"),
-        ("lg",  "spacing/24", "SpaceLg"),
-        ("xl",  "spacing/32", "SpaceXl"),
-        ("2xl", "spacing/48", "Space2xl"),
-        ("3xl", "spacing/64", "Space3xl"),
-        ("4xl", "spacing/96", "Space4xl"),
+        ("3xs", "spacing/2",  "space/3xs"),
+        ("2xs", "spacing/4",  "space/2xs"),
+        ("xs",  "spacing/8",  "space/xs"),
+        ("sm",  "spacing/12", "space/sm"),
+        ("md",  "spacing/16", "space/md"),
+        ("lg",  "spacing/24", "space/lg"),
+        ("xl",  "spacing/32", "space/xl"),
+        ("2xl", "spacing/48", "space/2xl"),
+        ("3xl", "spacing/64", "space/3xl"),
+        ("4xl", "spacing/96", "space/4xl"),
     };
 
     private static IReadOnlyList<SpacingSemanticGroup> BuildSemanticGroups()

@@ -58,7 +58,7 @@
                      INTERACTIVE
                 = -->
                 <Border Background="{ThemeResource BackgroundSurface}"
-                        CornerRadius="{StaticResource RadiusSurface}"
+                        CornerRadius="{StaticResource radius/surface}"
                         Padding="24">
                     <StackPanel Spacing="16">
                         <!-- Header row: section label on the left; page-specific control
@@ -99,7 +99,7 @@
                 = -->
                 <Border Visibility="{x:Bind ConvertHasStates(StatesContent), Mode=OneTime}"
                         Background="{ThemeResource BackgroundSurface}"
-                        CornerRadius="{StaticResource RadiusSurface}"
+                        CornerRadius="{StaticResource radius/surface}"
                         Padding="24">
                     <StackPanel Spacing="16">
                         <TextBlock Text="{x:Bind StatesTitle, Mode=OneTime}"
