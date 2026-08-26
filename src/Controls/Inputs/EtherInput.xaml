@@ -3,8 +3,8 @@
 
     Figma source: ursRC201v8IiVeafliI45F, node 60582:847 (spec-sheet-input-container)
 
-    SPEC (literal per the spec sheet — this component is not wired to the
-    EtherColors token set, mirroring EtherCheckbox):
+    SPEC (literal per the spec sheet — fill remains component-local, not a frozen
+    EtherColors token, mirroring EtherCheckbox):
                      Default        Hover          Active(focus)  Filled     Disabled
       Fill           C0C8CD 40%     C0C8CD 60%     C0C8CD 40%     40%        40%
       Border         #000000 30%    #000000 30%    #196FFF 100%   30%        30%
@@ -25,6 +25,11 @@
 
     Alpha hex (from EtherColors header): 30%=0x4D  40%=0x66  50%=0x80  60%=0x99
 
+    Colours live in EtherInput* component theme dictionaries (Light/Dark keep the
+    previous fill literals and token aliases; High Contrast uses Windows
+    SystemColor*). DefaultEtherInputStyle owns the default setters; the implicit
+    style is BasedOn that key.
+
     LOCATION
       This dictionary lives beside its class (Controls/EtherInput.cs) and is merged
       explicitly from App.xaml. See the "Mechanism refinement" note in
@@ -37,16 +42,31 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="InputFillDefault" Color="#66C0C8CD"/>
-            <SolidColorBrush x:Key="InputFillHover"   Color="#99C0C8CD"/>
+            <SolidColorBrush x:Key="EtherInputFillDefaultBrush" Color="#66C0C8CD"/>
+            <SolidColorBrush x:Key="EtherInputFillHoverBrush" Color="#99C0C8CD"/>
+            <StaticResource x:Key="EtherInputBorderBrush" ResourceKey="BorderDefault"/>
+            <StaticResource x:Key="EtherInputBorderFocusBrush" ResourceKey="border/focus"/>
+            <StaticResource x:Key="EtherInputForegroundBrush" ResourceKey="text/primary"/>
+            <StaticResource x:Key="EtherInputPlaceholderBrush" ResourceKey="TextTertiary"/>
+            <StaticResource x:Key="EtherInputSelectionHighlightBrush" ResourceKey="action/primary/bg"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="InputFillDefault" Color="#40FFFFFF"/>
-            <SolidColorBrush x:Key="InputFillHover"   Color="#66FFFFFF"/>
+            <SolidColorBrush x:Key="EtherInputFillDefaultBrush" Color="#40FFFFFF"/>
+            <SolidColorBrush x:Key="EtherInputFillHoverBrush" Color="#66FFFFFF"/>
+            <StaticResource x:Key="EtherInputBorderBrush" ResourceKey="BorderDefault"/>
+            <StaticResource x:Key="EtherInputBorderFocusBrush" ResourceKey="border/focus"/>
+            <StaticResource x:Key="EtherInputForegroundBrush" ResourceKey="text/primary"/>
+            <StaticResource x:Key="EtherInputPlaceholderBrush" ResourceKey="TextTertiary"/>
+            <StaticResource x:Key="EtherInputSelectionHighlightBrush" ResourceKey="action/primary/bg"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
-            <SolidColorBrush x:Key="InputFillDefault" Color="{ThemeResource SystemColorButtonFaceColor}"/>
-            <SolidColorBrush x:Key="InputFillHover"   Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherInputFillDefaultBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherInputFillHoverBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherInputBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherInputBorderFocusBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherInputForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherInputPlaceholderBrush" Color="{ThemeResource SystemColorGrayTextColor}"/>
+            <SolidColorBrush x:Key="EtherInputSelectionHighlightBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -66,24 +86,24 @@
 
                     <VisualState x:Name="Normal">
                         <VisualState.Setters>
-                            <Setter Target="BorderElement.Background" Value="{ThemeResource InputFillDefault}"/>
-                            <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource BorderDefault}"/>
+                            <Setter Target="BorderElement.Background" Value="{ThemeResource EtherInputFillDefaultBrush}"/>
+                            <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource EtherInputBorderBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
 
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
-                            <!-- Hover: fill 40% -> 60%; border stays black 30%. -->
-                            <Setter Target="BorderElement.Background" Value="{ThemeResource InputFillHover}"/>
-                            <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource BorderDefault}"/>
+                            <!-- Hover: fill 40% -> 60%; border stays the default stroke. -->
+                            <Setter Target="BorderElement.Background" Value="{ThemeResource EtherInputFillHoverBrush}"/>
+                            <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource EtherInputBorderBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
 
                     <VisualState x:Name="Focused">
                         <VisualState.Setters>
                             <!-- Active: fill returns to 40%; border turns brand blue. -->
-                            <Setter Target="BorderElement.Background" Value="{ThemeResource InputFillDefault}"/>
-                            <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource border/focus}"/>
+                            <Setter Target="BorderElement.Background" Value="{ThemeResource EtherInputFillDefaultBrush}"/>
+                            <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource EtherInputBorderFocusBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
 
@@ -99,8 +119,8 @@
             <!-- Single Border carries both the fill and the 1px stroke. -->
             <Border x:Name="BorderElement"
                     Grid.Row="1"
-                    Background="{ThemeResource InputFillDefault}"
-                    BorderBrush="{ThemeResource BorderDefault}"
+                    Background="{ThemeResource EtherInputFillDefaultBrush}"
+                    BorderBrush="{ThemeResource EtherInputBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="{StaticResource radius/control}"
                     Control.IsTemplateFocusTarget="True"/>
@@ -109,7 +129,7 @@
             <ContentControl x:Name="PlaceholderTextContentPresenter"
                             Grid.Row="1"
                             Content="{TemplateBinding PlaceholderText}"
-                            Foreground="{ThemeResource TextTertiary}"
+                            Foreground="{ThemeResource EtherInputPlaceholderBrush}"
                             FontFamily="{StaticResource InterFont}"
                             FontSize="{StaticResource Size14}"
                             IsHitTestVisible="False"
@@ -137,9 +157,9 @@
         </Grid>
     </ControlTemplate>
 
-    <Style TargetType="controls:EtherInput">
-        <Setter Property="Foreground" Value="{ThemeResource text/primary}"/>
-        <Setter Property="SelectionHighlightColor" Value="{ThemeResource action/primary/bg}"/>
+    <Style x:Key="DefaultEtherInputStyle" TargetType="controls:EtherInput">
+        <Setter Property="Foreground" Value="{ThemeResource EtherInputForegroundBrush}"/>
+        <Setter Property="SelectionHighlightColor" Value="{ThemeResource EtherInputSelectionHighlightBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
         <Setter Property="FontSize" Value="{StaticResource Size14}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>
@@ -153,5 +173,7 @@
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
         <Setter Property="Template" Value="{StaticResource EtherInputTemplate}"/>
     </Style>
+
+    <Style TargetType="controls:EtherInput" BasedOn="{StaticResource DefaultEtherInputStyle}"/>
 
 </ResourceDictionary>

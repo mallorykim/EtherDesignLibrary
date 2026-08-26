@@ -9,7 +9,8 @@ using Windows.Foundation.Collections;
 namespace EtherSandbox.Controls;
 
 /// <summary>
-/// Ether design-system dropdown.
+/// A templated <see cref="ComboBox"/>. The default visual is the compact Ether
+/// dropdown via <c>DefaultEtherDropdownStyle</c>.
 /// </summary>
 /// <remarks>
 /// Derives from <see cref="ComboBox"/> rather than restyling one through attached behaviours,
@@ -28,12 +29,22 @@ namespace EtherSandbox.Controls;
 /// takes scrolling over itself, leaving the host ScrollViewer with a zero extent and no scroll
 /// bar. The template swaps in a StackPanel.</item>
 /// </list>
+/// Native ComboBox drives CommonStates, FocusStates, and DropDownStates. Default visual
+/// setters live on <c>DefaultEtherDropdownStyle</c>.
 /// </remarks>
 [TemplatePart(Name = TriggerTextPart, Type = typeof(TextBlock))]
 [TemplatePart(Name = ArrowPart, Type = typeof(FrameworkElement))]
 [TemplatePart(Name = PopupPart, Type = typeof(Popup))]
 [TemplatePart(Name = PopupBorderPart, Type = typeof(Border))]
 [TemplatePart(Name = MenuScrollViewerPart, Type = typeof(ScrollViewer))]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = NormalState)]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = PointerOverState)]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = PressedState)]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = DisabledState)]
+[TemplateVisualState(GroupName = FocusStatesGroup, Name = FocusedState)]
+[TemplateVisualState(GroupName = FocusStatesGroup, Name = UnfocusedState)]
+[TemplateVisualState(GroupName = DropDownStatesGroup, Name = OpenedState)]
+[TemplateVisualState(GroupName = DropDownStatesGroup, Name = ClosedState)]
 public sealed class EtherDropdown : ComboBox
 {
     private const string TriggerTextPart = "TriggerText";
@@ -41,6 +52,17 @@ public sealed class EtherDropdown : ComboBox
     private const string PopupPart = "Popup";
     private const string PopupBorderPart = "PopupBorder";
     private const string MenuScrollViewerPart = "ScrollViewer";
+    private const string CommonStatesGroup = "CommonStates";
+    private const string NormalState = "Normal";
+    private const string PointerOverState = "PointerOver";
+    private const string PressedState = "Pressed";
+    private const string DisabledState = "Disabled";
+    private const string FocusStatesGroup = "FocusStates";
+    private const string FocusedState = "Focused";
+    private const string UnfocusedState = "Unfocused";
+    private const string DropDownStatesGroup = "DropDownStates";
+    private const string OpenedState = "Opened";
+    private const string ClosedState = "Closed";
 
     /// <summary>Fallback for the trailing icon's width when the template part is unavailable.</summary>
     private const double FallbackArrowWidth = 16;
@@ -53,8 +75,12 @@ public sealed class EtherDropdown : ComboBox
 
     private double? _longestItemWidth;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EtherDropdown"/> class.
+    /// </summary>
     public EtherDropdown()
     {
+        DefaultStyleKey = typeof(EtherDropdown);
         SelectionChanged += (_, _) => UpdateTriggerText();
         SizeChanged += (_, _) => UpdateMenuLayout();
 
@@ -65,12 +91,13 @@ public sealed class EtherDropdown : ComboBox
         RegisterPropertyChangedCallback(ItemsSourceProperty, (_, _) => InvalidateItemMetrics());
     }
 
+    /// <summary>Identifies the <see cref="MaxVisibleItems"/> dependency property.</summary>
     public static readonly DependencyProperty MaxVisibleItemsProperty =
         DependencyProperty.Register(
             nameof(MaxVisibleItems),
             typeof(int),
             typeof(EtherDropdown),
-            new PropertyMetadata(6));
+            new PropertyMetadata(0));
 
     /// <summary>Items shown before the menu starts scrolling. Zero or less leaves it unbounded.</summary>
     public int MaxVisibleItems
@@ -79,12 +106,13 @@ public sealed class EtherDropdown : ComboBox
         set => SetValue(MaxVisibleItemsProperty, value);
     }
 
+    /// <summary>Identifies the <see cref="MenuGap"/> dependency property.</summary>
     public static readonly DependencyProperty MenuGapProperty =
         DependencyProperty.Register(
             nameof(MenuGap),
             typeof(double),
             typeof(EtherDropdown),
-            new PropertyMetadata(4d));
+            new PropertyMetadata(0d));
 
     /// <summary>Gap between the trigger and the menu.</summary>
     public double MenuGap

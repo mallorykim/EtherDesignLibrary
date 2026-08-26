@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -32,7 +33,7 @@ public sealed partial class RadiusPage : Page
         ("pill",       "radius/full", "radius/pill"),
     };
 
-    private static IReadOnlyList<SpacingPrimitiveGroup> BuildSemanticGroups()
+    private static SpacingPrimitiveGroup[] BuildSemanticGroups()
     {
         var res = Application.Current.Resources;
         var items = new List<SpacingPrimitiveItem>();
@@ -50,7 +51,7 @@ public sealed partial class RadiusPage : Page
         return new[] { new SpacingPrimitiveGroup("Radius", items) };
     }
 
-    private static IReadOnlyList<SpacingPrimitiveGroup> BuildGroups()
+    private static SpacingPrimitiveGroup[] BuildGroups()
     {
         var primitives = FindPrimitiveDictionary(Application.Current.Resources);
         if (primitives is null)
@@ -67,13 +68,13 @@ public sealed partial class RadiusPage : Page
             {
                 var value = cornerRadius.TopLeft;
                 radius.Add(new SpacingPrimitiveItem(
-                    name["Radius".Length..].ToLowerInvariant(), value.ToString(), 40, 40, cornerRadius));
+                    name["Radius".Length..].ToLowerInvariant(), value.ToString(CultureInfo.CurrentCulture), 40, 40, cornerRadius));
             }
         }
 
         return new[]
         {
-            new SpacingPrimitiveGroup("Radius", radius.OrderBy(i => double.Parse(i.Value)).ToArray()),
+            new SpacingPrimitiveGroup("Radius", radius.OrderBy(i => double.Parse(i.Value, CultureInfo.CurrentCulture)).ToArray()),
         };
     }
 

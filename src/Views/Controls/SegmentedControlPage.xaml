@@ -15,13 +15,15 @@
                     <TextBlock Text="2 SEGMENTS"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}">
+                    <controls:EtherSegmentedControl AutomationProperties.Name="Two-segment control">
                         <StackPanel Orientation="Horizontal" Spacing="4">
                             <controls:HandRadioButton GroupName="SegmentedTwo" Content="List"
                                          Style="{StaticResource EtherSegment}"
+                                         AutomationProperties.Name="Two-segment list"
                                          IsChecked="True"/>
                             <controls:HandRadioButton GroupName="SegmentedTwo" Content="Grid"
-                                         Style="{StaticResource EtherSegment}"/>
+                                         Style="{StaticResource EtherSegment}"
+                                         AutomationProperties.Name="Two-segment grid"/>
                         </StackPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
@@ -29,15 +31,19 @@
                     <TextBlock Text="3 SEGMENTS"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}">
+                    <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}"
+                                                    AutomationProperties.Name="Three-segment control">
                         <StackPanel Orientation="Horizontal" Spacing="4">
                             <controls:HandRadioButton GroupName="SegmentedThree" Content="Overview"
                                          Style="{StaticResource EtherSegment}"
+                                         AutomationProperties.Name="Three-segment overview"
                                          IsChecked="True"/>
                             <controls:HandRadioButton GroupName="SegmentedThree" Content="Details"
-                                         Style="{StaticResource EtherSegment}"/>
+                                         Style="{StaticResource EtherSegment}"
+                                         AutomationProperties.Name="Three-segment details"/>
                             <controls:HandRadioButton GroupName="SegmentedThree" Content="History"
-                                         Style="{StaticResource EtherSegment}"/>
+                                         Style="{StaticResource EtherSegment}"
+                                         AutomationProperties.Name="Three-segment history"/>
                         </StackPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
@@ -45,17 +51,22 @@
                     <TextBlock Text="4 SEGMENTS"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}">
+                    <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}"
+                                                    AutomationProperties.Name="Four-segment control">
                         <StackPanel Orientation="Horizontal" Spacing="4">
                             <controls:HandRadioButton GroupName="SegmentedFour" Content="Day"
                                          Style="{StaticResource EtherSegment}"
+                                         AutomationProperties.Name="Four-segment day"
                                          IsChecked="True"/>
                             <controls:HandRadioButton GroupName="SegmentedFour" Content="Week"
-                                         Style="{StaticResource EtherSegment}"/>
+                                         Style="{StaticResource EtherSegment}"
+                                         AutomationProperties.Name="Four-segment week"/>
                             <controls:HandRadioButton GroupName="SegmentedFour" Content="Month"
-                                         Style="{StaticResource EtherSegment}"/>
+                                         Style="{StaticResource EtherSegment}"
+                                         AutomationProperties.Name="Four-segment month"/>
                             <controls:HandRadioButton GroupName="SegmentedFour" Content="Year"
-                                         Style="{StaticResource EtherSegment}"/>
+                                         Style="{StaticResource EtherSegment}"
+                                         AutomationProperties.Name="Four-segment year"/>
                         </StackPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
@@ -71,6 +82,7 @@
                                HorizontalAlignment="Center"/>
                     <controls:HandRadioButton Content="Default"
                                  Style="{StaticResource EtherSegment}"
+                                 AutomationProperties.Name="Default segment"
                                  IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
                 <StackPanel Width="130" Spacing="8">
@@ -81,6 +93,7 @@
                     <controls:HandRadioButton Content="Selected"
                                  Style="{StaticResource EtherSegment}"
                                  IsChecked="True"
+                                 AutomationProperties.Name="Selected segment"
                                  IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
                 <StackPanel Width="130" Spacing="8">
@@ -91,6 +104,7 @@
                     <controls:HandRadioButton Content="Hover"
                                  Style="{StaticResource EtherSegment}"
                                  PreviewState="Hover"
+                                 AutomationProperties.Name="Hover segment"
                                  IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
                 <StackPanel Width="130" Spacing="8">
@@ -101,6 +115,7 @@
                     <controls:HandRadioButton Content="Pressed"
                                  Style="{StaticResource EtherSegment}"
                                  PreviewState="Pressed"
+                                 AutomationProperties.Name="Pressed segment"
                                  IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
             </StackPanel>

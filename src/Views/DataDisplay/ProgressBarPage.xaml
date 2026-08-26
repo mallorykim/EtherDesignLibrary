@@ -20,7 +20,8 @@
                                            Title="Downloading"
                                            ValueContent="0%"
                                            Maximum="100"
-                                           Value="0"/>
+                                           Value="0"
+                                           AutomationProperties.Name="Downloading progress" />
                 <Button x:Name="ReplayButton"
                         Click="Replay_Click"
                         Content="▶ Replay"
@@ -40,7 +41,8 @@
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherProgressBar Title="Storage" ValueContent="65%"
                                                Value="65"
-                                               ShowTitle="True" ShowValue="True"/>
+                                               ShowTitle="True" ShowValue="True"
+                                               AutomationProperties.Name="Storage progress, title and value" />
                 </StackPanel>
 
                 <StackPanel Spacing="8">
@@ -50,7 +52,8 @@
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherProgressBar Title="Storage" ValueContent="65%"
                                                Value="65"
-                                               ShowTitle="True" ShowValue="False"/>
+                                               ShowTitle="True" ShowValue="False"
+                                               AutomationProperties.Name="Storage progress, title only" />
                 </StackPanel>
 
                 <StackPanel Spacing="8">
@@ -60,7 +63,8 @@
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherProgressBar Title="Storage" ValueContent="65%"
                                                Value="65"
-                                               ShowTitle="False" ShowValue="True"/>
+                                               ShowTitle="False" ShowValue="True"
+                                               AutomationProperties.Name="Storage progress, value only" />
                 </StackPanel>
 
                 <StackPanel Spacing="8">
@@ -70,7 +74,8 @@
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherProgressBar Title="Storage" ValueContent="65%"
                                                Value="65"
-                                               ShowTitle="False" ShowValue="False"/>
+                                               ShowTitle="False" ShowValue="False"
+                                               AutomationProperties.Name="Storage progress, labels hidden" />
                 </StackPanel>
 
             </StackPanel>

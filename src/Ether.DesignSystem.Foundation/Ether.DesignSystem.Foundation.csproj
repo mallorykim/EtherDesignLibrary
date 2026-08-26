@@ -1,0 +1,81 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Ether.DesignSystem.Foundation</AssemblyName>
+    <RootNamespace>Ether.DesignSystem.Foundation</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+    <PackageId>Ether.DesignSystem.Foundation</PackageId>
+    <Version>$(EtherDesignSystemPreviewVersion)</Version>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Authors>Ether Design System</Authors>
+    <Description>Preview WinUI 3 design-system foundation resources for Ether.</Description>
+    <PackageTags>winui;winui3;design-system;foundation;preview</PackageTags>
+    <PackageReleaseNotes>Preview release. x64 package consumers are verified for unpackaged runtime and packaged build. MSIX install/runtime, other architectures, accessibility, localization, High Contrast completeness, and stable-release readiness remain incomplete.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/yiqizhong/ether-lib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/yiqizhong/ether-lib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;RS0041</NoWarn>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017</WarningsAsErrors>
+    <!-- NuGet normalizes the Windows TFM's trailing .0 in its lib folder. -->
+    <EtherPackageTargetFramework>net8.0-windows10.0.19041</EtherPackageTargetFramework>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludeCompiledXamlForPackage</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+    <None Update="README.md" Pack="true" PackagePath="" />
+    <None Update="buildTransitive\Ether.DesignSystem.Foundation.targets"
+          Pack="true"
+          PackagePath="buildTransitive\Ether.DesignSystem.Foundation.targets" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Frozen source files remain in their existing location and are linked byte-for-byte. -->
+    <Page Include="..\Resources\Tokens\*.xaml">
+      <Link>Resources\Tokens\%(Filename)%(Extension)</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      Frozen typography resources use host-root ms-appx:///Fonts/... URIs.  Keep them
+      as NuGet contentFiles (not library Content) so consumers receive the original
+      Fonts/... and Assets/... roots without adding nonexistent PRI resource entries.
+    -->
+    <None Include="..\..\Fonts\**\*"
+             Pack="true"
+             PackagePath="contentFiles\any\any\Fonts"
+             PackageCopyToOutput="true" />
+    <None Include="..\..\Assets\**\*"
+             Pack="true"
+             PackagePath="contentFiles\any\any\Assets"
+             PackageCopyToOutput="true" />
+  </ItemGroup>
+
+  <Target Name="IncludeCompiledXamlForPackage" BeforeTargets="GenerateNuspec">
+    <ItemGroup>
+      <!-- The PRI refers to these generated XBF paths during package consumption. -->
+      <TfmSpecificPackageFile Include="$(IntermediateOutputPath)**\*.xbf">
+        <PackagePath>lib\$(EtherPackageTargetFramework)\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      </TfmSpecificPackageFile>
+    </ItemGroup>
+  </Target>
+</Project>

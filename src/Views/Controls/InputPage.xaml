@@ -12,7 +12,8 @@
 
         <views:ComponentPage.InteractiveContent>
             <controls:EtherInput PlaceholderText="Enter text"
-                                 Width="280"/>
+                                 Width="280"
+                                 AutomationProperties.Name="Interactive input"/>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>
@@ -25,6 +26,7 @@
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherInput PlaceholderText="Default"
                                          Width="195"
+                                         AutomationProperties.Name="Default input"
                                          IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
 
@@ -36,6 +38,7 @@
                     <controls:EtherInput x:Name="HoverInput"
                                          PlaceholderText="Default"
                                          Width="195"
+                                         AutomationProperties.Name="Hover input"
                                          IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
 
@@ -47,6 +50,7 @@
                     <controls:EtherInput x:Name="ActiveInput"
                                          PlaceholderText="Default"
                                          Width="195"
+                                         AutomationProperties.Name="Active input"
                                          IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
 
@@ -57,6 +61,7 @@
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherInput Text="Input text"
                                          Width="195"
+                                         AutomationProperties.Name="Filled input"
                                          IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
 
@@ -68,6 +73,7 @@
                     <controls:EtherInput PlaceholderText="Default"
                                          Width="195"
                                          IsEnabled="False"
+                                         AutomationProperties.Name="Disabled input"
                                          IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
 

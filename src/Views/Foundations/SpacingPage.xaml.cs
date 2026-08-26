@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -36,7 +37,7 @@ public sealed partial class SpacingPage : Page
         ("4xl", "spacing/96", "space/4xl"),
     };
 
-    private static IReadOnlyList<SpacingSemanticGroup> BuildSemanticGroups()
+    private static SpacingSemanticGroup[] BuildSemanticGroups()
     {
         var res = Application.Current.Resources;
         var items = new List<SpacingSemanticItem>();
@@ -50,7 +51,7 @@ public sealed partial class SpacingPage : Page
         return new[] { new SpacingSemanticGroup("Space", items) };
     }
 
-    private static IReadOnlyList<SpacingPrimitiveGroup> BuildGroups()
+    private static SpacingPrimitiveGroup[] BuildGroups()
     {
         var primitives = FindPrimitiveDictionary(Application.Current.Resources);
         if (primitives is null)
@@ -66,13 +67,13 @@ public sealed partial class SpacingPage : Page
             if (name.StartsWith("Spacing", StringComparison.Ordinal))
             {
                 spacing.Add(new SpacingPrimitiveItem(
-                    name["Spacing".Length..], value.ToString(), value, 16, new CornerRadius(0)));
+                    name["Spacing".Length..], value.ToString(CultureInfo.CurrentCulture), value, 16, new CornerRadius(0)));
             }
         }
 
         return new[]
         {
-            new SpacingPrimitiveGroup("Spacing", spacing.OrderBy(i => double.Parse(i.Value)).ToArray()),
+            new SpacingPrimitiveGroup("Spacing", spacing.OrderBy(i => double.Parse(i.Value, CultureInfo.CurrentCulture)).ToArray()),
         };
     }
 

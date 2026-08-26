@@ -1,0 +1,80 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Ether.DesignSystem.Controls</AssemblyName>
+    <RootNamespace>EtherSandbox.Controls</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+    <PackageId>Ether.DesignSystem.Controls</PackageId>
+    <Version>$(EtherDesignSystemPreviewVersion)</Version>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Authors>Ether Design System</Authors>
+    <Description>Preview WinUI 3 reusable controls and design-system resource entry points for Ether.</Description>
+    <PackageTags>winui;winui3;design-system;controls;preview</PackageTags>
+    <PackageReleaseNotes>Preview release. x64 package consumers are verified for unpackaged runtime and packaged build. MSIX install/runtime, other architectures, accessibility, localization, High Contrast completeness, and stable-release readiness remain incomplete.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/yiqizhong/ether-lib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/yiqizhong/ether-lib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;RS0041</NoWarn>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <WarningsAsErrors>$(WarningsAsErrors);RS0016;RS0017</WarningsAsErrors>
+    <!-- NuGet normalizes the Windows TFM's trailing .0 in its lib folder. -->
+    <EtherPackageTargetFramework>net8.0-windows10.0.19041</EtherPackageTargetFramework>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludeCompiledXamlForPackage</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ether.DesignSystem.Foundation\Ether.DesignSystem.Foundation.csproj" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="CommunityToolkit.WinUI.Media" />
+    <PackageReference Include="CommunityToolkit.WinUI.Extensions" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+    <None Update="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Controls\**\*.cs"
+             Exclude="..\Controls\Internal\ColorSwatch.xaml.cs;..\Controls\Internal\HandButton.cs;..\Controls\Internal\HandRadioButton.cs;..\Controls\Internal\PrimitiveBadge.xaml.cs;..\Controls\Internal\UpdatedBadge.xaml.cs;..\Controls\Navigation\EtherMasthead.xaml.cs">
+      <Link>Controls\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+    <Compile Include="..\Converters\MultiplyConverter.cs">
+      <Link>Converters\MultiplyConverter.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="..\Controls\**\*.xaml"
+          Exclude="..\Controls\Internal\ColorSwatch.xaml;..\Controls\Internal\PrimitiveBadge.xaml;..\Controls\Internal\UpdatedBadge.xaml;..\Controls\Navigation\EtherMasthead.xaml">
+      <Link>Controls\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\Resources\Foundations\EtherCard.xaml">
+      <Link>Resources\Foundations\EtherCard.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <Target Name="IncludeCompiledXamlForPackage" BeforeTargets="GenerateNuspec">
+    <ItemGroup>
+      <!-- The generated PRI references these XBF files when a consumer loads library XAML. -->
+      <TfmSpecificPackageFile Include="$(IntermediateOutputPath)**\*.xbf">
+        <PackagePath>lib\$(EtherPackageTargetFramework)\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      </TfmSpecificPackageFile>
+    </ItemGroup>
+  </Target>
+</Project>

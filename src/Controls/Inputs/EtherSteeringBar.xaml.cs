@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -39,6 +38,13 @@ public sealed class SteeringBarValueChangedEventArgs : EventArgs
 /// control is interactive; showcase pages can force a visual preview state via
 /// <see cref="PreviewStatus"/>.
 /// </summary>
+/// <remarks>
+/// <see cref="PreviewStatus"/> is Gallery-oriented and remains part of the public
+/// surface. Removing it would be a PublicAPI breaking change. Label visibility is
+/// driven through <c>LabelStates</c>. Thumb size, fill width, stop markers, and
+/// PreviewStatus opacity stay code-driven so pointer and keyboard interaction is
+/// not rewritten onto VisualStateManager.
+/// </remarks>
 [TemplatePart(Name = InteractionSurfacePart, Type = typeof(Grid))]
 [TemplatePart(Name = TrackBackgroundPart, Type = typeof(Border))]
 [TemplatePart(Name = FillBorderPart, Type = typeof(Border))]
@@ -52,6 +58,10 @@ public sealed class SteeringBarValueChangedEventArgs : EventArgs
 [TemplatePart(Name = LabelRowPart, Type = typeof(Grid))]
 [TemplatePart(Name = TitleTextPart, Type = typeof(ContentPresenter))]
 [TemplatePart(Name = ValueLabelPart, Type = typeof(ContentPresenter))]
+[TemplateVisualState(GroupName = LabelStatesGroup, Name = BothLabelsVisibleState)]
+[TemplateVisualState(GroupName = LabelStatesGroup, Name = TitleOnlyState)]
+[TemplateVisualState(GroupName = LabelStatesGroup, Name = ValueOnlyState)]
+[TemplateVisualState(GroupName = LabelStatesGroup, Name = LabelsHiddenState)]
 public sealed class EtherSteeringBar : Control
 {
     private const string InteractionSurfacePart = "InteractionSurface";
@@ -67,6 +77,11 @@ public sealed class EtherSteeringBar : Control
     private const string LabelRowPart = "LabelRow";
     private const string TitleTextPart = "TitleText";
     private const string ValueLabelPart = "ValueLabel";
+    private const string LabelStatesGroup = "LabelStates";
+    private const string BothLabelsVisibleState = "BothLabelsVisible";
+    private const string TitleOnlyState = "TitleOnly";
+    private const string ValueOnlyState = "ValueOnly";
+    private const string LabelsHiddenState = "LabelsHidden";
 
     private const double TrackHeight = 4;
     private const double DefaultThumbWidth = 21;
@@ -89,8 +104,6 @@ public sealed class EtherSteeringBar : Control
     private Border? _thumbDisabledShell;
     private Border? _shadowFar;
     private Border? _shadowNear;
-    private Grid? _labelRow;
-    private ContentPresenter? _titleText;
     private ContentPresenter? _valueLabel;
 
     public event EventHandler<SteeringBarValueChangedEventArgs>? ValueChanged;
@@ -141,11 +154,11 @@ public sealed class EtherSteeringBar : Control
 
     public static readonly DependencyProperty ShowTitleProperty =
         DependencyProperty.Register(nameof(ShowTitle), typeof(bool), typeof(EtherSteeringBar),
-            new PropertyMetadata(true, OnLabelPropertyChanged));
+            new PropertyMetadata(false, OnLabelPropertyChanged));
 
     public static readonly DependencyProperty ShowValueProperty =
         DependencyProperty.Register(nameof(ShowValue), typeof(bool), typeof(EtherSteeringBar),
-            new PropertyMetadata(true, OnLabelPropertyChanged));
+            new PropertyMetadata(false, OnLabelPropertyChanged));
 
     public double Minimum
     {
@@ -225,13 +238,18 @@ public sealed class EtherSteeringBar : Control
         set => SetValue(ShowValueProperty, value);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EtherSteeringBar"/> class.
+    /// </summary>
     public EtherSteeringBar()
     {
+        DefaultStyleKey = typeof(EtherSteeringBar);
         ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
 
         Loaded += (_, _) => UpdateVisuals();
         SizeChanged += (_, _) => UpdateVisuals();
         IsEnabledChanged += (_, _) => UpdateVisuals();
+        ActualThemeChanged += (_, _) => UpdateVisuals();
         KeyDown += OnKeyDown;
     }
 
@@ -251,8 +269,6 @@ public sealed class EtherSteeringBar : Control
         _thumbDisabledShell = GetTemplateChild(ThumbDisabledShellPart) as Border;
         _shadowFar = GetTemplateChild(ShadowFarPart) as Border;
         _shadowNear = GetTemplateChild(ShadowNearPart) as Border;
-        _labelRow = GetTemplateChild(LabelRowPart) as Grid;
-        _titleText = GetTemplateChild(TitleTextPart) as ContentPresenter;
         _valueLabel = GetTemplateChild(ValueLabelPart) as ContentPresenter;
 
         AttachInteractionHandlers();
@@ -269,7 +285,7 @@ public sealed class EtherSteeringBar : Control
         if (e.Property != ValueProperty)
         {
             var normalizedValue = control.NormalizeValue(control.Value);
-            if (!control.AreClose(control.Value, normalizedValue))
+            if (!AreClose(control.Value, normalizedValue))
             {
                 control.SetValue(ValueProperty, normalizedValue);
                 return;
@@ -520,11 +536,9 @@ public sealed class EtherSteeringBar : Control
         var markerSize = 3d;
         var markerTop = ((_interactionSurface?.ActualHeight ?? 15) - markerSize) / 2d;
         var activeBrush = GetStopMarkerBrush(
-            isDisabled ? "StopMarkerDisabledActiveBrush" : "StopMarkerActiveBrush",
-            isDisabled ? "#99FFFFFF" : "#D9FFFFFF");
+            isDisabled ? "EtherSteeringBarStopMarkerDisabledActiveBrush" : "EtherSteeringBarStopMarkerActiveBrush");
         var inactiveBrush = GetStopMarkerBrush(
-            isDisabled ? "StopMarkerDisabledInactiveBrush" : "StopMarkerInactiveBrush",
-            isDisabled ? "#33FFFFFF" : "#66FFFFFF");
+            isDisabled ? "EtherSteeringBarStopMarkerDisabledInactiveBrush" : "EtherSteeringBarStopMarkerInactiveBrush");
 
         foreach (var stopValue in stopValues)
         {
@@ -544,15 +558,15 @@ public sealed class EtherSteeringBar : Control
         }
     }
 
-    private bool AreClose(double left, double right)
+    private static bool AreClose(double left, double right)
         => Math.Abs(left - right) < 0.0001;
 
-    private Brush GetStopMarkerBrush(string resourceKey, string fallbackColor)
+    private Brush GetStopMarkerBrush(string resourceKey)
     {
         if (TryFindResource(resourceKey) is Brush brush)
             return brush;
 
-        return new SolidColorBrush(ColorFromHex(fallbackColor));
+        throw new InvalidOperationException($"EtherSteeringBar is missing component resource '{resourceKey}'.");
     }
 
     private object? TryFindResource(string resourceKey)
@@ -566,35 +580,25 @@ public sealed class EtherSteeringBar : Control
         return null;
     }
 
-    private static Windows.UI.Color ColorFromHex(string value)
-    {
-        var hex = value.TrimStart('#');
-        if (hex.Length == 6)
-            hex = $"FF{hex}";
-
-        return Windows.UI.Color.FromArgb(
-            byte.Parse(hex[..2], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
-            byte.Parse(hex[2..4], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
-            byte.Parse(hex[4..6], NumberStyles.HexNumber, CultureInfo.InvariantCulture),
-            byte.Parse(hex[6..8], NumberStyles.HexNumber, CultureInfo.InvariantCulture));
-    }
-
     private void UpdateLabels()
     {
-        if (_titleText is not null)
-        {
-            _titleText.Content = Title;
-            _titleText.Visibility = ShowTitle ? Visibility.Visible : Visibility.Collapsed;
-        }
-
         if (_valueLabel is not null)
-        {
             _valueLabel.Content = GetEffectiveValueContent();
-            _valueLabel.Visibility = ShowValue ? Visibility.Visible : Visibility.Collapsed;
-        }
 
-        if (_labelRow is not null)
-            _labelRow.Visibility = (ShowTitle || ShowValue) ? Visibility.Visible : Visibility.Collapsed;
+        UpdateLabelState();
+    }
+
+    private void UpdateLabelState()
+    {
+        var state = (ShowTitle, ShowValue) switch
+        {
+            (true, true) => BothLabelsVisibleState,
+            (true, false) => TitleOnlyState,
+            (false, true) => ValueOnlyState,
+            _ => LabelsHiddenState,
+        };
+
+        VisualStateManager.GoToState(this, state, false);
     }
 
     private object? GetEffectiveValueContent()
@@ -738,6 +742,12 @@ public sealed class EtherSteeringBar : Control
 
         internal void RaiseValueChanged(double oldValue, double newValue)
             => RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty, oldValue, newValue);
+
+        protected override string GetNameCore()
+        {
+            var name = base.GetNameCore();
+            return string.IsNullOrWhiteSpace(name) && OwnerControl.Title is string title ? title : name;
+        }
 
         protected override string GetClassNameCore()
             => nameof(EtherSteeringBar);

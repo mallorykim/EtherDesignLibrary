@@ -1,135 +1,202 @@
-﻿using System;
+using System;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace EtherSandbox.Controls;
 
 /// <summary>
-/// Ether Design System progress bar (Figma node 60609:946): a rounded track with a
-/// gradient fill sized to Value/Maximum, plus optional title (left) and value (right)
-/// labels above it. The four spec variants are the on/off combinations of those two
-/// labels — <see cref="ShowTitle"/> and <see cref="ShowValue"/>.
+/// Displays a non-interactive, determinate amount of progress with optional title and value labels.
 /// </summary>
 /// <remarks>
-/// Derives from <see cref="RangeBase"/> purely to inherit Value / Minimum / Maximum and
-/// their change virtuals. The fill width is the ratio between two star-weighted grid
-/// columns (<c>FillColumn</c> / <c>RestColumn</c>) — an actual laid-out width, not a
-/// scale transform, so its 2&#160;px rounded ends stay perfectly round instead of being
-/// squished. Motion comes from changing Value over time (the ProgressBarPage simulator
-/// drives it at a data-like variable rate); each change just re-splits the columns.
-///
-/// Applied via the implicit style in Controls/EtherProgressBar.xaml; no
-/// DefaultStyleKey, so nothing looks for a generic.xaml default style.
+/// The control derives from <see cref="RangeBase"/> to expose its familiar range properties,
+/// but its automation contract is read-only. Value changes update layout directly; the control
+/// deliberately has no animation, so reduced-motion handling is not applicable.
 /// </remarks>
+[TemplatePart(Name = FillColumnPart, Type = typeof(ColumnDefinition))]
+[TemplatePart(Name = RestColumnPart, Type = typeof(ColumnDefinition))]
+[TemplatePart(Name = LabelRowPart, Type = typeof(Grid))]
+[TemplatePart(Name = TitleTextPart, Type = typeof(ContentPresenter))]
+[TemplatePart(Name = ValueLabelPart, Type = typeof(ContentPresenter))]
+[TemplateVisualState(GroupName = LabelStatesGroup, Name = BothLabelsVisibleState)]
+[TemplateVisualState(GroupName = LabelStatesGroup, Name = TitleOnlyState)]
+[TemplateVisualState(GroupName = LabelStatesGroup, Name = ValueOnlyState)]
+[TemplateVisualState(GroupName = LabelStatesGroup, Name = LabelsHiddenState)]
 public sealed class EtherProgressBar : RangeBase
 {
+    private const string FillColumnPart = "FillColumn";
+    private const string RestColumnPart = "RestColumn";
+    private const string LabelRowPart = "LabelRow";
+    private const string TitleTextPart = "TitleText";
+    private const string ValueLabelPart = "ValueLabel";
+    private const string LabelStatesGroup = "LabelStates";
+    private const string BothLabelsVisibleState = "BothLabelsVisible";
+    private const string TitleOnlyState = "TitleOnly";
+    private const string ValueOnlyState = "ValueOnly";
+    private const string LabelsHiddenState = "LabelsHidden";
+
+    private ColumnDefinition? _fillColumn;
+    private ColumnDefinition? _restColumn;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EtherProgressBar"/> class.
+    /// </summary>
     public EtherProgressBar()
     {
-        Minimum = 0;
-        Maximum = 100;
-        Value = 0;
+        DefaultStyleKey = typeof(EtherProgressBar);
     }
 
-    /// <summary>Content of the left-hand title label. A replaceable slot, not baked-in text:
-    /// set a string (rendered in the title style) or any element (icon, run, custom text).</summary>
+    /// <summary>Gets or sets the content of the left-hand title label.</summary>
     public object Title
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
+
+    /// <summary>Identifies the <see cref="Title"/> dependency property.</summary>
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
         nameof(Title), typeof(object), typeof(EtherProgressBar), new PropertyMetadata(null));
 
-    /// <summary>Content of the right-hand value label. A replaceable slot like <see cref="Title"/>:
-    /// a string ("65%", "3 of 4") or any element. Not derived from Value, so it can read whatever
-    /// the caller wants; the simulator on ProgressBarPage updates it as the value animates.</summary>
+    /// <summary>Gets or sets the content of the right-hand value label.</summary>
     public object ValueContent
     {
         get => GetValue(ValueContentProperty);
         set => SetValue(ValueContentProperty, value);
     }
+
+    /// <summary>Identifies the <see cref="ValueContent"/> dependency property.</summary>
     public static readonly DependencyProperty ValueContentProperty = DependencyProperty.Register(
         nameof(ValueContent), typeof(object), typeof(EtherProgressBar), new PropertyMetadata(null));
 
-    /// <summary>Whether the title label is shown.</summary>
+    /// <summary>Gets or sets whether the title label is shown.</summary>
     public bool ShowTitle
     {
         get => (bool)GetValue(ShowTitleProperty);
         set => SetValue(ShowTitleProperty, value);
     }
-    public static readonly DependencyProperty ShowTitleProperty = DependencyProperty.Register(
-        nameof(ShowTitle), typeof(bool), typeof(EtherProgressBar), new PropertyMetadata(true, OnLabelsChanged));
 
-    /// <summary>Whether the value label is shown.</summary>
+    /// <summary>Identifies the <see cref="ShowTitle"/> dependency property.</summary>
+    public static readonly DependencyProperty ShowTitleProperty = DependencyProperty.Register(
+        nameof(ShowTitle), typeof(bool), typeof(EtherProgressBar), new PropertyMetadata(false, OnLabelsChanged));
+
+    /// <summary>Gets or sets whether the value label is shown.</summary>
     public bool ShowValue
     {
         get => (bool)GetValue(ShowValueProperty);
         set => SetValue(ShowValueProperty, value);
     }
-    public static readonly DependencyProperty ShowValueProperty = DependencyProperty.Register(
-        nameof(ShowValue), typeof(bool), typeof(EtherProgressBar), new PropertyMetadata(true, OnLabelsChanged));
 
-    private ColumnDefinition? _fillColumn;
-    private ColumnDefinition? _restColumn;
-    private FrameworkElement? _labelRow;
-    private FrameworkElement? _titleText;
-    private FrameworkElement? _valueLabel;
+    /// <summary>Identifies the <see cref="ShowValue"/> dependency property.</summary>
+    public static readonly DependencyProperty ShowValueProperty = DependencyProperty.Register(
+        nameof(ShowValue), typeof(bool), typeof(EtherProgressBar), new PropertyMetadata(false, OnLabelsChanged));
 
     protected override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
-        _fillColumn = GetTemplateChild("FillColumn") as ColumnDefinition;
-        _restColumn = GetTemplateChild("RestColumn") as ColumnDefinition;
-        _labelRow = GetTemplateChild("LabelRow") as FrameworkElement;
-        _titleText = GetTemplateChild("TitleText") as FrameworkElement;
-        _valueLabel = GetTemplateChild("ValueLabel") as FrameworkElement;
+        _fillColumn = GetTemplateChild(FillColumnPart) as ColumnDefinition;
+        _restColumn = GetTemplateChild(RestColumnPart) as ColumnDefinition;
         UpdateFill();
-        UpdateLabels();
+        UpdateLabelState();
     }
 
+    /// <inheritdoc />
     protected override void OnValueChanged(double oldValue, double newValue)
     {
         base.OnValueChanged(oldValue, newValue);
         UpdateFill();
+
+        if (FrameworkElementAutomationPeer.FromElement(this) is EtherProgressBarAutomationPeer peer)
+        {
+            peer.RaiseValueChanged(oldValue, newValue);
+        }
     }
 
+    /// <inheritdoc />
     protected override void OnMinimumChanged(double oldMinimum, double newMinimum)
     {
         base.OnMinimumChanged(oldMinimum, newMinimum);
         UpdateFill();
     }
 
+    /// <inheritdoc />
     protected override void OnMaximumChanged(double oldMaximum, double newMaximum)
     {
         base.OnMaximumChanged(oldMaximum, newMaximum);
         UpdateFill();
     }
 
-    private static void OnLabelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        => ((EtherProgressBar)d).UpdateLabels();
+    /// <inheritdoc />
+    protected override AutomationPeer OnCreateAutomationPeer()
+        => new EtherProgressBarAutomationPeer(this);
 
-    /// <summary>Splits the track into filled / remaining star columns from the value ratio.</summary>
+    private static void OnLabelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((EtherProgressBar)d).UpdateLabelState();
+
     private void UpdateFill()
     {
-        if (_fillColumn is null || _restColumn is null) return;
+        if (_fillColumn is null || _restColumn is null)
+        {
+            return;
+        }
+
         var span = Maximum - Minimum;
-        var filled = span <= 0 ? 0d : Math.Clamp((Value - Minimum) / span, 0d, 1d);
+        var filled = span <= 0d ? 0d : Math.Clamp((Value - Minimum) / span, 0d, 1d);
         _fillColumn.Width = new GridLength(filled, GridUnitType.Star);
         _restColumn.Width = new GridLength(1d - filled, GridUnitType.Star);
     }
 
-    /// <summary>
-    /// Toggles the two labels, and collapses the whole label row (and its 8&#160;px gap)
-    /// when neither is shown, so the bar-only variant has nothing above the track.
-    /// </summary>
-    private void UpdateLabels()
+    private void UpdateLabelState()
     {
-        if (_titleText is not null)
-            _titleText.Visibility = ShowTitle ? Visibility.Visible : Visibility.Collapsed;
-        if (_valueLabel is not null)
-            _valueLabel.Visibility = ShowValue ? Visibility.Visible : Visibility.Collapsed;
-        if (_labelRow is not null)
-            _labelRow.Visibility = (ShowTitle || ShowValue) ? Visibility.Visible : Visibility.Collapsed;
+        var state = (ShowTitle, ShowValue) switch
+        {
+            (true, true) => BothLabelsVisibleState,
+            (true, false) => TitleOnlyState,
+            (false, true) => ValueOnlyState,
+            _ => LabelsHiddenState,
+        };
+
+        VisualStateManager.GoToState(this, state, false);
+    }
+
+    private sealed class EtherProgressBarAutomationPeer(EtherProgressBar owner)
+        : FrameworkElementAutomationPeer(owner), IRangeValueProvider
+    {
+        private EtherProgressBar OwnerControl => (EtherProgressBar)Owner;
+
+        public bool IsReadOnly => true;
+
+        public double LargeChange => double.NaN;
+
+        public double Maximum => OwnerControl.Maximum;
+
+        public double Minimum => OwnerControl.Minimum;
+
+        public double SmallChange => double.NaN;
+
+        public double Value => OwnerControl.Value;
+
+        public void SetValue(double value)
+            => throw new InvalidOperationException("EtherProgressBar is read-only.");
+
+        internal void RaiseValueChanged(double oldValue, double newValue)
+            => RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty, oldValue, newValue);
+
+        protected override string GetNameCore()
+        {
+            var name = base.GetNameCore();
+            return string.IsNullOrWhiteSpace(name) && OwnerControl.Title is string title ? title : name;
+        }
+
+        protected override string GetClassNameCore()
+            => nameof(EtherProgressBar);
+
+        protected override AutomationControlType GetAutomationControlTypeCore()
+            => AutomationControlType.ProgressBar;
+
+        protected override object? GetPatternCore(PatternInterface patternInterface)
+            => patternInterface == PatternInterface.RangeValue ? this : base.GetPatternCore(patternInterface);
     }
 }

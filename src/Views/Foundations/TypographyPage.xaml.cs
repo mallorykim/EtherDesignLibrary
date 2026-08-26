@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -27,7 +28,7 @@ public sealed partial class TypographyPage : Page
 
     // Semantic text styles from EtherTypography.xaml, grouped as in the Text styles panel.
     // Each row previews the live Style resource so it can never drift from the token.
-    private static IReadOnlyList<TypographySemanticGroup> BuildSemanticGroups()
+    private static TypographySemanticGroup[] BuildSemanticGroups()
     {
         var res = Application.Current.Resources;
         TypographySemanticItem Item(string name, string spec, string styleKey) =>
@@ -68,7 +69,7 @@ public sealed partial class TypographyPage : Page
         };
     }
 
-    private static IReadOnlyList<TypographyPrimitiveGroup> BuildGroups()
+    private static TypographyPrimitiveGroup[] BuildGroups()
     {
         var primitives = FindPrimitiveDictionary(Application.Current.Resources);
         if (primitives is null)
@@ -90,12 +91,12 @@ public sealed partial class TypographyPage : Page
                 int.TryParse(name.AsSpan(4), out var size) &&
                 primitives[key] is double)
             {
-                sizes.Add(new TypographyPrimitiveItem(size.ToString(), $"{size} epx", PreviewText, size, regularWeight, displayFamily));
+                sizes.Add(new TypographyPrimitiveItem(size.ToString(CultureInfo.CurrentCulture), $"{size} epx", PreviewText, size, regularWeight, displayFamily));
             }
             else if (name.StartsWith("Weight", StringComparison.Ordinal) &&
                      primitives[key] is FontWeight weight)
             {
-                weights.Add(new TypographyPrimitiveItem(name["Weight".Length..].ToLowerInvariant(), weight.Weight.ToString(), PreviewText, PreviewSize, weight, displayFamily));
+                weights.Add(new TypographyPrimitiveItem(name["Weight".Length..].ToLowerInvariant(), weight.Weight.ToString(CultureInfo.CurrentCulture), PreviewText, PreviewSize, weight, displayFamily));
             }
         }
 
@@ -107,8 +108,8 @@ public sealed partial class TypographyPage : Page
 
         return new[]
         {
-            new TypographyPrimitiveGroup("Size", sizes.OrderBy(i => int.Parse(i.Name)).ToArray()),
-            new TypographyPrimitiveGroup("Weight", weights.OrderBy(i => int.Parse(i.Value)).ToArray()),
+            new TypographyPrimitiveGroup("Size", sizes.OrderBy(i => int.Parse(i.Name, CultureInfo.CurrentCulture)).ToArray()),
+            new TypographyPrimitiveGroup("Weight", weights.OrderBy(i => int.Parse(i.Value, CultureInfo.CurrentCulture)).ToArray()),
             new TypographyPrimitiveGroup("Family", families),
         };
     }

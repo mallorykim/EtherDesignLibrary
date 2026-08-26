@@ -1,0 +1,6 @@
+#nullable enable
+Ether.DesignSystem.Foundation.Ether_DesignSystem_Foundation_XamlTypeInfo.XamlMetaDataProvider
+Ether.DesignSystem.Foundation.Ether_DesignSystem_Foundation_XamlTypeInfo.XamlMetaDataProvider.XamlMetaDataProvider() -> void
+~Ether.DesignSystem.Foundation.Ether_DesignSystem_Foundation_XamlTypeInfo.XamlMetaDataProvider.GetXamlType(System.Type type) -> Microsoft.UI.Xaml.Markup.IXamlType
+~Ether.DesignSystem.Foundation.Ether_DesignSystem_Foundation_XamlTypeInfo.XamlMetaDataProvider.GetXamlType(string fullName) -> Microsoft.UI.Xaml.Markup.IXamlType
+~Ether.DesignSystem.Foundation.Ether_DesignSystem_Foundation_XamlTypeInfo.XamlMetaDataProvider.GetXmlnsDefinitions() -> Microsoft.UI.Xaml.Markup.XmlnsDefinition[]

@@ -21,7 +21,7 @@ public sealed partial class HomePage : Page
         this.InitializeComponent();
     }
 
-    private static IReadOnlyList<HomeSection> BuildSections()
+    private static List<HomeSection> BuildSections()
     {
         var sections = new List<HomeSection>();
         foreach (var node in ComponentCatalog.Nodes)

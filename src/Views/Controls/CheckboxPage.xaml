@@ -11,7 +11,8 @@
         Description="Updated checkbox styling for Light and Dark themes, shown across unchecked and checked states with default, hover, pressed, and disabled treatments.">
 
         <views:ComponentPage.InteractiveContent>
-            <controls:EtherCheckbox Content="Option"/>
+            <controls:EtherCheckbox Content="Option"
+                                    AutomationProperties.Name="Interactive checkbox"/>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>
@@ -31,6 +32,7 @@
                             <controls:EtherCheckbox
                                                    Content="Option"
                                                    IsChecked="False"
+                                                   AutomationProperties.Name="Unchecked default checkbox"
                                                    IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
@@ -81,6 +83,7 @@
                             <controls:EtherCheckbox
                                                    Content="Option"
                                                    IsChecked="True"
+                                                   AutomationProperties.Name="Checked default checkbox"
                                                    IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">

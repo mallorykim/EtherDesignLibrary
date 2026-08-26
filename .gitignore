@@ -1,5 +1,5 @@
 # Per-developer local config (copy Directory.Build.props.example and customize)
-Directory.Build.props
+# Directory.Build.props is repository-owned build configuration.
 
 # Build outputs
 bin/
@@ -19,6 +19,7 @@ obj/
 
 # Package directories
 packages/
+artifacts/
 
 # Publish profiles
 *.pubxml

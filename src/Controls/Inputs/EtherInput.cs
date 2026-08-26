@@ -1,9 +1,43 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace EtherSandbox.Controls;
 
-/// <summary>The Ether input field — a templated TextBox. No behavior changes beyond the
-/// visual template; see Controls/EtherInput.xaml.</summary>
+/// <summary>
+/// A templated <see cref="TextBox"/>. The default visual is the single-line Ether
+/// input via <c>DefaultEtherInputStyle</c>.
+/// </summary>
+/// <remarks>
+/// The control reuses native <see cref="TextBox"/> CommonStates (Normal, PointerOver,
+/// Focused, Disabled). It does not add a clear button, header/description slots, or
+/// animation APIs. Focus is the brand-blue border in CommonStates, not a FocusStates
+/// group.
+/// </remarks>
+[TemplatePart(Name = LayoutRootPart, Type = typeof(Grid))]
+[TemplatePart(Name = BorderElementPart, Type = typeof(Border))]
+[TemplatePart(Name = PlaceholderTextContentPresenterPart, Type = typeof(ContentControl))]
+[TemplatePart(Name = ContentElementPart, Type = typeof(ScrollViewer))]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = NormalState)]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = PointerOverState)]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = FocusedState)]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = DisabledState)]
 public sealed class EtherInput : TextBox
 {
+    private const string LayoutRootPart = "LayoutRoot";
+    private const string BorderElementPart = "BorderElement";
+    private const string PlaceholderTextContentPresenterPart = "PlaceholderTextContentPresenter";
+    private const string ContentElementPart = "ContentElement";
+    private const string CommonStatesGroup = "CommonStates";
+    private const string NormalState = "Normal";
+    private const string PointerOverState = "PointerOver";
+    private const string FocusedState = "Focused";
+    private const string DisabledState = "Disabled";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EtherInput"/> class.
+    /// </summary>
+    public EtherInput()
+    {
+        DefaultStyleKey = typeof(EtherInput);
+    }
 }

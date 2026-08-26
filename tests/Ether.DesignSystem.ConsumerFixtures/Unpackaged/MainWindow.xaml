@@ -1,0 +1,114 @@
+<Window
+    x:Class="Ether.DesignSystem.ConsumerFixtures.Unpackaged.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:EtherSandbox.Controls"
+    Title="Ether package consumer smoke">
+
+    <Grid x:Name="RootGrid" Background="{ThemeResource BackgroundCanvas}">
+        <StackPanel Padding="8" Spacing="{StaticResource Spacing8}">
+            <!-- Kept in the visual tree so SvgImageSource performs an actual ms-appx URI load. -->
+            <Image x:Name="SvgProof" Width="1" Height="1" Opacity="0.01">
+                <Image.Source>
+                    <SvgImageSource UriSource="ms-appx:///Assets/Icons/dds2/dds2_add-cir.svg" />
+                </Image.Source>
+            </Image>
+            <TextBlock Text="Foundation resource resolved from Ether.DesignSystem.Foundation." />
+            <controls:EtherButton Style="{StaticResource EtherButtonPrimary}"
+                                  Content="Ether control from NuGet package" />
+            <controls:EtherButton x:Name="DefaultButtonProof"
+                                  Content="Default package button"
+                                  AutomationProperties.Name="Default package button" />
+            <controls:EtherButton x:Name="ButtonProof"
+                                  Content="Package button"
+                                  AutomationProperties.Name="Package button" />
+            <controls:EtherButton x:Name="SecondaryButtonProof"
+                                  Style="{StaticResource EtherButtonSecondary}"
+                                  Content="Secondary package button"
+                                  AutomationProperties.Name="Secondary package button" />
+            <controls:EtherProgressBar x:Name="DefaultProgressBarProof"
+                                       Width="200"
+                                       Title="Default package progress" />
+            <controls:EtherProgressBar x:Name="ProgressBarProof"
+                                       Width="200"
+                                       Title="Package download"
+                                       ValueContent="65%"
+                                       Value="65"
+                                       AutomationProperties.Name="Package download progress" />
+            <controls:EtherCheckbox x:Name="DefaultCheckboxProof"
+                                    Content="Default package checkbox"
+                                    AutomationProperties.Name="Default package checkbox" />
+            <controls:EtherCheckbox x:Name="CheckboxProof"
+                                    Content="Package checkbox"
+                                    AutomationProperties.Name="Package checkbox" />
+            <controls:EtherRadioButton x:Name="DefaultRadioButtonProof"
+                                       GroupName="default-package-radio"
+                                       Content="Default package radio"
+                                       AutomationProperties.Name="Default package radio button" />
+            <controls:EtherRadioButton x:Name="RadioButtonProof"
+                                       GroupName="package-radio"
+                                       Content="Package radio"
+                                       AutomationProperties.Name="Package radio button" />
+            <controls:EtherInput x:Name="DefaultInputProof"
+                                 PlaceholderText="Default package input"
+                                 Width="200"
+                                 AutomationProperties.Name="Default package input" />
+            <controls:EtherInput x:Name="InputProof"
+                                 PlaceholderText="Package input"
+                                 Width="200"
+                                 AutomationProperties.Name="Package input" />
+            <controls:EtherDropdown x:Name="DefaultDropdownProof"
+                                    SelectedIndex="0"
+                                    AutomationProperties.Name="Default package dropdown">
+                <ComboBoxItem Content="10 Minutes"/>
+                <ComboBoxItem Content="30 Minutes"/>
+            </controls:EtherDropdown>
+            <controls:EtherDropdown x:Name="DropdownProof"
+                                    SelectedIndex="0"
+                                    AutomationProperties.Name="Package dropdown">
+                <ComboBoxItem Content="10 Minutes"/>
+                <ComboBoxItem Content="30 Minutes"/>
+                <ComboBoxItem Content="1 Hour"/>
+            </controls:EtherDropdown>
+            <controls:EtherSegmentedControl x:Name="DefaultSegmentedControlProof"
+                                            AutomationProperties.Name="Default package segmented control">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton Style="{StaticResource EtherSegment}"
+                                 GroupName="default-package-segment"
+                                 Content="A"
+                                 IsChecked="True"/>
+                    <RadioButton Style="{StaticResource EtherSegment}"
+                                 GroupName="default-package-segment"
+                                 Content="B"/>
+                </StackPanel>
+            </controls:EtherSegmentedControl>
+            <controls:EtherSegmentedControl x:Name="SegmentedControlProof"
+                                            AutomationProperties.Name="Package segmented control">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton Style="{StaticResource EtherSegment}"
+                                 GroupName="package-segment"
+                                 Content="A"
+                                 IsChecked="True"/>
+                    <RadioButton Style="{StaticResource EtherSegment}"
+                                 GroupName="package-segment"
+                                 Content="B"/>
+                </StackPanel>
+            </controls:EtherSegmentedControl>
+            <controls:EtherIntelligenceButton x:Name="DefaultIntelligenceButtonProof"
+                                              Content="Default package intelligence"
+                                              AutomationProperties.Name="Default package intelligence button"/>
+            <controls:EtherIntelligenceButton x:Name="IntelligenceButtonProof"
+                                              Content="Package intelligence"
+                                              AutomationProperties.Name="Package intelligence button"/>
+            <controls:EtherSteeringBar x:Name="DefaultSteeringBarProof"
+                                       Width="200"
+                                       Title="Default package steering bar"/>
+            <controls:EtherSteeringBar x:Name="SteeringBarProof"
+                                       Width="200"
+                                       Title="Package playback"
+                                       ValueContent="65%"
+                                       Value="65"
+                                       AutomationProperties.Name="Package steering bar"/>
+        </StackPanel>
+    </Grid>
+</Window>

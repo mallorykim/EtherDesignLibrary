@@ -1,0 +1,17 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+      Public Foundation resource entry point. Keep this merge order aligned with the
+      original application graph: later dictionaries depend on the preceding ones.
+      The linked token files themselves are frozen byte-for-byte.
+    -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml" />
+        <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml" />
+        <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Foundation/Resources/Tokens/EtherSpacing.xaml" />
+        <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml" />
+        <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Foundation/Resources/Tokens/EtherIconGeometries.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

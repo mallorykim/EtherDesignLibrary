@@ -1,45 +1,93 @@
-<!--
-    Ether Design System Progress Bar
-
-    Figma source: ursRC201v8IiVeafliI45F, node 60609:946 (spec-sheet-progressbar)
-    Vertical layout, 8 px gap, padding 4 top / 12 bottom. Optional title (left) and
-    value (right) labels in Instrument Sans SemiBold 14 (title #000, value 70% black).
-    Track: full width, 4 px tall, #E8EDEF, fully rounded. Progress: a 4 px gradient fill
-    sized to Value/Maximum via two star columns (see EtherProgressBar.cs).
-
-    Gradient runs deep-blue at the start to cyan at the leading edge — the reverse of the
-    spec's textual stop order, matched to the rendered preview (pixel-verified):
-      start #0021F3 -> #0015FF -> #0EB2FF -> #40E1FD leading edge.
-    It spans the FILLED segment (StartPoint/EndPoint 0..1 over the fill Border), so the
-    leading edge stays cyan at any progress value, exactly as the preview shows.
-
-    Colours are literal hex per the spec (this component is not wired to the EtherColors
-    token set), consistent with the other spec-sheet components.
-
-    Implicit style (no x:Key): this dictionary is merged once from App.xaml, and any
-    EtherProgressBar automatically picks up this template with no Style= at the call site.
--->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:EtherSandbox.Controls">
 
-    <Style TargetType="controls:EtherProgressBar">
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <StaticResource x:Key="EtherProgressBarTrackBrush" ResourceKey="background/track" />
+            <StaticResource x:Key="EtherProgressBarTitleForegroundBrush" ResourceKey="text/primary" />
+            <StaticResource x:Key="EtherProgressBarValueForegroundBrush" ResourceKey="text/secondary" />
+            <LinearGradientBrush x:Key="EtherProgressBarFillBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+                <GradientStop Color="#0021F3" Offset="0.00" />
+                <GradientStop Color="#0015FF" Offset="0.33" />
+                <GradientStop Color="#0EB2FF" Offset="0.67" />
+                <GradientStop Color="#40E1FD" Offset="1.00" />
+            </LinearGradientBrush>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <StaticResource x:Key="EtherProgressBarTrackBrush" ResourceKey="background/track" />
+            <StaticResource x:Key="EtherProgressBarTitleForegroundBrush" ResourceKey="text/primary" />
+            <StaticResource x:Key="EtherProgressBarValueForegroundBrush" ResourceKey="text/secondary" />
+            <LinearGradientBrush x:Key="EtherProgressBarFillBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+                <GradientStop Color="#0021F3" Offset="0.00" />
+                <GradientStop Color="#0015FF" Offset="0.33" />
+                <GradientStop Color="#0EB2FF" Offset="0.67" />
+                <GradientStop Color="#40E1FD" Offset="1.00" />
+            </LinearGradientBrush>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="EtherProgressBarTrackBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="EtherProgressBarTitleForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="EtherProgressBarValueForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <LinearGradientBrush x:Key="EtherProgressBarFillBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+                <GradientStop Color="{ThemeResource SystemColorHighlightColor}" Offset="0.00" />
+                <GradientStop Color="{ThemeResource SystemColorHighlightColor}" Offset="0.33" />
+                <GradientStop Color="{ThemeResource SystemColorHighlightColor}" Offset="0.67" />
+                <GradientStop Color="{ThemeResource SystemColorHighlightColor}" Offset="1.00" />
+            </LinearGradientBrush>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <Style x:Key="DefaultEtherProgressBarStyle" TargetType="controls:EtherProgressBar">
+        <Setter Property="Minimum" Value="0" />
+        <Setter Property="Maximum" Value="100" />
+        <Setter Property="Value" Value="0" />
+        <Setter Property="ShowTitle" Value="True" />
+        <Setter Property="ShowValue" Value="True" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:EtherProgressBar">
-                    <!-- Padding 4 top / 12 bottom per spec. -->
-                    <Grid Padding="0,4,0,12">
+                    <Grid x:Name="LayoutRoot" Padding="0,4,0,12">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <!-- Label row. Title / ValueContent are object content slots (not fixed
-                             Text): a string renders in the styles set here, an element renders
-                             as-is. Collapsed wholesale (incl. its 8 px gap) when neither shows;
-                             individual label visibility is set in code. -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="LabelStates">
+                                <VisualState x:Name="BothLabelsVisible">
+                                    <VisualState.Setters>
+                                        <Setter Target="LabelRow.Visibility" Value="Visible" />
+                                        <Setter Target="TitleText.Visibility" Value="Visible" />
+                                        <Setter Target="ValueLabel.Visibility" Value="Visible" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="TitleOnly">
+                                    <VisualState.Setters>
+                                        <Setter Target="LabelRow.Visibility" Value="Visible" />
+                                        <Setter Target="TitleText.Visibility" Value="Visible" />
+                                        <Setter Target="ValueLabel.Visibility" Value="Collapsed" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="ValueOnly">
+                                    <VisualState.Setters>
+                                        <Setter Target="LabelRow.Visibility" Value="Visible" />
+                                        <Setter Target="TitleText.Visibility" Value="Collapsed" />
+                                        <Setter Target="ValueLabel.Visibility" Value="Visible" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="LabelsHidden">
+                                    <VisualState.Setters>
+                                        <Setter Target="LabelRow.Visibility" Value="Collapsed" />
+                                        <Setter Target="TitleText.Visibility" Value="Collapsed" />
+                                        <Setter Target="ValueLabel.Visibility" Value="Collapsed" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
                         <Grid x:Name="LabelRow" Grid.Row="0" Margin="0,0,0,8">
                             <ContentPresenter x:Name="TitleText"
                                               Content="{TemplateBinding Title}"
@@ -47,37 +95,29 @@
                                               FontFamily="{StaticResource InstrumentSans}"
                                               FontSize="{StaticResource Size14}"
                                               FontWeight="{StaticResource WeightSemibold}"
-                                              Foreground="{ThemeResource text/primary}"/>
+                                              Foreground="{ThemeResource EtherProgressBarTitleForegroundBrush}" />
                             <ContentPresenter x:Name="ValueLabel"
                                               Content="{TemplateBinding ValueContent}"
                                               HorizontalAlignment="Right"
                                               FontFamily="{StaticResource InstrumentSans}"
                                               FontSize="{StaticResource Size14}"
                                               FontWeight="{StaticResource WeightSemibold}"
-                                              Foreground="{ThemeResource TextSecondary}"/>
+                                              Foreground="{ThemeResource EtherProgressBarValueForegroundBrush}" />
                         </Grid>
 
-                        <!-- Track (4 px) with the gradient fill overlaid. The fill's width is an
-                             actual laid-out star column (not a scale transform) so its 2 px rounded
-                             ends stay round at any value; the gradient spans the fill, keeping the
-                             cyan leading edge. Motion comes from Value changing over time. -->
-                        <Grid Grid.Row="1" Height="{StaticResource Spacing4}">
-                            <Border Background="{ThemeResource background/track}" CornerRadius="2"/>
+                        <Grid x:Name="ProgressTrack" Grid.Row="1" Height="{StaticResource Spacing4}">
+                            <Border x:Name="ProgressTrackBackground"
+                                    Background="{ThemeResource EtherProgressBarTrackBrush}"
+                                    CornerRadius="2" />
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition x:Name="FillColumn" Width="0*"/>
-                                    <ColumnDefinition x:Name="RestColumn" Width="1*"/>
+                                    <ColumnDefinition x:Name="FillColumn" Width="0*" />
+                                    <ColumnDefinition x:Name="RestColumn" Width="1*" />
                                 </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" CornerRadius="2">
-                                    <Border.Background>
-                                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                            <GradientStop Color="#0021F3" Offset="0.00"/>
-                                            <GradientStop Color="#0015FF" Offset="0.33"/>
-                                            <GradientStop Color="#0EB2FF" Offset="0.67"/>
-                                            <GradientStop Color="#40E1FD" Offset="1.00"/>
-                                        </LinearGradientBrush>
-                                    </Border.Background>
-                                </Border>
+                                <Border x:Name="ProgressFill"
+                                        Grid.Column="0"
+                                        Background="{ThemeResource EtherProgressBarFillBrush}"
+                                        CornerRadius="2" />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -86,4 +126,5 @@
         </Setter>
     </Style>
 
+    <Style TargetType="controls:EtherProgressBar" BasedOn="{StaticResource DefaultEtherProgressBarStyle}" />
 </ResourceDictionary>

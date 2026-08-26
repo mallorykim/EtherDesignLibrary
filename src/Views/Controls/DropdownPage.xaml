@@ -40,7 +40,7 @@
             <controls:EtherDropdown
                       SelectedIndex="0"
                       HorizontalAlignment="Left"
-                      AutomationProperties.Name="Auto-lock delay">
+                      AutomationProperties.Name="Interactive dropdown">
                 <ComboBoxItem Content="10 Minutes"/>
                 <ComboBoxItem Content="30 Minutes"/>
                 <ComboBoxItem Content="1 Hour"/>
@@ -62,6 +62,7 @@
                                HorizontalAlignment="Center"/>
                     <controls:EtherDropdown
                               SelectedIndex="0"
+                              AutomationProperties.Name="Default dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
                         <ComboBoxItem Content="10 Minutes"/>
                     </controls:EtherDropdown>
@@ -73,6 +74,7 @@
                                HorizontalAlignment="Center"/>
                     <controls:EtherDropdown x:Name="DropdownHoverState"
                               SelectedIndex="0"
+                              AutomationProperties.Name="Hover dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
                         <ComboBoxItem Content="10 Minutes"/>
                     </controls:EtherDropdown>
@@ -84,6 +86,7 @@
                                HorizontalAlignment="Center"/>
                     <controls:EtherDropdown x:Name="DropdownPressedState"
                               SelectedIndex="0"
+                              AutomationProperties.Name="Pressed dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
                         <ComboBoxItem Content="10 Minutes"/>
                     </controls:EtherDropdown>
@@ -98,6 +101,7 @@
                          than a hand-drawn imitation. -->
                     <controls:EtherDropdown x:Name="DropdownOpenState"
                               SelectedIndex="0"
+                              AutomationProperties.Name="Open dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
                         <ComboBoxItem Content="10 Minutes"/>
                     </controls:EtherDropdown>
@@ -169,6 +173,7 @@
                     <controls:EtherDropdown
                               SelectedIndex="0"
                               IsEnabled="False"
+                              AutomationProperties.Name="Disabled dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
                         <ComboBoxItem Content="10 Minutes"/>
                     </controls:EtherDropdown>

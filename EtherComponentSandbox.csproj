@@ -16,6 +16,9 @@
     <!-- Unpackaged — no Package.appxmanifest required -->
     <WindowsPackageType>None</WindowsPackageType>
     <SelfContained>false</SelfContained>
+    <!-- Legacy sandbox owns only its original source tree; exclude generated outputs and the
+         separately built repository projects before SDK default globs create XAML items. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);artifacts\**;tests\**;src\Ether.DesignSystem.Foundation\**;src\Ether.DesignSystem.Controls\**;samples\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -24,15 +27,20 @@
 
   <ItemGroup>
     <!-- Updated to latest Windows App SDK / BuildTools -->
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.3.1"/>
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2270"/>
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
     <!-- WinUI3 colored shadows (replaces WPF DropShadowEffect). Media brings Win2D + Extensions. -->
-    <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.250402"/>
-    <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="8.2.250402"/>
+    <PackageReference Include="CommunityToolkit.WinUI.Media" />
+    <PackageReference Include="CommunityToolkit.WinUI.Extensions" />
     <Manifest Include="$(ApplicationManifest)"/>
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The legacy project is intentionally outside Ether.DesignSystem.slnx. Keep it from
+         globbing source and generated files owned by the new projects beneath this repository. -->
+    <Compile Remove="src\Ether.DesignSystem.Foundation\**\*.cs;src\Ether.DesignSystem.Controls\**\*.cs;samples\**\*.cs" />
+    <Page Remove="src\Ether.DesignSystem.Foundation\**\*.xaml;src\Ether.DesignSystem.Controls\**\*.xaml;samples\**\*.xaml" />
+    <ApplicationDefinition Remove="src\Ether.DesignSystem.Foundation\**\*.xaml;src\Ether.DesignSystem.Controls\**\*.xaml;samples\**\*.xaml" />
     <Page Remove="src\App\App.xaml" />
     <ApplicationDefinition Include="src\App\App.xaml">
       <Generator>MSBuild:Compile</Generator>

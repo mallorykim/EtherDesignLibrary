@@ -1,0 +1,32 @@
+<Project>
+  <!--
+    NuGet does not flow contentFiles from Foundation through Controls' transitive
+    dependency. The frozen typography URIs use host-root Fonts/... and require the
+    consuming app to copy Foundation's fonts and assets to those exact paths.
+  -->
+  <PropertyGroup>
+    <EtherDesignSystemFoundationAssetsRoot>$(MSBuildThisFileDirectory)..\contentFiles\any\any\</EtherDesignSystemFoundationAssetsRoot>
+    <EtherDesignSystemFoundationIncludeHostRootFonts Condition="'$(EtherDesignSystemFoundationIncludeHostRootFonts)' == ''">true</EtherDesignSystemFoundationIncludeHostRootFonts>
+  </PropertyGroup>
+
+  <!--
+    The frozen dictionaries use ms-appx:///Fonts/... and the package exposes SVG
+    assets. Add them to the host Content/PRI graph before resource processing and
+    copy them to the host output. This intentionally does not participate in
+    assembly resolution; see the Foundation resource contract for the unpackaged
+    StorageFile limitation.
+  -->
+  <Target Name="IncludeEtherDesignSystemFoundationHostRootAssets" BeforeTargets="PrepareForBuild">
+    <ItemGroup>
+      <Content Include="$(EtherDesignSystemFoundationAssetsRoot)Assets\**\*">
+        <LinkBase>Assets</LinkBase>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="$(EtherDesignSystemFoundationAssetsRoot)Fonts\**\*"
+               Condition="'$(EtherDesignSystemFoundationIncludeHostRootFonts)' == 'true'">
+        <LinkBase>Fonts</LinkBase>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+  </Target>
+</Project>

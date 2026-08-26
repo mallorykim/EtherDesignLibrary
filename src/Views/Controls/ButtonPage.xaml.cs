@@ -59,6 +59,7 @@ public sealed partial class ButtonPage : Page
         SetRightIcon(SecondarySmallDemo, show, 8);
         SetRightIcon(TertiaryLargeDemo, show, 10);
         SetRightIcon(TertiarySmallDemo, show, 8);
+        SetRightIcon(DefaultStyleDemo, show, 10);
     }
 
     private static void SetRightIcon(EtherButton? button, bool show, double size)

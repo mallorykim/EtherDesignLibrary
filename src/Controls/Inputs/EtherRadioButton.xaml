@@ -4,7 +4,7 @@
     Figma source: ursRC201v8IiVeafliI45F, node 60607:915 (spec-sheet-radio-buttons)
     Circle 18 x 18, 1.5 px stroke drawn inside. Label is Inter SemiBold 12 with an
     8 px gap. When checked, a 10 x 10 near-white (#F5F7F8) dot sits in the centre.
-    No indeterminate state.
+    No indeterminate state (IsThreeState = False via DefaultEtherRadioButtonStyle).
 
     STATES
       Unchecked: Default / Hover / Pressed / Disabled
@@ -14,10 +14,11 @@
     Sibling of the Checkbox (same spec sheet, same palette): the only visual
     differences are the round shape and the inner dot in place of the tick.
 
-    Colours are literal hex per the spec (this component is not wired to the
-    EtherColors token set). Fill depends on BOTH check-ness and pointer state,
-    which live in two separate visual-state groups (CommonStates, CheckStates).
-    To avoid those groups fighting over one property, each owns a different one:
+    Colours live in EtherRadioButton* component theme dictionaries (Light/Dark keep
+    the previous literal hex; High Contrast uses Windows SystemColor*). Fill depends
+    on BOTH check-ness and pointer state, which live in two separate visual-state
+    groups (CommonStates, CheckStates). To avoid those groups fighting over one
+    property, each owns a different one:
       - CommonStates writes Background on TWO different borders (UncheckedFill and
         CheckedFill) — the four pointer fills for each.
       - CheckStates writes only Visibility (which of the two faces shows).
@@ -35,54 +36,58 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="RadioCircleFillDefault" Color="#66F5F7F8"/>
-            <SolidColorBrush x:Key="RadioCircleFillHover"   Color="#E6F5F7F8"/>
-            <SolidColorBrush x:Key="RadioCircleFillPressed" Color="#338B96A1"/>
-            <SolidColorBrush x:Key="RadioCircleStroke"      Color="#FF8B96A1"/>
-            <SolidColorBrush x:Key="RadioCheckedFillDefault" Color="#FF196FFF"/>
-            <SolidColorBrush x:Key="RadioCheckedFillHover"   Color="#FF0D62FF"/>
-            <SolidColorBrush x:Key="RadioCheckedStroke"      Color="#FF196FFF"/>
-            <SolidColorBrush x:Key="RadioInnerDot"           Color="#FFF5F7F8"/>
-            <SolidColorBrush x:Key="RadioLabel"              Color="#B3000000"/>
-            <SolidColorBrush x:Key="RadioDisabledUncheckedFill"   Color="#FDFEFE"/>
-            <SolidColorBrush x:Key="RadioDisabledUncheckedStroke" Color="#D0D5D9"/>
-            <SolidColorBrush x:Key="RadioDisabledCheckedFill"     Color="#A3C5FF"/>
-            <SolidColorBrush x:Key="RadioDisabledCheckedDot"      Color="#FBFCFC"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleFillDefaultBrush" Color="#66F5F7F8"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleFillHoverBrush"   Color="#E6F5F7F8"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleFillPressedBrush" Color="#338B96A1"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleStrokeBrush"      Color="#FF8B96A1"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCheckedFillDefaultBrush" Color="#FF196FFF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCheckedFillHoverBrush"   Color="#FF0D62FF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCheckedStrokeBrush"      Color="#FF196FFF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonInnerDotBrush"           Color="#FFF5F7F8"/>
+            <SolidColorBrush x:Key="EtherRadioButtonLabelBrush"              Color="#B3000000"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledUncheckedFillBrush"   Color="#FDFEFE"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledUncheckedStrokeBrush" Color="#D0D5D9"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledCheckedFillBrush"     Color="#A3C5FF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledCheckedDotBrush"      Color="#FBFCFC"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="RadioCircleFillDefault" Color="#1AFFFFFF"/>
-            <SolidColorBrush x:Key="RadioCircleFillHover"   Color="#33FFFFFF"/>
-            <SolidColorBrush x:Key="RadioCircleFillPressed" Color="#29FFFFFF"/>
-            <SolidColorBrush x:Key="RadioCircleStroke"      Color="#FF8B96A1"/>
-            <SolidColorBrush x:Key="RadioCheckedFillDefault" Color="#FF196FFF"/>
-            <SolidColorBrush x:Key="RadioCheckedFillHover"   Color="#FF0D62FF"/>
-            <SolidColorBrush x:Key="RadioCheckedStroke"      Color="#FF196FFF"/>
-            <SolidColorBrush x:Key="RadioInnerDot"           Color="#FFF5F7F8"/>
-            <SolidColorBrush x:Key="RadioLabel"              Color="#B3FFFFFF"/>
-            <SolidColorBrush x:Key="RadioDisabledUncheckedFill"   Color="#FF1E2025"/>
-            <SolidColorBrush x:Key="RadioDisabledUncheckedStroke" Color="#FF525B66"/>
-            <SolidColorBrush x:Key="RadioDisabledCheckedFill"     Color="#FF355CA8"/>
-            <SolidColorBrush x:Key="RadioDisabledCheckedDot"      Color="#FFF5F7F8"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleFillDefaultBrush" Color="#1AFFFFFF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleFillHoverBrush"   Color="#33FFFFFF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleFillPressedBrush" Color="#29FFFFFF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleStrokeBrush"      Color="#FF8B96A1"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCheckedFillDefaultBrush" Color="#FF196FFF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCheckedFillHoverBrush"   Color="#FF0D62FF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCheckedStrokeBrush"      Color="#FF196FFF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonInnerDotBrush"           Color="#FFF5F7F8"/>
+            <SolidColorBrush x:Key="EtherRadioButtonLabelBrush"              Color="#B3FFFFFF"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledUncheckedFillBrush"   Color="#FF1E2025"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledUncheckedStrokeBrush" Color="#FF525B66"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledCheckedFillBrush"     Color="#FF355CA8"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledCheckedDotBrush"      Color="#FFF5F7F8"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
-            <SolidColorBrush x:Key="RadioCircleFillDefault" Color="{ThemeResource SystemColorButtonFaceColor}"/>
-            <SolidColorBrush x:Key="RadioCircleFillHover"   Color="{ThemeResource SystemColorButtonFaceColor}"/>
-            <SolidColorBrush x:Key="RadioCircleFillPressed" Color="{ThemeResource SystemColorButtonFaceColor}"/>
-            <SolidColorBrush x:Key="RadioCircleStroke"      Color="{ThemeResource SystemColorWindowTextColor}"/>
-            <SolidColorBrush x:Key="RadioCheckedFillDefault" Color="{ThemeResource SystemColorHighlightColor}"/>
-            <SolidColorBrush x:Key="RadioCheckedFillHover"   Color="{ThemeResource SystemColorHighlightColor}"/>
-            <SolidColorBrush x:Key="RadioCheckedStroke"      Color="{ThemeResource SystemColorHighlightColor}"/>
-            <SolidColorBrush x:Key="RadioInnerDot"           Color="{ThemeResource SystemColorHighlightTextColor}"/>
-            <SolidColorBrush x:Key="RadioLabel"              Color="{ThemeResource SystemColorWindowTextColor}"/>
-            <SolidColorBrush x:Key="RadioDisabledUncheckedFill"   Color="{ThemeResource SystemColorButtonFaceColor}"/>
-            <SolidColorBrush x:Key="RadioDisabledUncheckedStroke" Color="{ThemeResource SystemColorGrayTextColor}"/>
-            <SolidColorBrush x:Key="RadioDisabledCheckedFill"     Color="{ThemeResource SystemColorGrayTextColor}"/>
-            <SolidColorBrush x:Key="RadioDisabledCheckedDot"      Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleFillDefaultBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleFillHoverBrush"   Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleFillPressedBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCircleStrokeBrush"      Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCheckedFillDefaultBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCheckedFillHoverBrush"   Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonCheckedStrokeBrush"      Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonInnerDotBrush"           Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonLabelBrush"              Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledUncheckedFillBrush"   Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledUncheckedStrokeBrush" Color="{ThemeResource SystemColorGrayTextColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledCheckedFillBrush"     Color="{ThemeResource SystemColorGrayTextColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonDisabledCheckedDotBrush"      Color="{ThemeResource SystemColorButtonFaceColor}"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
+    <!-- Structural overlay fill: not themed, so High Contrast can keep SystemColor-only
+         theme keys while the stroke ring still reveals the face beneath it. -->
+    <SolidColorBrush x:Key="EtherRadioButtonTransparentBrush" Color="Transparent"/>
+
     <ControlTemplate x:Key="EtherRadioButtonTemplate" TargetType="controls:EtherRadioButton">
-        <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid x:Name="LayoutRoot" Background="{StaticResource EtherRadioButtonTransparentBrush}">
             <VisualStateManager.VisualStateGroups>
 
                 <VisualStateGroup x:Name="CommonStates">
@@ -93,21 +98,21 @@
                     </VisualStateGroup.Transitions>
                     <VisualState x:Name="Normal">
                         <VisualState.Setters>
-                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource RadioCircleFillDefault}"/>
-                            <Setter Target="CheckedFill.Background" Value="{ThemeResource RadioCheckedFillDefault}"/>
+                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource EtherRadioButtonCircleFillDefaultBrush}"/>
+                            <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherRadioButtonCheckedFillDefaultBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
-                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource RadioCircleFillHover}"/>
-                            <Setter Target="CheckedFill.Background" Value="{ThemeResource RadioCheckedFillHover}"/>
+                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource EtherRadioButtonCircleFillHoverBrush}"/>
+                            <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherRadioButtonCheckedFillHoverBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
-                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource RadioCircleFillPressed}"/>
+                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource EtherRadioButtonCircleFillPressedBrush}"/>
                             <!-- The spec has no distinct checked-pressed; keep the default blue. -->
-                            <Setter Target="CheckedFill.Background" Value="{ThemeResource RadioCheckedFillDefault}"/>
+                            <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherRadioButtonCheckedFillDefaultBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
@@ -117,11 +122,11 @@
                                  shows; both faces' disabled colours are set here so either is ready.
                                  Checked stroke is set to the disabled fill so the rim stays uniform.
                                  Only the label fades by opacity — it has nothing overlapping it. -->
-                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource RadioDisabledUncheckedFill}"/>
-                            <Setter Target="UncheckedStroke.BorderBrush" Value="{ThemeResource RadioDisabledUncheckedStroke}"/>
-                            <Setter Target="CheckedFill.Background" Value="{ThemeResource RadioDisabledCheckedFill}"/>
-                            <Setter Target="CheckedStroke.BorderBrush" Value="{ThemeResource RadioDisabledCheckedFill}"/>
-                            <Setter Target="Dot.Fill" Value="{ThemeResource RadioDisabledCheckedDot}"/>
+                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource EtherRadioButtonDisabledUncheckedFillBrush}"/>
+                            <Setter Target="UncheckedStroke.BorderBrush" Value="{ThemeResource EtherRadioButtonDisabledUncheckedStrokeBrush}"/>
+                            <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherRadioButtonDisabledCheckedFillBrush}"/>
+                            <Setter Target="CheckedStroke.BorderBrush" Value="{ThemeResource EtherRadioButtonDisabledCheckedFillBrush}"/>
+                            <Setter Target="Dot.Fill" Value="{ThemeResource EtherRadioButtonDisabledCheckedDotBrush}"/>
                             <Setter Target="Label.Opacity" Value="0.4"/>
                         </VisualState.Setters>
                     </VisualState>
@@ -169,11 +174,11 @@
                     <!-- Unchecked face: translucent fill under a grey stroke ring. -->
                     <Grid x:Name="UncheckedFace">
                         <Border x:Name="UncheckedFill"
-                                Background="{ThemeResource RadioCircleFillDefault}"
+                                Background="{ThemeResource EtherRadioButtonCircleFillDefaultBrush}"
                                 CornerRadius="9"/>
                         <Border x:Name="UncheckedStroke"
-                                Background="Transparent"
-                                BorderBrush="{ThemeResource RadioCircleStroke}"
+                                Background="{StaticResource EtherRadioButtonTransparentBrush}"
+                                BorderBrush="{ThemeResource EtherRadioButtonCircleStrokeBrush}"
                                 BorderThickness="1.5"
                                 CornerRadius="9"
                                 IsHitTestVisible="False"/>
@@ -182,17 +187,17 @@
                     <!-- Checked face: brand-blue fill under a blue stroke ring, carrying the dot. -->
                     <Grid x:Name="CheckedFace" Visibility="Collapsed">
                         <Border x:Name="CheckedFill"
-                                Background="{ThemeResource RadioCheckedFillDefault}"
+                                Background="{ThemeResource EtherRadioButtonCheckedFillDefaultBrush}"
                                 CornerRadius="9"/>
                         <Border x:Name="CheckedStroke"
-                                Background="Transparent"
-                                BorderBrush="{ThemeResource RadioCheckedStroke}"
+                                Background="{StaticResource EtherRadioButtonTransparentBrush}"
+                                BorderBrush="{ThemeResource EtherRadioButtonCheckedStrokeBrush}"
                                 BorderThickness="1.5"
                                 CornerRadius="9"
                                 IsHitTestVisible="False"/>
                         <Ellipse x:Name="Dot"
                                  Width="{StaticResource Spacing10}" Height="{StaticResource Spacing10}"
-                                 Fill="{ThemeResource RadioInnerDot}"
+                                 Fill="{ThemeResource EtherRadioButtonInnerDotBrush}"
                                  HorizontalAlignment="Center"
                                  VerticalAlignment="Center"/>
                     </Grid>
@@ -201,7 +206,7 @@
                 <ContentPresenter x:Name="Label"
                                   Content="{TemplateBinding Content}"
                                   ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Foreground="{ThemeResource RadioLabel}"
+                                  Foreground="{ThemeResource EtherRadioButtonLabelBrush}"
                                   FontFamily="{StaticResource InterFont}"
                                   FontSize="{StaticResource Size12}"
                                   FontWeight="{StaticResource WeightSemibold}"
@@ -211,7 +216,7 @@
         </Grid>
     </ControlTemplate>
 
-    <Style TargetType="controls:EtherRadioButton">
+    <Style x:Key="DefaultEtherRadioButtonStyle" TargetType="controls:EtherRadioButton">
         <Setter Property="IsThreeState" Value="False"/>
         <Setter Property="UseSystemFocusVisuals" Value="False"/>
         <Setter Property="MinWidth" Value="{StaticResource Spacing0}"/>
@@ -221,5 +226,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Template" Value="{StaticResource EtherRadioButtonTemplate}"/>
     </Style>
+
+    <Style TargetType="controls:EtherRadioButton" BasedOn="{StaticResource DefaultEtherRadioButtonStyle}"/>
 
 </ResourceDictionary>

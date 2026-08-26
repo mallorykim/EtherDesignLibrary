@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>Ether.DesignSystem.ConsumerFixtures.Packaged</AssemblyName>
+    <RootNamespace>Ether.DesignSystem.ConsumerFixtures.Packaged</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsPackageType>MSIX</WindowsPackageType>
+    <GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <SelfContained>false</SelfContained>
+    <IsPackable>false</IsPackable>
+    <!-- MSIX tooling cannot parse the frozen comma-named font file names. -->
+    <EtherDesignSystemFoundationIncludeHostRootFonts>false</EtherDesignSystemFoundationIncludeHostRootFonts>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ether.DesignSystem.Controls" VersionOverride="0.1.0-preview.1" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <Manifest Include="$(ApplicationManifest)" />
+    <Content Include="..\..\..\Assets\Icons\Frame 2147253527.png"
+             Link="Assets\FixtureLogo.png"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\RuntimeVerification.cs" Link="RuntimeVerification.cs" />
+  </ItemGroup>
+</Project>

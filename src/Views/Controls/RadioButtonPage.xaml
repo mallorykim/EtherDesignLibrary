@@ -13,9 +13,12 @@
         <views:ComponentPage.InteractiveContent>
             <!-- One live group: pick exactly one. Shared GroupName makes them mutually exclusive. -->
             <StackPanel Spacing="12">
-                <controls:EtherRadioButton GroupName="Interactive" Content="Option A" IsChecked="True"/>
-                <controls:EtherRadioButton GroupName="Interactive" Content="Option B"/>
-                <controls:EtherRadioButton GroupName="Interactive" Content="Option C"/>
+                <controls:EtherRadioButton GroupName="Interactive" Content="Option A" IsChecked="True"
+                                           AutomationProperties.Name="Interactive radio option A"/>
+                <controls:EtherRadioButton GroupName="Interactive" Content="Option B"
+                                           AutomationProperties.Name="Interactive radio option B"/>
+                <controls:EtherRadioButton GroupName="Interactive" Content="Option C"
+                                           AutomationProperties.Name="Interactive radio option C"/>
             </StackPanel>
         </views:ComponentPage.InteractiveContent>
 
@@ -38,6 +41,7 @@
                                                       GroupName="u-default"
                                                       Content="Option"
                                                       IsChecked="False"
+                                                      AutomationProperties.Name="Unchecked default radio button"
                                                       IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
@@ -92,6 +96,7 @@
                                                       GroupName="c-default"
                                                       Content="Option"
                                                       IsChecked="True"
+                                                      AutomationProperties.Name="Checked default radio button"
                                                       IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">

@@ -18,6 +18,7 @@
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton Content="What's this mean?"
+                                                     AutomationProperties.Name="Interactive intelligence button"
                                                      HorizontalContentAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Spacing="8">
@@ -26,6 +27,7 @@
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton Content="=  Optimise my battery"
+                                                     AutomationProperties.Name="Interactive intelligence button long label"
                                                      HorizontalContentAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
@@ -39,6 +41,7 @@
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton Content="What's this mean?"
+                                                     AutomationProperties.Name="Default intelligence button"
                                                      IsHitTestVisible="False"
                                                      IsTabStop="False"/>
                 </StackPanel>
@@ -49,6 +52,7 @@
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton x:Name="IntelligenceHoverState"
                                                      Content="What's this mean?"
+                                                     AutomationProperties.Name="Hover intelligence button"
                                                      IsHitTestVisible="False"
                                                      IsTabStop="False"/>
                 </StackPanel>
@@ -59,6 +63,7 @@
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton x:Name="IntelligencePressedState"
                                                      Content="What's this mean?"
+                                                     AutomationProperties.Name="Pressed intelligence button"
                                                      IsHitTestVisible="False"
                                                      IsTabStop="False"/>
                 </StackPanel>
@@ -69,6 +74,7 @@
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton x:Name="IntelligenceDisabledState"
                                                      Content="What's this mean?"
+                                                     AutomationProperties.Name="Disabled intelligence button"
                                                      IsEnabled="False"
                                                      IsHitTestVisible="False"
                                                      IsTabStop="False"/>

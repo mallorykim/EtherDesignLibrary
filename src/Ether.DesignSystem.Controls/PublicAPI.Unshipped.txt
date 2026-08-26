@@ -1,0 +1,139 @@
+#nullable enable
+EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider
+EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.XamlMetaDataProvider() -> void
+~EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXamlType(System.Type type) -> Microsoft.UI.Xaml.Markup.IXamlType
+~EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXamlType(string fullName) -> Microsoft.UI.Xaml.Markup.IXamlType
+~EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXmlnsDefinitions() -> Microsoft.UI.Xaml.Markup.XmlnsDefinition[]
+~EtherSandbox.Controls.EtherScrollBar.Connect(int connectionId, object target) -> void
+~EtherSandbox.Controls.EtherScrollBar.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
+~EtherSandbox.Controls.EtherSlider.Connect(int connectionId, object target) -> void
+~EtherSandbox.Controls.EtherSlider.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
+~EtherSandbox.Controls.EtherSwitch.Connect(int connectionId, object target) -> void
+~EtherSandbox.Controls.EtherSwitch.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
+EtherSandbox.Controls.EtherButton
+EtherSandbox.Controls.EtherButton.EtherButton() -> void
+EtherSandbox.Controls.EtherButton.RightIcon.get -> Microsoft.UI.Xaml.Controls.IconElement?
+EtherSandbox.Controls.EtherButton.RightIcon.set -> void
+EtherSandbox.Controls.EtherButton.Size.get -> EtherSandbox.Controls.EtherButtonSize?
+EtherSandbox.Controls.EtherButton.Size.set -> void
+EtherSandbox.Controls.EtherButton.Variant.get -> EtherSandbox.Controls.EtherButtonVariant?
+EtherSandbox.Controls.EtherButton.Variant.set -> void
+EtherSandbox.Controls.EtherButtonSize
+EtherSandbox.Controls.EtherButtonSize.Large = 0 -> EtherSandbox.Controls.EtherButtonSize
+EtherSandbox.Controls.EtherButtonSize.Small = 1 -> EtherSandbox.Controls.EtherButtonSize
+EtherSandbox.Controls.EtherButtonVariant
+EtherSandbox.Controls.EtherButtonVariant.Primary = 0 -> EtherSandbox.Controls.EtherButtonVariant
+EtherSandbox.Controls.EtherButtonVariant.Secondary = 1 -> EtherSandbox.Controls.EtherButtonVariant
+EtherSandbox.Controls.EtherButtonVariant.Tertiary = 2 -> EtherSandbox.Controls.EtherButtonVariant
+EtherSandbox.Controls.EtherCheckbox
+EtherSandbox.Controls.EtherCheckbox.EtherCheckbox() -> void
+EtherSandbox.Controls.EtherDropdown
+EtherSandbox.Controls.EtherDropdown.EtherDropdown() -> void
+EtherSandbox.Controls.EtherDropdown.MaxVisibleItems.get -> int
+EtherSandbox.Controls.EtherDropdown.MaxVisibleItems.set -> void
+EtherSandbox.Controls.EtherDropdown.MenuGap.get -> double
+EtherSandbox.Controls.EtherDropdown.MenuGap.set -> void
+EtherSandbox.Controls.EtherInput
+EtherSandbox.Controls.EtherInput.EtherInput() -> void
+EtherSandbox.Controls.EtherIntelligenceButton
+EtherSandbox.Controls.EtherIntelligenceButton.EtherIntelligenceButton() -> void
+EtherSandbox.Controls.EtherProgressBar
+EtherSandbox.Controls.EtherProgressBar.EtherProgressBar() -> void
+EtherSandbox.Controls.EtherProgressBar.ShowTitle.get -> bool
+EtherSandbox.Controls.EtherProgressBar.ShowTitle.set -> void
+EtherSandbox.Controls.EtherProgressBar.ShowValue.get -> bool
+EtherSandbox.Controls.EtherProgressBar.ShowValue.set -> void
+EtherSandbox.Controls.EtherProgressBar.Title.get -> object!
+EtherSandbox.Controls.EtherProgressBar.Title.set -> void
+EtherSandbox.Controls.EtherProgressBar.ValueContent.get -> object!
+EtherSandbox.Controls.EtherProgressBar.ValueContent.set -> void
+EtherSandbox.Controls.EtherRadioButton
+EtherSandbox.Controls.EtherRadioButton.EtherRadioButton() -> void
+EtherSandbox.Controls.EtherScrollBar
+EtherSandbox.Controls.EtherScrollBar.EtherScrollBar() -> void
+EtherSandbox.Controls.EtherScrollBar.InitializeComponent() -> void
+EtherSandbox.Controls.EtherSegmentedControl
+EtherSandbox.Controls.EtherSegmentedControl.EtherSegmentedControl() -> void
+EtherSandbox.Controls.EtherSegmentedTrack
+EtherSandbox.Controls.EtherSegmentedTrack.EtherSegmentedTrack() -> void
+EtherSandbox.Controls.EtherSlider
+EtherSandbox.Controls.EtherSlider.EtherSlider() -> void
+EtherSandbox.Controls.EtherSlider.FormatValue(double value) -> string!
+EtherSandbox.Controls.EtherSlider.InitializeComponent() -> void
+EtherSandbox.Controls.EtherSlider.Value.get -> double
+EtherSandbox.Controls.EtherSlider.Value.set -> void
+EtherSandbox.Controls.EtherSteeringBar
+EtherSandbox.Controls.EtherSteeringBar.EtherSteeringBar() -> void
+EtherSandbox.Controls.EtherSteeringBar.LargeChange.get -> double
+EtherSandbox.Controls.EtherSteeringBar.LargeChange.set -> void
+EtherSandbox.Controls.EtherSteeringBar.Maximum.get -> double
+EtherSandbox.Controls.EtherSteeringBar.Maximum.set -> void
+EtherSandbox.Controls.EtherSteeringBar.Minimum.get -> double
+EtherSandbox.Controls.EtherSteeringBar.Minimum.set -> void
+EtherSandbox.Controls.EtherSteeringBar.MoveToNextStop() -> bool
+EtherSandbox.Controls.EtherSteeringBar.MoveToPreviousStop() -> bool
+EtherSandbox.Controls.EtherSteeringBar.PreviewStatus.get -> EtherSandbox.Controls.SteeringBarPreviewStatus
+EtherSandbox.Controls.EtherSteeringBar.PreviewStatus.set -> void
+EtherSandbox.Controls.EtherSteeringBar.ShowStops.get -> bool
+EtherSandbox.Controls.EtherSteeringBar.ShowStops.set -> void
+EtherSandbox.Controls.EtherSteeringBar.ShowTitle.get -> bool
+EtherSandbox.Controls.EtherSteeringBar.ShowTitle.set -> void
+EtherSandbox.Controls.EtherSteeringBar.ShowValue.get -> bool
+EtherSandbox.Controls.EtherSteeringBar.ShowValue.set -> void
+EtherSandbox.Controls.EtherSteeringBar.SmallChange.get -> double
+EtherSandbox.Controls.EtherSteeringBar.SmallChange.set -> void
+EtherSandbox.Controls.EtherSteeringBar.SnapToStops.get -> bool
+EtherSandbox.Controls.EtherSteeringBar.SnapToStops.set -> void
+EtherSandbox.Controls.EtherSteeringBar.Stops.get -> Microsoft.UI.Xaml.Media.DoubleCollection?
+EtherSandbox.Controls.EtherSteeringBar.Stops.set -> void
+EtherSandbox.Controls.EtherSteeringBar.Title.get -> object?
+EtherSandbox.Controls.EtherSteeringBar.Title.set -> void
+EtherSandbox.Controls.EtherSteeringBar.Value.get -> double
+EtherSandbox.Controls.EtherSteeringBar.Value.set -> void
+EtherSandbox.Controls.EtherSteeringBar.ValueChanged -> System.EventHandler<EtherSandbox.Controls.SteeringBarValueChangedEventArgs!>?
+EtherSandbox.Controls.EtherSteeringBar.ValueContent.get -> object?
+EtherSandbox.Controls.EtherSteeringBar.ValueContent.set -> void
+EtherSandbox.Controls.EtherSwitch
+EtherSandbox.Controls.EtherSwitch.EtherSwitch() -> void
+EtherSandbox.Controls.EtherSwitch.InitializeComponent() -> void
+EtherSandbox.Controls.HandContentControl
+EtherSandbox.Controls.HandContentControl.HandContentControl() -> void
+EtherSandbox.Controls.SteeringBarPreviewStatus
+EtherSandbox.Controls.SteeringBarPreviewStatus.Default = 1 -> EtherSandbox.Controls.SteeringBarPreviewStatus
+EtherSandbox.Controls.SteeringBarPreviewStatus.Disabled = 4 -> EtherSandbox.Controls.SteeringBarPreviewStatus
+EtherSandbox.Controls.SteeringBarPreviewStatus.Hover = 2 -> EtherSandbox.Controls.SteeringBarPreviewStatus
+EtherSandbox.Controls.SteeringBarPreviewStatus.None = 0 -> EtherSandbox.Controls.SteeringBarPreviewStatus
+EtherSandbox.Controls.SteeringBarPreviewStatus.Pressed = 3 -> EtherSandbox.Controls.SteeringBarPreviewStatus
+EtherSandbox.Controls.SteeringBarValueChangedEventArgs
+EtherSandbox.Controls.SteeringBarValueChangedEventArgs.NewValue.get -> double
+EtherSandbox.Controls.SteeringBarValueChangedEventArgs.OldValue.get -> double
+EtherSandbox.Controls.SteeringBarValueChangedEventArgs.SteeringBarValueChangedEventArgs(double oldValue, double newValue) -> void
+EtherSandbox.Converters.MultiplyConverter
+EtherSandbox.Converters.MultiplyConverter.Convert(object! value, System.Type! targetType, object! parameter, string! language) -> object!
+EtherSandbox.Converters.MultiplyConverter.ConvertBack(object! value, System.Type! targetType, object! parameter, string! language) -> object!
+EtherSandbox.Converters.MultiplyConverter.MultiplyConverter() -> void
+override EtherSandbox.Controls.EtherButton.OnApplyTemplate() -> void
+override EtherSandbox.Controls.EtherSegmentedControl.OnApplyTemplate() -> void
+static readonly EtherSandbox.Controls.EtherButton.RightIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherButton.SizeProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherButton.VariantProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherDropdown.MaxVisibleItemsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherDropdown.MenuGapProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherProgressBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherProgressBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherProgressBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherProgressBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSlider.ValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.LargeChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.MaximumProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.MinimumProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.PreviewStatusProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.ShowStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.SmallChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.SnapToStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.StopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSteeringBar.ValueProperty -> Microsoft.UI.Xaml.DependencyProperty!

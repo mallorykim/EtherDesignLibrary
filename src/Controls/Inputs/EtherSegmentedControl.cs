@@ -8,8 +8,19 @@ using Windows.UI;
 namespace EtherSandbox.Controls;
 
 /// <summary>
-/// Hosts segmented buttons and renders the Figma-defined composition shadows.
+/// A templated <see cref="ContentControl"/> host for segmented radio items. The default
+/// visual is the Figma track via <c>DefaultEtherSegmentedControlStyle</c>, including the
+/// composition drop shadows.
 /// </summary>
+/// <remarks>
+/// Call sites may still set <c>Style="{StaticResource EtherSegmentedTrack}"</c>; that key
+/// is an alias of the default style. Segment item chrome stays on the keyed
+/// <c>EtherSegment</c> <see cref="RadioButton"/> style. This control does not add
+/// selection APIs or VisualState groups on the host — native radio grouping and
+/// <c>HandRadioButton</c> layer opacity remain the interaction model.
+/// </remarks>
+[TemplatePart(Name = ShadowHostPartName, Type = typeof(Canvas))]
+[TemplatePart(Name = TrackSurfacePartName, Type = typeof(Border))]
 public class EtherSegmentedControl : ContentControl
 {
     private const string ShadowHostPartName = "ShadowHost";
@@ -22,8 +33,12 @@ public class EtherSegmentedControl : ContentControl
     private ShadowLayer? _nearShadow;
     private ShadowLayer? _farShadow;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EtherSegmentedControl"/> class.
+    /// </summary>
     public EtherSegmentedControl()
     {
+        DefaultStyleKey = typeof(EtherSegmentedControl);
         Loaded += OnLoaded;
         SizeChanged += OnSizeChanged;
         ActualThemeChanged += OnActualThemeChanged;

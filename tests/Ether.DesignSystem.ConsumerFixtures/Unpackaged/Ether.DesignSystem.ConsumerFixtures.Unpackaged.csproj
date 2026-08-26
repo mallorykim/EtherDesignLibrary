@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>Ether.DesignSystem.ConsumerFixtures.Unpackaged</AssemblyName>
+    <RootNamespace>Ether.DesignSystem.ConsumerFixtures.Unpackaged</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <WindowsPackageType>None</WindowsPackageType>
+    <SelfContained>false</SelfContained>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ether.DesignSystem.Controls" VersionOverride="0.1.0-preview.1" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\RuntimeVerification.cs" Link="RuntimeVerification.cs" />
+  </ItemGroup>
+</Project>

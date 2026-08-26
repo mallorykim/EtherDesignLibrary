@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text.Json;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
@@ -9,7 +10,16 @@ namespace EtherSandbox;
 
 public sealed partial class MainWindow : Window
 {
-    private bool _isDark = false;
+    private bool _isDark;
+    private readonly bool _isGallerySmoke = string.Equals(
+        Environment.GetEnvironmentVariable("ETHER_GALLERY_SMOKE"),
+        "1",
+        StringComparison.Ordinal);
+    private List<Type>? _gallerySmokePages;
+    private List<GallerySmokeRound>? _gallerySmokeRounds;
+    private GallerySmokeRound? _gallerySmokeCurrentRound;
+    private int _gallerySmokeNextPageIndex;
+    private bool _gallerySmokeCompleted;
 
     /// <summary>
     /// Guards against re-entrancy between <see cref="NavView_SelectionChanged"/> (which
@@ -17,7 +27,16 @@ public sealed partial class MainWindow : Window
     /// NavigationView selection back after any navigation, including ones started from a
     /// Home page card rather than the pane).
     /// </summary>
-    private bool _isSyncingSelection = false;
+    private bool _isSyncingSelection;
+
+    private sealed class GallerySmokeRound
+    {
+        public required string Theme { get; init; }
+        public required string BackgroundCanvasColor { get; init; }
+        public int PageCount { get; set; }
+        public required int TotalPageCount { get; init; }
+        public required string?[] PageTypes { get; init; }
+    }
 
     public MainWindow()
     {
@@ -25,6 +44,11 @@ public sealed partial class MainWindow : Window
         ResizeToDesignCanvas();
         BuildNavigation();
         ContentFrame.Navigate(ComponentCatalog.Home.PageType);
+
+        if (_isGallerySmoke)
+        {
+            RootGrid.Loaded += RootGrid_LoadedForGallerySmoke;
+        }
     }
 
     /// <summary>Design canvas the sandbox mirrors, in effective (logical) pixels.</summary>
@@ -191,6 +215,212 @@ public sealed partial class MainWindow : Window
 
     private void ContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
     {
-        throw new Exception($"Navigation failed to page '{e.SourcePageType.FullName}': {e.Exception.Message}");
+        if (_isGallerySmoke)
+        {
+            CompleteGallerySmoke(false, $"Navigation failed to page '{e.SourcePageType.FullName}': {e.Exception.Message}");
+            return;
+        }
+
+        throw new InvalidOperationException($"Navigation failed to page '{e.SourcePageType.FullName}': {e.Exception.Message}");
+    }
+
+    private async void RootGrid_LoadedForGallerySmoke(object sender, RoutedEventArgs e)
+    {
+        RootGrid.Loaded -= RootGrid_LoadedForGallerySmoke;
+
+        try
+        {
+            _gallerySmokePages = GetGallerySmokePages();
+            _gallerySmokeRounds = new List<GallerySmokeRound>();
+            ContentFrame.Navigated += ContentFrame_NavigatedForGallerySmoke;
+            await StartGallerySmokeRoundAsync(ElementTheme.Light);
+        }
+        catch (Exception exception)
+        {
+            CompleteGallerySmoke(false, exception.ToString());
+        }
+    }
+
+    private static List<Type> GetGallerySmokePages()
+    {
+        var pageTypes = new List<Type> { ComponentCatalog.Home.PageType };
+        foreach (var node in ComponentCatalog.Nodes)
+        {
+            switch (node)
+            {
+                case CatalogCategory category:
+                    pageTypes.AddRange(category.Items.Select(entry => entry.PageType));
+                    break;
+                case CatalogLeaf leaf:
+                    pageTypes.Add(leaf.Entry.PageType);
+                    break;
+            }
+        }
+
+        return pageTypes;
+    }
+
+    private void NavigateNextGallerySmokePage()
+    {
+        if (_gallerySmokePages is null)
+        {
+            CompleteGallerySmoke(false, "Gallery smoke pages were not initialized.");
+            return;
+        }
+
+        if (_gallerySmokeNextPageIndex >= _gallerySmokePages.Count)
+        {
+            CompleteGallerySmokeRound();
+            return;
+        }
+
+        var nextPage = _gallerySmokePages[_gallerySmokeNextPageIndex];
+        if (ContentFrame.CurrentSourcePageType == nextPage)
+        {
+            _gallerySmokeNextPageIndex++;
+            QueueNextGallerySmokePage();
+            return;
+        }
+
+        if (!ContentFrame.Navigate(nextPage))
+        {
+            CompleteGallerySmoke(false, $"Frame refused navigation to page '{nextPage.FullName}'.");
+        }
+    }
+
+    private void ContentFrame_NavigatedForGallerySmoke(object sender, NavigationEventArgs e)
+    {
+        if (_gallerySmokePages is null || _gallerySmokeNextPageIndex >= _gallerySmokePages.Count)
+        {
+            CompleteGallerySmoke(false, "Gallery smoke received an unexpected navigation event.");
+            return;
+        }
+
+        var expectedPage = _gallerySmokePages[_gallerySmokeNextPageIndex];
+        if (e.SourcePageType != expectedPage)
+        {
+            CompleteGallerySmoke(false, $"Expected page '{expectedPage.FullName}', but navigated to '{e.SourcePageType.FullName}'.");
+            return;
+        }
+
+        _gallerySmokeNextPageIndex++;
+        QueueNextGallerySmokePage();
+    }
+
+    private void QueueNextGallerySmokePage()
+    {
+        if (!DispatcherQueue.TryEnqueue(NavigateNextGallerySmokePage))
+        {
+            CompleteGallerySmoke(false, "The UI dispatcher rejected the next Gallery smoke navigation.");
+        }
+    }
+
+    private async Task StartGallerySmokeRoundAsync(ElementTheme theme)
+    {
+        if (_gallerySmokePages is null || _gallerySmokeRounds is null)
+        {
+            CompleteGallerySmoke(false, "Gallery smoke round state was not initialized.");
+            return;
+        }
+
+        _gallerySmokeNextPageIndex = 0;
+        RootGrid.RequestedTheme = theme;
+        try
+        {
+            await WaitForAppliedThemeAsync(RootGrid, theme);
+            if (RootGrid.Background is not Microsoft.UI.Xaml.Media.SolidColorBrush brush)
+            {
+                CompleteGallerySmoke(false, "RootGrid BackgroundCanvas did not resolve to a SolidColorBrush.");
+                return;
+            }
+
+            _gallerySmokeCurrentRound = new GallerySmokeRound
+            {
+                Theme = theme.ToString(),
+                BackgroundCanvasColor = $"#{brush.Color.A:X2}{brush.Color.R:X2}{brush.Color.G:X2}{brush.Color.B:X2}",
+                TotalPageCount = _gallerySmokePages.Count,
+                PageTypes = _gallerySmokePages.Select(page => page.FullName).ToArray(),
+            };
+            NavigateNextGallerySmokePage();
+        }
+        catch (Exception exception)
+        {
+            CompleteGallerySmoke(false, exception.Message);
+        }
+    }
+
+    private void CompleteGallerySmokeRound()
+    {
+        if (_gallerySmokeCurrentRound is null || _gallerySmokeRounds is null)
+        {
+            CompleteGallerySmoke(false, "Gallery smoke completed a page traversal without an active theme round.");
+            return;
+        }
+
+        _gallerySmokeCurrentRound.PageCount = _gallerySmokeNextPageIndex;
+        _gallerySmokeRounds.Add(_gallerySmokeCurrentRound);
+        _gallerySmokeCurrentRound = null;
+
+        if (_gallerySmokeRounds.Count == 1)
+        {
+            _ = StartGallerySmokeRoundAsync(ElementTheme.Dark);
+            return;
+        }
+
+        CompleteGallerySmoke(true, null);
+    }
+
+    private static async Task WaitForAppliedThemeAsync(FrameworkElement themeRoot, ElementTheme requestedTheme)
+    {
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (themeRoot.ActualTheme != requestedTheme && DateTime.UtcNow < deadline)
+        {
+            await Task.Delay(25);
+        }
+
+        if (themeRoot.ActualTheme != requestedTheme)
+        {
+            throw new InvalidOperationException(
+                $"Theme application timed out. Requested '{requestedTheme}', actual '{themeRoot.ActualTheme}'.");
+        }
+    }
+
+    private void CompleteGallerySmoke(bool succeeded, string? message)
+    {
+        if (_gallerySmokeCompleted)
+        {
+            return;
+        }
+
+        _gallerySmokeCompleted = true;
+        ContentFrame.Navigated -= ContentFrame_NavigatedForGallerySmoke;
+
+        var resultPath = Environment.GetEnvironmentVariable("ETHER_GALLERY_SMOKE_RESULT_PATH");
+        var result = JsonSerializer.Serialize(new
+        {
+            marker = "ETHER_GALLERY_SMOKE",
+            outcome = succeeded ? "success" : "failure",
+            pageCount = _gallerySmokeRounds?.Sum(round => round.PageCount) ?? _gallerySmokeNextPageIndex,
+            totalPageCount = (_gallerySmokePages?.Count ?? 0) * 2,
+            pageTypes = _gallerySmokePages?.Select(page => page.FullName).ToArray() ?? Array.Empty<string?>(),
+            rounds = _gallerySmokeRounds?.Select(round => new
+            {
+                theme = round.Theme,
+                pageCount = round.PageCount,
+                totalPageCount = round.TotalPageCount,
+                pageTypes = round.PageTypes,
+                backgroundCanvasColor = round.BackgroundCanvasColor,
+            }).ToArray() ?? Array.Empty<object>(),
+            message,
+        });
+
+        if (!string.IsNullOrWhiteSpace(resultPath))
+        {
+            File.WriteAllText(resultPath, result);
+        }
+
+        Console.WriteLine(result);
+        Close();
+        Application.Current.Exit();
     }
 }

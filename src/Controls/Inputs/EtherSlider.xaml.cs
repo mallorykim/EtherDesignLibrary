@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -42,7 +44,8 @@ public sealed partial class EtherSlider : UserControl
         if (d is EtherSlider s) s.RenderBars();
     }
 
-    public string FormatValue(double value) => ((int)Math.Round(value)).ToString();
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This existing public instance method is part of the declared public API; making it static would be a breaking API change.")]
+    public string FormatValue(double value) => ((int)Math.Round(value)).ToString(CultureInfo.CurrentCulture);
 
     public EtherSlider()
     {

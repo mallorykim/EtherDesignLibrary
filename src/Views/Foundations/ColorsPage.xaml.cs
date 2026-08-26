@@ -20,7 +20,7 @@ public sealed partial class ColorsPage : Page
         PrimitiveGroups.ItemsSource = BuildGroups();
     }
 
-    private static IReadOnlyList<PrimitiveColorGroup> BuildGroups()
+    private static PrimitiveColorGroup[] BuildGroups()
     {
         var primitives = FindPrimitiveDictionary(Application.Current.Resources);
         if (primitives is null)

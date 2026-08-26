@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         IgnorableNamespaces="uap mp">
+  <Identity Name="Ether.DesignSystem.ConsumerFixtures.Packaged"
+            Publisher="CN=Ether Design System"
+            Version="1.0.0.0" />
+  <mp:PhoneIdentity PhoneProductId="{0BFF6D35-4A2D-45D0-A8B4-94E2DF1F7C39}"
+                    PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Properties>
+    <DisplayName>Ether packaged consumer fixture</DisplayName>
+    <PublisherDisplayName>Ether Design System</PublisherDisplayName>
+    <Logo>Assets\FixtureLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
+      <uap:VisualElements DisplayName="Ether packaged consumer fixture"
+                          Description="Ether packaged consumer fixture"
+                          BackgroundColor="transparent"
+                          Square150x150Logo="Assets\FixtureLogo.png"
+                          Square44x44Logo="Assets\FixtureLogo.png" />
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>

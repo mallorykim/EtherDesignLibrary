@@ -105,9 +105,11 @@ public sealed partial class ComponentPage : UserControl
     }
 
     /// <summary>Hides the STATES card when a page has no distinct state swatches to show.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Compiled x:Bind invokes this public instance method; changing it to static would break the binding contract.")]
     public Visibility ConvertHasStates(object? content) => content is null ? Visibility.Collapsed : Visibility.Visible;
 
     /// <summary>Visible when true (used for the opt-in Disabled checkbox).</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Compiled x:Bind invokes this public instance method; changing it to static would break the binding contract.")]
     public Visibility BoolToVisibility(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
 
     /// <summary>Disable / re-enable the live specimen from the Disabled checkbox. IsEnabled on the

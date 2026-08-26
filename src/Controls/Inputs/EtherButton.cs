@@ -6,23 +6,53 @@ using Microsoft.UI.Xaml.Controls;
 namespace EtherSandbox.Controls;
 
 /// <summary>
-/// The Ether button. A templated <see cref="Button"/> with a hand cursor and an OPTIONAL,
-/// REPLACEABLE trailing icon exposed as a strongly-typed <see cref="RightIcon"/>
-/// dependency property (an <see cref="IconElement"/> — FontIcon / BitmapIcon / PathIcon /
-/// SymbolIcon). The template hosts it with {TemplateBinding RightIcon}; when it is null the
-/// slot collapses (via <see cref="RightIconVisibility"/>) so the button is text only.
-///
-/// This is the idiomatic WinUI 3 pattern (a real DP + TemplateBinding, like AppBarButton.Icon).
-/// It deliberately avoids binding a template FontIcon's Glyph, which faults in MeasureOverride
-/// (see the ButtonRightIconSlot history / memory).
+/// A templated <see cref="Button"/> with a hand cursor and an optional trailing
+/// <see cref="RightIcon"/>. The default visual is Primary medium
+/// (<see cref="EtherButtonVariant.Primary"/> + <see cref="EtherButtonSize.Large"/>)
+/// via <c>DefaultEtherButtonStyle</c>.
 /// </summary>
+/// <remarks>
+/// Set <see cref="Variant"/> and <see cref="Size"/> together to select one of the six named
+/// styles, or assign <c>Style</c> explicitly. The <c>RightIcon</c> slot is collapsed through
+/// <c>RightIconStates</c> when the icon is unset. The control uses native <see cref="Button"/>
+/// CommonStates and FocusStates; it does not add indeterminate APIs.
+/// </remarks>
+[TemplatePart(Name = RightIconPart, Type = typeof(ContentPresenter))]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = NormalState)]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = PointerOverState)]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = PressedState)]
+[TemplateVisualState(GroupName = CommonStatesGroup, Name = DisabledState)]
+[TemplateVisualState(GroupName = FocusStatesGroup, Name = FocusedState)]
+[TemplateVisualState(GroupName = FocusStatesGroup, Name = UnfocusedState)]
+[TemplateVisualState(GroupName = FocusStatesGroup, Name = PointerFocusedState)]
+[TemplateVisualState(GroupName = RightIconStatesGroup, Name = RightIconVisibleState)]
+[TemplateVisualState(GroupName = RightIconStatesGroup, Name = RightIconCollapsedState)]
 public class EtherButton : Button
 {
+    private const string RightIconPart = "RightIcon";
+    private const string CommonStatesGroup = "CommonStates";
+    private const string NormalState = "Normal";
+    private const string PointerOverState = "PointerOver";
+    private const string PressedState = "Pressed";
+    private const string DisabledState = "Disabled";
+    private const string FocusStatesGroup = "FocusStates";
+    private const string FocusedState = "Focused";
+    private const string UnfocusedState = "Unfocused";
+    private const string PointerFocusedState = "PointerFocused";
+    private const string RightIconStatesGroup = "RightIconStates";
+    private const string RightIconVisibleState = "RightIconVisible";
+    private const string RightIconCollapsedState = "RightIconCollapsed";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EtherButton"/> class.
+    /// </summary>
     public EtherButton()
     {
+        DefaultStyleKey = typeof(EtherButton);
         ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
     }
 
+    /// <summary>Identifies the <see cref="RightIcon"/> dependency property.</summary>
     public static readonly DependencyProperty RightIconProperty =
         DependencyProperty.Register(
             nameof(RightIcon),
@@ -37,27 +67,6 @@ public class EtherButton : Button
         set => SetValue(RightIconProperty, value);
     }
 
-    public static readonly DependencyProperty RightIconVisibilityProperty =
-        DependencyProperty.Register(
-            nameof(RightIconVisibility),
-            typeof(Visibility),
-            typeof(EtherButton),
-            new PropertyMetadata(Visibility.Collapsed));
-
-    /// <summary>Visible only when <see cref="RightIcon"/> is set; the template binds the icon
-    /// slot's Visibility to this so there is no trailing gap when the button is text only.</summary>
-    public Visibility RightIconVisibility
-    {
-        get => (Visibility)GetValue(RightIconVisibilityProperty);
-        private set => SetValue(RightIconVisibilityProperty, value);
-    }
-
-    private static void OnRightIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-        var button = (EtherButton)d;
-        button.RightIconVisibility = e.NewValue is null ? Visibility.Collapsed : Visibility.Visible;
-    }
-
     /// <summary>Visual weight of the button. Paired with <see cref="Size"/> to select one of
     /// the 6 named styles (e.g. <c>EtherButtonPrimarySmall</c>) automatically — an alternative
     /// to setting <c>Style</c> directly. Unset (null) by default: existing call sites that set
@@ -69,6 +78,8 @@ public class EtherButton : Button
         get => (EtherButtonVariant?)GetValue(VariantProperty);
         set => SetValue(VariantProperty, value);
     }
+
+    /// <summary>Identifies the <see cref="Variant"/> dependency property.</summary>
     public static readonly DependencyProperty VariantProperty = DependencyProperty.Register(
         nameof(Variant), typeof(EtherButtonVariant?), typeof(EtherButton),
         new PropertyMetadata(null, OnVariantOrSizeChanged));
@@ -80,9 +91,18 @@ public class EtherButton : Button
         get => (EtherButtonSize?)GetValue(SizeProperty);
         set => SetValue(SizeProperty, value);
     }
+
+    /// <summary>Identifies the <see cref="Size"/> dependency property.</summary>
     public static readonly DependencyProperty SizeProperty = DependencyProperty.Register(
         nameof(Size), typeof(EtherButtonSize?), typeof(EtherButton),
         new PropertyMetadata(null, OnVariantOrSizeChanged));
+
+    /// <inheritdoc />
+    protected override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+        UpdateRightIconState();
+    }
 
     /// <summary>
     /// Resolves Variant + Size to one of the 6 named styles and assigns the whole Style
@@ -108,11 +128,20 @@ public class EtherButton : Button
             (EtherButtonVariant.Secondary, EtherButtonSize.Small) => "EtherButtonSecondarySmall",
             (EtherButtonVariant.Tertiary, EtherButtonSize.Large) => "EtherButtonTertiary",
             (EtherButtonVariant.Tertiary, EtherButtonSize.Small) => "EtherButtonTertiarySmall",
-            _ => throw new ArgumentOutOfRangeException(nameof(variant)),
+            _ => throw new InvalidOperationException($"Unsupported EtherButton variant/size combination: {variant}/{size}."),
         };
 
         if (Application.Current.Resources.TryGetValue(key, out var style) && style is Style s)
             button.Style = s;
+    }
+
+    private static void OnRightIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((EtherButton)d).UpdateRightIconState();
+
+    private void UpdateRightIconState()
+    {
+        var state = RightIcon is null ? RightIconCollapsedState : RightIconVisibleState;
+        VisualStateManager.GoToState(this, state, false);
     }
 }
 

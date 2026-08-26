@@ -1,0 +1,72 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore
+        run: dotnet restore Ether.DesignSystem.slnx -p:Platform=x64
+      - name: Build (${{ matrix.configuration }}, x64)
+        run: dotnet build Ether.DesignSystem.slnx -c ${{ matrix.configuration }} -p:Platform=x64 --no-restore
+
+  package-consumers:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+      - name: Audit frozen tokens and theme resource keys
+        shell: pwsh
+        run: ./scripts/Verify-ResourceKeys.ps1
+      - name: Audit public resource merge graph
+        shell: pwsh
+        run: ./scripts/Verify-ResourceGraph.ps1
+      - name: Verify EtherProgressBar exemplar contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherProgressBarContract.ps1
+      - name: Verify EtherButton L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherButtonContract.ps1
+      - name: Verify EtherCheckbox L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherCheckboxContract.ps1
+      - name: Verify EtherRadioButton L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherRadioButtonContract.ps1
+      - name: Verify EtherInput L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherInputContract.ps1
+      - name: Verify EtherDropdown L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherDropdownContract.ps1
+      - name: Verify EtherSegmentedControl L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherSegmentedControlContract.ps1
+      - name: Verify EtherIntelligenceButton L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherIntelligenceButtonContract.ps1
+      - name: Verify EtherSteeringBar L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherSteeringBarContract.ps1
+      - name: Verify package consumers
+        shell: pwsh
+        # Hosted runners build and validate packages and consumer fixtures. GUI runtime markers
+        # are explicitly skipped because hosted WinUI GUI launch is not a reliable smoke environment.
+        run: ./scripts/Verify-ConsumerFixtures.ps1 -SkipSolutionBuild -SkipRuntimeSmoke

@@ -36,6 +36,7 @@
                             <controls:EtherButton x:Name="PrimaryLargeDemo"
                                                  Content="Primary Action"
                                                  Style="{StaticResource EtherButtonPrimary}"
+                                                 AutomationProperties.Name="Primary large button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
@@ -46,6 +47,7 @@
                             <controls:EtherButton x:Name="PrimarySmallDemo"
                                                  Content="Primary Action"
                                                  Style="{StaticResource EtherButtonPrimarySmall}"
+                                                 AutomationProperties.Name="Primary small button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
@@ -64,6 +66,7 @@
                             <controls:EtherButton x:Name="SecondaryLargeDemo"
                                                  Content="Secondary Action"
                                                  Style="{StaticResource EtherButtonSecondary}"
+                                                 AutomationProperties.Name="Secondary large button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
@@ -74,6 +77,7 @@
                             <controls:EtherButton x:Name="SecondarySmallDemo"
                                                  Content="Secondary Action"
                                                  Style="{StaticResource EtherButtonSecondarySmall}"
+                                                 AutomationProperties.Name="Secondary small button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
@@ -92,6 +96,7 @@
                             <controls:EtherButton x:Name="TertiaryLargeDemo"
                                                  Content="Tertiary Action"
                                                  Style="{StaticResource EtherButtonTertiary}"
+                                                 AutomationProperties.Name="Tertiary large button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
@@ -102,9 +107,20 @@
                             <controls:EtherButton x:Name="TertiarySmallDemo"
                                                  Content="Tertiary Action"
                                                  Style="{StaticResource EtherButtonTertiarySmall}"
+                                                 AutomationProperties.Name="Tertiary small button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="DEFAULT STYLE"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherButton x:Name="DefaultStyleDemo"
+                                         Content="Primary Action"
+                                         AutomationProperties.Name="Default style button"
+                                         HorizontalContentAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
         </views:ComponentPage.InteractiveContent>
