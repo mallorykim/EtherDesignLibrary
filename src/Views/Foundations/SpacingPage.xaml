@@ -8,53 +8,117 @@
 
     <views:ComponentPage
         Title="Spacing Tokens"
-        Description="Primitive spacing tokens from EtherPrimitives.xaml.">
+        Description="Semantic space tokens (aliased to the primitive scale) and the primitive spacing tokens they link to. Units are epx.">
 
         <views:ComponentPage.InteractiveContent>
-            <ItemsControl x:Name="PrimitiveGroups">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical" Spacing="24"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="local:SpacingPrimitiveGroup">
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="{x:Bind Header}"
-                                       Style="{StaticResource EtherH4}"
-                                       Foreground="{ThemeResource TextPrimary}"/>
-                            <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
-                                    CornerRadius="{StaticResource RadiusControlSm}">
-                                <ItemsControl ItemsSource="{x:Bind Items}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="local:SpacingPrimitiveItem">
-                                            <Grid Padding="12,10" ColumnSpacing="24">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="80"/>
-                                                    <ColumnDefinition Width="140"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="{x:Bind Name}"
-                                                           HorizontalAlignment="Left"
-                                                           Foreground="{ThemeResource TextSecondary}"/>
-                                                <TextBlock Grid.Column="1" Text="{x:Bind Value}"
-                                                           HorizontalAlignment="Left"
-                                                           Foreground="{ThemeResource TextBrand}"/>
-                                                <Border Grid.Column="2"
-                                                        HorizontalAlignment="Left"
-                                                        Width="{x:Bind PreviewWidth}"
-                                                        Height="{x:Bind PreviewHeight}"
-                                                        CornerRadius="{x:Bind PreviewRadius}"
-                                                        Background="{ThemeResource BackgroundBrand}"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </Border>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <StackPanel Spacing="32">
+
+                <!-- ============ SEMANTIC SPACE ============ -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Space (semantic)"
+                               Style="{StaticResource EtherH3}"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                    <ItemsControl x:Name="SemanticGroups">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" Spacing="24"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:SpacingSemanticGroup">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Text="{x:Bind Header}"
+                                               Style="{StaticResource EtherH4}"
+                                               Foreground="{ThemeResource TextPrimary}"/>
+                                    <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
+                                            CornerRadius="{StaticResource RadiusControlSm}">
+                                        <ItemsControl ItemsSource="{x:Bind Items}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="local:SpacingSemanticItem">
+                                                    <Grid Padding="12,10" ColumnSpacing="24">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="80"/>
+                                                            <ColumnDefinition Width="220"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="{x:Bind Name}"
+                                                                   HorizontalAlignment="Left"
+                                                                   VerticalAlignment="Center"
+                                                                   Foreground="{ThemeResource TextSecondary}"/>
+                                                        <TextBlock Grid.Column="1" Text="{x:Bind Link}"
+                                                                   HorizontalAlignment="Left"
+                                                                   VerticalAlignment="Center"
+                                                                   Foreground="{ThemeResource TextBrand}"/>
+                                                        <Border Grid.Column="2"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Center"
+                                                                Width="{x:Bind PreviewWidth}"
+                                                                Height="16"
+                                                                CornerRadius="0"
+                                                                Background="{ThemeResource BackgroundBrand}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- ============ PRIMITIVE SCALE ============ -->
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Primitives"
+                               Style="{StaticResource EtherH3}"
+                               Foreground="{ThemeResource TextPrimary}"/>
+                    <ItemsControl x:Name="PrimitiveGroups">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" Spacing="24"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="local:SpacingPrimitiveGroup">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Text="{x:Bind Header}"
+                                               Style="{StaticResource EtherH4}"
+                                               Foreground="{ThemeResource TextPrimary}"/>
+                                    <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
+                                            CornerRadius="{StaticResource RadiusControlSm}">
+                                        <ItemsControl ItemsSource="{x:Bind Items}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="local:SpacingPrimitiveItem">
+                                                    <Grid Padding="12,10" ColumnSpacing="24">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="80"/>
+                                                            <ColumnDefinition Width="140"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="{x:Bind Name}"
+                                                                   HorizontalAlignment="Left"
+                                                                   Foreground="{ThemeResource TextSecondary}"/>
+                                                        <TextBlock Grid.Column="1" Text="{x:Bind Value}"
+                                                                   HorizontalAlignment="Left"
+                                                                   Foreground="{ThemeResource TextBrand}"/>
+                                                        <Border Grid.Column="2"
+                                                                HorizontalAlignment="Left"
+                                                                Width="{x:Bind PreviewWidth}"
+                                                                Height="{x:Bind PreviewHeight}"
+                                                                CornerRadius="{x:Bind PreviewRadius}"
+                                                                Background="{ThemeResource BackgroundBrand}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+            </StackPanel>
         </views:ComponentPage.InteractiveContent>
 
     </views:ComponentPage>

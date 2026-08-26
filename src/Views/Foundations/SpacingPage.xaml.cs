@@ -15,7 +15,39 @@ public sealed partial class SpacingPage : Page
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        SemanticGroups.ItemsSource = BuildSemanticGroups();
         PrimitiveGroups.ItemsSource = BuildGroups();
+    }
+
+    // Semantic space tokens (EtherSpacing.xaml), each aliased to a primitive Spacing* value.
+    // (name shown, primitive it links to, resource key). The value is read back from the
+    // resolved resource so it can never drift from the token / the alias it points at.
+    private static readonly (string Name, string Primitive, string Key)[] SemanticSpace =
+    {
+        ("3xs", "spacing/2",  "Space3xs"),
+        ("2xs", "spacing/4",  "Space2xs"),
+        ("xs",  "spacing/8",  "SpaceXs"),
+        ("sm",  "spacing/12", "SpaceSm"),
+        ("md",  "spacing/16", "SpaceMd"),
+        ("lg",  "spacing/24", "SpaceLg"),
+        ("xl",  "spacing/32", "SpaceXl"),
+        ("2xl", "spacing/48", "Space2xl"),
+        ("3xl", "spacing/64", "Space3xl"),
+        ("4xl", "spacing/96", "Space4xl"),
+    };
+
+    private static IReadOnlyList<SpacingSemanticGroup> BuildSemanticGroups()
+    {
+        var res = Application.Current.Resources;
+        var items = new List<SpacingSemanticItem>();
+
+        foreach (var (name, primitive, key) in SemanticSpace)
+        {
+            if (res.TryGetValue(key, out var raw) && raw is double value)
+                items.Add(new SpacingSemanticItem(name, $"{primitive} = {value} epx", value));
+        }
+
+        return new[] { new SpacingSemanticGroup("Space", items) };
     }
 
     private static IReadOnlyList<SpacingPrimitiveGroup> BuildGroups()
@@ -70,3 +102,7 @@ public sealed record SpacingPrimitiveItem(
     CornerRadius PreviewRadius);
 
 public sealed record SpacingPrimitiveGroup(string Header, IReadOnlyList<SpacingPrimitiveItem> Items);
+
+public sealed record SpacingSemanticItem(string Name, string Link, double PreviewWidth);
+
+public sealed record SpacingSemanticGroup(string Header, IReadOnlyList<SpacingSemanticItem> Items);
