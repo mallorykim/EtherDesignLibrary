@@ -65,12 +65,12 @@
                     <VisualState x:Name="Normal"/>
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
-                            <Setter Target="Bg.Background" Value="{ThemeResource ActionPrimaryBgHover}"/>
+                            <Setter Target="Bg.Background" Value="{StaticResource Blue700}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
-                            <Setter Target="Bg.Background" Value="{ThemeResource ActionPrimaryBgPressed}"/>
+                            <Setter Target="Bg.Background" Value="{StaticResource Blue800}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
@@ -79,10 +79,10 @@
                                  group opacity: fading the whole Border dims the fill AND the white
                                  label together, washing the text out. Instead the fill takes the
                                  disabled token and the label stays full-opacity white so it reads. -->
-                            <Setter Target="Bg.Background" Value="{ThemeResource ActionPrimaryBgDisabled}"/>
+                            <Setter Target="Bg.Background" Value="{StaticResource Blue600}"/>
                             <Setter Target="Bg.BorderBrush" Value="Transparent"/>
-                            <Setter Target="Cp.Foreground" Value="{ThemeResource ActionPrimaryFgDisabled}"/>
-                            <Setter Target="RightIcon.Foreground" Value="{ThemeResource ActionPrimaryFgDisabled}"/>
+                            <Setter Target="Cp.Foreground" Value="{StaticResource Gray0}"/>
+                            <Setter Target="RightIcon.Foreground" Value="{StaticResource Gray0}"/>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -175,7 +175,7 @@
             </VisualStateManager.VisualStateGroups>
 
             <Border x:Name="Bg"
-                    Background="{ThemeResource ActionSecondaryBg}"
+                    Background="{StaticResource Gray0}"
                     BorderBrush="{ThemeResource ActionSecondaryBorder}"
                     BorderThickness="1"
                     CornerRadius="{StaticResource RadiusMd}"
@@ -225,14 +225,14 @@
                     <VisualState x:Name="Normal"/>
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
-                            <Setter Target="Cp.Foreground" Value="{ThemeResource ActionTertiaryFgHover}"/>
-                            <Setter Target="RightIcon.Foreground" Value="{ThemeResource ActionTertiaryFgHover}"/>
+                            <Setter Target="Cp.Foreground" Value="{StaticResource Blue700}"/>
+                            <Setter Target="RightIcon.Foreground" Value="{StaticResource Blue700}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
-                            <Setter Target="Cp.Foreground" Value="{ThemeResource ActionTertiaryFgPressed}"/>
-                            <Setter Target="RightIcon.Foreground" Value="{ThemeResource ActionTertiaryFgPressed}"/>
+                            <Setter Target="Cp.Foreground" Value="{StaticResource Blue800}"/>
+                            <Setter Target="RightIcon.Foreground" Value="{StaticResource Blue800}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
@@ -262,7 +262,7 @@
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                     <TextBlock x:Name="Cp"
                                       Text="{TemplateBinding Content}"
-                                      Foreground="{ThemeResource ActionTertiaryFg}"
+                                      Foreground="{StaticResource Blue800}"
                                       FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
                                       FontWeight="{StaticResource WeightSemibold}"
@@ -278,7 +278,7 @@
                     <ContentPresenter x:Name="RightIcon"
                                       Content="{TemplateBinding RightIcon}"
                                       Visibility="{TemplateBinding RightIconVisibility}"
-                                      Foreground="{ThemeResource ActionTertiaryFg}"
+                                      Foreground="{StaticResource Blue800}"
                                       VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
