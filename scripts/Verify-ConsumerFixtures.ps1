@@ -103,11 +103,20 @@ function Assert-OutputFile {
     }
 }
 
-function Restore-OsHighContrastIfOn {
-    if (-not ('EtherConsumerFixtureHighContrast' -as [type])) {
-        Add-Type -TypeDefinition @'
+function Initialize-OsHighContrastNative {
+    if ('EtherConsumerFixtureHighContrast' -as [type]) {
+        return
+    }
+
+    Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
+
+public sealed class EtherConsumerFixtureHighContrastSnapshot
+{
+    public int DwFlags { get; set; }
+    public string Scheme { get; set; }
+}
 
 public static class EtherConsumerFixtureHighContrast
 {
@@ -115,7 +124,6 @@ public static class EtherConsumerFixtureHighContrast
     private const uint SpiSetHighContrast = 0x0043;
     private const uint SpifUpdateIniFile = 0x0001;
     private const uint SpifSendChange = 0x0002;
-    private const int HcfHighContrastOn = 0x0001;
     private const int SchemeBufferChars = 512;
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -129,7 +137,7 @@ public static class EtherConsumerFixtureHighContrast
     [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, ref HIGHCONTRAST pvParam, uint fWinIni);
 
-    public static void RestoreOffIfOn()
+    public static EtherConsumerFixtureHighContrastSnapshot Get()
     {
         IntPtr buffer = Marshal.AllocHGlobal(SchemeBufferChars * 2);
         try
@@ -142,11 +150,6 @@ public static class EtherConsumerFixtureHighContrast
                 throw new InvalidOperationException("SPI_GETHIGHCONTRAST failed. Win32 error " + Marshal.GetLastWin32Error() + ".");
             }
 
-            if ((hc.dwFlags & HcfHighContrastOn) == 0)
-            {
-                return;
-            }
-
             string scheme = string.Empty;
             if (hc.lpszDefaultScheme != IntPtr.Zero)
             {
@@ -157,7 +160,11 @@ public static class EtherConsumerFixtureHighContrast
                 }
             }
 
-            Set(hc.dwFlags & ~HcfHighContrastOn, scheme);
+            return new EtherConsumerFixtureHighContrastSnapshot
+            {
+                DwFlags = hc.dwFlags,
+                Scheme = scheme
+            };
         }
         finally
         {
@@ -165,7 +172,7 @@ public static class EtherConsumerFixtureHighContrast
         }
     }
 
-    private static void Set(int dwFlags, string scheme)
+    public static void Set(int dwFlags, string scheme)
     {
         IntPtr schemePtr = Marshal.StringToHGlobalUni(scheme ?? string.Empty);
         try
@@ -186,9 +193,80 @@ public static class EtherConsumerFixtureHighContrast
     }
 }
 '@
+}
+
+function Get-OsCurrentThemePath {
+    [Microsoft.Win32.Registry]::GetValue(
+        'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes',
+        'CurrentTheme',
+        $null)
+}
+
+function Test-OsContrastThemeForbidden {
+    param([string]$ThemePath)
+
+    if ([string]::IsNullOrWhiteSpace($ThemePath)) {
+        return $false
     }
 
-    [EtherConsumerFixtureHighContrast]::RestoreOffIfOn()
+    $name = [System.IO.Path]::GetFileNameWithoutExtension($ThemePath)
+    $normalized = (($name -replace '\s+', ' ').Trim())
+    return $normalized -match '^(?i)(aquatic|desert|night sky)$'
+}
+
+function Invoke-OsThemeFile {
+    param([Parameter(Mandatory)][string]$ThemePath)
+
+    $null = Start-Process -FilePath $ThemePath
+    Start-Sleep -Seconds 2
+    Get-Process -Name SystemSettings -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+}
+
+function Get-OsHighContrastSnapshot {
+    Initialize-OsHighContrastNative
+    $spi = [EtherConsumerFixtureHighContrast]::Get()
+    $currentTheme = Get-OsCurrentThemePath
+    [pscustomobject]@{
+        DwFlags = [int]$spi.DwFlags
+        Scheme = [string]$spi.Scheme
+        CurrentTheme = $(if ($null -eq $currentTheme) { $null } else { [string]$currentTheme })
+    }
+}
+
+function Restore-OsHighContrastSnapshot {
+    param($Snapshot)
+
+    if ($null -eq $Snapshot) {
+        return
+    }
+
+    try {
+        Initialize-OsHighContrastNative
+        [EtherConsumerFixtureHighContrast]::Set([int]$Snapshot.DwFlags, [string]$Snapshot.Scheme)
+
+        $snapshotTheme = [string]$Snapshot.CurrentTheme
+        if ([string]::IsNullOrWhiteSpace($snapshotTheme)) {
+            return
+        }
+
+        $currentTheme = Get-OsCurrentThemePath
+        if ([string]::Equals([string]$currentTheme, $snapshotTheme, [StringComparison]::OrdinalIgnoreCase)) {
+            return
+        }
+
+        if (-not (Test-Path -LiteralPath $snapshotTheme -PathType Leaf)) {
+            return
+        }
+
+        if (Test-OsContrastThemeForbidden $snapshotTheme) {
+            return
+        }
+
+        Invoke-OsThemeFile $snapshotTheme
+    }
+    catch {
+        Write-Warning "Failed to restore OS High Contrast snapshot: $_"
+    }
 }
 
 function Assert-NoProjectReference {
@@ -622,6 +700,7 @@ try {
         $previousMarkerPath = [Environment]::GetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', 'Process')
         $previousScreenshotDir = [Environment]::GetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', 'Process')
         $smokeProcess = $null
+        $osHighContrastSnapshot = Get-OsHighContrastSnapshot
         try {
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE', '1', 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $markerPath, 'Process')
@@ -630,7 +709,7 @@ try {
             if (-not $smokeProcess.WaitForExit(90000)) {
                 Stop-Process -Id $smokeProcess.Id -Force
                 $null = $smokeProcess.WaitForExit(10000)
-                Restore-OsHighContrastIfOn
+                Restore-OsHighContrastSnapshot $osHighContrastSnapshot
                 throw "The unpackaged runtime smoke fixture timed out before writing its result marker: $markerPath"
             }
             if ($smokeProcess.ExitCode -ne 0) {
@@ -881,7 +960,7 @@ try {
                 Stop-Process -Id $smokeProcess.Id -Force
                 $null = $smokeProcess.WaitForExit(10000)
             }
-            Restore-OsHighContrastIfOn
+            Restore-OsHighContrastSnapshot $osHighContrastSnapshot
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE', $previousSmokeValue, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $previousMarkerPath, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', $previousScreenshotDir, 'Process')

@@ -723,6 +723,10 @@ internal static partial class RuntimeVerification
             }
             results.Add(new RtlControlVerification(id, control.FlowDirection.ToString(), automationName));
         }
+
+        themeRoot.FlowDirection = FlowDirection.LeftToRight;
+        themeRoot.UpdateLayout();
+        await WaitForFlowDirectionAsync(themeRoot, FlowDirection.LeftToRight);
         return new RtlVerification(FlowDirection.RightToLeft.ToString(), results.ToArray());
     }
 

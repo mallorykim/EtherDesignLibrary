@@ -403,6 +403,7 @@ internal static partial class RuntimeVerification
         var textScale = await VerifyTextScaleAsync(themeRoot, controlsTuple);
         var localization = VerifyLocalization(statusText);
         var rtlResult = await VerifyRtlAsync(themeRoot, controlsTuple);
+        stopwatch.Stop();
         var highContrast = await VerifyOsSelectedHighContrastAsync(
             themeRoot,
             controlsTuple,
@@ -415,7 +416,6 @@ internal static partial class RuntimeVerification
             HighContrastPixelHeight = highContrast.PixelHeight,
         };
 
-        stopwatch.Stop();
         return new VerificationResult(
             resourceKeys,
             assets.ToArray(),
