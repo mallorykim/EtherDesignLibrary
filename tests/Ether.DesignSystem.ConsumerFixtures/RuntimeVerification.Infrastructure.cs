@@ -448,7 +448,14 @@ internal static partial class RuntimeVerification
         AccessibilitySettings settings)
     {
         var expected = !startedOff;
-        NativeHighContrast.Set(original.DwFlags, original.Scheme);
+        try
+        {
+            NativeHighContrast.Set(original.DwFlags, original.Scheme);
+        }
+        catch (Exception)
+        {
+            // SPI restore failed; continue to TryWait and theme-file fallback.
+        }
 
         var restored = await TryWaitForOsHighContrastAsync(settings, expected, TimeSpan.FromSeconds(10));
         if (restored && !appliedThemeFile)

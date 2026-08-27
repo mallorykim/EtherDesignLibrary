@@ -103,6 +103,94 @@ function Assert-OutputFile {
     }
 }
 
+function Restore-OsHighContrastIfOn {
+    if (-not ('EtherConsumerFixtureHighContrast' -as [type])) {
+        Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+
+public static class EtherConsumerFixtureHighContrast
+{
+    private const uint SpiGetHighContrast = 0x0042;
+    private const uint SpiSetHighContrast = 0x0043;
+    private const uint SpifUpdateIniFile = 0x0001;
+    private const uint SpifSendChange = 0x0002;
+    private const int HcfHighContrastOn = 0x0001;
+    private const int SchemeBufferChars = 512;
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    private struct HIGHCONTRAST
+    {
+        public int cbSize;
+        public int dwFlags;
+        public IntPtr lpszDefaultScheme;
+    }
+
+    [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, ref HIGHCONTRAST pvParam, uint fWinIni);
+
+    public static void RestoreOffIfOn()
+    {
+        IntPtr buffer = Marshal.AllocHGlobal(SchemeBufferChars * 2);
+        try
+        {
+            HIGHCONTRAST hc = new HIGHCONTRAST();
+            hc.cbSize = Marshal.SizeOf(typeof(HIGHCONTRAST));
+            hc.lpszDefaultScheme = buffer;
+            if (!SystemParametersInfo(SpiGetHighContrast, (uint)hc.cbSize, ref hc, 0))
+            {
+                throw new InvalidOperationException("SPI_GETHIGHCONTRAST failed. Win32 error " + Marshal.GetLastWin32Error() + ".");
+            }
+
+            if ((hc.dwFlags & HcfHighContrastOn) == 0)
+            {
+                return;
+            }
+
+            string scheme = string.Empty;
+            if (hc.lpszDefaultScheme != IntPtr.Zero)
+            {
+                string value = Marshal.PtrToStringUni(hc.lpszDefaultScheme);
+                if (value != null)
+                {
+                    scheme = value.TrimEnd('\0');
+                }
+            }
+
+            Set(hc.dwFlags & ~HcfHighContrastOn, scheme);
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(buffer);
+        }
+    }
+
+    private static void Set(int dwFlags, string scheme)
+    {
+        IntPtr schemePtr = Marshal.StringToHGlobalUni(scheme ?? string.Empty);
+        try
+        {
+            HIGHCONTRAST hc = new HIGHCONTRAST();
+            hc.cbSize = Marshal.SizeOf(typeof(HIGHCONTRAST));
+            hc.dwFlags = dwFlags;
+            hc.lpszDefaultScheme = schemePtr;
+            if (!SystemParametersInfo(SpiSetHighContrast, (uint)hc.cbSize, ref hc, SpifUpdateIniFile | SpifSendChange))
+            {
+                throw new InvalidOperationException("SPI_SETHIGHCONTRAST failed. Win32 error " + Marshal.GetLastWin32Error() + ".");
+            }
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(schemePtr);
+        }
+    }
+}
+'@
+    }
+
+    [EtherConsumerFixtureHighContrast]::RestoreOffIfOn()
+}
+
 function Assert-NoProjectReference {
     param([Parameter(Mandatory)][string]$ProjectPath)
 
@@ -541,6 +629,8 @@ try {
             $smokeProcess = Start-Process -FilePath $unpackagedExe -WorkingDirectory $unpackagedOutput -PassThru -WindowStyle Hidden
             if (-not $smokeProcess.WaitForExit(90000)) {
                 Stop-Process -Id $smokeProcess.Id -Force
+                $null = $smokeProcess.WaitForExit(10000)
+                Restore-OsHighContrastIfOn
                 throw "The unpackaged runtime smoke fixture timed out before writing its result marker: $markerPath"
             }
             if ($smokeProcess.ExitCode -ne 0) {
@@ -789,7 +879,9 @@ try {
         finally {
             if ($null -ne $smokeProcess -and -not $smokeProcess.HasExited) {
                 Stop-Process -Id $smokeProcess.Id -Force
+                $null = $smokeProcess.WaitForExit(10000)
             }
+            Restore-OsHighContrastIfOn
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE', $previousSmokeValue, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $previousMarkerPath, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', $previousScreenshotDir, 'Process')
