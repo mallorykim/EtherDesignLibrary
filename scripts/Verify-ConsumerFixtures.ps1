@@ -358,6 +358,57 @@ function Assert-ScreenshotMarker {
     }
 }
 
+function Assert-HighContrastMarker {
+    param($RuntimeResult)
+
+    if (-not ($RuntimeResult.PSObject.Properties.Name -contains 'highContrast')) {
+        throw 'Unpackaged runtime marker is missing the highContrast object.'
+    }
+    $highContrast = $RuntimeResult.highContrast
+    if ($null -eq $highContrast) {
+        throw 'Unpackaged runtime marker is missing the highContrast object.'
+    }
+    if ($highContrast.osHighContrast -ne $false) {
+        throw "highContrast.osHighContrast was '$($highContrast.osHighContrast)', expected false (OS contrast themes are not this slice)."
+    }
+    if ($highContrast.dictionaryForced -ne $true) {
+        throw "highContrast.dictionaryForced was '$($highContrast.dictionaryForced)', expected true."
+    }
+    if ([string]$highContrast.injectedWindowColor -cne '#FF00FF00') {
+        throw "highContrast.injectedWindowColor was '$($highContrast.injectedWindowColor)', expected '#FF00FF00'."
+    }
+    if ([string]$highContrast.injectedWindowTextColor -cne '#FFFFFF00') {
+        throw "highContrast.injectedWindowTextColor was '$($highContrast.injectedWindowTextColor)', expected '#FFFFFF00'."
+    }
+    if ([string]$highContrast.backgroundCanvasColor -cne '#FF00FF00') {
+        throw "highContrast.backgroundCanvasColor was '$($highContrast.backgroundCanvasColor)', expected '#FF00FF00'."
+    }
+    if ($highContrast.automationNamesIntact -ne $true) {
+        throw "highContrast.automationNamesIntact was '$($highContrast.automationNamesIntact)', expected true."
+    }
+    $path = [string]$highContrast.screenshotPath
+    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+        throw "highContrast.screenshotPath is missing: $path"
+    }
+    $item = Get-Item -LiteralPath $path
+    if ($item.Length -lt 2048) {
+        throw "highContrast screenshot is too small: $($item.Length) bytes."
+    }
+    $screenshots = $RuntimeResult.screenshots
+    if ([string]$screenshots.highContrastPath -cne $path) {
+        throw "screenshots.highContrastPath was '$($screenshots.highContrastPath)', expected '$path'."
+    }
+    $hcHash = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash
+    $lightHash = (Get-FileHash -LiteralPath $screenshots.lightPath -Algorithm SHA256).Hash
+    $darkHash = (Get-FileHash -LiteralPath $screenshots.darkPath -Algorithm SHA256).Hash
+    if ($hcHash -eq $lightHash) {
+        throw 'HighContrast and Light screenshots are identical; dictionary force did not differ.'
+    }
+    if ($hcHash -eq $darkHash) {
+        throw 'HighContrast and Dark screenshots are identical; dictionary force did not differ.'
+    }
+}
+
 function Assert-PerformanceMarker {
     param($RuntimeResult)
 
@@ -723,6 +774,7 @@ try {
             Assert-TextScaleMarker $runtimeResult
             Assert-LocalizationMarker $runtimeResult
             Assert-ScreenshotMarker $runtimeResult
+            Assert-HighContrastMarker $runtimeResult
             Assert-PerformanceMarker $runtimeResult
             $storageFileResolvedCount = @($reportedAssets | Where-Object { $_.storageFileResolved -eq $true }).Count
             Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; EtherSlider default style, bar-canvas RangeValue GetPattern, and Light/Dark brushes verified; EtherMasthead default style, SearchIconStates, and Light/Dark brushes verified; EtherSwitch keyed style, Off/On states, and Light/Dark brushes verified; implicit ScrollBar 6 px templates and Light/Dark thumb brushes verified; RTL RightToLeft inherited on 13 package controls with automation names intact; UIA automation names, control types, and bounding rects for 13 package controls; 2.25 scale ActualWidth/Height with automation names intact; localization statusText and resourceLoaderText; Light/Dark screenshots; performance elapsedMilliseconds; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); marker: $markerPath"
