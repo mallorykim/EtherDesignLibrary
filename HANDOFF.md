@@ -199,6 +199,16 @@ preview package publish.
 
 Keep Primitive/Semantic Tokens frozen.
 
+## Whole-work independent review handoff
+
+For an agent reviewing **the entire L0–L4 effort** without chat context, start at:
+
+**`docs/architecture/2026-08-26-foundation-refactor-full-review-handoff.md`**
+
+It includes the commit map (`efe5a21` … `e842f32` + this handoff commit), phase
+deliverables, frozen-token hashes, the full verification matrix, known concerns,
+and an explicit L4-C deferral list. Prefer that document over `.superpowers/` scratch.
+
 ## Known non-completions and release blockers
 
 - The L2 runtime evidence is structured, not a pixel screenshot baseline.
