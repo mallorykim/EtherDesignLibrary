@@ -29,7 +29,8 @@
                     <TextBlock Text="Package consumer"
                                Style="{StaticResource headers/h2}"
                                Foreground="{ThemeResource text/primary}"/>
-                    <TextBlock Text="Foundation resource resolved from Ether.DesignSystem.Foundation."
+                    <TextBlock x:Name="StatusText"
+                               x:Uid="FixtureStatus"
                                Style="{StaticResource body/m-regular}"
                                Foreground="{ThemeResource TextSecondary}"
                                TextWrapping="Wrap"/>

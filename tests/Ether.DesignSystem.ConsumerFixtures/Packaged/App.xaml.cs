@@ -52,7 +52,8 @@ public partial class App : Application
                     window.DefaultToggleSwitchProofControl,
                     window.ToggleSwitchProofControl,
                     window.ScrollBarProofControl,
-                    window.ScrollViewerProofControl);
+                    window.ScrollViewerProofControl,
+                    window.StatusTextProof);
                 RuntimeVerification.WriteMarker(true, result);
                 window.Close();
                 Exit();

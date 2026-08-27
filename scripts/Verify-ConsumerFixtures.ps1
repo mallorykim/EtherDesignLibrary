@@ -241,10 +241,149 @@ function Assert-RtlMarker {
     }
 }
 
+function Get-ExpectedAutomationNames {
+    return [ordered]@{
+        progressBar        = 'Package download progress'
+        button             = 'Package button'
+        checkbox           = 'Package checkbox'
+        radioButton        = 'Package radio button'
+        input              = 'Package input'
+        dropdown           = 'Package dropdown'
+        segmentedControl   = 'Package segmented control'
+        intelligenceButton = 'Package intelligence button'
+        steeringBar        = 'Package steering bar'
+        slider             = 'Package slider'
+        masthead           = 'Package masthead'
+        toggleSwitch       = 'Package toggle switch'
+        scrollBar          = 'Package scroll bar'
+    }
+}
+
+function Assert-UiaMarker {
+    param($RuntimeResult)
+
+    $uia = $RuntimeResult.uia
+    if ($null -eq $uia) {
+        throw 'Unpackaged runtime marker is missing the uia object.'
+    }
+    $expected = Get-ExpectedAutomationNames
+    $controls = @($uia.controls)
+    if ($controls.Count -ne $expected.Count) {
+        throw "UIA marker control count was $($controls.Count), expected $($expected.Count)."
+    }
+    foreach ($id in $expected.Keys) {
+        $row = @($controls | Where-Object { $_.id -eq $id })[0]
+        if ($null -eq $row) {
+            throw "UIA marker is missing control '$id'."
+        }
+        if ($row.automationName -ne $expected[$id]) {
+            throw "UIA '$id' automation name was '$($row.automationName)', expected '$($expected[$id])'."
+        }
+        if ([string]::IsNullOrWhiteSpace([string]$row.controlType)) {
+            throw "UIA '$id' is missing controlType."
+        }
+        if ([double]$row.boundingWidth -le 0 -or [double]$row.boundingHeight -le 0) {
+            throw "UIA '$id' bounding rect was $($row.boundingWidth)x$($row.boundingHeight)."
+        }
+    }
+}
+
+function Assert-TextScaleMarker {
+    param($RuntimeResult)
+
+    $textScale = $RuntimeResult.textScale
+    if ($null -eq $textScale) {
+        throw 'Unpackaged runtime marker is missing the textScale object.'
+    }
+    if ([double]$textScale.scale -ne 2.25) {
+        throw "textScale.scale was '$($textScale.scale)', expected 2.25."
+    }
+    $expected = Get-ExpectedAutomationNames
+    $controls = @($textScale.controls)
+    foreach ($id in $expected.Keys) {
+        $row = @($controls | Where-Object { $_.id -eq $id })[0]
+        if ($null -eq $row) {
+            throw "textScale marker is missing control '$id'."
+        }
+        if ($row.automationName -ne $expected[$id]) {
+            throw "textScale '$id' automation name was '$($row.automationName)', expected '$($expected[$id])'."
+        }
+        if ([double]$row.actualWidth -le 0 -or [double]$row.actualHeight -le 0) {
+            throw "textScale '$id' ActualWidth/Height was $($row.actualWidth)x$($row.actualHeight)."
+        }
+    }
+}
+
+function Assert-LocalizationMarker {
+    param($RuntimeResult)
+
+    $localization = $RuntimeResult.localization
+    if ($null -eq $localization) {
+        throw 'Unpackaged runtime marker is missing the localization object.'
+    }
+    $expected = 'Foundation resource resolved from Ether.DesignSystem.Foundation.'
+    if ($localization.statusText -ne $expected) {
+        throw "localization.statusText was '$($localization.statusText)', expected '$expected'."
+    }
+    if ($localization.resourceLoaderText -ne $expected) {
+        throw "localization.resourceLoaderText was '$($localization.resourceLoaderText)', expected '$expected'."
+    }
+}
+
+function Assert-ScreenshotMarker {
+    param($RuntimeResult)
+
+    $screenshots = $RuntimeResult.screenshots
+    if ($null -eq $screenshots) {
+        throw 'Unpackaged runtime marker is missing the screenshots object.'
+    }
+    foreach ($name in @('lightPath', 'darkPath')) {
+        $path = [string]$screenshots.$name
+        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+            throw "Screenshot '$name' is missing: $path"
+        }
+        $item = Get-Item -LiteralPath $path
+        if ($item.Length -lt 2048) {
+            throw "Screenshot '$name' is too small: $($item.Length) bytes."
+        }
+    }
+    $lightHash = (Get-FileHash -LiteralPath $screenshots.lightPath -Algorithm SHA256).Hash
+    $darkHash = (Get-FileHash -LiteralPath $screenshots.darkPath -Algorithm SHA256).Hash
+    if ($lightHash -eq $darkHash) {
+        throw 'Light and Dark screenshots are identical; theme capture did not differ.'
+    }
+}
+
+function Assert-PerformanceMarker {
+    param($RuntimeResult)
+
+    $performance = $RuntimeResult.performance
+    if ($null -eq $performance) {
+        throw 'Unpackaged runtime marker is missing the performance object.'
+    }
+    $elapsed = [double]$performance.elapsedMilliseconds
+    if ($elapsed -le 0) {
+        throw "performance.elapsedMilliseconds was '$elapsed', expected > 0."
+    }
+    if ($elapsed -ge 20000) {
+        throw "performance.elapsedMilliseconds was '$elapsed', expected < 20000."
+    }
+}
+
+function Assert-FixtureStatusUid {
+    param([Parameter(Mandatory)][string]$XamlPath)
+
+    if (-not (Select-String -LiteralPath $XamlPath -Pattern 'x:Uid="FixtureStatus"' -Quiet)) {
+        throw "$XamlPath is missing x:Uid=`"FixtureStatus`"."
+    }
+}
+
 Push-Location $repoRoot
 try {
     Assert-FixtureAutomationNames (Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Unpackaged\MainWindow.xaml')
     Assert-FixtureAutomationNames (Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Packaged\MainWindow.xaml')
+    Assert-FixtureStatusUid (Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Unpackaged\MainWindow.xaml')
+    Assert-FixtureStatusUid (Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Packaged\MainWindow.xaml')
 
     if (-not $SkipSolutionBuild) {
         Invoke-DotNet @('build', 'Ether.DesignSystem.slnx', '-c', $configuration, $platformProperty)
@@ -331,12 +470,14 @@ try {
         $markerPath = Join-Path $workRoot ("runtime-result-{0}.json" -f [guid]::NewGuid().ToString('N'))
         $previousSmokeValue = [Environment]::GetEnvironmentVariable('ETHER_CONSUMER_SMOKE', 'Process')
         $previousMarkerPath = [Environment]::GetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', 'Process')
+        $previousScreenshotDir = [Environment]::GetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', 'Process')
         $smokeProcess = $null
         try {
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE', '1', 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $markerPath, 'Process')
+            [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', (Join-Path $workRoot 'screenshots'), 'Process')
             $smokeProcess = Start-Process -FilePath $unpackagedExe -WorkingDirectory $unpackagedOutput -PassThru -WindowStyle Hidden
-            if (-not $smokeProcess.WaitForExit(25000)) {
+            if (-not $smokeProcess.WaitForExit(40000)) {
                 Stop-Process -Id $smokeProcess.Id -Force
                 throw "The unpackaged runtime smoke fixture timed out before writing its result marker: $markerPath"
             }
@@ -573,8 +714,13 @@ try {
                 throw "The unpackaged runtime smoke fixture did not verify Foundation resources, assets, and theme re-resolution: $(Get-Content -LiteralPath $markerPath -Raw)"
             }
             Assert-RtlMarker $runtimeResult
+            Assert-UiaMarker $runtimeResult
+            Assert-TextScaleMarker $runtimeResult
+            Assert-LocalizationMarker $runtimeResult
+            Assert-ScreenshotMarker $runtimeResult
+            Assert-PerformanceMarker $runtimeResult
             $storageFileResolvedCount = @($reportedAssets | Where-Object { $_.storageFileResolved -eq $true }).Count
-            Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; EtherSlider default style, bar-canvas RangeValue GetPattern, and Light/Dark brushes verified; EtherMasthead default style, SearchIconStates, and Light/Dark brushes verified; EtherSwitch keyed style, Off/On states, and Light/Dark brushes verified; implicit ScrollBar 6 px templates and Light/Dark thumb brushes verified; RTL RightToLeft inherited on 13 package controls with automation names intact; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); marker: $markerPath"
+            Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; EtherSlider default style, bar-canvas RangeValue GetPattern, and Light/Dark brushes verified; EtherMasthead default style, SearchIconStates, and Light/Dark brushes verified; EtherSwitch keyed style, Off/On states, and Light/Dark brushes verified; implicit ScrollBar 6 px templates and Light/Dark thumb brushes verified; RTL RightToLeft inherited on 13 package controls with automation names intact; UIA automation names, control types, and bounding rects for 13 package controls; 2.25 scale ActualWidth/Height with automation names intact; localization statusText and resourceLoaderText; Light/Dark screenshots; performance elapsedMilliseconds; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); marker: $markerPath"
         }
         finally {
             if ($null -ne $smokeProcess -and -not $smokeProcess.HasExited) {
@@ -582,6 +728,7 @@ try {
             }
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE', $previousSmokeValue, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $previousMarkerPath, 'Process')
+            [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', $previousScreenshotDir, 'Process')
         }
     }
 

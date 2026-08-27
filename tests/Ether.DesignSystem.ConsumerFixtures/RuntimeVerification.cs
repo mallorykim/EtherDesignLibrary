@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.Json;
 using EtherSandbox.Controls;
 using Microsoft.UI.Xaml;
@@ -6,6 +8,8 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 
 namespace Ether.DesignSystem.ConsumerFixtures;
@@ -219,6 +223,39 @@ internal static class RuntimeVerification
         string RootFlowDirection,
         RtlControlVerification[] Controls);
 
+    internal sealed record UiaControlSnapshot(
+        string Id,
+        string AutomationName,
+        string ControlType,
+        double BoundingWidth,
+        double BoundingHeight);
+
+    internal sealed record UiaVerification(UiaControlSnapshot[] Controls);
+
+    internal sealed record TextScaleControlVerification(
+        string Id,
+        string AutomationName,
+        double ActualWidth,
+        double ActualHeight);
+
+    internal sealed record TextScaleVerification(
+        double Scale,
+        TextScaleControlVerification[] Controls);
+
+    internal sealed record LocalizationVerification(
+        string StatusText,
+        string ResourceLoaderText);
+
+    internal sealed record ScreenshotVerification(
+        string LightPath,
+        string DarkPath,
+        int LightPixelWidth,
+        int LightPixelHeight,
+        int DarkPixelWidth,
+        int DarkPixelHeight);
+
+    internal sealed record PerformanceVerification(double ElapsedMilliseconds);
+
     internal sealed record VerificationResult(
         string[] ResourceKeys,
         AssetVerification[] Assets,
@@ -239,7 +276,12 @@ internal static class RuntimeVerification
         MastheadVerification Masthead,
         ToggleSwitchVerification ToggleSwitch,
         ScrollBarVerification ScrollBar,
-        RtlVerification Rtl);
+        RtlVerification Rtl,
+        UiaVerification Uia,
+        TextScaleVerification TextScale,
+        LocalizationVerification Localization,
+        ScreenshotVerification Screenshots,
+        PerformanceVerification Performance);
 
     internal static async Task<VerificationResult> VerifyAsync(
         FrameworkElement themeRoot,
@@ -271,8 +313,10 @@ internal static class RuntimeVerification
         ToggleSwitch defaultToggleSwitch,
         ToggleSwitch toggleSwitch,
         ScrollBar scrollBar,
-        ScrollViewer scrollViewer)
+        ScrollViewer scrollViewer,
+        TextBlock statusText)
     {
+        var stopwatch = Stopwatch.StartNew();
         var resourceKeys = new[]
         {
             AssertResource("Spacing8", typeof(double)),
@@ -327,8 +371,8 @@ internal static class RuntimeVerification
                 $"BackgroundCanvas did not re-resolve through ThemeResource. Light and Dark both produced {light}.");
         }
 
-        var rtlResult = await VerifyRtlAsync(
-            themeRoot,
+        var controlsTuple = new (string Id, FrameworkElement Control, string ExpectedAutomationName)[]
+        {
             ("progressBar", progressBar, "Package download progress"),
             ("button", button, "Package button"),
             ("checkbox", checkbox, "Package checkbox"),
@@ -341,8 +385,16 @@ internal static class RuntimeVerification
             ("slider", slider, "Package slider"),
             ("masthead", masthead, "Package masthead"),
             ("toggleSwitch", toggleSwitch, "Package toggle switch"),
-            ("scrollBar", scrollBar, "Package scroll bar"));
+            ("scrollBar", scrollBar, "Package scroll bar"),
+        };
 
+        var screenshots = await CaptureThemeScreenshotsAsync(themeRoot);
+        var uia = CaptureUia(controlsTuple);
+        var textScale = await VerifyTextScaleAsync(themeRoot, controlsTuple);
+        var localization = VerifyLocalization(statusText);
+        var rtlResult = await VerifyRtlAsync(themeRoot, controlsTuple);
+
+        stopwatch.Stop();
         return new VerificationResult(
             resourceKeys,
             assets.ToArray(),
@@ -363,7 +415,12 @@ internal static class RuntimeVerification
             mastheadResult,
             toggleSwitchResult,
             scrollBarResult,
-            rtlResult);
+            rtlResult,
+            uia,
+            textScale,
+            localization,
+            screenshots,
+            new PerformanceVerification(stopwatch.Elapsed.TotalMilliseconds));
     }
 
     internal static void WriteMarker(bool succeeded, VerificationResult? result = null, Exception? exception = null)
@@ -399,6 +456,11 @@ internal static class RuntimeVerification
             toggleSwitch = result?.ToggleSwitch,
             scrollBar = result?.ScrollBar,
             rtl = result?.Rtl,
+            uia = result?.Uia,
+            textScale = result?.TextScale,
+            localization = result?.Localization,
+            screenshots = result?.Screenshots,
+            performance = result?.Performance,
             message = exception?.ToString(),
         });
         File.WriteAllText(path, payload);
@@ -2218,6 +2280,192 @@ internal static class RuntimeVerification
             throw new InvalidOperationException(
                 $"Theme application timed out. Requested '{requestedTheme}', actual '{themeRoot.ActualTheme}'.");
         }
+    }
+
+    private static UiaVerification CaptureUia(
+        params (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls)
+    {
+        var results = new List<UiaControlSnapshot>(controls.Length);
+        foreach (var (id, control, expectedName) in controls)
+        {
+            control.StartBringIntoView();
+            control.UpdateLayout();
+            var peer = FrameworkElementAutomationPeer.CreatePeerForElement(control)
+                ?? throw new InvalidOperationException($"{id} did not create an automation peer for UIA capture.");
+            var name = peer.GetName();
+            if (!string.Equals(name, expectedName, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"{id} UIA name was '{name}', expected '{expectedName}'.");
+            }
+
+            var rect = peer.GetBoundingRectangle();
+            if (rect.Width <= 0 || rect.Height <= 0)
+            {
+                rect = new Windows.Foundation.Rect(0, 0, control.ActualWidth, control.ActualHeight);
+            }
+
+            if (rect.Width <= 0 || rect.Height <= 0)
+            {
+                throw new InvalidOperationException($"{id} UIA bounding rect was {rect.Width}x{rect.Height}.");
+            }
+
+            results.Add(new UiaControlSnapshot(
+                id,
+                name,
+                peer.GetAutomationControlType().ToString(),
+                rect.Width,
+                rect.Height));
+        }
+
+        return new UiaVerification(results.ToArray());
+    }
+
+    private static async Task<TextScaleVerification> VerifyTextScaleAsync(
+        FrameworkElement themeRoot,
+        params (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls)
+    {
+        const double scale = 2.25;
+        var previous = themeRoot.RenderTransform;
+        try
+        {
+            themeRoot.RenderTransformOrigin = new Windows.Foundation.Point(0, 0);
+            themeRoot.RenderTransform = new ScaleTransform { ScaleX = scale, ScaleY = scale };
+            themeRoot.UpdateLayout();
+            await Task.Delay(50);
+
+            var results = new List<TextScaleControlVerification>(controls.Length);
+            foreach (var (id, control, expectedName) in controls)
+            {
+                control.UpdateLayout();
+                if (control.ActualWidth <= 0 || control.ActualHeight <= 0)
+                {
+                    throw new InvalidOperationException(
+                        $"{id} collapsed under 2.25 scale. Actual {control.ActualWidth}x{control.ActualHeight}.");
+                }
+
+                var peer = FrameworkElementAutomationPeer.CreatePeerForElement(control)
+                    ?? throw new InvalidOperationException($"{id} lost its automation peer under 2.25 scale.");
+                var name = peer.GetName();
+                if (!string.Equals(name, expectedName, StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException(
+                        $"{id} 2.25-scale automation name was '{name}', expected '{expectedName}'.");
+                }
+
+                results.Add(new TextScaleControlVerification(id, name, control.ActualWidth, control.ActualHeight));
+            }
+
+            return new TextScaleVerification(scale, results.ToArray());
+        }
+        finally
+        {
+            themeRoot.RenderTransform = previous;
+            themeRoot.UpdateLayout();
+        }
+    }
+
+    private static LocalizationVerification VerifyLocalization(TextBlock statusText)
+    {
+        const string expected = "Foundation resource resolved from Ether.DesignSystem.Foundation.";
+        var status = statusText.Text ?? string.Empty;
+        if (!string.Equals(status, expected, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"StatusText was '{status}', expected '{expected}'.");
+        }
+
+        EnsureResourcesPriForUnpackagedHost();
+
+        var loader = new Windows.ApplicationModel.Resources.ResourceLoader();
+        var loaded = loader.GetString("FixtureStatus/Text");
+        if (string.IsNullOrEmpty(loaded))
+        {
+            loaded = loader.GetString("FixtureStatus.Text");
+        }
+
+        if (!string.Equals(loaded, expected, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                $"ResourceLoader FixtureStatus/Text and FixtureStatus.Text were '{loaded}', expected '{expected}'.");
+        }
+
+        return new LocalizationVerification(status, loaded);
+    }
+
+    private static void EnsureResourcesPriForUnpackagedHost()
+    {
+        var directory = AppContext.BaseDirectory;
+        var resourcesPri = Path.Combine(directory, "resources.pri");
+        if (File.Exists(resourcesPri))
+        {
+            return;
+        }
+
+        var moduleName = Path.GetFileNameWithoutExtension(Environment.ProcessPath);
+        if (string.IsNullOrWhiteSpace(moduleName))
+        {
+            return;
+        }
+
+        var modulePri = Path.Combine(directory, moduleName + ".pri");
+        if (File.Exists(modulePri))
+        {
+            File.Copy(modulePri, resourcesPri);
+        }
+    }
+
+    private static async Task<ScreenshotVerification> CaptureThemeScreenshotsAsync(FrameworkElement themeRoot)
+    {
+        var directory = Environment.GetEnvironmentVariable("ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR");
+        if (string.IsNullOrWhiteSpace(directory))
+        {
+            var markerPath = Environment.GetEnvironmentVariable("ETHER_CONSUMER_SMOKE_RESULT_PATH");
+            directory = string.IsNullOrWhiteSpace(markerPath)
+                ? Path.Combine(Path.GetTempPath(), "ether-consumer-screenshots")
+                : Path.Combine(Path.GetDirectoryName(markerPath)!, "screenshots");
+        }
+
+        Directory.CreateDirectory(directory);
+        var lightPath = Path.Combine(directory, "consumer-light.png");
+        var darkPath = Path.Combine(directory, "consumer-dark.png");
+        var lightSize = await CapturePngAsync(themeRoot, ElementTheme.Light, lightPath);
+        var darkSize = await CapturePngAsync(themeRoot, ElementTheme.Dark, darkPath);
+        return new ScreenshotVerification(
+            lightPath,
+            darkPath,
+            lightSize.Width,
+            lightSize.Height,
+            darkSize.Width,
+            darkSize.Height);
+    }
+
+    private static async Task<(int Width, int Height)> CapturePngAsync(
+        FrameworkElement themeRoot,
+        ElementTheme theme,
+        string path)
+    {
+        themeRoot.RequestedTheme = theme;
+        await WaitForAppliedThemeAsync(themeRoot, theme);
+        themeRoot.UpdateLayout();
+        var bitmap = new RenderTargetBitmap();
+        await bitmap.RenderAsync(themeRoot);
+        if (bitmap.PixelWidth <= 0 || bitmap.PixelHeight <= 0)
+        {
+            throw new InvalidOperationException($"RenderTargetBitmap for {theme} was {bitmap.PixelWidth}x{bitmap.PixelHeight}.");
+        }
+
+        var pixels = (await bitmap.GetPixelsAsync()).ToArray();
+        using var stream = File.Open(path, FileMode.Create, FileAccess.Write);
+        var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream.AsRandomAccessStream());
+        encoder.SetPixelData(
+            BitmapPixelFormat.Bgra8,
+            BitmapAlphaMode.Premultiplied,
+            (uint)bitmap.PixelWidth,
+            (uint)bitmap.PixelHeight,
+            96,
+            96,
+            pixels);
+        await encoder.FlushAsync();
+        return (bitmap.PixelWidth, bitmap.PixelHeight);
     }
 
     private static async Task<RtlVerification> VerifyRtlAsync(

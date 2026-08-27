@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Ether.DesignSystem.ConsumerFixtures.Packaged;
 
@@ -36,6 +37,7 @@ public sealed partial class MainWindow : Window
     internal Microsoft.UI.Xaml.Controls.ToggleSwitch ToggleSwitchProofControl => ToggleSwitchProof;
     internal Microsoft.UI.Xaml.Controls.Primitives.ScrollBar ScrollBarProofControl => ScrollBarProof;
     internal Microsoft.UI.Xaml.Controls.ScrollViewer ScrollViewerProofControl => ScrollViewerProof;
+    internal TextBlock StatusTextProof => StatusText;
 
     public MainWindow()
     {
