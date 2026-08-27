@@ -7,6 +7,12 @@ namespace EtherSandbox.Views.Controls;
 
 public sealed partial class ButtonPage : Page
 {
+    public string SpecimenXaml { get; } =
+        """
+        <controls:EtherButton Content="Primary Action"
+                              Style="{StaticResource EtherButtonPrimary}" />
+        """;
+
     public ButtonPage()
     {
         this.InitializeComponent();
@@ -47,6 +53,12 @@ public sealed partial class ButtonPage : Page
 
     private void IconToggle_Changed(object sender, RoutedEventArgs e) =>
         ApplyIcons((sender as CheckBox)?.IsChecked ?? false);
+
+    private void InteractiveButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is EtherButton button && LiveExample is not null)
+            LiveExample.OutputText = $"Clicked: {button.Content}";
+    }
 
     /// <summary>Adds a trailing chevron to every interactive specimen when
     /// <paramref name="show"/> is true, or clears it (text-only) when false.

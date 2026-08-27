@@ -21,6 +21,9 @@
         </views:ComponentPage.InteractiveControls>
 
         <views:ComponentPage.InteractiveContent>
+            <views:ControlExample x:Name="LiveExample"
+                                  OutputText="Clicked: —"
+                                  SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Spacing="24">
 
                 <StackPanel Spacing="8">
@@ -36,6 +39,7 @@
                             <controls:EtherButton x:Name="PrimaryLargeDemo"
                                                  Content="Primary Action"
                                                  Style="{StaticResource EtherButtonPrimary}"
+                                                 Click="InteractiveButton_Click"
                                                  AutomationProperties.Name="Primary large button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
@@ -47,6 +51,7 @@
                             <controls:EtherButton x:Name="PrimarySmallDemo"
                                                  Content="Primary Action"
                                                  Style="{StaticResource EtherButtonPrimarySmall}"
+                                                 Click="InteractiveButton_Click"
                                                  AutomationProperties.Name="Primary small button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
@@ -66,6 +71,7 @@
                             <controls:EtherButton x:Name="SecondaryLargeDemo"
                                                  Content="Secondary Action"
                                                  Style="{StaticResource EtherButtonSecondary}"
+                                                 Click="InteractiveButton_Click"
                                                  AutomationProperties.Name="Secondary large button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
@@ -77,6 +83,7 @@
                             <controls:EtherButton x:Name="SecondarySmallDemo"
                                                  Content="Secondary Action"
                                                  Style="{StaticResource EtherButtonSecondarySmall}"
+                                                 Click="InteractiveButton_Click"
                                                  AutomationProperties.Name="Secondary small button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
@@ -96,6 +103,7 @@
                             <controls:EtherButton x:Name="TertiaryLargeDemo"
                                                  Content="Tertiary Action"
                                                  Style="{StaticResource EtherButtonTertiary}"
+                                                 Click="InteractiveButton_Click"
                                                  AutomationProperties.Name="Tertiary large button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
@@ -107,6 +115,7 @@
                             <controls:EtherButton x:Name="TertiarySmallDemo"
                                                  Content="Tertiary Action"
                                                  Style="{StaticResource EtherButtonTertiarySmall}"
+                                                 Click="InteractiveButton_Click"
                                                  AutomationProperties.Name="Tertiary small button"
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
@@ -119,10 +128,12 @@
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherButton x:Name="DefaultStyleDemo"
                                          Content="Primary Action"
+                                         Click="InteractiveButton_Click"
                                          AutomationProperties.Name="Default style button"
                                          HorizontalContentAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>

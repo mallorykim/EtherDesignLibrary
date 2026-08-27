@@ -113,10 +113,24 @@ public sealed partial class ComponentPage : UserControl
     public Visibility BoolToVisibility(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
 
     /// <summary>Disable / re-enable the live specimen from the Disabled checkbox. IsEnabled on the
-    /// host ContentControl cascades to the specimen subtree, showing its disabled visual state.</summary>
+    /// host ContentControl cascades to the specimen subtree, showing its disabled visual state.
+    /// When InteractiveContent is a <see cref="ControlExample"/>, only the specimen host is
+    /// disabled so SOURCE/Copy stay usable.</summary>
     private void OnDisabledToggled(object sender, RoutedEventArgs e)
     {
-        if (InteractiveHost is not null && sender is CheckBox check)
-            InteractiveHost.IsEnabled = !(check.IsChecked ?? false);
+        if (sender is not CheckBox check)
+            return;
+
+        var enabled = !(check.IsChecked ?? false);
+        if (InteractiveContent is ControlExample example)
+        {
+            if (InteractiveHost is not null)
+                InteractiveHost.IsEnabled = true;
+            example.IsExampleEnabled = enabled;
+            return;
+        }
+
+        if (InteractiveHost is not null)
+            InteractiveHost.IsEnabled = enabled;
     }
 }

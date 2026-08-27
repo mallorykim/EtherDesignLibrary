@@ -11,6 +11,10 @@
         states side by side). Leaf pages under Views/* supply only their own
         InteractiveContent / StatesContent — see ButtonPage.xaml for an example.
 
+        InteractiveControls is the ControlExample Options slot (right of the
+        INTERACTIVE header). Pilot pages wrap InteractiveContent in ControlExample
+        for source/output/copy; other pages keep this API unchanged.
+
         StatesContent is optional: some source pages never authored discrete
         state swatches for a component (e.g. the nav-rail and chart specimens
         are shown once, at natural size), and inventing new ones would be

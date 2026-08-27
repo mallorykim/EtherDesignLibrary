@@ -77,6 +77,9 @@ jobs:
       - name: Verify EtherScrollBar L3 contract
         shell: pwsh
         run: ./scripts/Verify-EtherScrollBarContract.ps1
+      - name: Verify Gallery ControlExample contract
+        shell: pwsh
+        run: ./scripts/Verify-GalleryControlExample.ps1
       - name: Verify package consumers
         shell: pwsh
         # Hosted runners build and validate packages and consumer fixtures. GUI runtime markers

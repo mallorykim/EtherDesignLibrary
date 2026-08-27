@@ -170,10 +170,29 @@ concerns. Report: `.superpowers/sdd/task-l3-switch-scrollbar-report.md`.
 
 ## L3 migration — complete
 
-All plan item 10 controls migrated. **Next phase: L4** (Gallery ControlExample pattern,
-visual baselines, Appium, A11y Insights, etc.) per repository plan.
+Committed at `b3d3bf1`. All plan item 10 controls migrated.
 
-Uncommitted work since `efe5a21`: L3-7 through L3-9. **Recommend commit checkpoint before L4.**
+## L4 — accepted (preview first pass, commit at phase boundary)
+
+Gallery `ControlExample` chrome and preview-gate documentation. This is **not**
+full L4 completion or preview-package publish. See
+`docs/architecture/2026-08-26-l4-gallery-control-example.md`.
+
+Model policy: **`cursor-grok-4.6-high-fast`** for implement and review.
+
+Shipped in this pass:
+
+- Gallery-only `ControlExample` with Example, Output, Source, Copy, and
+  720px-wide responsive stacking. Options remain
+  `ComponentPage.InteractiveControls` (right of INTERACTIVE).
+- Pilot pages: Button and Progress Bar (real XAML snippets + live output).
+- Other pages stay on `ComponentPage`. Smoke catalog remains 20/20.
+- `scripts/Verify-GalleryControlExample.ps1` wired in CI.
+
+Explicitly deferred (L4-C, still red): pixel screenshot baselines; Appium / UIA
+snapshots; Accessibility Insights; 225% text scaling / RTL / localization;
+arm64 consumer fixture; MSIX install/runtime proof; performance budgets;
+preview package publish.
 
 Keep Primitive/Semantic Tokens frozen.
 

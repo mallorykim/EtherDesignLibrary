@@ -10,12 +10,26 @@ public sealed partial class ProgressBarPage : Page
     private readonly Random _rng = new();
     private double _rate;   // simulated throughput, percent per second
 
+    public string SpecimenXaml { get; } =
+        """
+        <controls:EtherProgressBar Title="Downloading"
+                                   ValueContent="0%"
+                                   Maximum="100"
+                                   Value="0" />
+        """;
+
     public ProgressBarPage()
     {
         this.InitializeComponent();
 
         // The value label tracks Value, so it counts up in step with the fill.
-        SimBar.ValueChanged += (_, e) => SimBar.ValueContent = $"{(int)Math.Round(e.NewValue)}%";
+        SimBar.ValueChanged += (_, e) =>
+        {
+            var text = $"{(int)Math.Round(e.NewValue)}%";
+            SimBar.ValueContent = text;
+            if (LiveExample is not null)
+                LiveExample.OutputText = $"Value: {text}";
+        };
 
         // Run once on open so the motion is visible without touching anything.
         SimBar.Loaded += (_, _) => Play();
