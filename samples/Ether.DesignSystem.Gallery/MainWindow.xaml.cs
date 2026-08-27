@@ -50,6 +50,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         this.InitializeComponent();
+        Title = GalleryStrings.Get("GalleryMainWindow001.Title", "Ether Component Sandbox");
         ApplyOsLayoutDirection();
         ResizeToDesignCanvas();
         BuildNavigation();

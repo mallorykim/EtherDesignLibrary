@@ -10,11 +10,14 @@ namespace EtherSandbox;
 /// </summary>
 internal static class GalleryStrings
 {
+    private static ResourceLoader? _loader;
+
     public static string Get(string key, string fallback)
     {
         try
         {
-            var value = ResourceLoader.GetForViewIndependentUse().GetString(key);
+            // Unpackaged host: GetForViewIndependentUse() failfasts during Window construction.
+            var value = (_loader ??= new ResourceLoader()).GetString(key);
             return string.IsNullOrWhiteSpace(value) ? fallback : value;
         }
         catch (Exception)
