@@ -210,6 +210,15 @@ internal static class RuntimeVerification
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors);
 
+    internal sealed record RtlControlVerification(
+        string Id,
+        string FlowDirection,
+        string AutomationName);
+
+    internal sealed record RtlVerification(
+        string RootFlowDirection,
+        RtlControlVerification[] Controls);
+
     internal sealed record VerificationResult(
         string[] ResourceKeys,
         AssetVerification[] Assets,
@@ -229,7 +238,8 @@ internal static class RuntimeVerification
         SliderVerification Slider,
         MastheadVerification Masthead,
         ToggleSwitchVerification ToggleSwitch,
-        ScrollBarVerification ScrollBar);
+        ScrollBarVerification ScrollBar,
+        RtlVerification Rtl);
 
     internal static async Task<VerificationResult> VerifyAsync(
         FrameworkElement themeRoot,
@@ -317,6 +327,22 @@ internal static class RuntimeVerification
                 $"BackgroundCanvas did not re-resolve through ThemeResource. Light and Dark both produced {light}.");
         }
 
+        var rtlResult = await VerifyRtlAsync(
+            themeRoot,
+            ("progressBar", progressBar, "Package download progress"),
+            ("button", button, "Package button"),
+            ("checkbox", checkbox, "Package checkbox"),
+            ("radioButton", radioButton, "Package radio button"),
+            ("input", input, "Package input"),
+            ("dropdown", dropdown, "Package dropdown"),
+            ("segmentedControl", segmentedControl, "Package segmented control"),
+            ("intelligenceButton", intelligenceButton, "Package intelligence button"),
+            ("steeringBar", steeringBar, "Package steering bar"),
+            ("slider", slider, "Package slider"),
+            ("masthead", masthead, "Package masthead"),
+            ("toggleSwitch", toggleSwitch, "Package toggle switch"),
+            ("scrollBar", scrollBar, "Package scroll bar"));
+
         return new VerificationResult(
             resourceKeys,
             assets.ToArray(),
@@ -336,7 +362,8 @@ internal static class RuntimeVerification
             sliderResult,
             mastheadResult,
             toggleSwitchResult,
-            scrollBarResult);
+            scrollBarResult,
+            rtlResult);
     }
 
     internal static void WriteMarker(bool succeeded, VerificationResult? result = null, Exception? exception = null)
@@ -371,6 +398,7 @@ internal static class RuntimeVerification
             masthead = result?.Masthead,
             toggleSwitch = result?.ToggleSwitch,
             scrollBar = result?.ScrollBar,
+            rtl = result?.Rtl,
             message = exception?.ToString(),
         });
         File.WriteAllText(path, payload);
@@ -2189,6 +2217,56 @@ internal static class RuntimeVerification
         {
             throw new InvalidOperationException(
                 $"Theme application timed out. Requested '{requestedTheme}', actual '{themeRoot.ActualTheme}'.");
+        }
+    }
+
+    private static async Task<RtlVerification> VerifyRtlAsync(
+        FrameworkElement themeRoot,
+        params (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls)
+    {
+        themeRoot.FlowDirection = FlowDirection.RightToLeft;
+        themeRoot.UpdateLayout();
+        await WaitForFlowDirectionAsync(themeRoot, FlowDirection.RightToLeft);
+
+        var results = new List<RtlControlVerification>(controls.Length);
+        foreach (var (id, control, expectedAutomationName) in controls)
+        {
+            control.UpdateLayout();
+            if (control.FlowDirection != FlowDirection.RightToLeft)
+            {
+                throw new InvalidOperationException(
+                    $"{id} did not inherit RightToLeft. Actual '{control.FlowDirection}'.");
+            }
+
+            var peer = FrameworkElementAutomationPeer.CreatePeerForElement(control)
+                ?? throw new InvalidOperationException($"{id} did not create an automation peer under RTL.");
+            var automationName = peer.GetName();
+            if (!string.Equals(automationName, expectedAutomationName, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"{id} RTL automation name was '{automationName}', expected '{expectedAutomationName}'.");
+            }
+
+            results.Add(new RtlControlVerification(id, control.FlowDirection.ToString(), automationName));
+        }
+
+        return new RtlVerification(FlowDirection.RightToLeft.ToString(), results.ToArray());
+    }
+
+    private static async Task WaitForFlowDirectionAsync(
+        FrameworkElement themeRoot,
+        FlowDirection requestedDirection)
+    {
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (themeRoot.FlowDirection != requestedDirection && DateTime.UtcNow < deadline)
+        {
+            await Task.Delay(25);
+        }
+
+        if (themeRoot.FlowDirection != requestedDirection)
+        {
+            throw new InvalidOperationException(
+                $"FlowDirection application timed out. Requested '{requestedDirection}', actual '{themeRoot.FlowDirection}'.");
         }
     }
 

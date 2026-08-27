@@ -85,7 +85,8 @@ These remain red preview gates and were **not** implemented:
 | Pixel screenshot baselines | Needs a capture harness and Light/Dark/HighContrast image store. |
 | Appium / UIA snapshot suite | No Appium host or snapshot corpus in-repo yet. |
 | Accessibility Insights automation | Requires the Insights engine in CI. |
-| 225% text scaling / RTL / localization | No scaling/flow/resource-language fixtures. |
+| RTL package-consumer flow | Unpackaged fixture: root + 13 controls inherit RightToLeft; automation names unchanged. See `docs/architecture/2026-08-26-l4c-rtl-package-consumer.md`. |
+| 225% text scaling / localization | No scaling fixtures or `.resw` / `x:Uid`. |
 | arm64 consumer fixture | Current fixtures and CI are x64. |
 | MSIX install/runtime proof | Gallery and fixtures stay unpackaged; hosted GUI launch is skipped in CI. |
 | Hosted CI WinUI smoke | `Verify-GallerySmoke.ps1` and consumer runtime markers are not on hosted `windows-latest`. `scripts/Verify-RuntimeGates.ps1` owns them locally (or on a future self-hosted interactive runner) before preview publish. |
@@ -103,5 +104,6 @@ control page wrapping `ControlExample` with `SpecimenXaml`, Foundations
 primitive pages remaining on plain `ComponentPage`, the architecture note, and
 CI wiring for the static contract. Runtime proof for pages is
 `scripts/Verify-RuntimeGates.ps1` (`Verify-GallerySmoke.ps1` Light/Dark 20/20
-plus consumer runtime markers), not hosted `build.yml`. This is not a
-screenshot or Appium baseline.
+plus consumer runtime markers, including RTL inheritance on the unpackaged
+package host), not hosted `build.yml`. This is not a screenshot or Appium
+baseline.

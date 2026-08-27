@@ -10,7 +10,7 @@
     <Authors>Ether Design System</Authors>
     <Description>Preview WinUI 3 design-system foundation resources for Ether.</Description>
     <PackageTags>winui;winui3;design-system;foundation;preview</PackageTags>
-    <PackageReleaseNotes>Preview release. x64 package consumers are verified for unpackaged runtime and packaged build. MSIX install/runtime, other architectures, accessibility, localization, High Contrast completeness, and stable-release readiness remain incomplete.</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.0-preview.1. See docs/releases/0.1.0-preview.1.md. EtherButton RightIconVisibility was removed (RightIconStates). x64 unpackaged consumers are verified; MSIX, arm64, accessibility, localization, High Contrast completeness, and stable-release readiness remain incomplete.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/yiqizhong/ether-lib</PackageProjectUrl>
     <RepositoryUrl>https://github.com/yiqizhong/ether-lib</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

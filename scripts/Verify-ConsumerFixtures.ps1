@@ -173,8 +173,79 @@ function Assert-FileDoesNotContain {
     }
 }
 
+function Assert-FixtureAutomationNames {
+    param([Parameter(Mandatory)][string]$XamlPath)
+
+    $xaml = Get-Content -LiteralPath $XamlPath -Raw
+    $requiredNames = @(
+        'Package download progress',
+        'Package button',
+        'Package checkbox',
+        'Package radio button',
+        'Package input',
+        'Package dropdown',
+        'Package segmented control',
+        'Package intelligence button',
+        'Package steering bar',
+        'Package slider',
+        'Package masthead',
+        'Package toggle switch',
+        'Package scroll bar'
+    )
+    foreach ($name in $requiredNames) {
+        $pattern = 'AutomationProperties.Name="' + [regex]::Escape($name) + '"'
+        if ($xaml -notmatch $pattern) {
+            throw "$XamlPath is missing required AutomationProperties.Name '$name'."
+        }
+    }
+}
+
+function Assert-RtlMarker {
+    param($RuntimeResult)
+
+    $rtl = $RuntimeResult.rtl
+    if ($null -eq $rtl) {
+        throw 'Unpackaged runtime marker is missing the rtl object.'
+    }
+    if ($rtl.rootFlowDirection -ne 'RightToLeft') {
+        throw "RTL root FlowDirection was '$($rtl.rootFlowDirection)', expected RightToLeft."
+    }
+
+    $expected = @{
+        progressBar          = 'Package download progress'
+        button               = 'Package button'
+        checkbox             = 'Package checkbox'
+        radioButton          = 'Package radio button'
+        input                = 'Package input'
+        dropdown             = 'Package dropdown'
+        segmentedControl     = 'Package segmented control'
+        intelligenceButton   = 'Package intelligence button'
+        steeringBar          = 'Package steering bar'
+        slider               = 'Package slider'
+        masthead             = 'Package masthead'
+        toggleSwitch         = 'Package toggle switch'
+        scrollBar            = 'Package scroll bar'
+    }
+    $controls = @($rtl.controls)
+    foreach ($id in $expected.Keys) {
+        $row = @($controls | Where-Object { $_.id -eq $id })[0]
+        if ($null -eq $row) {
+            throw "RTL marker is missing control '$id'."
+        }
+        if ($row.flowDirection -ne 'RightToLeft') {
+            throw "RTL '$id' FlowDirection was '$($row.flowDirection)', expected RightToLeft."
+        }
+        if ($row.automationName -ne $expected[$id]) {
+            throw "RTL '$id' automation name was '$($row.automationName)', expected '$($expected[$id])'."
+        }
+    }
+}
+
 Push-Location $repoRoot
 try {
+    Assert-FixtureAutomationNames (Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Unpackaged\MainWindow.xaml')
+    Assert-FixtureAutomationNames (Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Packaged\MainWindow.xaml')
+
     if (-not $SkipSolutionBuild) {
         Invoke-DotNet @('build', 'Ether.DesignSystem.slnx', '-c', $configuration, $platformProperty)
         Invoke-DotNet @('build', 'Ether.DesignSystem.slnx', '-c', 'Release', $platformProperty)
@@ -265,7 +336,7 @@ try {
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE', '1', 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $markerPath, 'Process')
             $smokeProcess = Start-Process -FilePath $unpackagedExe -WorkingDirectory $unpackagedOutput -PassThru -WindowStyle Hidden
-            if (-not $smokeProcess.WaitForExit(15000)) {
+            if (-not $smokeProcess.WaitForExit(25000)) {
                 Stop-Process -Id $smokeProcess.Id -Force
                 throw "The unpackaged runtime smoke fixture timed out before writing its result marker: $markerPath"
             }
@@ -501,8 +572,9 @@ try {
                 (@($scrollBar.lightTemplateBrushColors) -join ',') -ceq (@($scrollBar.darkTemplateBrushColors) -join ',')) {
                 throw "The unpackaged runtime smoke fixture did not verify Foundation resources, assets, and theme re-resolution: $(Get-Content -LiteralPath $markerPath -Raw)"
             }
+            Assert-RtlMarker $runtimeResult
             $storageFileResolvedCount = @($reportedAssets | Where-Object { $_.storageFileResolved -eq $true }).Count
-            Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; EtherSlider default style, bar-canvas RangeValue GetPattern, and Light/Dark brushes verified; EtherMasthead default style, SearchIconStates, and Light/Dark brushes verified; EtherSwitch keyed style, Off/On states, and Light/Dark brushes verified; implicit ScrollBar 6 px templates and Light/Dark thumb brushes verified; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); marker: $markerPath"
+            Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; EtherSlider default style, bar-canvas RangeValue GetPattern, and Light/Dark brushes verified; EtherMasthead default style, SearchIconStates, and Light/Dark brushes verified; EtherSwitch keyed style, Off/On states, and Light/Dark brushes verified; implicit ScrollBar 6 px templates and Light/Dark thumb brushes verified; RTL RightToLeft inherited on 13 package controls with automation names intact; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); marker: $markerPath"
         }
         finally {
             if ($null -ne $smokeProcess -and -not $smokeProcess.HasExited) {

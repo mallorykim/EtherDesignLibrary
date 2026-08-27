@@ -123,6 +123,7 @@ Assert-Contains $doc 'ControlExample' 'L4 architecture note names ControlExample
 Assert-Contains $doc 'Deferred' 'L4 architecture note documents deferrals'
 Assert-Contains $doc 'Appium' 'L4 architecture note names Appium deferral'
 Assert-Contains $doc 'arm64' 'L4 architecture note names arm64 deferral'
+Assert-Contains $doc 'RightToLeft' 'L4 architecture note records package-consumer RTL'
 Assert-Contains $doc 'CheckboxPage' 'L4 architecture note lists CheckboxPage'
 Assert-Contains $doc 'CardPage' 'L4 architecture note lists CardPage'
 

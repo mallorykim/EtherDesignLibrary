@@ -251,7 +251,11 @@ Classify carefully — many are **documented exceptions**, not accidental regres
 
 ## 8. Out of scope / next work after this handoff
 
-- Opening L4-C gates and preview package publish
+- Opening L4-C gates
+- **Preview package publish (held).** Pack script and unpublished notes:
+  `scripts/Pack-PreviewPackages.ps1`, `docs/releases/0.1.0-preview.1.md`.
+  Do not `nuget push` until the intended first public control surface is
+  complete. In-repo fixtures already prove local PackageReference consumption.
 - Self-hosted / interactive CI lane for `Verify-RuntimeGates.ps1` (hosted
   `windows-latest` stays static-only)
 - Expanding ControlExample to Foundations primitive pages (intentionally skipped)

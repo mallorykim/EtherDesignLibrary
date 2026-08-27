@@ -196,7 +196,12 @@ Explicitly deferred (L4-C, still red): pixel screenshot baselines; Appium / UIA
 snapshots; Accessibility Insights; 225% text scaling / RTL / localization;
 arm64 consumer fixture; MSIX install/runtime proof; performance budgets;
 hosted-CI WinUI smoke (Gallery 20/20 and L3 runtime markers stay on
-`scripts/Verify-RuntimeGates.ps1`); preview package publish.
+`scripts/Verify-RuntimeGates.ps1`); preview package **publish** (held).
+
+Local pack is ready (`scripts/Pack-PreviewPackages.ps1` → `artifacts/packages/`).
+Do not push until the first public preview's control set is accepted. Remaining
+push steps live in `docs/releases/0.1.0-preview.1.md`. In-repo consumer fixtures
+already prove PackageReference consumption from a local nupkg feed.
 
 Keep Primitive/Semantic Tokens frozen.
 
@@ -215,9 +220,11 @@ and an explicit L4-C deferral list. Prefer that document over `.superpowers/` sc
 - The L2 runtime evidence is structured, not a pixel screenshot baseline.
 - High Contrast validation for EtherProgressBar is currently a static resource-contract check,
   not an on-device pass across all Windows contrast themes.
-- Formal Appium, UIA snapshots, Accessibility Insights, 225% text scaling, RTL, localization,
-  performance budgets, arm64 package consumers, MSIX install/runtime, and stable readiness remain
-  later-phase work.
+- Formal Appium, UIA snapshots, Accessibility Insights, 225% text scaling, RTL Gallery,
+  localization, performance budgets, arm64 package consumers, MSIX install/runtime, and stable
+  readiness remain later-phase work.
+- Unpackaged package-consumer RTL (`RightToLeft` inheritance + automation names) is in
+  `Verify-ConsumerFixtures.ps1`; it is not Gallery RTL or Insights.
 - Hosted CI does not launch WinUI; Gallery smoke and L3 runtime markers are
   `scripts/Verify-RuntimeGates.ps1` on a desktop session, not `build.yml`.
 - The frozen global token High Contrast parity gate intentionally remains red.
