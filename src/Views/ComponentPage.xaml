@@ -12,8 +12,9 @@
         InteractiveContent / StatesContent — see ButtonPage.xaml for an example.
 
         InteractiveControls is the ControlExample Options slot (right of the
-        INTERACTIVE header). Pilot pages wrap InteractiveContent in ControlExample
-        for source/output/copy; other pages keep this API unchanged.
+        INTERACTIVE header). Control Gallery pages wrap InteractiveContent in
+        ControlExample for source/output/copy; Foundations primitive pages keep
+        the plain ComponentPage API.
 
         StatesContent is optional: some source pages never authored discrete
         state swatches for a component (e.g. the nav-rail and chart specimens

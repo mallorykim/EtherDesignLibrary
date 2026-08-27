@@ -11,6 +11,7 @@
         StatesTitle="VISUAL STATES">
 
         <views:ComponentPage.InteractiveContent>
+            <views:ControlExample SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Width="720" Spacing="16">
                 <Border Background="{ThemeResource BackgroundSurfaceRaised}"
                         BorderBrush="{ThemeResource BorderSubtle}"
@@ -52,6 +53,7 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
     </views:ComponentPage>

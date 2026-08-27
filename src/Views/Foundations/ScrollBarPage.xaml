@@ -16,6 +16,7 @@
         Description="Updated 6 px scrollbar with a minimal thumb, no visible track, and no stepper arrows. The styling applies implicitly to every ScrollViewer in the sandbox.">
 
         <views:ComponentPage.InteractiveContent>
+            <views:ControlExample SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Spacing="20">
                 <StackPanel Spacing="8">
                     <TextBlock Text="Vertical (drag or hover the thumb)"
@@ -68,6 +69,7 @@
                     </Border>
                 </StackPanel>
             </StackPanel>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>

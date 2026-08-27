@@ -11,9 +11,15 @@
         Description="Updated single-line text field with theme-aware fill, brand-blue focus treatment, and disabled dimming. Default, hover, focused, and disabled states are all shown on the page.">
 
         <views:ComponentPage.InteractiveContent>
-            <controls:EtherInput PlaceholderText="Enter text"
-                                 Width="280"
-                                 AutomationProperties.Name="Interactive input"/>
+            <views:ControlExample x:Name="LiveExample"
+                                  OutputText="Text: —"
+                                  SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
+                <controls:EtherInput x:Name="InteractiveInput"
+                                     PlaceholderText="Enter text"
+                                     Width="280"
+                                     AutomationProperties.Name="Interactive input"
+                                     TextChanged="InteractiveInput_TextChanged"/>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>

@@ -10,13 +10,19 @@
         Description="Bar-chart slider with interactive click-and-drag behavior and theme-aware selected bars. Sixty-three ticks fill with the component highlight brush up to the knob.">
 
         <views:ComponentPage.InteractiveContent>
+            <views:ControlExample x:Name="LiveExample"
+                                  OutputText="Value: 50%"
+                                  SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Spacing="8">
                 <TextBlock Text="50% (interactive — drag me)"
                            Style="{StaticResource micro/regular}"
                            Foreground="{ThemeResource TextTertiary}"/>
-                <controls:EtherSlider Value="50"
-                                      AutomationProperties.Name="Interactive slider"/>
+                <controls:EtherSlider x:Name="InteractiveSlider"
+                                      Value="50"
+                                      AutomationProperties.Name="Interactive slider"
+                                      ValueChanged="InteractiveSlider_ValueChanged"/>
             </StackPanel>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>

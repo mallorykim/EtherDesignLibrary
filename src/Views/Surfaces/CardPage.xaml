@@ -10,6 +10,7 @@
         Description="Card component with gradient border effect, available in Normal, Intelligence (dark), and Callout (with header) types.">
 
         <views:ComponentPage.InteractiveContent>
+            <views:ControlExample SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Width="1216" Spacing="24">
                 <TextBlock Text="TYPE PREVIEWS"
                            Style="{StaticResource micro/semibold}"
@@ -95,6 +96,7 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
     </views:ComponentPage>

@@ -9,13 +9,33 @@ $controlXaml = Join-Path $repoRoot 'src\Views\ControlExample.xaml'
 $controlCode = Join-Path $repoRoot 'src\Views\ControlExample.xaml.cs'
 $componentPage = Join-Path $repoRoot 'src\Views\ComponentPage.xaml'
 $componentPageCode = Join-Path $repoRoot 'src\Views\ComponentPage.xaml.cs'
-$buttonPage = Join-Path $repoRoot 'src\Views\Controls\ButtonPage.xaml'
-$buttonPageCode = Join-Path $repoRoot 'src\Views\Controls\ButtonPage.xaml.cs'
-$progressPage = Join-Path $repoRoot 'src\Views\DataDisplay\ProgressBarPage.xaml'
-$progressPageCode = Join-Path $repoRoot 'src\Views\DataDisplay\ProgressBarPage.xaml.cs'
-$checkboxPage = Join-Path $repoRoot 'src\Views\Controls\CheckboxPage.xaml'
 $architectureDoc = Join-Path $repoRoot 'docs\architecture\2026-08-26-l4-gallery-control-example.md'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
+
+$controlExamplePages = @(
+    @{ Rel = 'src\Views\Controls\ButtonPage.xaml'; Name = 'ButtonPage'; Snippet = 'EtherButton' },
+    @{ Rel = 'src\Views\DataDisplay\ProgressBarPage.xaml'; Name = 'ProgressBarPage'; Snippet = 'EtherProgressBar' },
+    @{ Rel = 'src\Views\Controls\CheckboxPage.xaml'; Name = 'CheckboxPage'; Snippet = 'EtherCheckbox' },
+    @{ Rel = 'src\Views\Controls\RadioButtonPage.xaml'; Name = 'RadioButtonPage'; Snippet = 'EtherRadioButton' },
+    @{ Rel = 'src\Views\Controls\InputPage.xaml'; Name = 'InputPage'; Snippet = 'EtherInput' },
+    @{ Rel = 'src\Views\Controls\DropdownPage.xaml'; Name = 'DropdownPage'; Snippet = 'EtherDropdown' },
+    @{ Rel = 'src\Views\Controls\SegmentedControlPage.xaml'; Name = 'SegmentedControlPage'; Snippet = 'EtherSegmentedControl' },
+    @{ Rel = 'src\Views\Controls\IntelligenceButtonPage.xaml'; Name = 'IntelligenceButtonPage'; Snippet = 'EtherIntelligenceButton' },
+    @{ Rel = 'src\Views\Controls\SteeringBarPage.xaml'; Name = 'SteeringBarPage'; Snippet = 'EtherSteeringBar' },
+    @{ Rel = 'src\Views\Controls\SliderPage.xaml'; Name = 'SliderPage'; Snippet = 'EtherSlider' },
+    @{ Rel = 'src\Views\Controls\ToggleSwitchPage.xaml'; Name = 'ToggleSwitchPage'; Snippet = 'EtherSwitch' },
+    @{ Rel = 'src\Views\Foundations\ScrollBarPage.xaml'; Name = 'ScrollBarPage'; Snippet = 'ScrollViewer' },
+    @{ Rel = 'src\Views\Navigation\MastheadPage.xaml'; Name = 'MastheadPage'; Snippet = 'EtherMasthead' },
+    @{ Rel = 'src\Views\Surfaces\CardPage.xaml'; Name = 'CardPage'; Snippet = 'EtherCardNormal' }
+)
+
+$foundationPrimitivePages = @(
+    @{ Rel = 'src\Views\Foundations\ColorsPage.xaml'; Name = 'ColorsPage' },
+    @{ Rel = 'src\Views\Foundations\TypographyPage.xaml'; Name = 'TypographyPage' },
+    @{ Rel = 'src\Views\Foundations\SpacingPage.xaml'; Name = 'SpacingPage' },
+    @{ Rel = 'src\Views\Foundations\RadiusPage.xaml'; Name = 'RadiusPage' },
+    @{ Rel = 'src\Views\Foundations\IconsPage.xaml'; Name = 'IconsPage' }
+)
 
 function Assert-Contains {
     param([string]$Text, [string]$Pattern, [string]$Description)
@@ -35,8 +55,7 @@ function Assert-NotContains {
 
 foreach ($path in @(
         $controlXaml, $controlCode, $componentPage, $componentPageCode,
-        $buttonPage, $buttonPageCode, $progressPage, $progressPageCode,
-        $checkboxPage, $architectureDoc, $ciPath)) {
+        $architectureDoc, $ciPath)) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
         throw "Required L4 Gallery ControlExample file is missing: $path"
     }
@@ -68,34 +87,44 @@ $chromeCode = Get-Content -LiteralPath $componentPageCode -Raw
 Assert-Contains $chromeCode 'InteractiveContent is ControlExample' 'ComponentPage ControlExample disable isolation'
 Assert-Contains $chromeCode 'example.IsExampleEnabled' 'ComponentPage disables ControlExample specimen only'
 
-$buttonXaml = Get-Content -LiteralPath $buttonPage -Raw
-Assert-Contains $buttonXaml '<views:ControlExample' 'ButtonPage ControlExample pilot'
-Assert-Contains $buttonXaml 'SourceXaml="\{x:Bind SpecimenXaml' 'ButtonPage SourceXaml binding'
-Assert-Contains $buttonXaml 'HasDisabledToggle="True"' 'ButtonPage Disabled options still on ComponentPage'
+foreach ($page in $controlExamplePages) {
+    $pageXamlPath = Join-Path $repoRoot $page.Rel
+    $pageCodePath = $pageXamlPath + '.cs'
+    if (-not (Test-Path -LiteralPath $pageXamlPath -PathType Leaf)) {
+        throw "Required ControlExample page is missing: $pageXamlPath"
+    }
+    if (-not (Test-Path -LiteralPath $pageCodePath -PathType Leaf)) {
+        throw "Required ControlExample page code-behind is missing: $pageCodePath"
+    }
 
-$buttonCode = Get-Content -LiteralPath $buttonPageCode -Raw
-Assert-Contains $buttonCode 'SpecimenXaml' 'ButtonPage specimen XAML snippet'
-Assert-Contains $buttonCode 'EtherButton' 'ButtonPage EtherButton snippet'
-Assert-Contains $buttonCode 'LiveExample.OutputText' 'ButtonPage live output'
+    $pageXaml = Get-Content -LiteralPath $pageXamlPath -Raw
+    Assert-Contains $pageXaml '<views:ComponentPage' "$($page.Name) remains on ComponentPage"
+    Assert-Contains $pageXaml '<views:ControlExample' "$($page.Name) wraps ControlExample"
+    Assert-Contains $pageXaml 'SourceXaml="\{x:Bind SpecimenXaml' "$($page.Name) SourceXaml binding"
 
-$progressXaml = Get-Content -LiteralPath $progressPage -Raw
-Assert-Contains $progressXaml '<views:ControlExample' 'ProgressBarPage ControlExample pilot'
-Assert-Contains $progressXaml 'SourceXaml="\{x:Bind SpecimenXaml' 'ProgressBarPage SourceXaml binding'
+    $pageCode = Get-Content -LiteralPath $pageCodePath -Raw
+    Assert-Contains $pageCode 'SpecimenXaml' "$($page.Name) specimen XAML snippet"
+    Assert-Contains $pageCode $page.Snippet "$($page.Name) snippet names $($page.Snippet)"
+}
 
-$progressCode = Get-Content -LiteralPath $progressPageCode -Raw
-Assert-Contains $progressCode 'SpecimenXaml' 'ProgressBarPage specimen XAML snippet'
-Assert-Contains $progressCode 'EtherProgressBar' 'ProgressBarPage EtherProgressBar snippet'
-Assert-Contains $progressCode 'LiveExample.OutputText' 'ProgressBarPage live output'
+foreach ($page in $foundationPrimitivePages) {
+    $pageXamlPath = Join-Path $repoRoot $page.Rel
+    if (-not (Test-Path -LiteralPath $pageXamlPath -PathType Leaf)) {
+        throw "Required Foundations primitive page is missing: $pageXamlPath"
+    }
 
-$checkboxXaml = Get-Content -LiteralPath $checkboxPage -Raw
-Assert-Contains $checkboxXaml '<views:ComponentPage' 'CheckboxPage remains on ComponentPage'
-Assert-NotContains $checkboxXaml '<views:ControlExample' 'CheckboxPage must stay on the pre-ControlExample ComponentPage API'
+    $pageXaml = Get-Content -LiteralPath $pageXamlPath -Raw
+    Assert-Contains $pageXaml '<views:ComponentPage' "$($page.Name) remains on ComponentPage"
+    Assert-NotContains $pageXaml '<views:ControlExample' "$($page.Name) must stay on the plain ComponentPage API"
+}
 
 $doc = Get-Content -LiteralPath $architectureDoc -Raw
 Assert-Contains $doc 'ControlExample' 'L4 architecture note names ControlExample'
 Assert-Contains $doc 'Deferred' 'L4 architecture note documents deferrals'
 Assert-Contains $doc 'Appium' 'L4 architecture note names Appium deferral'
 Assert-Contains $doc 'arm64' 'L4 architecture note names arm64 deferral'
+Assert-Contains $doc 'CheckboxPage' 'L4 architecture note lists CheckboxPage'
+Assert-Contains $doc 'CardPage' 'L4 architecture note lists CardPage'
 
 $ci = Get-Content -LiteralPath $ciPath -Raw
 Assert-Contains $ci 'Verify-GalleryControlExample.ps1' 'CI wires Verify-GalleryControlExample.ps1'

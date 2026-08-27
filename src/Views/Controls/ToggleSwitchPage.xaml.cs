@@ -5,6 +5,13 @@ namespace EtherSandbox.Views.Controls;
 
 public sealed partial class ToggleSwitchPage : Page
 {
+    public string SpecimenXaml { get; } =
+        """
+        <ToggleSwitch Style="{StaticResource EtherSwitch}"
+                      OffContent="Off"
+                      OnContent="On" />
+        """;
+
     public ToggleSwitchPage()
     {
         this.InitializeComponent();
@@ -22,5 +29,11 @@ public sealed partial class ToggleSwitchPage : Page
                     VisualStateManager.GoToState(OnPressedState, "Pressed", false);
             });
         };
+    }
+
+    private void InteractiveSwitch_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (LiveExample is not null && sender is ToggleSwitch toggle)
+            LiveExample.OutputText = toggle.IsOn ? "State: On" : "State: Off";
     }
 }

@@ -1,3 +1,4 @@
+using EtherSandbox.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -9,6 +10,12 @@ public sealed partial class SteeringBarPage : Page
     private const int MinStopCount = 2;
     private const int MaxStopCount = 8;
     private int _stopCount = 5;
+
+    public string SpecimenXaml { get; } =
+        """
+        <controls:EtherSteeringBar Title="Playback" Value="31" />
+        """;
+
     public SteeringBarPage()
     {
         this.InitializeComponent();
@@ -49,6 +56,12 @@ public sealed partial class SteeringBarPage : Page
             DecreaseStopsButton.IsEnabled = _stopCount > MinStopCount;
         if (IncreaseStopsButton is not null)
             IncreaseStopsButton.IsEnabled = _stopCount < MaxStopCount;
+    }
+
+    private void InteractiveSteeringBar_ValueChanged(object sender, SteeringBarValueChangedEventArgs e)
+    {
+        if (LiveExample is not null)
+            LiveExample.OutputText = $"Value: {(int)System.Math.Round(e.NewValue)}";
     }
 
 }

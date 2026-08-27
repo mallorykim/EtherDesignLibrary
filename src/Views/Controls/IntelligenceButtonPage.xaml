@@ -11,6 +11,9 @@
         Description="Updated intelligence button with a dual-gradient stroke, hover glow, and refined pressed and disabled treatments. The AI accent styling stays visible across both themes.">
 
         <views:ComponentPage.InteractiveContent>
+            <views:ControlExample x:Name="LiveExample"
+                                  OutputText="Clicked: —"
+                                  SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="8">
                     <TextBlock Text="Functional"
@@ -19,7 +22,8 @@
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton Content="What's this mean?"
                                                      AutomationProperties.Name="Interactive intelligence button"
-                                                     HorizontalContentAlignment="Center"/>
+                                                     HorizontalContentAlignment="Center"
+                                                     Click="IntelligenceButton_Click"/>
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="With longer label"
@@ -28,9 +32,11 @@
                                HorizontalAlignment="Center"/>
                     <controls:EtherIntelligenceButton Content="=  Optimise my battery"
                                                      AutomationProperties.Name="Interactive intelligence button long label"
-                                                     HorizontalContentAlignment="Center"/>
+                                                     HorizontalContentAlignment="Center"
+                                                     Click="IntelligenceButton_Click"/>
                 </StackPanel>
             </StackPanel>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>

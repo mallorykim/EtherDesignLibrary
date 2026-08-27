@@ -5,6 +5,15 @@ namespace EtherSandbox.Views.Controls;
 
 public sealed partial class DropdownPage : Page
 {
+    public string SpecimenXaml { get; } =
+        """
+        <controls:EtherDropdown SelectedIndex="0">
+            <ComboBoxItem Content="10 Minutes"/>
+            <ComboBoxItem Content="30 Minutes"/>
+            <ComboBoxItem Content="1 Hour"/>
+        </controls:EtherDropdown>
+        """;
+
     public DropdownPage()
     {
         this.InitializeComponent();
@@ -20,5 +29,16 @@ public sealed partial class DropdownPage : Page
                     VisualStateManager.GoToState(DropdownOpenState, "Opened", false);
             });
         };
+    }
+
+    private void InteractiveDropdown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (LiveExample is null)
+            return;
+
+        var content = (sender as ComboBox)?.SelectedItem is ComboBoxItem item
+            ? item.Content?.ToString()
+            : null;
+        LiveExample.OutputText = string.IsNullOrEmpty(content) ? "Selected: —" : $"Selected: {content}";
     }
 }

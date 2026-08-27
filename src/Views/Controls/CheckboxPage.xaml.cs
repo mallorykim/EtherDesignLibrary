@@ -1,10 +1,16 @@
-﻿using Microsoft.UI.Xaml;
+﻿using EtherSandbox.Controls;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace EtherSandbox.Views.Controls;
 
 public sealed partial class CheckboxPage : Page
 {
+    public string SpecimenXaml { get; } =
+        """
+        <controls:EtherCheckbox Content="Option" />
+        """;
+
     public CheckboxPage()
     {
         this.InitializeComponent();
@@ -20,5 +26,11 @@ public sealed partial class CheckboxPage : Page
                     VisualStateManager.GoToState(CheckedHover, "PointerOver", false);
             });
         };
+    }
+
+    private void InteractiveCheckbox_Changed(object sender, RoutedEventArgs e)
+    {
+        if (LiveExample is not null && sender is EtherCheckbox checkbox)
+            LiveExample.OutputText = $"Checked: {checkbox.IsChecked ?? false}";
     }
 }

@@ -1,10 +1,18 @@
-﻿using Microsoft.UI.Xaml;
+﻿using EtherSandbox.Controls;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace EtherSandbox.Views.Controls;
 
 public sealed partial class RadioButtonPage : Page
 {
+    public string SpecimenXaml { get; } =
+        """
+        <controls:EtherRadioButton GroupName="Interactive" Content="Option A" IsChecked="True" />
+        <controls:EtherRadioButton GroupName="Interactive" Content="Option B" />
+        <controls:EtherRadioButton GroupName="Interactive" Content="Option C" />
+        """;
+
     public RadioButtonPage()
     {
         this.InitializeComponent();
@@ -20,5 +28,11 @@ public sealed partial class RadioButtonPage : Page
                     VisualStateManager.GoToState(CheckedHover, "PointerOver", false);
             });
         };
+    }
+
+    private void InteractiveRadio_Checked(object sender, RoutedEventArgs e)
+    {
+        if (LiveExample is not null && sender is EtherRadioButton radio)
+            LiveExample.OutputText = $"Selected: {radio.Content}";
     }
 }

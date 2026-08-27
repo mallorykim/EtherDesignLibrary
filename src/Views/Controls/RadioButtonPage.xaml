@@ -12,14 +12,21 @@
 
         <views:ComponentPage.InteractiveContent>
             <!-- One live group: pick exactly one. Shared GroupName makes them mutually exclusive. -->
-            <StackPanel Spacing="12">
-                <controls:EtherRadioButton GroupName="Interactive" Content="Option A" IsChecked="True"
-                                           AutomationProperties.Name="Interactive radio option A"/>
-                <controls:EtherRadioButton GroupName="Interactive" Content="Option B"
-                                           AutomationProperties.Name="Interactive radio option B"/>
-                <controls:EtherRadioButton GroupName="Interactive" Content="Option C"
-                                           AutomationProperties.Name="Interactive radio option C"/>
-            </StackPanel>
+            <views:ControlExample x:Name="LiveExample"
+                                  OutputText="Selected: Option A"
+                                  SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
+                <StackPanel Spacing="12">
+                    <controls:EtherRadioButton GroupName="Interactive" Content="Option A" IsChecked="True"
+                                               AutomationProperties.Name="Interactive radio option A"
+                                               Checked="InteractiveRadio_Checked"/>
+                    <controls:EtherRadioButton GroupName="Interactive" Content="Option B"
+                                               AutomationProperties.Name="Interactive radio option B"
+                                               Checked="InteractiveRadio_Checked"/>
+                    <controls:EtherRadioButton GroupName="Interactive" Content="Option C"
+                                               AutomationProperties.Name="Interactive radio option C"
+                                               Checked="InteractiveRadio_Checked"/>
+                </StackPanel>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>

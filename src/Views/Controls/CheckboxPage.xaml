@@ -11,8 +11,15 @@
         Description="Updated checkbox styling for Light and Dark themes, shown across unchecked and checked states with default, hover, pressed, and disabled treatments.">
 
         <views:ComponentPage.InteractiveContent>
-            <controls:EtherCheckbox Content="Option"
-                                    AutomationProperties.Name="Interactive checkbox"/>
+            <views:ControlExample x:Name="LiveExample"
+                                  OutputText="Checked: False"
+                                  SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
+                <controls:EtherCheckbox x:Name="InteractiveCheckbox"
+                                        Content="Option"
+                                        AutomationProperties.Name="Interactive checkbox"
+                                        Checked="InteractiveCheckbox_Changed"
+                                        Unchecked="InteractiveCheckbox_Changed"/>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>

@@ -10,10 +10,16 @@
         Description="Updated toggle switch with refined ON and OFF styling across Light and Dark themes. Both values show default, hover, pressed, and disabled treatments.">
 
         <views:ComponentPage.InteractiveContent>
-            <ToggleSwitch Style="{StaticResource EtherSwitch}"
-                          OffContent="Off"
-                          OnContent="On"
-                          AutomationProperties.Name="Interactive toggle switch"/>
+            <views:ControlExample x:Name="LiveExample"
+                                  OutputText="State: Off"
+                                  SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
+                <ToggleSwitch x:Name="InteractiveSwitch"
+                              Style="{StaticResource EtherSwitch}"
+                              OffContent="Off"
+                              OnContent="On"
+                              AutomationProperties.Name="Interactive toggle switch"
+                              Toggled="InteractiveSwitch_Toggled"/>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>

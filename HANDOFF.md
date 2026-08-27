@@ -172,7 +172,7 @@ concerns. Report: `.superpowers/sdd/task-l3-switch-scrollbar-report.md`.
 
 Committed at `b3d3bf1`. All plan item 10 controls migrated.
 
-## L4 — accepted (preview first pass, commit at phase boundary)
+## L4 — accepted (preview first pass) + ControlExample deepen complete
 
 Gallery `ControlExample` chrome and preview-gate documentation. This is **not**
 full L4 completion or preview-package publish. See
@@ -180,13 +180,16 @@ full L4 completion or preview-package publish. See
 
 Model policy: **`cursor-grok-4.6-high-fast`** for implement and review.
 
-Shipped in this pass:
+Shipped:
 
 - Gallery-only `ControlExample` with Example, Output, Source, Copy, and
   720px-wide responsive stacking. Options remain
   `ComponentPage.InteractiveControls` (right of INTERACTIVE).
-- Pilot pages: Button and Progress Bar (real XAML snippets + live output).
-- Other pages stay on `ComponentPage`. Smoke catalog remains 20/20.
+- Control pages wrapping `ControlExample`: Button, Progress Bar, Checkbox,
+  Radio Button, Input, Dropdown, Segmented Control, Intelligence Button,
+  Steering Bar, Slider, Toggle Switch, Scroll Bar, Masthead, Card.
+- Foundations primitives (Colors, Typography, Spacing, Radius, Icons) and
+  Home stay on plain `ComponentPage`. Smoke catalog remains 20/20.
 - `scripts/Verify-GalleryControlExample.ps1` wired in CI.
 
 Explicitly deferred (L4-C, still red): pixel screenshot baselines; Appium / UIA

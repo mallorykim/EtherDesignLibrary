@@ -10,6 +10,9 @@
         Description="Updated segmented control with a functional selection model plus specimen states for default, hover, pressed, and active treatments.">
 
         <views:ComponentPage.InteractiveContent>
+            <views:ControlExample x:Name="LiveExample"
+                                  OutputText="Selected: List"
+                                  SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="6">
                     <TextBlock Text="2 SEGMENTS"
@@ -20,10 +23,12 @@
                             <controls:HandRadioButton GroupName="SegmentedTwo" Content="List"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Two-segment list"
-                                         IsChecked="True"/>
+                                         IsChecked="True"
+                                         Checked="InteractiveSegment_Checked"/>
                             <controls:HandRadioButton GroupName="SegmentedTwo" Content="Grid"
                                          Style="{StaticResource EtherSegment}"
-                                         AutomationProperties.Name="Two-segment grid"/>
+                                         AutomationProperties.Name="Two-segment grid"
+                                         Checked="InteractiveSegment_Checked"/>
                         </StackPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
@@ -37,13 +42,16 @@
                             <controls:HandRadioButton GroupName="SegmentedThree" Content="Overview"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Three-segment overview"
-                                         IsChecked="True"/>
+                                         IsChecked="True"
+                                         Checked="InteractiveSegment_Checked"/>
                             <controls:HandRadioButton GroupName="SegmentedThree" Content="Details"
                                          Style="{StaticResource EtherSegment}"
-                                         AutomationProperties.Name="Three-segment details"/>
+                                         AutomationProperties.Name="Three-segment details"
+                                         Checked="InteractiveSegment_Checked"/>
                             <controls:HandRadioButton GroupName="SegmentedThree" Content="History"
                                          Style="{StaticResource EtherSegment}"
-                                         AutomationProperties.Name="Three-segment history"/>
+                                         AutomationProperties.Name="Three-segment history"
+                                         Checked="InteractiveSegment_Checked"/>
                         </StackPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
@@ -57,20 +65,25 @@
                             <controls:HandRadioButton GroupName="SegmentedFour" Content="Day"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment day"
-                                         IsChecked="True"/>
+                                         IsChecked="True"
+                                         Checked="InteractiveSegment_Checked"/>
                             <controls:HandRadioButton GroupName="SegmentedFour" Content="Week"
                                          Style="{StaticResource EtherSegment}"
-                                         AutomationProperties.Name="Four-segment week"/>
+                                         AutomationProperties.Name="Four-segment week"
+                                         Checked="InteractiveSegment_Checked"/>
                             <controls:HandRadioButton GroupName="SegmentedFour" Content="Month"
                                          Style="{StaticResource EtherSegment}"
-                                         AutomationProperties.Name="Four-segment month"/>
+                                         AutomationProperties.Name="Four-segment month"
+                                         Checked="InteractiveSegment_Checked"/>
                             <controls:HandRadioButton GroupName="SegmentedFour" Content="Year"
                                          Style="{StaticResource EtherSegment}"
-                                         AutomationProperties.Name="Four-segment year"/>
+                                         AutomationProperties.Name="Four-segment year"
+                                         Checked="InteractiveSegment_Checked"/>
                         </StackPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
             </StackPanel>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>

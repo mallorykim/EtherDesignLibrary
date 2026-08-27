@@ -1,11 +1,15 @@
-# L4 Gallery ControlExample (first pass)
+# L4 Gallery ControlExample
 
 Date: 2026-08-26  
 Status: preview Gallery chrome, not stable-release readiness
 
 This pass evolves the Gallery toward the WinUI Gallery `ControlExample` pattern
-without converting every page and without claiming preview-package publish
-readiness. Frozen Primitive/Semantic tokens were not changed.
+without claiming preview-package publish readiness. Frozen Primitive/Semantic
+tokens were not changed.
+
+First pass (`4bba0a9`) piloted Button + Progress Bar. The deepen pass rolls
+`ControlExample` across remaining **control** Gallery pages. Foundations
+primitive pages stay on plain `ComponentPage`.
 
 ## What shipped
 
@@ -20,15 +24,38 @@ readiness. Frozen Primitive/Semantic tokens were not changed.
   INTERACTIVE header (including the existing Disabled checkbox). That matches
   WinUI Gallery's options column without breaking pages that already use the
   header slot.
-- Pilot pages: `ButtonPage` and `ProgressBarPage` wrap their interactive
-  specimens in `ControlExample` with real snippets and live output (last click
-  / progress value).
-- Other Gallery pages stay on the existing `ComponentPage` Interactive + States
-  API. `CheckboxPage` is the contract canary for that backward compatibility.
 - `ComponentPage` disables only `ControlExample.IsExampleEnabled` when the
   page uses `ControlExample`, so Disabled does not gray out SOURCE/Copy.
 - `scripts/Verify-GalleryControlExample.ps1` static contract, wired in CI.
 - Gallery smoke page catalog is unchanged (still 20 pages, Light + Dark).
+
+## Migrated pages
+
+These wrap `ComponentPage.InteractiveContent` in `ControlExample` with a
+`SpecimenXaml` snippet. `StatesContent` stays outside the example. Live
+`OutputText` is used where the page has a meaningful interaction:
+
+| Page | Location | Live output |
+| --- | --- | --- |
+| `ButtonPage` | Controls | Last click |
+| `ProgressBarPage` | DataDisplay | Progress value |
+| `CheckboxPage` | Controls | Checked |
+| `RadioButtonPage` | Controls | Selected option |
+| `InputPage` | Controls | Typed text |
+| `DropdownPage` | Controls | Selected item |
+| `SegmentedControlPage` | Controls | Selected segment |
+| `IntelligenceButtonPage` | Controls | Last click |
+| `SteeringBarPage` | Controls | Value |
+| `SliderPage` | Controls | Value |
+| `ToggleSwitchPage` | Controls | On / Off |
+| `ScrollBarPage` | Foundations (control story) | None (scroll host) |
+| `MastheadPage` | Navigation | None (caption preview) |
+| `CardPage` | Surfaces | None (type previews) |
+
+Left on plain `ComponentPage` (Foundations primitives + Home):
+
+- `ColorsPage`, `TypographyPage`, `SpacingPage`, `RadiusPage`, `IconsPage`
+- `HomePage`
 
 ## Responsive layout
 
@@ -66,7 +93,8 @@ unchanged from L2.
 
 ## Evidence
 
-`Verify-GalleryControlExample.ps1` checks the control surface, Button/Progress
-Bar pilots, CheckboxPage backward compatibility, the architecture note, and CI
-wiring. Runtime proof for pages is still `Verify-GallerySmoke.ps1` (20/20 Light
-and Dark). This is not a screenshot or Appium baseline.
+`Verify-GalleryControlExample.ps1` checks the control surface, every migrated
+control page wrapping `ControlExample` with `SpecimenXaml`, Foundations
+primitive pages remaining on plain `ComponentPage`, the architecture note, and
+CI wiring. Runtime proof for pages is still `Verify-GallerySmoke.ps1` (20/20
+Light and Dark). This is not a screenshot or Appium baseline.

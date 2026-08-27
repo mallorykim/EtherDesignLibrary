@@ -37,20 +37,26 @@
         Description="Updated compact dropdown with content-hugging width, a theme-aware disclosure icon, and a gradient active stroke. Menu items are 26 px tall with a 4 px gap and 4 px container padding; past 6 items the menu scrolls.">
 
         <views:ComponentPage.InteractiveContent>
-            <controls:EtherDropdown
-                      SelectedIndex="0"
-                      HorizontalAlignment="Left"
-                      AutomationProperties.Name="Interactive dropdown">
-                <ComboBoxItem Content="10 Minutes"/>
-                <ComboBoxItem Content="30 Minutes"/>
-                <ComboBoxItem Content="1 Hour"/>
-                <ComboBoxItem Content="2 Hours"/>
-                <ComboBoxItem Content="4 Hours"/>
-                <ComboBoxItem Content="8 Hours"/>
-                <ComboBoxItem Content="12 Hours"/>
-                <ComboBoxItem Content="1 Day"/>
-                <ComboBoxItem Content="Never"/>
-            </controls:EtherDropdown>
+            <views:ControlExample x:Name="LiveExample"
+                                  OutputText="Selected: 10 Minutes"
+                                  SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
+                <controls:EtherDropdown
+                          x:Name="InteractiveDropdown"
+                          SelectedIndex="0"
+                          HorizontalAlignment="Left"
+                          AutomationProperties.Name="Interactive dropdown"
+                          SelectionChanged="InteractiveDropdown_SelectionChanged">
+                    <ComboBoxItem Content="10 Minutes"/>
+                    <ComboBoxItem Content="30 Minutes"/>
+                    <ComboBoxItem Content="1 Hour"/>
+                    <ComboBoxItem Content="2 Hours"/>
+                    <ComboBoxItem Content="4 Hours"/>
+                    <ComboBoxItem Content="8 Hours"/>
+                    <ComboBoxItem Content="12 Hours"/>
+                    <ComboBoxItem Content="1 Day"/>
+                    <ComboBoxItem Content="Never"/>
+                </controls:EtherDropdown>
+            </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>
