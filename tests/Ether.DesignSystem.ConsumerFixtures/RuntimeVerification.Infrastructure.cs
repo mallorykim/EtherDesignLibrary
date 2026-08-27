@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
+using Windows.UI.ViewManagement;
 
 namespace Ether.DesignSystem.ConsumerFixtures;
 
@@ -258,7 +259,16 @@ internal static partial class RuntimeVerification
         var darkPath = Path.Combine(directory, "consumer-dark.png");
         var lightSize = await CapturePngAsync(themeRoot, ElementTheme.Light, lightPath);
         var darkSize = await CapturePngAsync(themeRoot, ElementTheme.Dark, darkPath);
-        return new ScreenshotVerification(lightPath, darkPath, lightSize.Width, lightSize.Height, darkSize.Width, darkSize.Height);
+        return new ScreenshotVerification(
+            lightPath,
+            darkPath,
+            HighContrastPath: string.Empty,
+            lightSize.Width,
+            lightSize.Height,
+            darkSize.Width,
+            darkSize.Height,
+            HighContrastPixelWidth: 0,
+            HighContrastPixelHeight: 0);
     }
 
     private static async Task<(int Width, int Height)> CapturePngAsync(FrameworkElement themeRoot, ElementTheme theme, string path)
@@ -278,6 +288,334 @@ internal static partial class RuntimeVerification
         encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, (uint)bitmap.PixelWidth, (uint)bitmap.PixelHeight, 96, 96, pixels);
         await encoder.FlushAsync();
         return (bitmap.PixelWidth, bitmap.PixelHeight);
+    }
+
+    private const string InjectedWindowColor = "#FF00FF00";
+    private const string InjectedWindowTextColor = "#FFFFFF00";
+
+    private static async Task<HighContrastVerification> VerifyForcedHighContrastAsync(
+        FrameworkElement themeRoot,
+        (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls)
+    {
+        var osHighContrast = new AccessibilitySettings().HighContrast;
+        if (osHighContrast)
+        {
+            throw new InvalidOperationException(
+                "OS high contrast is on; this slice forces HighContrast dictionaries while Light/Dark still resolve. Turn off Windows contrast themes and re-run.");
+        }
+
+        var appResources = Application.Current.Resources
+            ?? throw new InvalidOperationException("Application.Current.Resources is null.");
+        var swaps = new List<(ResourceDictionary Owner, object OriginalLight)>();
+        CollectLightHighContrastSwaps(appResources, swaps);
+        if (swaps.Count == 0)
+        {
+            throw new InvalidOperationException(
+                "No ResourceDictionary in Application.Resources exposed both Light and HighContrast ThemeDictionaries.");
+        }
+
+        var directory = Environment.GetEnvironmentVariable("ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR");
+        if (string.IsNullOrWhiteSpace(directory))
+        {
+            var markerPath = Environment.GetEnvironmentVariable("ETHER_CONSUMER_SMOKE_RESULT_PATH");
+            directory = string.IsNullOrWhiteSpace(markerPath)
+                ? Path.Combine(Path.GetTempPath(), "ether-consumer-screenshots")
+                : Path.Combine(Path.GetDirectoryName(markerPath)!, "screenshots");
+        }
+        Directory.CreateDirectory(directory);
+        var screenshotPath = Path.Combine(directory, "consumer-highcontrast.png");
+
+        object? previousWindow = null;
+        object? previousWindowText = null;
+        object? previousCanvas = null;
+        var hadWindow = appResources.ContainsKey("SystemColorWindowColor");
+        var hadWindowText = appResources.ContainsKey("SystemColorWindowTextColor");
+        var hadCanvas = appResources.ContainsKey("BackgroundCanvas");
+        if (hadWindow)
+        {
+            previousWindow = appResources["SystemColorWindowColor"];
+        }
+        if (hadWindowText)
+        {
+            previousWindowText = appResources["SystemColorWindowTextColor"];
+        }
+        if (hadCanvas)
+        {
+            previousCanvas = appResources["BackgroundCanvas"];
+        }
+
+        Exception? captureException = null;
+        HighContrastVerification? verification = null;
+        var overlayLight = new ResourceDictionary();
+        var overlayNeeded = false;
+        var hadAppLight = appResources.ThemeDictionaries.ContainsKey("Light");
+        object? previousAppLight = hadAppLight ? appResources.ThemeDictionaries["Light"] : null;
+        var overlayApplied = false;
+        try
+        {
+            foreach (var (owner, _) in swaps)
+            {
+                try
+                {
+                    owner.ThemeDictionaries["Light"] = owner.ThemeDictionaries["HighContrast"];
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        var source = (ResourceDictionary)owner.ThemeDictionaries["HighContrast"];
+                        var copy = new ResourceDictionary();
+                        CopyThemeDictionaryKeys(source, copy);
+                        foreach (var nested in source.MergedDictionaries)
+                        {
+                            try
+                            {
+                                copy.MergedDictionaries.Add(nested);
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                        owner.ThemeDictionaries["Light"] = copy;
+                    }
+                    catch (Exception)
+                    {
+                        // Source-set dictionaries reject ThemeDictionaries replacement
+                        // ("local values are not allowed"). Copy HighContrast keys onto a
+                        // Source-less Light overlay on Application.Resources instead.
+                        var source = (ResourceDictionary)owner.ThemeDictionaries["HighContrast"];
+                        CopyThemeDictionaryKeys(source, overlayLight);
+                        overlayNeeded = true;
+                    }
+                }
+            }
+
+            if (overlayNeeded)
+            {
+                overlayLight["BackgroundCanvas"] = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
+                appResources.ThemeDictionaries["Light"] = overlayLight;
+                overlayApplied = true;
+            }
+
+            appResources["SystemColorWindowColor"] = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
+            appResources["SystemColorWindowTextColor"] = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00));
+
+            themeRoot.RequestedTheme = ElementTheme.Dark;
+            await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Dark);
+            themeRoot.RequestedTheme = ElementTheme.Light;
+            await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Light);
+            themeRoot.UpdateLayout();
+
+            if (themeRoot is not Panel { Background: SolidColorBrush canvasBrush })
+            {
+                throw new InvalidOperationException("Fixture theme root does not expose a SolidColorBrush BackgroundCanvas value after HighContrast force.");
+            }
+
+            var canvasColor = FormatColor(canvasBrush.Color);
+            if (!string.Equals(canvasColor, InjectedWindowColor, StringComparison.Ordinal))
+            {
+                var injectedBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
+                overlayLight["BackgroundCanvas"] = injectedBrush;
+                appResources["BackgroundCanvas"] = injectedBrush;
+                if (overlayNeeded && !overlayApplied)
+                {
+                    appResources.ThemeDictionaries["Light"] = overlayLight;
+                    overlayApplied = true;
+                }
+
+                themeRoot.RequestedTheme = ElementTheme.Dark;
+                await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Dark);
+                themeRoot.RequestedTheme = ElementTheme.Light;
+                await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Light);
+                themeRoot.UpdateLayout();
+                if (themeRoot is not Panel { Background: SolidColorBrush retriedBrush })
+                {
+                    throw new InvalidOperationException("Fixture theme root does not expose a SolidColorBrush BackgroundCanvas value after HighContrast force.");
+                }
+
+                canvasBrush = retriedBrush;
+                canvasColor = FormatColor(canvasBrush.Color);
+            }
+
+            if (!string.Equals(canvasColor, InjectedWindowColor, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"BackgroundCanvas after HighContrast force was '{canvasColor}', expected '{InjectedWindowColor}'.");
+            }
+
+            var pngSize = await CapturePngAsync(themeRoot, ElementTheme.Light, screenshotPath);
+            var namesIntact = true;
+            foreach (var (id, control, expectedAutomationName) in controls)
+            {
+                control.UpdateLayout();
+                var peer = FrameworkElementAutomationPeer.CreatePeerForElement(control)
+                    ?? throw new InvalidOperationException($"{id} did not create an automation peer after HighContrast force.");
+                var automationName = peer.GetName();
+                if (!string.Equals(automationName, expectedAutomationName, StringComparison.Ordinal))
+                {
+                    namesIntact = false;
+                    throw new InvalidOperationException(
+                        $"{id} automation name after HighContrast force was '{automationName}', expected '{expectedAutomationName}'.");
+                }
+            }
+
+            verification = new HighContrastVerification(
+                OsHighContrast: false,
+                DictionaryForced: true,
+                BackgroundCanvasColor: canvasColor,
+                InjectedWindowColor: InjectedWindowColor,
+                InjectedWindowTextColor: InjectedWindowTextColor,
+                ScreenshotPath: screenshotPath,
+                AutomationNamesIntact: namesIntact,
+                PixelWidth: pngSize.Width,
+                PixelHeight: pngSize.Height);
+        }
+        catch (Exception exception)
+        {
+            captureException = exception;
+        }
+        finally
+        {
+            Exception? restoreException = null;
+            try
+            {
+                foreach (var (owner, originalLight) in swaps)
+                {
+                    try
+                    {
+                        owner.ThemeDictionaries["Light"] = originalLight;
+                    }
+                    catch (Exception)
+                    {
+                        // Owner was Source-set and never mutated; original Light is still in place.
+                    }
+                }
+
+                if (overlayApplied)
+                {
+                    if (hadAppLight)
+                    {
+                        appResources.ThemeDictionaries["Light"] = previousAppLight;
+                    }
+                    else
+                    {
+                        appResources.ThemeDictionaries.Remove("Light");
+                    }
+                }
+
+                if (hadWindow)
+                {
+                    appResources["SystemColorWindowColor"] = previousWindow;
+                }
+                else
+                {
+                    appResources.Remove("SystemColorWindowColor");
+                }
+
+                if (hadWindowText)
+                {
+                    appResources["SystemColorWindowTextColor"] = previousWindowText;
+                }
+                else
+                {
+                    appResources.Remove("SystemColorWindowTextColor");
+                }
+
+                if (hadCanvas)
+                {
+                    appResources["BackgroundCanvas"] = previousCanvas;
+                }
+                else if (appResources.ContainsKey("BackgroundCanvas"))
+                {
+                    appResources.Remove("BackgroundCanvas");
+                }
+
+                themeRoot.RequestedTheme = ElementTheme.Light;
+                await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Light);
+            }
+            catch (Exception exception)
+            {
+                restoreException = exception;
+            }
+
+            if (captureException is not null && restoreException is not null)
+            {
+                throw new AggregateException(captureException, restoreException);
+            }
+
+            if (captureException is not null)
+            {
+                throw captureException;
+            }
+
+            if (restoreException is not null)
+            {
+                throw restoreException;
+            }
+        }
+
+        return verification
+            ?? throw new InvalidOperationException("HighContrast force completed without a verification payload.");
+    }
+
+    private static void CopyThemeDictionaryKeys(ResourceDictionary source, ResourceDictionary target)
+    {
+        var keys = new List<object>();
+        foreach (var key in source.Keys)
+        {
+            keys.Add(key);
+        }
+
+        foreach (var key in keys)
+        {
+            object? value;
+            try
+            {
+                value = source[key];
+            }
+            catch (Exception)
+            {
+                continue;
+            }
+
+            try
+            {
+                target[key] = value;
+                continue;
+            }
+            catch (Exception)
+            {
+            }
+
+            if (value is not SolidColorBrush brush)
+            {
+                continue;
+            }
+
+            try
+            {
+                target[key] = new SolidColorBrush(brush.Color);
+            }
+            catch (Exception)
+            {
+            }
+        }
+    }
+
+    private static void CollectLightHighContrastSwaps(
+        ResourceDictionary dictionary,
+        List<(ResourceDictionary Owner, object OriginalLight)> swaps)
+    {
+        var themes = dictionary.ThemeDictionaries;
+        if (themes.ContainsKey("Light") && themes.ContainsKey("HighContrast"))
+        {
+            swaps.Add((dictionary, themes["Light"]));
+        }
+
+        foreach (var merged in dictionary.MergedDictionaries)
+        {
+            CollectLightHighContrastSwaps(merged, swaps);
+        }
     }
 
     private static async Task<RtlVerification> VerifyRtlAsync(FrameworkElement themeRoot, params (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls)

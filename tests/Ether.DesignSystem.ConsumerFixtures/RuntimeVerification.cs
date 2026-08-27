@@ -245,10 +245,24 @@ internal static partial class RuntimeVerification
     internal sealed record ScreenshotVerification(
         string LightPath,
         string DarkPath,
+        string HighContrastPath,
         int LightPixelWidth,
         int LightPixelHeight,
         int DarkPixelWidth,
-        int DarkPixelHeight);
+        int DarkPixelHeight,
+        int HighContrastPixelWidth,
+        int HighContrastPixelHeight);
+
+    internal sealed record HighContrastVerification(
+        bool OsHighContrast,
+        bool DictionaryForced,
+        string BackgroundCanvasColor,
+        string InjectedWindowColor,
+        string InjectedWindowTextColor,
+        string ScreenshotPath,
+        bool AutomationNamesIntact,
+        int PixelWidth,
+        int PixelHeight);
 
     internal sealed record PerformanceVerification(double ElapsedMilliseconds);
 
@@ -277,6 +291,7 @@ internal static partial class RuntimeVerification
         TextScaleVerification TextScale,
         LocalizationVerification Localization,
         ScreenshotVerification Screenshots,
+        HighContrastVerification HighContrast,
         PerformanceVerification Performance);
 
     internal static async Task<VerificationResult> VerifyAsync(
@@ -389,6 +404,13 @@ internal static partial class RuntimeVerification
         var textScale = await VerifyTextScaleAsync(themeRoot, controlsTuple);
         var localization = VerifyLocalization(statusText);
         var rtlResult = await VerifyRtlAsync(themeRoot, controlsTuple);
+        var highContrast = await VerifyForcedHighContrastAsync(themeRoot, controlsTuple);
+        screenshots = screenshots with
+        {
+            HighContrastPath = highContrast.ScreenshotPath,
+            HighContrastPixelWidth = highContrast.PixelWidth,
+            HighContrastPixelHeight = highContrast.PixelHeight,
+        };
 
         stopwatch.Stop();
         return new VerificationResult(
@@ -416,6 +438,7 @@ internal static partial class RuntimeVerification
             textScale,
             localization,
             screenshots,
+            highContrast,
             new PerformanceVerification(stopwatch.Elapsed.TotalMilliseconds));
     }
 
@@ -456,6 +479,7 @@ internal static partial class RuntimeVerification
             textScale = result?.TextScale,
             localization = result?.Localization,
             screenshots = result?.Screenshots,
+            highContrast = result?.HighContrast,
             performance = result?.Performance,
             message = exception?.ToString(),
         });
