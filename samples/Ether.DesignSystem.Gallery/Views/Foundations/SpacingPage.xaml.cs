@@ -53,7 +53,8 @@ public sealed partial class SpacingPage : Page
 
     private static SpacingPrimitiveGroup[] BuildGroups()
     {
-        var primitives = FindPrimitiveDictionary(Application.Current.Resources);
+        var primitives = MergedResourceDictionaries.Find(
+            Application.Current.Resources, "EtherPrimitives.xaml", "Spacing8");
         if (primitives is null)
             return Array.Empty<SpacingPrimitiveGroup>();
 
@@ -75,23 +76,6 @@ public sealed partial class SpacingPage : Page
         {
             new SpacingPrimitiveGroup("Spacing", spacing.OrderBy(i => double.Parse(i.Value, CultureInfo.CurrentCulture)).ToArray()),
         };
-    }
-
-    private static ResourceDictionary? FindPrimitiveDictionary(ResourceDictionary root)
-    {
-        foreach (var merged in root.MergedDictionaries)
-        {
-            if (merged.Source is not null &&
-                merged.Source.OriginalString.EndsWith("EtherPrimitives.xaml", StringComparison.OrdinalIgnoreCase))
-            {
-                return merged;
-            }
-
-            if (FindPrimitiveDictionary(merged) is { } found)
-                return found;
-        }
-
-        return null;
     }
 }
 

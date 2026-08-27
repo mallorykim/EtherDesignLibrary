@@ -27,8 +27,10 @@ public sealed partial class IconsPage : Page
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        var iconStyles = FindDictionary(Application.Current.Resources, "EtherIconGeometries.xaml");
-        var primitives = FindDictionary(Application.Current.Resources, "EtherPrimitives.xaml");
+        var iconStyles = MergedResourceDictionaries.Find(
+            Application.Current.Resources, "EtherIconGeometries.xaml", "IconAddCir");
+        var primitives = MergedResourceDictionaries.Find(
+            Application.Current.Resources, "EtherPrimitives.xaml", "IconSizeMd");
 
         BuildSizes(primitives);
         BuildGallery(iconStyles);
@@ -88,23 +90,6 @@ public sealed partial class IconsPage : Page
 
         IconRows.ItemsSource = rows;
         CountText.Text = $"{sorted.Length} icons";
-    }
-
-    private static ResourceDictionary? FindDictionary(ResourceDictionary root, string fileName)
-    {
-        foreach (var merged in root.MergedDictionaries)
-        {
-            if (merged.Source is not null &&
-                merged.Source.OriginalString.EndsWith(fileName, StringComparison.OrdinalIgnoreCase))
-            {
-                return merged;
-            }
-
-            if (FindDictionary(merged, fileName) is { } found)
-                return found;
-        }
-
-        return null;
     }
 }
 

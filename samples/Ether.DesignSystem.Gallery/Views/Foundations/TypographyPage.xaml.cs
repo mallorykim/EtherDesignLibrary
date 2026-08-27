@@ -71,7 +71,8 @@ public sealed partial class TypographyPage : Page
 
     private static TypographyPrimitiveGroup[] BuildGroups()
     {
-        var primitives = FindPrimitiveDictionary(Application.Current.Resources);
+        var primitives = MergedResourceDictionaries.Find(
+            Application.Current.Resources, "EtherPrimitives.xaml", "Size14");
         if (primitives is null)
             return Array.Empty<TypographyPrimitiveGroup>();
 
@@ -112,23 +113,6 @@ public sealed partial class TypographyPage : Page
             new TypographyPrimitiveGroup("Weight", weights.OrderBy(i => int.Parse(i.Value, CultureInfo.CurrentCulture)).ToArray()),
             new TypographyPrimitiveGroup("Family", families),
         };
-    }
-
-    private static ResourceDictionary? FindPrimitiveDictionary(ResourceDictionary root)
-    {
-        foreach (var merged in root.MergedDictionaries)
-        {
-            if (merged.Source is not null &&
-                merged.Source.OriginalString.EndsWith("EtherPrimitives.xaml", StringComparison.OrdinalIgnoreCase))
-            {
-                return merged;
-            }
-
-            if (FindPrimitiveDictionary(merged) is { } found)
-                return found;
-        }
-
-        return null;
     }
 }
 
