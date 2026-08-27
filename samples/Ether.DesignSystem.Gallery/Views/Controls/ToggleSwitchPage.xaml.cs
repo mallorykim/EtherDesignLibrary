@@ -34,6 +34,8 @@ public sealed partial class ToggleSwitchPage : Page
     private void InteractiveSwitch_Toggled(object sender, RoutedEventArgs e)
     {
         if (LiveExample is not null && sender is ToggleSwitch toggle)
-            LiveExample.OutputText = toggle.IsOn ? "State: On" : "State: Off";
+            LiveExample.OutputText = toggle.IsOn
+                ? GalleryStrings.Get("GalleryOutput.StateOn", "State: On")
+                : GalleryStrings.Get("GalleryOutput.StateOff", "State: Off");
     }
 }

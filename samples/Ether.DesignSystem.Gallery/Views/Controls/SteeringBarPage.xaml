@@ -5,21 +5,22 @@
     xmlns:controls="using:EtherSandbox.Controls"
     xmlns:views="using:EtherSandbox.Views">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsSteeringBarPage208"
         Title="Steering Bar"
         Description="Draggable steering bar with a rounded track, gradient progress fill, glass thumb, and optional title/value labels. It supports continuous dragging or custom stops with snapping depending on the use case."
         HasDisabledToggle="True">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsSteeringBarPageOutput"
                                   OutputText="Value: 31"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Spacing="16" Width="480">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Continuous"
+<TextBlock x:Uid="GalleryViewsControlsSteeringBarPage209" Text="Continuous"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSteeringBar x:Name="DebugSteeringBar"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage210" x:Name="DebugSteeringBar"
                                                Width="480"
                                                Title="Playback"
                                                Value="31"
@@ -28,10 +29,10 @@
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Custom stops with snapping"
+<TextBlock x:Uid="GalleryViewsControlsSteeringBarPage211" Text="Custom stops with snapping"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSteeringBar x:Name="StopsDemo"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage212" x:Name="StopsDemo"
                                                Width="480"
                                                Title="Intensity"
                                                Value="50"
@@ -44,7 +45,7 @@
                                               Content="−"
                                               Style="{StaticResource EtherButtonSecondarySmall}"
                                               Click="DecreaseStops_Click"/>
-                        <TextBlock x:Name="StopCountText"
+<TextBlock x:Uid="GalleryViewsControlsSteeringBarPage213" x:Name="StopCountText"
                                    Text="5 stops"
                                    Style="{StaticResource micro/regular}"
                                    Foreground="{ThemeResource TextSecondary}"
@@ -62,10 +63,10 @@
         <views:ComponentPage.StatesContent>
             <StackPanel Spacing="24" Width="480">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="TITLE + VALUE"
+<TextBlock x:Uid="GalleryViewsControlsSteeringBarPage214" Text="TITLE + VALUE"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSteeringBar Width="480"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage215" Width="480"
                                                Title="Playback"
                                                Value="31"
                                                PreviewStatus="Default"
@@ -74,10 +75,10 @@
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="TITLE ONLY"
+<TextBlock x:Uid="GalleryViewsControlsSteeringBarPage216" Text="TITLE ONLY"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSteeringBar Width="480"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage217" Width="480"
                                                Title="Playback"
                                                Value="31"
                                                ShowTitle="True"
@@ -88,10 +89,10 @@
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="VALUE ONLY"
+<TextBlock x:Uid="GalleryViewsControlsSteeringBarPage218" Text="VALUE ONLY"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSteeringBar Width="480"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage219" Width="480"
                                                Title="Playback"
                                                Value="31"
                                                ShowTitle="False"
@@ -102,10 +103,10 @@
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="BAR ONLY"
+<TextBlock x:Uid="GalleryViewsControlsSteeringBarPage220" Text="BAR ONLY"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSteeringBar Width="480"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage221" Width="480"
                                                Title="Playback"
                                                Value="31"
                                                ShowTitle="False"

@@ -5,7 +5,7 @@
     xmlns:controls="using:EtherSandbox.Controls"
     xmlns:views="using:EtherSandbox.Views">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsButtonPage009"
         Title="Button"
         HasDisabledToggle="True"
         Description="Updated primary, secondary, and tertiary buttons in large and small sizes. Hover, pressed, and disabled treatments are shown side by side for quick comparison.">
@@ -13,7 +13,7 @@
         <views:ComponentPage.InteractiveControls>
             <!-- Trailing icon is optional; this checkbox adds / removes it on every specimen
                  (code-behind sets or clears each EtherButton.RightIcon). -->
-            <controls:EtherCheckbox x:Name="IconToggle"
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsButtonPage010" x:Name="IconToggle"
                       Content="Trailing icon"
                       IsChecked="True"
                       Checked="IconToggle_Changed"
@@ -22,21 +22,22 @@
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsButtonPageOutput"
                                   OutputText="Clicked: —"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Spacing="24">
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="PRIMARY"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage011" Text="PRIMARY"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Large"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage012" Text="Large"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherButton x:Name="PrimaryLargeDemo"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage013" x:Name="PrimaryLargeDemo"
                                                  Content="Primary Action"
                                                  Style="{StaticResource EtherButtonPrimary}"
                                                  Click="InteractiveButton_Click"
@@ -44,11 +45,11 @@
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Small"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage014" Text="Small"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherButton x:Name="PrimarySmallDemo"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage015" x:Name="PrimarySmallDemo"
                                                  Content="Primary Action"
                                                  Style="{StaticResource EtherButtonPrimarySmall}"
                                                  Click="InteractiveButton_Click"
@@ -59,16 +60,16 @@
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="SECONDARY"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage016" Text="SECONDARY"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Large"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage017" Text="Large"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherButton x:Name="SecondaryLargeDemo"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage018" x:Name="SecondaryLargeDemo"
                                                  Content="Secondary Action"
                                                  Style="{StaticResource EtherButtonSecondary}"
                                                  Click="InteractiveButton_Click"
@@ -76,11 +77,11 @@
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Small"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage019" Text="Small"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherButton x:Name="SecondarySmallDemo"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage020" x:Name="SecondarySmallDemo"
                                                  Content="Secondary Action"
                                                  Style="{StaticResource EtherButtonSecondarySmall}"
                                                  Click="InteractiveButton_Click"
@@ -91,16 +92,16 @@
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="TERTIARY"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage021" Text="TERTIARY"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Large"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage022" Text="Large"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherButton x:Name="TertiaryLargeDemo"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage023" x:Name="TertiaryLargeDemo"
                                                  Content="Tertiary Action"
                                                  Style="{StaticResource EtherButtonTertiary}"
                                                  Click="InteractiveButton_Click"
@@ -108,11 +109,11 @@
                                                  HorizontalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Small"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage024" Text="Small"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherButton x:Name="TertiarySmallDemo"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage025" x:Name="TertiarySmallDemo"
                                                  Content="Tertiary Action"
                                                  Style="{StaticResource EtherButtonTertiarySmall}"
                                                  Click="InteractiveButton_Click"
@@ -123,10 +124,10 @@
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="DEFAULT STYLE"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage026" Text="DEFAULT STYLE"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherButton x:Name="DefaultStyleDemo"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage027" x:Name="DefaultStyleDemo"
                                          Content="Primary Action"
                                          Click="InteractiveButton_Click"
                                          AutomationProperties.Name="Default style button"
@@ -143,55 +144,55 @@
                      PRIMARY
                 = -->
                 <StackPanel Spacing="12">
-                    <TextBlock Text="PRIMARY"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage028" Text="PRIMARY"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
 
                     <StackPanel Spacing="8">
-                        <TextBlock Text="LARGE"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage029" Text="LARGE"
                                    FontFamily="{StaticResource InterFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
                         <StackPanel Orientation="Horizontal" Spacing="24">
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage030" Text="Default"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton Content="Primary Action"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage031" Content="Primary Action"
                                         Style="{StaticResource EtherButtonPrimary}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage032" Text="Hover"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="PrimaryHoverState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage033" x:Name="PrimaryHoverState"
                                         Content="Primary Action"
                                         Style="{StaticResource EtherButtonPrimary}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage034" Text="Pressed"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="PrimaryPressedState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage035" x:Name="PrimaryPressedState"
                                         Content="Primary Action"
                                         Style="{StaticResource EtherButtonPrimary}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage036" Text="Disabled"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="PrimaryDisabledState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage037" x:Name="PrimaryDisabledState"
                                         Content="Primary Action"
                                         Style="{StaticResource EtherButtonPrimary}"
                                         IsEnabled="False"
@@ -202,50 +203,50 @@
                     </StackPanel>
 
                     <StackPanel Spacing="8">
-                        <TextBlock Text="SMALL"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage038" Text="SMALL"
                                    FontFamily="{StaticResource InterFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
                         <StackPanel Orientation="Horizontal" Spacing="16">
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage039" Text="Default"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton Content="Primary Action"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage040" Content="Primary Action"
                                         Style="{StaticResource EtherButtonPrimarySmall}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage041" Text="Hover"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="PrimarySmallHoverState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage042" x:Name="PrimarySmallHoverState"
                                         Content="Primary Action"
                                         Style="{StaticResource EtherButtonPrimarySmall}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage043" Text="Pressed"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="PrimarySmallPressedState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage044" x:Name="PrimarySmallPressedState"
                                         Content="Primary Action"
                                         Style="{StaticResource EtherButtonPrimarySmall}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage045" Text="Disabled"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="PrimarySmallDisabledState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage046" x:Name="PrimarySmallDisabledState"
                                         Content="Primary Action"
                                         Style="{StaticResource EtherButtonPrimarySmall}"
                                         IsEnabled="False"
@@ -260,55 +261,55 @@
                      SECONDARY
                 = -->
                 <StackPanel Spacing="12">
-                    <TextBlock Text="SECONDARY"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage047" Text="SECONDARY"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
 
                     <StackPanel Spacing="8">
-                        <TextBlock Text="LARGE"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage048" Text="LARGE"
                                    FontFamily="{StaticResource InterFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
                         <StackPanel Orientation="Horizontal" Spacing="24">
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage049" Text="Default"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton Content="Secondary Action"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage050" Content="Secondary Action"
                                         Style="{StaticResource EtherButtonSecondary}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage051" Text="Hover"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="SecondaryHoverState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage052" x:Name="SecondaryHoverState"
                                         Content="Secondary Action"
                                         Style="{StaticResource EtherButtonSecondary}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage053" Text="Pressed"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="SecondaryPressedState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage054" x:Name="SecondaryPressedState"
                                         Content="Secondary Action"
                                         Style="{StaticResource EtherButtonSecondary}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage055" Text="Disabled"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="SecondaryDisabledState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage056" x:Name="SecondaryDisabledState"
                                         Content="Secondary Action"
                                         Style="{StaticResource EtherButtonSecondary}"
                                         IsEnabled="False"
@@ -319,50 +320,50 @@
                     </StackPanel>
 
                     <StackPanel Spacing="8">
-                        <TextBlock Text="SMALL"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage057" Text="SMALL"
                                    FontFamily="{StaticResource InterFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
                         <StackPanel Orientation="Horizontal" Spacing="16">
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage058" Text="Default"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton Content="Secondary Action"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage059" Content="Secondary Action"
                                         Style="{StaticResource EtherButtonSecondarySmall}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage060" Text="Hover"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="SecondarySmallHoverState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage061" x:Name="SecondarySmallHoverState"
                                         Content="Secondary Action"
                                         Style="{StaticResource EtherButtonSecondarySmall}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage062" Text="Pressed"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="SecondarySmallPressedState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage063" x:Name="SecondarySmallPressedState"
                                         Content="Secondary Action"
                                         Style="{StaticResource EtherButtonSecondarySmall}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage064" Text="Disabled"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="SecondarySmallDisabledState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage065" x:Name="SecondarySmallDisabledState"
                                         Content="Secondary Action"
                                         Style="{StaticResource EtherButtonSecondarySmall}"
                                         IsEnabled="False"
@@ -377,55 +378,55 @@
                      TERTIARY
                 = -->
                 <StackPanel Spacing="12">
-                    <TextBlock Text="TERTIARY"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage066" Text="TERTIARY"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
 
                     <StackPanel Spacing="8">
-                        <TextBlock Text="LARGE"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage067" Text="LARGE"
                                    FontFamily="{StaticResource InterFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
                         <StackPanel Orientation="Horizontal" Spacing="24">
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage068" Text="Default"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton Content="Tertiary Action"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage069" Content="Tertiary Action"
                                         Style="{StaticResource EtherButtonTertiary}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage070" Text="Hover"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="TertiaryHoverState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage071" x:Name="TertiaryHoverState"
                                         Content="Tertiary Action"
                                         Style="{StaticResource EtherButtonTertiary}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage072" Text="Pressed"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="TertiaryPressedState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage073" x:Name="TertiaryPressedState"
                                         Content="Tertiary Action"
                                         Style="{StaticResource EtherButtonTertiary}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage074" Text="Disabled"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="TertiaryDisabledState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage075" x:Name="TertiaryDisabledState"
                                         Content="Tertiary Action"
                                         Style="{StaticResource EtherButtonTertiary}"
                                         IsEnabled="False"
@@ -436,50 +437,50 @@
                     </StackPanel>
 
                     <StackPanel Spacing="8">
-                        <TextBlock Text="SMALL"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage076" Text="SMALL"
                                    FontFamily="{StaticResource InterFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
                         <StackPanel Orientation="Horizontal" Spacing="16">
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage077" Text="Default"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton Content="Tertiary Action"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage078" Content="Tertiary Action"
                                         Style="{StaticResource EtherButtonTertiarySmall}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage079" Text="Hover"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="TertiarySmallHoverState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage080" x:Name="TertiarySmallHoverState"
                                         Content="Tertiary Action"
                                         Style="{StaticResource EtherButtonTertiarySmall}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage081" Text="Pressed"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="TertiarySmallPressedState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage082" x:Name="TertiarySmallPressedState"
                                         Content="Tertiary Action"
                                         Style="{StaticResource EtherButtonTertiarySmall}"
                                         IsHitTestVisible="False"
                                         IsTabStop="False"/>
                             </StackPanel>
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsButtonPage083" Text="Disabled"
                                            Style="{StaticResource micro/regular}"
                                            Foreground="{ThemeResource TextTertiary}"
                                            HorizontalAlignment="Center"/>
-                                <controls:EtherButton x:Name="TertiarySmallDisabledState"
+<controls:EtherButton x:Uid="GalleryViewsControlsButtonPage084" x:Name="TertiarySmallDisabledState"
                                         Content="Tertiary Action"
                                         Style="{StaticResource EtherButtonTertiarySmall}"
                                         IsEnabled="False"

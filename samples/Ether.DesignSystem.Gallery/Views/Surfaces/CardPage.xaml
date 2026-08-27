@@ -5,14 +5,14 @@
     xmlns:controls="using:EtherSandbox.Controls"
     xmlns:views="using:EtherSandbox.Views">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsSurfacesCardPage285"
         Title="Cards - Types"
         Description="Card component with gradient border effect, available in Normal, Intelligence (dark), and Callout (with header) types.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Width="1216" Spacing="24">
-                <TextBlock Text="TYPE PREVIEWS"
+<TextBlock x:Uid="GalleryViewsSurfacesCardPage286" Text="TYPE PREVIEWS"
                            Style="{StaticResource micro/semibold}"
                            Foreground="{ThemeResource TextTertiary}"/>
 
@@ -24,12 +24,12 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Spacing="12">
-                        <TextBlock Text="NORMAL"
+<TextBlock x:Uid="GalleryViewsSurfacesCardPage287" Text="NORMAL"
                                    Style="{StaticResource micro/semibold}"
                                    Foreground="{ThemeResource TextSecondary}"/>
                         <Border Style="{StaticResource EtherCardNormal}">
                             <Border Style="{StaticResource EtherCardNormalBody}">
-                                <TextBlock Text="Card"
+<TextBlock x:Uid="GalleryViewsSurfacesCardPage288" Text="Card"
                                            Style="{StaticResource headers/h3}"
                                            Foreground="{ThemeResource text/primary}"/>
                             </Border>
@@ -37,12 +37,12 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Spacing="12">
-                        <TextBlock Text="INTELLIGENCE"
+<TextBlock x:Uid="GalleryViewsSurfacesCardPage289" Text="INTELLIGENCE"
                                    Style="{StaticResource micro/semibold}"
                                    Foreground="{ThemeResource TextSecondary}"/>
                         <Border Style="{StaticResource EtherCardIntelligence}">
                             <Border Style="{StaticResource EtherCardIntelligenceBody}">
-                                <TextBlock Text="Card"
+<TextBlock x:Uid="GalleryViewsSurfacesCardPage290" Text="Card"
                                            Style="{StaticResource headers/h3}"
                                            Foreground="{ThemeResource text/on-static-dark}"/>
                             </Border>
@@ -50,7 +50,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" Spacing="12">
-                        <TextBlock Text="CALLOUT"
+<TextBlock x:Uid="GalleryViewsSurfacesCardPage291" Text="CALLOUT"
                                    Style="{StaticResource micro/semibold}"
                                    Foreground="{ThemeResource TextSecondary}"/>
                         <Border Style="{StaticResource EtherCardCalloutShell}">
@@ -61,7 +61,7 @@
                                 </Grid.RowDefinitions>
 
                                 <Grid Padding="12,8,12,8">
-                                    <TextBlock Text="Intelligence Insight"
+<TextBlock x:Uid="GalleryViewsSurfacesCardPage292" Text="Intelligence Insight"
                                                Style="{StaticResource headers/h6}"
                                                Foreground="{ThemeResource text/on-static-dark}"
                                                VerticalAlignment="Center"/>
@@ -79,7 +79,7 @@
 
                                 <Border Grid.Row="1"
                                         Style="{StaticResource EtherCardCalloutBody}">
-                                    <TextBlock Text="Card"
+<TextBlock x:Uid="GalleryViewsSurfacesCardPage293" Text="Card"
                                                Style="{StaticResource headers/h3}"
                                                Foreground="{ThemeResource text/primary}"/>
                                 </Border>

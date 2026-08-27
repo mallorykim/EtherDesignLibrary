@@ -28,7 +28,7 @@ public sealed partial class ProgressBarPage : Page
             var text = $"{(int)Math.Round(e.NewValue)}%";
             SimBar.ValueContent = text;
             if (LiveExample is not null)
-                LiveExample.OutputText = $"Value: {text}";
+                LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Value", "Value: {0}", text);
         };
 
         // Run once on open so the motion is visible without touching anything.

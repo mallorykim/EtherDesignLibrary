@@ -5,16 +5,17 @@
     xmlns:controls="using:EtherSandbox.Controls"
     xmlns:views="using:EtherSandbox.Views">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsCheckboxPage085"
         Title="Checkbox"
         HasDisabledToggle="True"
         Description="Updated checkbox styling for Light and Dark themes, shown across unchecked and checked states with default, hover, pressed, and disabled treatments.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsCheckboxPageOutput"
                                   OutputText="Checked: False"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
-                <controls:EtherCheckbox x:Name="InteractiveCheckbox"
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsCheckboxPage086" x:Name="InteractiveCheckbox"
                                         Content="Option"
                                         AutomationProperties.Name="Interactive checkbox"
                                         Checked="InteractiveCheckbox_Changed"
@@ -27,47 +28,47 @@
 
                 <!-- UNCHECKED states -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="UNCHECKED"
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPage087" Text="UNCHECKED"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPage088" Text="Default"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherCheckbox
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsCheckboxPage089"
                                                    Content="Option"
                                                    IsChecked="False"
                                                    AutomationProperties.Name="Unchecked default checkbox"
                                                    IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPage090" Text="Hover"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherCheckbox x:Name="UncheckedHover"
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsCheckboxPage091" x:Name="UncheckedHover"
                                                    Content="Option"
                                                    IsChecked="False"
                                                    IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPage092" Text="Pressed"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherCheckbox x:Name="UncheckedPressed"
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsCheckboxPage093" x:Name="UncheckedPressed"
                                                    Content="Option"
                                                    IsChecked="False"
                                                    IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPage094" Text="Disabled"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherCheckbox
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsCheckboxPage095"
                                                    Content="Option"
                                                    IsChecked="False"
                                                    IsEnabled="False"
@@ -78,37 +79,37 @@
 
                 <!-- CHECKED states -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="CHECKED"
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPage096" Text="CHECKED"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPage097" Text="Default"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherCheckbox
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsCheckboxPage098"
                                                    Content="Option"
                                                    IsChecked="True"
                                                    AutomationProperties.Name="Checked default checkbox"
                                                    IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPage099" Text="Hover"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherCheckbox x:Name="CheckedHover"
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsCheckboxPage100" x:Name="CheckedHover"
                                                    Content="Option"
                                                    IsChecked="True"
                                                    IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPage101" Text="Disabled"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherCheckbox
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsCheckboxPage102"
                                                    Content="Option"
                                                    IsChecked="True"
                                                    IsEnabled="False"

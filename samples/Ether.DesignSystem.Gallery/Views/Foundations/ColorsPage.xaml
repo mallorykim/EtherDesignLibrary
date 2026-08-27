@@ -7,7 +7,7 @@
     xmlns:local="using:EtherSandbox.Views.Foundations"
     Loaded="OnLoaded">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsFoundationsColorsPage253"
         Title="Color Tokens"
         Description="Primitive color tokens from EtherPrimitives.xaml, listed by color series.">
 

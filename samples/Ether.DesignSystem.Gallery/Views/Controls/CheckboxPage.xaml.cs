@@ -31,6 +31,6 @@ public sealed partial class CheckboxPage : Page
     private void InteractiveCheckbox_Changed(object sender, RoutedEventArgs e)
     {
         if (LiveExample is not null && sender is EtherCheckbox checkbox)
-            LiveExample.OutputText = $"Checked: {checkbox.IsChecked ?? false}";
+            LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Checked", "Checked: {0}", checkbox.IsChecked ?? false);
     }
 }

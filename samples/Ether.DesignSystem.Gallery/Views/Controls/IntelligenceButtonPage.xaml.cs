@@ -29,6 +29,6 @@ public sealed partial class IntelligenceButtonPage : Page
     private void IntelligenceButton_Click(object sender, RoutedEventArgs e)
     {
         if (LiveExample is not null && sender is EtherIntelligenceButton button)
-            LiveExample.OutputText = $"Clicked: {button.Content}";
+            LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Clicked", "Clicked: {0}", button.Content);
     }
 }

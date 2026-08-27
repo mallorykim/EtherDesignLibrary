@@ -5,27 +5,28 @@
     xmlns:controls="using:EtherSandbox.Controls"
     xmlns:views="using:EtherSandbox.Views">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsSegmentedControlPage185"
         Title="Segmented Control"
         Description="Updated segmented control with a functional selection model plus specimen states for default, hover, pressed, and active treatments.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsSegmentedControlPageOutput"
                                   OutputText="Selected: List"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="6">
-                    <TextBlock Text="2 SEGMENTS"
+<TextBlock x:Uid="GalleryViewsControlsSegmentedControlPage186" Text="2 SEGMENTS"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSegmentedControl AutomationProperties.Name="Two-segment control">
                         <StackPanel Orientation="Horizontal" Spacing="4">
-                            <controls:HandRadioButton GroupName="SegmentedTwo" Content="List"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage187" GroupName="SegmentedTwo" Content="List"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Two-segment list"
                                          IsChecked="True"
                                          Checked="InteractiveSegment_Checked"/>
-                            <controls:HandRadioButton GroupName="SegmentedTwo" Content="Grid"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage188" GroupName="SegmentedTwo" Content="Grid"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Two-segment grid"
                                          Checked="InteractiveSegment_Checked"/>
@@ -33,22 +34,22 @@
                     </controls:EtherSegmentedControl>
                 </StackPanel>
                 <StackPanel Spacing="6">
-                    <TextBlock Text="3 SEGMENTS"
+<TextBlock x:Uid="GalleryViewsControlsSegmentedControlPage189" Text="3 SEGMENTS"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}"
                                                     AutomationProperties.Name="Three-segment control">
                         <StackPanel Orientation="Horizontal" Spacing="4">
-                            <controls:HandRadioButton GroupName="SegmentedThree" Content="Overview"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage190" GroupName="SegmentedThree" Content="Overview"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Three-segment overview"
                                          IsChecked="True"
                                          Checked="InteractiveSegment_Checked"/>
-                            <controls:HandRadioButton GroupName="SegmentedThree" Content="Details"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage191" GroupName="SegmentedThree" Content="Details"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Three-segment details"
                                          Checked="InteractiveSegment_Checked"/>
-                            <controls:HandRadioButton GroupName="SegmentedThree" Content="History"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage192" GroupName="SegmentedThree" Content="History"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Three-segment history"
                                          Checked="InteractiveSegment_Checked"/>
@@ -56,26 +57,26 @@
                     </controls:EtherSegmentedControl>
                 </StackPanel>
                 <StackPanel Spacing="6">
-                    <TextBlock Text="4 SEGMENTS"
+<TextBlock x:Uid="GalleryViewsControlsSegmentedControlPage193" Text="4 SEGMENTS"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}"
                                                     AutomationProperties.Name="Four-segment control">
                         <StackPanel Orientation="Horizontal" Spacing="4">
-                            <controls:HandRadioButton GroupName="SegmentedFour" Content="Day"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage194" GroupName="SegmentedFour" Content="Day"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment day"
                                          IsChecked="True"
                                          Checked="InteractiveSegment_Checked"/>
-                            <controls:HandRadioButton GroupName="SegmentedFour" Content="Week"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage195" GroupName="SegmentedFour" Content="Week"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment week"
                                          Checked="InteractiveSegment_Checked"/>
-                            <controls:HandRadioButton GroupName="SegmentedFour" Content="Month"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage196" GroupName="SegmentedFour" Content="Month"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment month"
                                          Checked="InteractiveSegment_Checked"/>
-                            <controls:HandRadioButton GroupName="SegmentedFour" Content="Year"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage197" GroupName="SegmentedFour" Content="Year"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment year"
                                          Checked="InteractiveSegment_Checked"/>
@@ -89,43 +90,43 @@
         <views:ComponentPage.StatesContent>
             <StackPanel Orientation="Horizontal" Spacing="16">
                 <StackPanel Width="130" Spacing="8">
-                    <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsSegmentedControlPage198" Text="Default"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:HandRadioButton Content="Default"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage199" Content="Default"
                                  Style="{StaticResource EtherSegment}"
                                  AutomationProperties.Name="Default segment"
                                  IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
                 <StackPanel Width="130" Spacing="8">
-                    <TextBlock Text="Selected"
+<TextBlock x:Uid="GalleryViewsControlsSegmentedControlPage200" Text="Selected"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:HandRadioButton Content="Selected"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage201" Content="Selected"
                                  Style="{StaticResource EtherSegment}"
                                  IsChecked="True"
                                  AutomationProperties.Name="Selected segment"
                                  IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
                 <StackPanel Width="130" Spacing="8">
-                    <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsSegmentedControlPage202" Text="Hover"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:HandRadioButton Content="Hover"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage203" Content="Hover"
                                  Style="{StaticResource EtherSegment}"
                                  PreviewState="Hover"
                                  AutomationProperties.Name="Hover segment"
                                  IsHitTestVisible="False" IsTabStop="False"/>
                 </StackPanel>
                 <StackPanel Width="130" Spacing="8">
-                    <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsSegmentedControlPage204" Text="Pressed"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:HandRadioButton Content="Pressed"
+<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage205" Content="Pressed"
                                  Style="{StaticResource EtherSegment}"
                                  PreviewState="Pressed"
                                  AutomationProperties.Name="Pressed segment"

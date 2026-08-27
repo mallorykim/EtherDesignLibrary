@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.ApplicationModel.Resources;
 
 namespace EtherSandbox.Views;
 
@@ -93,7 +92,7 @@ public sealed partial class ControlExample : UserControl
         package.SetText(SourceXaml.Trim());
         Clipboard.SetContent(package);
 
-        CopyButton.Content = GetChromeString("ControlExampleCopied.Content", "Copied");
+        CopyButton.Content = GalleryStrings.Get("ControlExampleCopied.Content", "Copied");
         _copiedTimer?.Stop();
         _copiedTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1500) };
         _copiedTimer.Tick += OnCopiedTimerTick;
@@ -104,20 +103,7 @@ public sealed partial class ControlExample : UserControl
     {
         _copiedTimer?.Stop();
         if (CopyButton is not null)
-            CopyButton.Content = GetChromeString("ControlExampleCopy.Content", "Copy");
-    }
-
-    private static string GetChromeString(string name, string fallback)
-    {
-        try
-        {
-            var value = ResourceLoader.GetForViewIndependentUse().GetString(name);
-            return string.IsNullOrWhiteSpace(value) ? fallback : value;
-        }
-        catch (Exception)
-        {
-            return fallback;
-        }
+            CopyButton.Content = GalleryStrings.Get("ControlExampleCopy.Content", "Copy");
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)

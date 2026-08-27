@@ -31,13 +31,14 @@
         </Style>
     </Page.Resources>
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsDropdownPage103"
         Title="Dropdown"
         HasDisabledToggle="True"
         Description="Updated compact dropdown with content-hugging width, a theme-aware disclosure icon, and a gradient active stroke. Menu items are 26 px tall with a 4 px gap and 4 px container padding; past 6 items the menu scrolls.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsDropdownPageOutput"
                                   OutputText="Selected: 10 Minutes"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
                 <controls:EtherDropdown
@@ -46,15 +47,15 @@
                           HorizontalAlignment="Left"
                           AutomationProperties.Name="Interactive dropdown"
                           SelectionChanged="InteractiveDropdown_SelectionChanged">
-                    <ComboBoxItem Content="10 Minutes"/>
-                    <ComboBoxItem Content="30 Minutes"/>
-                    <ComboBoxItem Content="1 Hour"/>
-                    <ComboBoxItem Content="2 Hours"/>
-                    <ComboBoxItem Content="4 Hours"/>
-                    <ComboBoxItem Content="8 Hours"/>
-                    <ComboBoxItem Content="12 Hours"/>
-                    <ComboBoxItem Content="1 Day"/>
-                    <ComboBoxItem Content="Never"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage104" Content="10 Minutes"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage105" Content="30 Minutes"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage106" Content="1 Hour"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage107" Content="2 Hours"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage108" Content="4 Hours"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage109" Content="8 Hours"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage110" Content="12 Hours"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage111" Content="1 Day"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage112" Content="Never"/>
                 </controls:EtherDropdown>
             </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
@@ -62,7 +63,7 @@
         <views:ComponentPage.StatesContent>
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage113" Text="Default"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
@@ -70,11 +71,11 @@
                               SelectedIndex="0"
                               AutomationProperties.Name="Default dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
-                        <ComboBoxItem Content="10 Minutes"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage114" Content="10 Minutes"/>
                     </controls:EtherDropdown>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage115" Text="Hover"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
@@ -82,11 +83,11 @@
                               SelectedIndex="0"
                               AutomationProperties.Name="Hover dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
-                        <ComboBoxItem Content="10 Minutes"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage116" Content="10 Minutes"/>
                     </controls:EtherDropdown>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage117" Text="Pressed"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
@@ -94,11 +95,11 @@
                               SelectedIndex="0"
                               AutomationProperties.Name="Pressed dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
-                        <ComboBoxItem Content="10 Minutes"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage118" Content="10 Minutes"/>
                     </controls:EtherDropdown>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Open (active)"
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage119" Text="Open (active)"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
@@ -109,11 +110,11 @@
                               SelectedIndex="0"
                               AutomationProperties.Name="Open dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
-                        <ComboBoxItem Content="10 Minutes"/>
+<ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage120" Content="10 Minutes"/>
                     </controls:EtherDropdown>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Open / item hover"
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage121" Text="Open / item hover"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
@@ -121,16 +122,16 @@
                         <StackPanel Spacing="4">
                             <Border Style="{StaticResource DropdownMenuPreviewItem}"
                                     Background="{ThemeResource BackgroundDropdownItemSelectedHover}">
-                                <TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/>
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage122" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/>
                             </Border>
-                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
-                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
-                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage123" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage124" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage125" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
                         </StackPanel>
                     </Border>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Open / item pressed"
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage126" Text="Open / item pressed"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
@@ -138,16 +139,16 @@
                         <StackPanel Spacing="4">
                             <Border Style="{StaticResource DropdownMenuPreviewItem}"
                                     Background="{ThemeResource BackgroundDropdownItemSelectedPressed}">
-                                <TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/>
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage123" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/>
                             </Border>
-                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
-                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
-                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage128" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage129" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                            <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage130" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
                         </StackPanel>
                     </Border>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Open / scrollbar"
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage131" Text="Open / scrollbar"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
@@ -156,12 +157,12 @@
                     <Border Style="{StaticResource DropdownMenuPreviewContainer}">
                         <Grid>
                             <StackPanel Spacing="4">
-                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
-                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
-                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
-                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
-                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
-                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage132" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage133" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage134" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage135" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage136" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
+                                <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage137" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
                             </StackPanel>
                             <Border Width="4" Height="60"
                                     HorizontalAlignment="Right"
@@ -172,7 +173,7 @@
                     </Border>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsDropdownPage138" Text="Disabled"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
@@ -181,7 +182,7 @@
                               IsEnabled="False"
                               AutomationProperties.Name="Disabled dropdown"
                               IsHitTestVisible="False" IsTabStop="False">
-                        <ComboBoxItem Content="10 Minutes"/>
+                        <ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage139" Content="10 Minutes"/>
                     </controls:EtherDropdown>
                 </StackPanel>
             </StackPanel>

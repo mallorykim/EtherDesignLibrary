@@ -50,7 +50,9 @@ public sealed partial class SteeringBarPage : Page
             stops.Add(_stopCount == 1 ? 0d : 100d * i / (_stopCount - 1));
 
         StopsDemo.Stops = stops;
-        StopCountText.Text = _stopCount == 1 ? "1 stop" : $"{_stopCount} stops";
+        StopCountText.Text = _stopCount == 1
+            ? GalleryStrings.Get("GalleryOutput.StopSingular", "1 stop")
+            : GalleryStrings.Format("GalleryOutput.StopPlural", "{0} stops", _stopCount);
 
         if (DecreaseStopsButton is not null)
             DecreaseStopsButton.IsEnabled = _stopCount > MinStopCount;
@@ -61,7 +63,7 @@ public sealed partial class SteeringBarPage : Page
     private void InteractiveSteeringBar_ValueChanged(object sender, SteeringBarValueChangedEventArgs e)
     {
         if (LiveExample is not null)
-            LiveExample.OutputText = $"Value: {(int)System.Math.Round(e.NewValue)}";
+            LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Value", "Value: {0}", (int)System.Math.Round(e.NewValue));
     }
 
 }

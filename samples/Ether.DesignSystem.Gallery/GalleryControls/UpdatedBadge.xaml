@@ -13,7 +13,7 @@
             CornerRadius="4"
             Padding="6,1,6,2"
             VerticalAlignment="Center">
-        <TextBlock Text="UPDATED"
+<TextBlock x:Uid="GalleryGalleryControlsUpdatedBadge006" Text="UPDATED"
                    FontFamily="{StaticResource InterFont}"
                    FontSize="9"
                    FontWeight="SemiBold"

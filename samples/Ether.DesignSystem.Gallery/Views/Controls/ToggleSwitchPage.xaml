@@ -4,16 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:views="using:EtherSandbox.Views">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsToggleSwitchPage222"
         Title="Toggle Switch"
         HasDisabledToggle="True"
         Description="Updated toggle switch with refined ON and OFF styling across Light and Dark themes. Both values show default, hover, pressed, and disabled treatments.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsToggleSwitchPageOutput"
                                   OutputText="State: Off"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
-                <ToggleSwitch x:Name="InteractiveSwitch"
+<ToggleSwitch x:Uid="GalleryViewsControlsToggleSwitchPage223" x:Name="InteractiveSwitch"
                               Style="{StaticResource EtherSwitch}"
                               OffContent="Off"
                               OnContent="On"
@@ -27,16 +28,16 @@
 
                 <!-- OFF states -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="OFF"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage224" Text="OFF"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage225" Text="Default"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <ToggleSwitch Style="{StaticResource EtherSwitch}"
+<ToggleSwitch x:Uid="GalleryViewsControlsToggleSwitchPage226" Style="{StaticResource EtherSwitch}"
                                           IsOn="False"
                                           OffContent="Off"
                                           OnContent="On"
@@ -45,11 +46,11 @@
                                           AutomationProperties.Name="Toggle switch off"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage227" Text="Hover"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <ToggleSwitch x:Name="OffHoverState"
+<ToggleSwitch x:Uid="GalleryViewsControlsToggleSwitchPage228" x:Name="OffHoverState"
                                           Style="{StaticResource EtherSwitch}"
                                           IsOn="False"
                                           OffContent="Off"
@@ -58,11 +59,11 @@
                                           IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage229" Text="Pressed"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <ToggleSwitch x:Name="OffPressedState"
+<ToggleSwitch x:Uid="GalleryViewsControlsToggleSwitchPage230" x:Name="OffPressedState"
                                           Style="{StaticResource EtherSwitch}"
                                           IsOn="False"
                                           OffContent="Off"
@@ -71,11 +72,11 @@
                                           IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage231" Text="Disabled"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <ToggleSwitch Style="{StaticResource EtherSwitch}"
+<ToggleSwitch x:Uid="GalleryViewsControlsToggleSwitchPage232" Style="{StaticResource EtherSwitch}"
                                           IsOn="False"
                                           OffContent="Off"
                                           OnContent="On"
@@ -88,16 +89,16 @@
 
                 <!-- ON states -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="ON"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage233" Text="ON"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage234" Text="Default"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <ToggleSwitch Style="{StaticResource EtherSwitch}"
+<ToggleSwitch x:Uid="GalleryViewsControlsToggleSwitchPage235" Style="{StaticResource EtherSwitch}"
                                           IsOn="True"
                                           OffContent="Off"
                                           OnContent="On"
@@ -106,11 +107,11 @@
                                           AutomationProperties.Name="Toggle switch on"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage236" Text="Hover"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <ToggleSwitch x:Name="OnHoverState"
+<ToggleSwitch x:Uid="GalleryViewsControlsToggleSwitchPage237" x:Name="OnHoverState"
                                           Style="{StaticResource EtherSwitch}"
                                           IsOn="True"
                                           OffContent="Off"
@@ -119,11 +120,11 @@
                                           IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage238" Text="Pressed"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <ToggleSwitch x:Name="OnPressedState"
+<ToggleSwitch x:Uid="GalleryViewsControlsToggleSwitchPage239" x:Name="OnPressedState"
                                           Style="{StaticResource EtherSwitch}"
                                           IsOn="True"
                                           OffContent="Off"
@@ -132,11 +133,11 @@
                                           IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsToggleSwitchPage240" Text="Disabled"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <ToggleSwitch Style="{StaticResource EtherSwitch}"
+<ToggleSwitch x:Uid="GalleryViewsControlsToggleSwitchPage241" Style="{StaticResource EtherSwitch}"
                                           IsOn="True"
                                           OffContent="Off"
                                           OnContent="On"

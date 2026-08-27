@@ -29,6 +29,6 @@ public sealed partial class SegmentedControlPage : Page
     private void InteractiveSegment_Checked(object sender, RoutedEventArgs e)
     {
         if (LiveExample is not null && sender is HandRadioButton segment)
-            LiveExample.OutputText = $"Selected: {segment.Content}";
+            LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Selected", "Selected: {0}", segment.Content);
     }
 }

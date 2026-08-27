@@ -5,7 +5,7 @@
     xmlns:views="using:EtherSandbox.Views"
     xmlns:controls="using:EtherSandbox.Controls">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsDataDisplayProgressBarPage242"
         Title="Progress Bar"
         Description="Updated progress bar with a rounded track, gradient fill, and independently toggled title and value labels. The four content combinations below show the supported variants."
         StatesTitle="TYPES">
@@ -16,16 +16,17 @@
              counts up with it. See ProgressBarPage.xaml.cs. -->
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsDataDisplayProgressBarPageOutput"
                                   OutputText="Value: 0%"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
                 <StackPanel Spacing="16" Width="480">
-                    <controls:EtherProgressBar x:Name="SimBar"
+<controls:EtherProgressBar x:Uid="GalleryViewsDataDisplayProgressBarPage243" x:Name="SimBar"
                                                Title="Downloading"
                                                ValueContent="0%"
                                                Maximum="100"
                                                Value="0"
                                                AutomationProperties.Name="Downloading progress" />
-                    <Button x:Name="ReplayButton"
+<Button x:Uid="GalleryViewsDataDisplayProgressBarPage244" x:Name="ReplayButton"
                             Click="Replay_Click"
                             Content="▶ Replay"
                             HorizontalAlignment="Left"
@@ -39,44 +40,44 @@
             <StackPanel Spacing="24" Width="480">
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="TITLE + VALUE"
+<TextBlock x:Uid="GalleryViewsDataDisplayProgressBarPage245" Text="TITLE + VALUE"
                                FontFamily="{StaticResource InterFont}"
                                FontSize="11" FontWeight="SemiBold"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherProgressBar Title="Storage" ValueContent="65%"
+<controls:EtherProgressBar x:Uid="GalleryViewsDataDisplayProgressBarPage246" Title="Storage" ValueContent="65%"
                                                Value="65"
                                                ShowTitle="True" ShowValue="True"
                                                AutomationProperties.Name="Storage progress, title and value" />
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="TITLE ONLY"
+<TextBlock x:Uid="GalleryViewsDataDisplayProgressBarPage247" Text="TITLE ONLY"
                                FontFamily="{StaticResource InterFont}"
                                FontSize="11" FontWeight="SemiBold"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherProgressBar Title="Storage" ValueContent="65%"
+<controls:EtherProgressBar x:Uid="GalleryViewsDataDisplayProgressBarPage248" Title="Storage" ValueContent="65%"
                                                Value="65"
                                                ShowTitle="True" ShowValue="False"
                                                AutomationProperties.Name="Storage progress, title only" />
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="VALUE ONLY"
+<TextBlock x:Uid="GalleryViewsDataDisplayProgressBarPage249" Text="VALUE ONLY"
                                FontFamily="{StaticResource InterFont}"
                                FontSize="11" FontWeight="SemiBold"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherProgressBar Title="Storage" ValueContent="65%"
+<controls:EtherProgressBar x:Uid="GalleryViewsDataDisplayProgressBarPage250" Title="Storage" ValueContent="65%"
                                                Value="65"
                                                ShowTitle="False" ShowValue="True"
                                                AutomationProperties.Name="Storage progress, value only" />
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="BAR ONLY"
+<TextBlock x:Uid="GalleryViewsDataDisplayProgressBarPage251" Text="BAR ONLY"
                                FontFamily="{StaticResource InterFont}"
                                FontSize="11" FontWeight="SemiBold"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherProgressBar Title="Storage" ValueContent="65%"
+<controls:EtherProgressBar x:Uid="GalleryViewsDataDisplayProgressBarPage252" Title="Storage" ValueContent="65%"
                                                Value="65"
                                                ShowTitle="False" ShowValue="False"
                                                AutomationProperties.Name="Storage progress, labels hidden" />

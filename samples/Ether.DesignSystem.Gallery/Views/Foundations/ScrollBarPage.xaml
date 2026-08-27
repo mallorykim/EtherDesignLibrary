@@ -11,7 +11,7 @@
         sheet's Default/Hover previews with static swatches drawn in the same two fills
         the live bar uses (so they cannot drift from the real thumb colours).
     -->
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsFoundationsScrollBarPage260"
         Title="Scroll Bar"
         Description="Updated 6 px scrollbar with a minimal thumb, no visible track, and no stepper arrows. The styling applies implicitly to every ScrollViewer in the sandbox.">
 
@@ -19,7 +19,7 @@
             <views:ControlExample SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Spacing="20">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Vertical (drag or hover the thumb)"
+<TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage261" Text="Vertical (drag or hover the thumb)"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <Border Width="320" Height="240"
@@ -30,24 +30,24 @@
                                       HorizontalScrollBarVisibility="Disabled"
                                       AutomationProperties.Name="Vertical scroll viewer">
                             <StackPanel Padding="12" Spacing="12">
-                                <TextBlock Text="Battery" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="Display" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="Storage" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="Network" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="Devices" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="Updates" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="Security" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="Performance" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="Accessibility" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="Support" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock Text="About" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage262" Text="Battery" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage263" Text="Display" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage264" Text="Storage" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage265" Text="Network" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage266" Text="Devices" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage267" Text="Updates" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage268" Text="Security" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage269" Text="Performance" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage270" Text="Accessibility" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage271" Text="Support" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage272" Text="About" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
                 </StackPanel>
 
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Horizontal (drag or hover the thumb)"
+<TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage273" Text="Horizontal (drag or hover the thumb)"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <Border Width="420" Height="80"
@@ -77,7 +77,7 @@
                  in the live bar's own two fills. -->
             <StackPanel Orientation="Horizontal" Spacing="80">
                 <StackPanel Spacing="8" HorizontalAlignment="Center">
-                    <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage274" Text="Default"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
@@ -86,7 +86,7 @@
                             Background="{ThemeResource EtherScrollBarThumbBrush}"/>
                 </StackPanel>
                 <StackPanel Spacing="8" HorizontalAlignment="Center">
-                    <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage275" Text="Hover"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>

@@ -57,7 +57,7 @@ public sealed partial class ButtonPage : Page
     private void InteractiveButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is EtherButton button && LiveExample is not null)
-            LiveExample.OutputText = $"Clicked: {button.Content}";
+            LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Clicked", "Clicked: {0}", button.Content);
     }
 
     /// <summary>Adds a trailing chevron to every interactive specimen when

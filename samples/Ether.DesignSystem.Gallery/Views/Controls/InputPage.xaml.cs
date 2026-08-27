@@ -32,6 +32,8 @@ public sealed partial class InputPage : Page
     private void InteractiveInput_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (LiveExample is not null && sender is TextBox input)
-            LiveExample.OutputText = string.IsNullOrEmpty(input.Text) ? "Text: —" : $"Text: {input.Text}";
+            LiveExample.OutputText = string.IsNullOrEmpty(input.Text)
+                ? GalleryStrings.Get("GalleryOutput.TextEmpty", "Text: —")
+                : GalleryStrings.Format("GalleryOutput.Text", "Text: {0}", input.Text);
     }
 }

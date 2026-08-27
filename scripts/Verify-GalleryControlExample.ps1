@@ -148,6 +148,7 @@ Assert-Contains $doc 'CardPage' 'L4 architecture note lists CardPage'
 
 $ci = Get-Content -LiteralPath $ciPath -Raw
 Assert-Contains $ci 'Verify-GalleryControlExample.ps1' 'CI wires Verify-GalleryControlExample.ps1'
+Assert-Contains $ci 'Verify-GalleryLocalization\.ps1' 'CI wires Verify-GalleryLocalization.ps1'
 Assert-Contains $ci 'SkipRuntimeSmoke' 'Hosted CI skips consumer GUI runtime smoke'
 Assert-NotContains $ci 'Verify-GallerySmoke' 'Hosted CI does not launch Gallery GUI smoke'
 Assert-Contains $doc 'Verify-RuntimeGates' 'L4 architecture note names the local runtime-gate owner'

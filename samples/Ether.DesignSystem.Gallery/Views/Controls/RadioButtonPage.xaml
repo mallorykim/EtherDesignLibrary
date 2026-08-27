@@ -5,7 +5,7 @@
     xmlns:views="using:EtherSandbox.Views"
     xmlns:controls="using:EtherSandbox.Controls">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsRadioButtonPage165"
         Title="Radio Button"
         HasDisabledToggle="True"
         Description="Updated radio button styling for the single-select pattern, with theme-aware checked and unchecked treatments. The page shows default, hover, pressed, and disabled states where applicable.">
@@ -13,16 +13,17 @@
         <views:ComponentPage.InteractiveContent>
             <!-- One live group: pick exactly one. Shared GroupName makes them mutually exclusive. -->
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsRadioButtonPageOutput"
                                   OutputText="Selected: Option A"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
                 <StackPanel Spacing="12">
-                    <controls:EtherRadioButton GroupName="Interactive" Content="Option A" IsChecked="True"
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage166" GroupName="Interactive" Content="Option A" IsChecked="True"
                                                AutomationProperties.Name="Interactive radio option A"
                                                Checked="InteractiveRadio_Checked"/>
-                    <controls:EtherRadioButton GroupName="Interactive" Content="Option B"
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage167" GroupName="Interactive" Content="Option B"
                                                AutomationProperties.Name="Interactive radio option B"
                                                Checked="InteractiveRadio_Checked"/>
-                    <controls:EtherRadioButton GroupName="Interactive" Content="Option C"
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage168" GroupName="Interactive" Content="Option C"
                                                AutomationProperties.Name="Interactive radio option C"
                                                Checked="InteractiveRadio_Checked"/>
                 </StackPanel>
@@ -35,16 +36,16 @@
                 <!-- UNCHECKED states. Each specimen is display-only (IsHitTestVisible=False) and
                      carries a unique GroupName so mutual exclusion never touches it. -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="UNCHECKED"
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPage169" Text="UNCHECKED"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPage170" Text="Default"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherRadioButton
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage171"
                                                       GroupName="u-default"
                                                       Content="Option"
                                                       IsChecked="False"
@@ -52,33 +53,33 @@
                                                       IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPage172" Text="Hover"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherRadioButton x:Name="UncheckedHover"
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage173" x:Name="UncheckedHover"
                                                       GroupName="u-hover"
                                                       Content="Option"
                                                       IsChecked="False"
                                                       IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPage174" Text="Pressed"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherRadioButton x:Name="UncheckedPressed"
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage175" x:Name="UncheckedPressed"
                                                       GroupName="u-pressed"
                                                       Content="Option"
                                                       IsChecked="False"
                                                       IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPage176" Text="Disabled"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherRadioButton
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage177"
                                                       GroupName="u-disabled"
                                                       Content="Option"
                                                       IsChecked="False"
@@ -90,16 +91,16 @@
 
                 <!-- CHECKED states -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="CHECKED"
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPage178" Text="CHECKED"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPage179" Text="Default"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherRadioButton
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage180"
                                                       GroupName="c-default"
                                                       Content="Option"
                                                       IsChecked="True"
@@ -107,22 +108,22 @@
                                                       IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPage181" Text="Hover"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherRadioButton x:Name="CheckedHover"
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage182" x:Name="CheckedHover"
                                                       GroupName="c-hover"
                                                       Content="Option"
                                                       IsChecked="True"
                                                       IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPage183" Text="Disabled"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-                            <controls:EtherRadioButton
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage184"
                                                       GroupName="c-disabled"
                                                       Content="Option"
                                                       IsChecked="True"

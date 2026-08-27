@@ -103,7 +103,7 @@ public sealed partial class MainWindow : Window
     {
         var homeItem = new NavigationViewItem
         {
-            Content = ComponentCatalog.Home.Name,
+            Content = ComponentCatalog.Home.DisplayName,
             Tag = ComponentCatalog.Home.PageType,
             Icon = new SymbolIcon(Symbol.Home),
         };
@@ -123,7 +123,7 @@ public sealed partial class MainWindow : Window
                         // CharacterSpacing are set on the instance; the default template's
                         // ContentPresenter template-binds them. Foreground uses TextBrand (not
                         // left to the template) so headers read as brand blue in both themes.
-                        Content = category.Header.ToUpperInvariant(),
+                        Content = category.DisplayHeader.ToUpperInvariant(),
                         FontSize = 11,
                         CharacterSpacing = 80,
                         Margin = new Thickness(0, 12, 0, 0),
@@ -136,7 +136,7 @@ public sealed partial class MainWindow : Window
                             Content = BuildNavContent(entry),
                             Tag = entry.PageType,
                         };
-                        AutomationProperties.SetName(item, entry.Name);
+                        AutomationProperties.SetName(item, entry.DisplayName);
                         NavView.MenuItems.Add(item);
                     }
                     break;
@@ -148,7 +148,7 @@ public sealed partial class MainWindow : Window
                             Content = BuildNavContent(leaf.Entry),
                             Tag = leaf.Entry.PageType,
                         };
-                        AutomationProperties.SetName(item, leaf.Entry.Name);
+                        AutomationProperties.SetName(item, leaf.Entry.DisplayName);
                         NavView.MenuItems.Add(item);
                     }
                     break;
@@ -167,7 +167,7 @@ public sealed partial class MainWindow : Window
     /// </summary>
     private static object BuildNavContent(ComponentEntry entry)
     {
-        if (!entry.IsUpdated && !entry.IsPrimitive) return entry.Name;
+        if (!entry.IsUpdated && !entry.IsPrimitive) return entry.DisplayName;
 
         var panel = new StackPanel
         {
@@ -175,7 +175,7 @@ public sealed partial class MainWindow : Window
             Spacing = 8,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        panel.Children.Add(new TextBlock { Text = entry.Name, VerticalAlignment = VerticalAlignment.Center });
+        panel.Children.Add(new TextBlock { Text = entry.DisplayName, VerticalAlignment = VerticalAlignment.Center });
         if (entry.IsUpdated) panel.Children.Add(new EtherSandbox.Controls.UpdatedBadge());
         if (entry.IsPrimitive) panel.Children.Add(new EtherSandbox.Controls.PrimitiveBadge());
         return panel;
@@ -222,7 +222,9 @@ public sealed partial class MainWindow : Window
     {
         _isDark = !_isDark;
         RootGrid.RequestedTheme = _isDark ? ElementTheme.Dark : ElementTheme.Light;
-        ThemeToggle.Content = _isDark ? "🌙 Dark" : "☀ Light";
+        ThemeToggle.Content = _isDark
+            ? GalleryStrings.Get("GalleryMainWindow.ThemeDark.Content", "🌙 Dark")
+            : GalleryStrings.Get("GalleryMainWindow002.Content", "☀ Light");
     }
 
     private void ContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)

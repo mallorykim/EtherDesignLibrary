@@ -29,10 +29,10 @@ public sealed partial class HomePage : Page
             switch (node)
             {
                 case CatalogCategory category:
-                    sections.Add(new HomeSection(category.Header, category.Items));
+                    sections.Add(new HomeSection(category.DisplayHeader, category.Items));
                     break;
                 case CatalogLeaf leaf:
-                    sections.Add(new HomeSection(leaf.Entry.Name, new[] { leaf.Entry }));
+                    sections.Add(new HomeSection(leaf.Entry.DisplayName, new[] { leaf.Entry }));
                     break;
                 default:
                     throw new InvalidOperationException($"Unhandled catalog node '{node.GetType().FullName}'.");

@@ -89,6 +89,9 @@ jobs:
       - name: Verify Gallery ControlExample contract
         shell: pwsh
         run: ./scripts/Verify-GalleryControlExample.ps1
+      - name: Verify Gallery localization contract
+        shell: pwsh
+        run: ./scripts/Verify-GalleryLocalization.ps1
       - name: Verify package consumers
         shell: pwsh
         # Hosted runners pack/restore fixtures only. GUI runtime markers stay on

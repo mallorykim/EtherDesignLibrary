@@ -25,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\RuntimeVerification.cs" Link="RuntimeVerification.cs" />
+    <Compile Include="..\RuntimeVerification*.cs">
+      <Link>%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
 </Project>

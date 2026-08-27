@@ -5,32 +5,33 @@
     xmlns:controls="using:EtherSandbox.Controls"
     xmlns:views="using:EtherSandbox.Views">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsIntelligenceButtonPage152"
         Title="Intelligence Button"
         HasDisabledToggle="True"
         Description="Updated intelligence button with a dual-gradient stroke, hover glow, and refined pressed and disabled treatments. The AI accent styling stays visible across both themes.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsIntelligenceButtonPageOutput"
                                   OutputText="Clicked: —"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Functional"
+<TextBlock x:Uid="GalleryViewsControlsIntelligenceButtonPage153" Text="Functional"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:EtherIntelligenceButton Content="What's this mean?"
+<controls:EtherIntelligenceButton x:Uid="GalleryViewsControlsIntelligenceButtonPage154" Content="What's this mean?"
                                                      AutomationProperties.Name="Interactive intelligence button"
                                                      HorizontalContentAlignment="Center"
                                                      Click="IntelligenceButton_Click"/>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="With longer label"
+<TextBlock x:Uid="GalleryViewsControlsIntelligenceButtonPage155" Text="With longer label"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:EtherIntelligenceButton Content="=  Optimise my battery"
+<controls:EtherIntelligenceButton x:Uid="GalleryViewsControlsIntelligenceButtonPage156" Content="=  Optimise my battery"
                                                      AutomationProperties.Name="Interactive intelligence button long label"
                                                      HorizontalContentAlignment="Center"
                                                      Click="IntelligenceButton_Click"/>
@@ -42,43 +43,43 @@
         <views:ComponentPage.StatesContent>
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsIntelligenceButtonPage157" Text="Default"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:EtherIntelligenceButton Content="What's this mean?"
+<controls:EtherIntelligenceButton x:Uid="GalleryViewsControlsIntelligenceButtonPage158" Content="What's this mean?"
                                                      AutomationProperties.Name="Default intelligence button"
                                                      IsHitTestVisible="False"
                                                      IsTabStop="False"/>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsIntelligenceButtonPage159" Text="Hover"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:EtherIntelligenceButton x:Name="IntelligenceHoverState"
+<controls:EtherIntelligenceButton x:Uid="GalleryViewsControlsIntelligenceButtonPage160" x:Name="IntelligenceHoverState"
                                                      Content="What's this mean?"
                                                      AutomationProperties.Name="Hover intelligence button"
                                                      IsHitTestVisible="False"
                                                      IsTabStop="False"/>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Pressed"
+<TextBlock x:Uid="GalleryViewsControlsIntelligenceButtonPage161" Text="Pressed"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:EtherIntelligenceButton x:Name="IntelligencePressedState"
+<controls:EtherIntelligenceButton x:Uid="GalleryViewsControlsIntelligenceButtonPage162" x:Name="IntelligencePressedState"
                                                      Content="What's this mean?"
                                                      AutomationProperties.Name="Pressed intelligence button"
                                                      IsHitTestVisible="False"
                                                      IsTabStop="False"/>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsIntelligenceButtonPage163" Text="Disabled"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"
                                HorizontalAlignment="Center"/>
-                    <controls:EtherIntelligenceButton x:Name="IntelligenceDisabledState"
+<controls:EtherIntelligenceButton x:Uid="GalleryViewsControlsIntelligenceButtonPage164" x:Name="IntelligenceDisabledState"
                                                      Content="What's this mean?"
                                                      AutomationProperties.Name="Disabled intelligence button"
                                                      IsEnabled="False"

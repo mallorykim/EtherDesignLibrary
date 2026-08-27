@@ -5,7 +5,7 @@
     xmlns:controls="using:EtherSandbox.Controls"
     xmlns:views="using:EtherSandbox.Views">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsNavigationMastheadPage282"
         Title="Masthead"
         Description="Right-aligned masthead caption controls with 44 px hit targets for minimize, maximize/restore, and close."
         StatesTitle="VISUAL STATES">
@@ -19,7 +19,7 @@
                         CornerRadius="{StaticResource radius/surface}"
                         Padding="16">
                     <StackPanel Spacing="10">
-                        <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsNavigationMastheadPage283" Text="Default"
                                    FontFamily="{StaticResource InstrumentSans}"
                                    FontSize="16"
                                    FontWeight="SemiBold"
@@ -39,7 +39,7 @@
                         CornerRadius="{StaticResource radius/surface}"
                         Padding="16">
                     <StackPanel Spacing="10">
-                        <TextBlock Text="Maximized"
+<TextBlock x:Uid="GalleryViewsNavigationMastheadPage284" Text="Maximized"
                                    FontFamily="{StaticResource InstrumentSans}"
                                    FontSize="16"
                                    FontWeight="SemiBold"

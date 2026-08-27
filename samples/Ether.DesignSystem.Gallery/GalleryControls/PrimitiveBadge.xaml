@@ -13,7 +13,7 @@
             CornerRadius="4"
             Padding="6,1,6,2"
             VerticalAlignment="Center">
-        <TextBlock Text="PRIMITIVE TOKEN"
+<TextBlock x:Uid="GalleryGalleryControlsPrimitiveBadge005" Text="PRIMITIVE TOKEN"
                    FontFamily="{StaticResource InterFont}"
                    FontSize="9"
                    FontWeight="SemiBold"

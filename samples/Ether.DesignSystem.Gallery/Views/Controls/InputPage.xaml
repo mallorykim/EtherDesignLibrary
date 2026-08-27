@@ -5,16 +5,17 @@
     xmlns:views="using:EtherSandbox.Views"
     xmlns:controls="using:EtherSandbox.Controls">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsInputPage140"
         Title="Input"
         HasDisabledToggle="True"
         Description="Updated single-line text field with theme-aware fill, brand-blue focus treatment, and disabled dimming. Default, hover, focused, and disabled states are all shown on the page.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsInputPageOutput"
                                   OutputText="Text: —"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
-                <controls:EtherInput x:Name="InteractiveInput"
+<controls:EtherInput x:Uid="GalleryViewsControlsInputPage141" x:Name="InteractiveInput"
                                      PlaceholderText="Enter text"
                                      Width="280"
                                      AutomationProperties.Name="Interactive input"
@@ -27,10 +28,10 @@
 
                 <!-- DEFAULT -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Default"
+<TextBlock x:Uid="GalleryViewsControlsInputPage142" Text="Default"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherInput PlaceholderText="Default"
+<controls:EtherInput x:Uid="GalleryViewsControlsInputPage143" PlaceholderText="Default"
                                          Width="195"
                                          AutomationProperties.Name="Default input"
                                          IsHitTestVisible="False" IsTabStop="False"/>
@@ -38,10 +39,10 @@
 
                 <!-- HOVER -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Hover"
+<TextBlock x:Uid="GalleryViewsControlsInputPage144" Text="Hover"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherInput x:Name="HoverInput"
+<controls:EtherInput x:Uid="GalleryViewsControlsInputPage145" x:Name="HoverInput"
                                          PlaceholderText="Default"
                                          Width="195"
                                          AutomationProperties.Name="Hover input"
@@ -50,10 +51,10 @@
 
                 <!-- ACTIVE (focus) -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Active"
+<TextBlock x:Uid="GalleryViewsControlsInputPage146" Text="Active"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherInput x:Name="ActiveInput"
+<controls:EtherInput x:Uid="GalleryViewsControlsInputPage147" x:Name="ActiveInput"
                                          PlaceholderText="Default"
                                          Width="195"
                                          AutomationProperties.Name="Active input"
@@ -62,10 +63,10 @@
 
                 <!-- FILLED -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Filled"
+<TextBlock x:Uid="GalleryViewsControlsInputPage148" Text="Filled"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherInput Text="Input text"
+<controls:EtherInput x:Uid="GalleryViewsControlsInputPage149" Text="Input text"
                                          Width="195"
                                          AutomationProperties.Name="Filled input"
                                          IsHitTestVisible="False" IsTabStop="False"/>
@@ -73,10 +74,10 @@
 
                 <!-- DISABLED -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Disabled"
+<TextBlock x:Uid="GalleryViewsControlsInputPage150" Text="Disabled"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherInput PlaceholderText="Default"
+<controls:EtherInput x:Uid="GalleryViewsControlsInputPage151" PlaceholderText="Default"
                                          Width="195"
                                          IsEnabled="False"
                                          AutomationProperties.Name="Disabled input"

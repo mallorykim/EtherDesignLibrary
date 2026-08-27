@@ -6,7 +6,7 @@
     xmlns:local="using:EtherSandbox.Views.Foundations"
     Loaded="OnLoaded">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsFoundationsSpacingPage276"
         Title="Spacing Tokens"
         Description="Semantic space tokens (aliased to the primitive scale) and the primitive spacing tokens they link to. Units are epx.">
 
@@ -15,7 +15,7 @@
 
                 <!-- ============ SEMANTIC SPACE ============ -->
                 <StackPanel Spacing="12">
-                    <TextBlock Text="Space (semantic)"
+<TextBlock x:Uid="GalleryViewsFoundationsSpacingPage277" Text="Space (semantic)"
                                Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource text/primary}"/>
                     <ItemsControl x:Name="SemanticGroups">
@@ -69,7 +69,7 @@
 
                 <!-- ============ PRIMITIVE SCALE ============ -->
                 <StackPanel Spacing="12">
-                    <TextBlock Text="Primitives"
+<TextBlock x:Uid="GalleryViewsFoundationsSpacingPage278" Text="Primitives"
                                Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource text/primary}"/>
                     <ItemsControl x:Name="PrimitiveGroups">

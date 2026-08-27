@@ -33,6 +33,6 @@ public sealed partial class RadioButtonPage : Page
     private void InteractiveRadio_Checked(object sender, RoutedEventArgs e)
     {
         if (LiveExample is not null && sender is EtherRadioButton radio)
-            LiveExample.OutputText = $"Selected: {radio.Content}";
+            LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Selected", "Selected: {0}", radio.Content);
     }
 }

@@ -18,6 +18,6 @@ public sealed partial class SliderPage : Page
     private void InteractiveSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
     {
         if (LiveExample is not null)
-            LiveExample.OutputText = $"Value: {(int)System.Math.Round(e.NewValue)}%";
+            LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.ValuePercent", "Value: {0}%", (int)System.Math.Round(e.NewValue));
     }
 }

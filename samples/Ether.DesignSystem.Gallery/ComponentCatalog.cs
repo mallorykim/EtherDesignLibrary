@@ -15,13 +15,21 @@ namespace EtherSandbox;
 /// whether it's a raw primitive-token page rather than a component (<see cref="IsPrimitive"/>,
 /// surfaced the same way as a "PRIMITIVE TOKEN" badge).
 /// </summary>
-public sealed record ComponentEntry(string Name, Type PageType, bool IsAiFamily = false, bool IsUpdated = false, bool IsPrimitive = false);
+public sealed record ComponentEntry(string Name, Type PageType, bool IsAiFamily = false, bool IsUpdated = false, bool IsPrimitive = false)
+{
+    /// <summary>Localized nav/home label. <see cref="Name"/> stays the English fallback key.</summary>
+    public string DisplayName => GalleryStrings.Get(GalleryStrings.CatalogKey(Name), Name);
+}
 
 /// <summary>Base type for a top-level slot in the navigation tree.</summary>
 public abstract record CatalogNode;
 
 /// <summary>A category header (e.g. "Controls") with its component pages underneath it.</summary>
-public sealed record CatalogCategory(string Header, IReadOnlyList<ComponentEntry> Items) : CatalogNode;
+public sealed record CatalogCategory(string Header, IReadOnlyList<ComponentEntry> Items) : CatalogNode
+{
+    /// <summary>Localized category header. <see cref="Header"/> stays the English fallback key.</summary>
+    public string DisplayHeader => GalleryStrings.Get(GalleryStrings.CatalogKey(Header), Header);
+}
 
 /// <summary>
 /// A single top-level entry with no header of its own, e.g. "AI Design Language" —

@@ -19,11 +19,11 @@
         <StackPanel Padding="24" Spacing="24">
 
             <StackPanel Spacing="4">
-                <TextBlock Text="Ether Component Sandbox"
+<TextBlock x:Uid="GalleryViewsHomePage007" Text="Ether Component Sandbox"
                            FontFamily="{StaticResource InstrumentSans}"
                            FontSize="32" FontWeight="SemiBold"
                            Foreground="{ThemeResource text/primary}"/>
-                <TextBlock Text="Every component, grouped by category. Click a card to open its page."
+<TextBlock x:Uid="GalleryViewsHomePage008" Text="Every component, grouped by category. Click a card to open its page."
                            FontFamily="{StaticResource InterFont}"
                            FontSize="14"
                            Foreground="{ThemeResource TextSecondary}"
@@ -64,7 +64,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Grid.Column="0"
-                                                           Text="{x:Bind Name}"
+                                                           Text="{x:Bind DisplayName}"
                                                            FontFamily="{StaticResource InstrumentSans}"
                                                            FontSize="14" FontWeight="SemiBold"
                                                            Foreground="{ThemeResource text/primary}"

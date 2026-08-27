@@ -6,13 +6,13 @@
     xmlns:local="using:EtherSandbox.Views.Foundations"
     Loaded="OnLoaded">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsFoundationsIconsPage254"
         Title="Icon Tokens"
         Description="DDS2 icon library — monoline SVGs from Assets/Icons/dds2, listed by name.">
 
         <views:ComponentPage.InteractiveContent>
             <StackPanel Spacing="12">
-                <TextBlock Text="Size" Style="{StaticResource headers/h4}" Foreground="{ThemeResource text/primary}"/>
+                <TextBlock x:Uid="GalleryViewsFoundationsIconsPage255" Text="Size" Style="{StaticResource headers/h4}" Foreground="{ThemeResource text/primary}"/>
                 <Border BorderBrush="{ThemeResource BorderSubtle}" BorderThickness="1"
                         CornerRadius="{StaticResource radius/control-sm}">
                     <ItemsControl x:Name="SizeItems">
@@ -40,7 +40,7 @@
                     </ItemsControl>
                 </Border>
 
-                <TextBlock Text="Icons" Style="{StaticResource headers/h4}" Foreground="{ThemeResource text/primary}"
+<TextBlock x:Uid="GalleryViewsFoundationsIconsPage256" Text="Icons" Style="{StaticResource headers/h4}" Foreground="{ThemeResource text/primary}"
                            Margin="0,8,0,0"/>
                 <TextBlock x:Name="CountText"
                            Style="{StaticResource micro/semibold}"

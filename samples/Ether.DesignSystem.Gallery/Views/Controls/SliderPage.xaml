@@ -5,16 +5,17 @@
     xmlns:controls="using:EtherSandbox.Controls"
     xmlns:views="using:EtherSandbox.Views">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsControlsSliderPage206"
         Title="Slider"
         Description="Bar-chart slider with interactive click-and-drag behavior and theme-aware selected bars. Sixty-three ticks fill with the component highlight brush up to the knob.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
+                                  x:Uid="GalleryViewsControlsSliderPageOutput"
                                   OutputText="Value: 50%"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
             <StackPanel Spacing="8">
-                <TextBlock Text="50% (interactive — drag me)"
+<TextBlock x:Uid="GalleryViewsControlsSliderPage207" Text="50% (interactive — drag me)"
                            Style="{StaticResource micro/regular}"
                            Foreground="{ThemeResource TextTertiary}"/>
                 <controls:EtherSlider x:Name="InteractiveSlider"

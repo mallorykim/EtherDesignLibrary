@@ -6,7 +6,7 @@
     xmlns:local="using:EtherSandbox.Views.Foundations"
     Loaded="OnLoaded">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsFoundationsRadiusPage257"
         Title="Radius Tokens"
         Description="Semantic radius tokens (aliased to the primitive scale) and the primitive radius tokens they link to. Units are epx.">
 
@@ -15,7 +15,7 @@
 
                 <!-- ============ SEMANTIC RADIUS ============ -->
                 <StackPanel Spacing="12">
-                    <TextBlock Text="Radius (semantic)"
+<TextBlock x:Uid="GalleryViewsFoundationsRadiusPage258" Text="Radius (semantic)"
                                Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource text/primary}"/>
                     <ItemsControl x:Name="SemanticGroups">
@@ -69,7 +69,7 @@
 
                 <!-- ============ PRIMITIVE SCALE ============ -->
                 <StackPanel Spacing="12">
-                    <TextBlock Text="Primitives"
+<TextBlock x:Uid="GalleryViewsFoundationsRadiusPage259" Text="Primitives"
                                Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource text/primary}"/>
                     <ItemsControl x:Name="PrimitiveGroups">

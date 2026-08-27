@@ -6,7 +6,7 @@
     xmlns:local="using:EtherSandbox.Views.Foundations"
     Loaded="OnLoaded">
 
-    <views:ComponentPage
+<views:ComponentPage x:Uid="GalleryViewsFoundationsTypographyPage279"
         Title="Typography Tokens"
         Description="Semantic text styles and the primitive type tokens they build on. Sizes are in epx (effective pixels); line height uses the platform default.">
 
@@ -15,7 +15,7 @@
 
                 <!-- ============ SEMANTIC TEXT STYLES ============ -->
                 <StackPanel Spacing="12">
-                    <TextBlock Text="Text styles"
+<TextBlock x:Uid="GalleryViewsFoundationsTypographyPage280" Text="Text styles"
                                Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource text/primary}"/>
                     <ItemsControl x:Name="SemanticGroups">
@@ -67,7 +67,7 @@
 
                 <!-- ============ PRIMITIVE TOKENS ============ -->
                 <StackPanel Spacing="12">
-                    <TextBlock Text="Primitives"
+<TextBlock x:Uid="GalleryViewsFoundationsTypographyPage281" Text="Primitives"
                                Style="{StaticResource headers/h3}"
                                Foreground="{ThemeResource text/primary}"/>
                     <ItemsControl x:Name="PrimitiveGroups">

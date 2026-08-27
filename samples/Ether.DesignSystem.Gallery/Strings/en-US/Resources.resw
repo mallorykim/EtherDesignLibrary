@@ -31,4 +31,1582 @@
   <data name="ComponentPageDisabled.Content" xml:space="preserve">
     <value>Disabled</value>
   </data>
+  <data name="GalleryMainWindow001.Title" xml:space="preserve">
+    <value>Ether Component Sandbox</value>
+  </data>
+  <data name="GalleryMainWindow002.Content" xml:space="preserve">
+    <value>☀ Light</value>
+  </data>
+  <data name="GalleryMainWindow003.Text" xml:space="preserve">
+    <value>Ether Component Sandbox</value>
+  </data>
+  <data name="GalleryMainWindow004.Text" xml:space="preserve">
+    <value>v1.0 = Ether Design System</value>
+  </data>
+  <data name="GalleryGalleryControlsPrimitiveBadge005.Text" xml:space="preserve">
+    <value>PRIMITIVE TOKEN</value>
+  </data>
+  <data name="GalleryGalleryControlsUpdatedBadge006.Text" xml:space="preserve">
+    <value>UPDATED</value>
+  </data>
+  <data name="GalleryViewsHomePage007.Text" xml:space="preserve">
+    <value>Ether Component Sandbox</value>
+  </data>
+  <data name="GalleryViewsHomePage008.Text" xml:space="preserve">
+    <value>Every component, grouped by category. Click a card to open its page.</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage009.Title" xml:space="preserve">
+    <value>Button</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage009.Description" xml:space="preserve">
+    <value>Updated primary, secondary, and tertiary buttons in large and small sizes. Hover, pressed, and disabled treatments are shown side by side for quick comparison.</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage010.Content" xml:space="preserve">
+    <value>Trailing icon</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage011.Text" xml:space="preserve">
+    <value>PRIMARY</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage012.Text" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage013.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage014.Text" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage015.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage016.Text" xml:space="preserve">
+    <value>SECONDARY</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage017.Text" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage018.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage019.Text" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage020.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage021.Text" xml:space="preserve">
+    <value>TERTIARY</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage022.Text" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage023.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage024.Text" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage025.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage026.Text" xml:space="preserve">
+    <value>DEFAULT STYLE</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage027.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage028.Text" xml:space="preserve">
+    <value>PRIMARY</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage029.Text" xml:space="preserve">
+    <value>LARGE</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage030.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage031.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage032.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage033.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage034.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage035.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage036.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage037.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage038.Text" xml:space="preserve">
+    <value>SMALL</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage039.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage040.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage041.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage042.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage043.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage044.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage045.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage046.Content" xml:space="preserve">
+    <value>Primary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage047.Text" xml:space="preserve">
+    <value>SECONDARY</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage048.Text" xml:space="preserve">
+    <value>LARGE</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage049.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage050.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage051.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage052.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage053.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage054.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage055.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage056.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage057.Text" xml:space="preserve">
+    <value>SMALL</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage058.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage059.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage060.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage061.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage062.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage063.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage064.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage065.Content" xml:space="preserve">
+    <value>Secondary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage066.Text" xml:space="preserve">
+    <value>TERTIARY</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage067.Text" xml:space="preserve">
+    <value>LARGE</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage068.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage069.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage070.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage071.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage072.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage073.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage074.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage075.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage076.Text" xml:space="preserve">
+    <value>SMALL</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage077.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage078.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage079.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage080.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage081.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage082.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage083.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage084.Content" xml:space="preserve">
+    <value>Tertiary Action</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage085.Title" xml:space="preserve">
+    <value>Checkbox</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage085.Description" xml:space="preserve">
+    <value>Updated checkbox styling for Light and Dark themes, shown across unchecked and checked states with default, hover, pressed, and disabled treatments.</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage086.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage087.Text" xml:space="preserve">
+    <value>UNCHECKED</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage088.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage089.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage090.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage091.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage092.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage093.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage094.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage095.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage096.Text" xml:space="preserve">
+    <value>CHECKED</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage097.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage098.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage099.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage100.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage101.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPage102.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage103.Title" xml:space="preserve">
+    <value>Dropdown</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage103.Description" xml:space="preserve">
+    <value>Updated compact dropdown with content-hugging width, a theme-aware disclosure icon, and a gradient active stroke. Menu items are 26 px tall with a 4 px gap and 4 px container padding; past 6 items the menu scrolls.</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage104.Content" xml:space="preserve">
+    <value>10 Minutes</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage105.Content" xml:space="preserve">
+    <value>30 Minutes</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage106.Content" xml:space="preserve">
+    <value>1 Hour</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage107.Content" xml:space="preserve">
+    <value>2 Hours</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage108.Content" xml:space="preserve">
+    <value>4 Hours</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage109.Content" xml:space="preserve">
+    <value>8 Hours</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage110.Content" xml:space="preserve">
+    <value>12 Hours</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage111.Content" xml:space="preserve">
+    <value>1 Day</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage112.Content" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage113.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage114.Content" xml:space="preserve">
+    <value>10 Minutes</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage115.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage116.Content" xml:space="preserve">
+    <value>10 Minutes</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage117.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage118.Content" xml:space="preserve">
+    <value>10 Minutes</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage119.Text" xml:space="preserve">
+    <value>Open (active)</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage120.Content" xml:space="preserve">
+    <value>10 Minutes</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage121.Text" xml:space="preserve">
+    <value>Open / item hover</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage122.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage123.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage124.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage125.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage126.Text" xml:space="preserve">
+    <value>Open / item pressed</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage127.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage128.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage129.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage130.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage131.Text" xml:space="preserve">
+    <value>Open / scrollbar</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage132.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage133.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage134.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage135.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage136.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage137.Text" xml:space="preserve">
+    <value>Item menu</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage138.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPage139.Content" xml:space="preserve">
+    <value>10 Minutes</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage140.Title" xml:space="preserve">
+    <value>Input</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage140.Description" xml:space="preserve">
+    <value>Updated single-line text field with theme-aware fill, brand-blue focus treatment, and disabled dimming. Default, hover, focused, and disabled states are all shown on the page.</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage141.PlaceholderText" xml:space="preserve">
+    <value>Enter text</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage142.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage143.PlaceholderText" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage144.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage145.PlaceholderText" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage146.Text" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage147.PlaceholderText" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage148.Text" xml:space="preserve">
+    <value>Filled</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage149.Text" xml:space="preserve">
+    <value>Input text</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage150.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsInputPage151.PlaceholderText" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage152.Title" xml:space="preserve">
+    <value>Intelligence Button</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage152.Description" xml:space="preserve">
+    <value>Updated intelligence button with a dual-gradient stroke, hover glow, and refined pressed and disabled treatments. The AI accent styling stays visible across both themes.</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage153.Text" xml:space="preserve">
+    <value>Functional</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage154.Content" xml:space="preserve">
+    <value>What&apos;s this mean?</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage155.Text" xml:space="preserve">
+    <value>With longer label</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage156.Content" xml:space="preserve">
+    <value>=  Optimise my battery</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage157.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage158.Content" xml:space="preserve">
+    <value>What&apos;s this mean?</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage159.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage160.Content" xml:space="preserve">
+    <value>What&apos;s this mean?</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage161.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage162.Content" xml:space="preserve">
+    <value>What&apos;s this mean?</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage163.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPage164.Content" xml:space="preserve">
+    <value>What&apos;s this mean?</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage165.Title" xml:space="preserve">
+    <value>Radio Button</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage165.Description" xml:space="preserve">
+    <value>Updated radio button styling for the single-select pattern, with theme-aware checked and unchecked treatments. The page shows default, hover, pressed, and disabled states where applicable.</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage166.Content" xml:space="preserve">
+    <value>Option A</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage167.Content" xml:space="preserve">
+    <value>Option B</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage168.Content" xml:space="preserve">
+    <value>Option C</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage169.Text" xml:space="preserve">
+    <value>UNCHECKED</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage170.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage171.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage172.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage173.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage174.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage175.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage176.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage177.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage178.Text" xml:space="preserve">
+    <value>CHECKED</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage179.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage180.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage181.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage182.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage183.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage184.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage185.Title" xml:space="preserve">
+    <value>Segmented Control</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage185.Description" xml:space="preserve">
+    <value>Updated segmented control with a functional selection model plus specimen states for default, hover, pressed, and active treatments.</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage186.Text" xml:space="preserve">
+    <value>2 SEGMENTS</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage187.Content" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage188.Content" xml:space="preserve">
+    <value>Grid</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage189.Text" xml:space="preserve">
+    <value>3 SEGMENTS</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage190.Content" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage191.Content" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage192.Content" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage193.Text" xml:space="preserve">
+    <value>4 SEGMENTS</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage194.Content" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage195.Content" xml:space="preserve">
+    <value>Week</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage196.Content" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage197.Content" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage198.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage199.Content" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage200.Text" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage201.Content" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage202.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage203.Content" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage204.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage205.Content" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsSliderPage206.Title" xml:space="preserve">
+    <value>Slider</value>
+  </data>
+  <data name="GalleryViewsControlsSliderPage206.Description" xml:space="preserve">
+    <value>Bar-chart slider with interactive click-and-drag behavior and theme-aware selected bars. Sixty-three ticks fill with the component highlight brush up to the knob.</value>
+  </data>
+  <data name="GalleryViewsControlsSliderPage207.Text" xml:space="preserve">
+    <value>50% (interactive — drag me)</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage208.Title" xml:space="preserve">
+    <value>Steering Bar</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage208.Description" xml:space="preserve">
+    <value>Draggable steering bar with a rounded track, gradient progress fill, glass thumb, and optional title/value labels. It supports continuous dragging or custom stops with snapping depending on the use case.</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage209.Text" xml:space="preserve">
+    <value>Continuous</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage210.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage211.Text" xml:space="preserve">
+    <value>Custom stops with snapping</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage212.Title" xml:space="preserve">
+    <value>Intensity</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage213.Text" xml:space="preserve">
+    <value>5 stops</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage214.Text" xml:space="preserve">
+    <value>TITLE + VALUE</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage215.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage216.Text" xml:space="preserve">
+    <value>TITLE ONLY</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage217.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage218.Text" xml:space="preserve">
+    <value>VALUE ONLY</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage219.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage220.Text" xml:space="preserve">
+    <value>BAR ONLY</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage221.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage222.Title" xml:space="preserve">
+    <value>Toggle Switch</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage222.Description" xml:space="preserve">
+    <value>Updated toggle switch with refined ON and OFF styling across Light and Dark themes. Both values show default, hover, pressed, and disabled treatments.</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage223.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage223.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage224.Text" xml:space="preserve">
+    <value>OFF</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage225.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage226.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage226.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage227.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage228.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage228.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage229.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage230.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage230.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage231.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage232.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage232.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage233.Text" xml:space="preserve">
+    <value>ON</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage234.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage235.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage235.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage236.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage237.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage237.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage238.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage239.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage239.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage240.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage241.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage241.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage242.Title" xml:space="preserve">
+    <value>Progress Bar</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage242.Description" xml:space="preserve">
+    <value>Updated progress bar with a rounded track, gradient fill, and independently toggled title and value labels. The four content combinations below show the supported variants.</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage242.StatesTitle" xml:space="preserve">
+    <value>TYPES</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage243.Title" xml:space="preserve">
+    <value>Downloading</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage244.Content" xml:space="preserve">
+    <value>▶ Replay</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage245.Text" xml:space="preserve">
+    <value>TITLE + VALUE</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage246.Title" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage247.Text" xml:space="preserve">
+    <value>TITLE ONLY</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage248.Title" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage249.Text" xml:space="preserve">
+    <value>VALUE ONLY</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage250.Title" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage251.Text" xml:space="preserve">
+    <value>BAR ONLY</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage252.Title" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsFoundationsColorsPage253.Title" xml:space="preserve">
+    <value>Color Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsColorsPage253.Description" xml:space="preserve">
+    <value>Primitive color tokens from EtherPrimitives.xaml, listed by color series.</value>
+  </data>
+  <data name="GalleryViewsFoundationsIconsPage254.Title" xml:space="preserve">
+    <value>Icon Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsIconsPage254.Description" xml:space="preserve">
+    <value>DDS2 icon library — monoline SVGs from Assets/Icons/dds2, listed by name.</value>
+  </data>
+  <data name="GalleryViewsFoundationsIconsPage255.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="GalleryViewsFoundationsIconsPage256.Text" xml:space="preserve">
+    <value>Icons</value>
+  </data>
+  <data name="GalleryViewsFoundationsRadiusPage257.Title" xml:space="preserve">
+    <value>Radius Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsRadiusPage257.Description" xml:space="preserve">
+    <value>Semantic radius tokens (aliased to the primitive scale) and the primitive radius tokens they link to. Units are epx.</value>
+  </data>
+  <data name="GalleryViewsFoundationsRadiusPage258.Text" xml:space="preserve">
+    <value>Radius (semantic)</value>
+  </data>
+  <data name="GalleryViewsFoundationsRadiusPage259.Text" xml:space="preserve">
+    <value>Primitives</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage260.Title" xml:space="preserve">
+    <value>Scroll Bar</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage260.Description" xml:space="preserve">
+    <value>Updated 6 px scrollbar with a minimal thumb, no visible track, and no stepper arrows. The styling applies implicitly to every ScrollViewer in the sandbox.</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage261.Text" xml:space="preserve">
+    <value>Vertical (drag or hover the thumb)</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage262.Text" xml:space="preserve">
+    <value>Battery</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage263.Text" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage264.Text" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage265.Text" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage266.Text" xml:space="preserve">
+    <value>Devices</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage267.Text" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage268.Text" xml:space="preserve">
+    <value>Security</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage269.Text" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage270.Text" xml:space="preserve">
+    <value>Accessibility</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage271.Text" xml:space="preserve">
+    <value>Support</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage272.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage273.Text" xml:space="preserve">
+    <value>Horizontal (drag or hover the thumb)</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage274.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage275.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsFoundationsSpacingPage276.Title" xml:space="preserve">
+    <value>Spacing Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsSpacingPage276.Description" xml:space="preserve">
+    <value>Semantic space tokens (aliased to the primitive scale) and the primitive spacing tokens they link to. Units are epx.</value>
+  </data>
+  <data name="GalleryViewsFoundationsSpacingPage277.Text" xml:space="preserve">
+    <value>Space (semantic)</value>
+  </data>
+  <data name="GalleryViewsFoundationsSpacingPage278.Text" xml:space="preserve">
+    <value>Primitives</value>
+  </data>
+  <data name="GalleryViewsFoundationsTypographyPage279.Title" xml:space="preserve">
+    <value>Typography Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsTypographyPage279.Description" xml:space="preserve">
+    <value>Semantic text styles and the primitive type tokens they build on. Sizes are in epx (effective pixels); line height uses the platform default.</value>
+  </data>
+  <data name="GalleryViewsFoundationsTypographyPage280.Text" xml:space="preserve">
+    <value>Text styles</value>
+  </data>
+  <data name="GalleryViewsFoundationsTypographyPage281.Text" xml:space="preserve">
+    <value>Primitives</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage282.Title" xml:space="preserve">
+    <value>Masthead</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage282.Description" xml:space="preserve">
+    <value>Right-aligned masthead caption controls with 44 px hit targets for minimize, maximize/restore, and close.</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage282.StatesTitle" xml:space="preserve">
+    <value>VISUAL STATES</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage283.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage284.Text" xml:space="preserve">
+    <value>Maximized</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage285.Title" xml:space="preserve">
+    <value>Cards - Types</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage285.Description" xml:space="preserve">
+    <value>Card component with gradient border effect, available in Normal, Intelligence (dark), and Callout (with header) types.</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage286.Text" xml:space="preserve">
+    <value>TYPE PREVIEWS</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage287.Text" xml:space="preserve">
+    <value>NORMAL</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage288.Text" xml:space="preserve">
+    <value>Card</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage289.Text" xml:space="preserve">
+    <value>INTELLIGENCE</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage290.Text" xml:space="preserve">
+    <value>Card</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage291.Text" xml:space="preserve">
+    <value>CALLOUT</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage292.Text" xml:space="preserve">
+    <value>Intelligence Insight</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage293.Text" xml:space="preserve">
+    <value>Card</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage190.Title" xml:space="preserve">
+    <value>Radio Button</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage190.Description" xml:space="preserve">
+    <value>Updated radio button styling for the single-select pattern, with theme-aware checked and unchecked treatments. The page shows default, hover, pressed, and disabled states where applicable.</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage191.Content" xml:space="preserve">
+    <value>Option A</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage192.Content" xml:space="preserve">
+    <value>Option B</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage193.Content" xml:space="preserve">
+    <value>Option C</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage194.Text" xml:space="preserve">
+    <value>UNCHECKED</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage195.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage196.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage197.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage198.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage199.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage200.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage201.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage202.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage203.Text" xml:space="preserve">
+    <value>CHECKED</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage204.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage205.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage206.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage207.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage208.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPage209.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage210.Title" xml:space="preserve">
+    <value>Segmented Control</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage210.Description" xml:space="preserve">
+    <value>Updated segmented control with a functional selection model plus specimen states for default, hover, pressed, and active treatments.</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage211.Text" xml:space="preserve">
+    <value>2 SEGMENTS</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage212.Content" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage213.Content" xml:space="preserve">
+    <value>Grid</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage214.Text" xml:space="preserve">
+    <value>3 SEGMENTS</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage215.Content" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage216.Content" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage217.Content" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage218.Text" xml:space="preserve">
+    <value>4 SEGMENTS</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage219.Content" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage220.Content" xml:space="preserve">
+    <value>Week</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage221.Content" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage222.Content" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage223.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage224.Content" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage225.Text" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage226.Content" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage227.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage228.Content" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage229.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPage230.Content" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsSliderPage231.Title" xml:space="preserve">
+    <value>Slider</value>
+  </data>
+  <data name="GalleryViewsControlsSliderPage231.Description" xml:space="preserve">
+    <value>Bar-chart slider with interactive click-and-drag behavior and theme-aware selected bars. Sixty-three ticks fill with the component highlight brush up to the knob.</value>
+  </data>
+  <data name="GalleryViewsControlsSliderPage232.Text" xml:space="preserve">
+    <value>50% (interactive — drag me)</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage233.Title" xml:space="preserve">
+    <value>Steering Bar</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage233.Description" xml:space="preserve">
+    <value>Draggable steering bar with a rounded track, gradient progress fill, glass thumb, and optional title/value labels. It supports continuous dragging or custom stops with snapping depending on the use case.</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage234.Text" xml:space="preserve">
+    <value>Continuous</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage235.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage236.Text" xml:space="preserve">
+    <value>Custom stops with snapping</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage237.Title" xml:space="preserve">
+    <value>Intensity</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage238.Text" xml:space="preserve">
+    <value>5 stops</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage239.Text" xml:space="preserve">
+    <value>TITLE + VALUE</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage240.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage241.Text" xml:space="preserve">
+    <value>TITLE ONLY</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage242.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage243.Text" xml:space="preserve">
+    <value>VALUE ONLY</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage244.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage245.Text" xml:space="preserve">
+    <value>BAR ONLY</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPage246.Title" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage247.Title" xml:space="preserve">
+    <value>Toggle Switch</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage247.Description" xml:space="preserve">
+    <value>Updated toggle switch with refined ON and OFF styling across Light and Dark themes. Both values show default, hover, pressed, and disabled treatments.</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage248.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage248.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage249.Text" xml:space="preserve">
+    <value>OFF</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage250.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage251.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage251.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage252.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage253.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage253.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage254.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage255.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage255.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage256.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage257.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage257.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage258.Text" xml:space="preserve">
+    <value>ON</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage259.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage260.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage260.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage261.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage262.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage262.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage263.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage264.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage264.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage265.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage266.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPage266.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage267.Title" xml:space="preserve">
+    <value>Progress Bar</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage267.Description" xml:space="preserve">
+    <value>Updated progress bar with a rounded track, gradient fill, and independently toggled title and value labels. The four content combinations below show the supported variants.</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage267.StatesTitle" xml:space="preserve">
+    <value>TYPES</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage268.Title" xml:space="preserve">
+    <value>Downloading</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage269.Content" xml:space="preserve">
+    <value>▶ Replay</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage270.Text" xml:space="preserve">
+    <value>TITLE + VALUE</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage271.Title" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage272.Text" xml:space="preserve">
+    <value>TITLE ONLY</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage273.Title" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage274.Text" xml:space="preserve">
+    <value>VALUE ONLY</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage275.Title" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage276.Text" xml:space="preserve">
+    <value>BAR ONLY</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPage277.Title" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsFoundationsColorsPage278.Title" xml:space="preserve">
+    <value>Color Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsColorsPage278.Description" xml:space="preserve">
+    <value>Primitive color tokens from EtherPrimitives.xaml, listed by color series.</value>
+  </data>
+  <data name="GalleryViewsFoundationsIconsPage279.Title" xml:space="preserve">
+    <value>Icon Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsIconsPage279.Description" xml:space="preserve">
+    <value>DDS2 icon library — monoline SVGs from Assets/Icons/dds2, listed by name.</value>
+  </data>
+  <data name="GalleryViewsFoundationsIconsPage280.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="GalleryViewsFoundationsIconsPage281.Text" xml:space="preserve">
+    <value>Icons</value>
+  </data>
+  <data name="GalleryViewsFoundationsRadiusPage282.Title" xml:space="preserve">
+    <value>Radius Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsRadiusPage282.Description" xml:space="preserve">
+    <value>Semantic radius tokens (aliased to the primitive scale) and the primitive radius tokens they link to. Units are epx.</value>
+  </data>
+  <data name="GalleryViewsFoundationsRadiusPage283.Text" xml:space="preserve">
+    <value>Radius (semantic)</value>
+  </data>
+  <data name="GalleryViewsFoundationsRadiusPage284.Text" xml:space="preserve">
+    <value>Primitives</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage285.Title" xml:space="preserve">
+    <value>Scroll Bar</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage285.Description" xml:space="preserve">
+    <value>Updated 6 px scrollbar with a minimal thumb, no visible track, and no stepper arrows. The styling applies implicitly to every ScrollViewer in the sandbox.</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage286.Text" xml:space="preserve">
+    <value>Vertical (drag or hover the thumb)</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage287.Text" xml:space="preserve">
+    <value>Battery</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage288.Text" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage289.Text" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage290.Text" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage291.Text" xml:space="preserve">
+    <value>Devices</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage292.Text" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage293.Text" xml:space="preserve">
+    <value>Security</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage294.Text" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage295.Text" xml:space="preserve">
+    <value>Accessibility</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage296.Text" xml:space="preserve">
+    <value>Support</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage297.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage298.Text" xml:space="preserve">
+    <value>Horizontal (drag or hover the thumb)</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage299.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsFoundationsScrollBarPage300.Text" xml:space="preserve">
+    <value>Hover</value>
+  </data>
+  <data name="GalleryViewsFoundationsSpacingPage301.Title" xml:space="preserve">
+    <value>Spacing Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsSpacingPage301.Description" xml:space="preserve">
+    <value>Semantic space tokens (aliased to the primitive scale) and the primitive spacing tokens they link to. Units are epx.</value>
+  </data>
+  <data name="GalleryViewsFoundationsSpacingPage302.Text" xml:space="preserve">
+    <value>Space (semantic)</value>
+  </data>
+  <data name="GalleryViewsFoundationsSpacingPage303.Text" xml:space="preserve">
+    <value>Primitives</value>
+  </data>
+  <data name="GalleryViewsFoundationsTypographyPage304.Title" xml:space="preserve">
+    <value>Typography Tokens</value>
+  </data>
+  <data name="GalleryViewsFoundationsTypographyPage304.Description" xml:space="preserve">
+    <value>Semantic text styles and the primitive type tokens they build on. Sizes are in epx (effective pixels); line height uses the platform default.</value>
+  </data>
+  <data name="GalleryViewsFoundationsTypographyPage305.Text" xml:space="preserve">
+    <value>Text styles</value>
+  </data>
+  <data name="GalleryViewsFoundationsTypographyPage306.Text" xml:space="preserve">
+    <value>Primitives</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage307.Title" xml:space="preserve">
+    <value>Masthead</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage307.Description" xml:space="preserve">
+    <value>Right-aligned masthead caption controls with 44 px hit targets for minimize, maximize/restore, and close.</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage307.StatesTitle" xml:space="preserve">
+    <value>VISUAL STATES</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage308.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GalleryViewsNavigationMastheadPage309.Text" xml:space="preserve">
+    <value>Maximized</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage310.Title" xml:space="preserve">
+    <value>Cards - Types</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage310.Description" xml:space="preserve">
+    <value>Card component with gradient border effect, available in Normal, Intelligence (dark), and Callout (with header) types.</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage311.Text" xml:space="preserve">
+    <value>TYPE PREVIEWS</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage312.Text" xml:space="preserve">
+    <value>NORMAL</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage313.Text" xml:space="preserve">
+    <value>Card</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage314.Text" xml:space="preserve">
+    <value>INTELLIGENCE</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage315.Text" xml:space="preserve">
+    <value>Card</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage316.Text" xml:space="preserve">
+    <value>CALLOUT</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage317.Text" xml:space="preserve">
+    <value>Intelligence Insight</value>
+  </data>
+  <data name="GalleryViewsSurfacesCardPage318.Text" xml:space="preserve">
+    <value>Card</value>
+  </data>
+  <data name="GalleryMainWindow.ThemeDark.Content" xml:space="preserve">
+    <value>🌙 Dark</value>
+  </data>
+  <data name="Catalog.Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Catalog.Foundations" xml:space="preserve">
+    <value>Foundations</value>
+  </data>
+  <data name="Catalog.Controls" xml:space="preserve">
+    <value>Controls</value>
+  </data>
+  <data name="Catalog.Surfaces" xml:space="preserve">
+    <value>Surfaces</value>
+  </data>
+  <data name="Catalog.Navigation" xml:space="preserve">
+    <value>Navigation</value>
+  </data>
+  <data name="Catalog.DataDisplay" xml:space="preserve">
+    <value>Data Display</value>
+  </data>
+  <data name="Catalog.Colors" xml:space="preserve">
+    <value>Colors</value>
+  </data>
+  <data name="Catalog.Typography" xml:space="preserve">
+    <value>Typography</value>
+  </data>
+  <data name="Catalog.Spacing" xml:space="preserve">
+    <value>Spacing</value>
+  </data>
+  <data name="Catalog.Radius" xml:space="preserve">
+    <value>Radius</value>
+  </data>
+  <data name="Catalog.Icons" xml:space="preserve">
+    <value>Icons</value>
+  </data>
+  <data name="Catalog.Button" xml:space="preserve">
+    <value>Button</value>
+  </data>
+  <data name="Catalog.Checkbox" xml:space="preserve">
+    <value>Checkbox</value>
+  </data>
+  <data name="Catalog.Dropdown" xml:space="preserve">
+    <value>Dropdown</value>
+  </data>
+  <data name="Catalog.Input" xml:space="preserve">
+    <value>Input</value>
+  </data>
+  <data name="Catalog.IntelligenceButton" xml:space="preserve">
+    <value>Intelligence Button</value>
+  </data>
+  <data name="Catalog.RadioButton" xml:space="preserve">
+    <value>Radio Button</value>
+  </data>
+  <data name="Catalog.ScrollBar" xml:space="preserve">
+    <value>Scroll Bar</value>
+  </data>
+  <data name="Catalog.SegmentedControl" xml:space="preserve">
+    <value>Segmented Control</value>
+  </data>
+  <data name="Catalog.Slider" xml:space="preserve">
+    <value>Slider</value>
+  </data>
+  <data name="Catalog.SteeringBar" xml:space="preserve">
+    <value>Steering Bar</value>
+  </data>
+  <data name="Catalog.ToggleSwitch" xml:space="preserve">
+    <value>Toggle Switch</value>
+  </data>
+  <data name="Catalog.Card" xml:space="preserve">
+    <value>Card</value>
+  </data>
+  <data name="Catalog.Masthead" xml:space="preserve">
+    <value>Masthead</value>
+  </data>
+  <data name="Catalog.ProgressBar" xml:space="preserve">
+    <value>Progress Bar</value>
+  </data>
+  <data name="GalleryOutput.Clicked" xml:space="preserve">
+    <value>Clicked: {0}</value>
+  </data>
+  <data name="GalleryOutput.Selected" xml:space="preserve">
+    <value>Selected: {0}</value>
+  </data>
+  <data name="GalleryOutput.SelectedEmpty" xml:space="preserve">
+    <value>Selected: —</value>
+  </data>
+  <data name="GalleryOutput.Checked" xml:space="preserve">
+    <value>Checked: {0}</value>
+  </data>
+  <data name="GalleryOutput.Text" xml:space="preserve">
+    <value>Text: {0}</value>
+  </data>
+  <data name="GalleryOutput.TextEmpty" xml:space="preserve">
+    <value>Text: —</value>
+  </data>
+  <data name="GalleryOutput.StateOn" xml:space="preserve">
+    <value>State: On</value>
+  </data>
+  <data name="GalleryOutput.StateOff" xml:space="preserve">
+    <value>State: Off</value>
+  </data>
+  <data name="GalleryOutput.Value" xml:space="preserve">
+    <value>Value: {0}</value>
+  </data>
+  <data name="GalleryOutput.ValuePercent" xml:space="preserve">
+    <value>Value: {0}%</value>
+  </data>
+  <data name="GalleryOutput.StopSingular" xml:space="preserve">
+    <value>1 stop</value>
+  </data>
+  <data name="GalleryOutput.StopPlural" xml:space="preserve">
+    <value>{0} stops</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPageOutput.OutputText" xml:space="preserve">
+    <value>Clicked: —</value>
+  </data>
+  <data name="GalleryViewsControlsIntelligenceButtonPageOutput.OutputText" xml:space="preserve">
+    <value>Clicked: —</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPageOutput.OutputText" xml:space="preserve">
+    <value>Checked: False</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPageOutput.OutputText" xml:space="preserve">
+    <value>Selected: Option A</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPageOutput.OutputText" xml:space="preserve">
+    <value>Selected: List</value>
+  </data>
+  <data name="GalleryViewsControlsInputPageOutput.OutputText" xml:space="preserve">
+    <value>Text: —</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPageOutput.OutputText" xml:space="preserve">
+    <value>Selected: 10 Minutes</value>
+  </data>
+  <data name="GalleryViewsControlsToggleSwitchPageOutput.OutputText" xml:space="preserve">
+    <value>State: Off</value>
+  </data>
+  <data name="GalleryViewsControlsSliderPageOutput.OutputText" xml:space="preserve">
+    <value>Value: 50%</value>
+  </data>
+  <data name="GalleryViewsControlsSteeringBarPageOutput.OutputText" xml:space="preserve">
+    <value>Value: 31</value>
+  </data>
+  <data name="GalleryViewsDataDisplayProgressBarPageOutput.OutputText" xml:space="preserve">
+    <value>Value: 0%</value>
+  </data>
 </root>
