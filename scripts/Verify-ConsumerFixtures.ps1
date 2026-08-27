@@ -285,6 +285,10 @@ function Assert-UiaMarker {
         if ([double]$row.boundingWidth -le 0 -or [double]$row.boundingHeight -le 0) {
             throw "UIA '$id' bounding rect was $($row.boundingWidth)x$($row.boundingHeight)."
         }
+        $expectedSource = if ($id -eq 'dropdown') { 'LayoutFallback' } else { 'Uia' }
+        if ($row.boundingSource -ne $expectedSource) {
+            throw "UIA '$id' boundingSource was '$($row.boundingSource)', expected '$expectedSource'."
+        }
     }
 }
 

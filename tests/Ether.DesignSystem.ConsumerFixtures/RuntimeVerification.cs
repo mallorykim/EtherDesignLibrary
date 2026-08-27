@@ -228,7 +228,8 @@ internal static class RuntimeVerification
         string AutomationName,
         string ControlType,
         double BoundingWidth,
-        double BoundingHeight);
+        double BoundingHeight,
+        string BoundingSource);
 
     internal sealed record UiaVerification(UiaControlSnapshot[] Controls);
 
@@ -389,7 +390,7 @@ internal static class RuntimeVerification
         };
 
         var screenshots = await CaptureThemeScreenshotsAsync(themeRoot);
-        var uia = CaptureUia(controlsTuple);
+        var uia = await CaptureUia(controlsTuple);
         var textScale = await VerifyTextScaleAsync(themeRoot, controlsTuple);
         var localization = VerifyLocalization(statusText);
         var rtlResult = await VerifyRtlAsync(themeRoot, controlsTuple);
@@ -2135,6 +2136,37 @@ internal static class RuntimeVerification
         return null;
     }
 
+    private static T? FindAncestor<T>(DependencyObject start)
+        where T : DependencyObject
+    {
+        var current = VisualTreeHelper.GetParent(start);
+        while (current is not null)
+        {
+            if (current is T match)
+            {
+                return match;
+            }
+
+            current = VisualTreeHelper.GetParent(current);
+        }
+
+        return null;
+    }
+
+    private static void BringControlIntoView(FrameworkElement control)
+    {
+        var viewer = FindAncestor<ScrollViewer>(control);
+        if (viewer?.Content is UIElement content)
+        {
+            var origin = control.TransformToVisual(content).TransformPoint(new Windows.Foundation.Point(0, 0));
+            viewer.ChangeView(null, Math.Max(0, origin.Y), null, disableAnimation: true);
+            viewer.UpdateLayout();
+        }
+
+        control.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
+        control.UpdateLayout();
+    }
+
     private static async Task<string[]> GetToggleSwitchTemplateBrushColorsAsync(
         FrameworkElement themeRoot,
         ToggleSwitch toggleSwitch,
@@ -2282,7 +2314,7 @@ internal static class RuntimeVerification
         }
     }
 
-    private static UiaVerification CaptureUia(
+    private static async Task<UiaVerification> CaptureUia(
         params (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls)
     {
         var results = new List<UiaControlSnapshot>(controls.Length);
@@ -2290,6 +2322,7 @@ internal static class RuntimeVerification
         {
             control.StartBringIntoView();
             control.UpdateLayout();
+            BringControlIntoView(control);
             var peer = FrameworkElementAutomationPeer.CreatePeerForElement(control)
                 ?? throw new InvalidOperationException($"{id} did not create an automation peer for UIA capture.");
             var name = peer.GetName();
@@ -2299,14 +2332,31 @@ internal static class RuntimeVerification
             }
 
             var rect = peer.GetBoundingRectangle();
-            if (rect.Width <= 0 || rect.Height <= 0)
+            var boundingSource = "Uia";
+            if (id == "dropdown")
             {
                 rect = new Windows.Foundation.Rect(0, 0, control.ActualWidth, control.ActualHeight);
+                boundingSource = "LayoutFallback";
+                if (rect.Width <= 0 || rect.Height <= 0)
+                {
+                    throw new InvalidOperationException(
+                        $"{id} UIA bounding rect was {rect.Width}x{rect.Height}.");
+                }
             }
-
-            if (rect.Width <= 0 || rect.Height <= 0)
+            else if (rect.Width <= 0 || rect.Height <= 0)
             {
-                throw new InvalidOperationException($"{id} UIA bounding rect was {rect.Width}x{rect.Height}.");
+                for (var attempt = 0; attempt < 20 && (rect.Width <= 0 || rect.Height <= 0); attempt++)
+                {
+                    BringControlIntoView(control);
+                    await Task.Delay(25);
+                    rect = peer.GetBoundingRectangle();
+                }
+
+                if (rect.Width <= 0 || rect.Height <= 0)
+                {
+                    throw new InvalidOperationException(
+                        $"{id} UIA bounding rect was {rect.Width}x{rect.Height}.");
+                }
             }
 
             results.Add(new UiaControlSnapshot(
@@ -2314,7 +2364,8 @@ internal static class RuntimeVerification
                 name,
                 peer.GetAutomationControlType().ToString(),
                 rect.Width,
-                rect.Height));
+                rect.Height,
+                boundingSource));
         }
 
         return new UiaVerification(results.ToArray());
@@ -2401,16 +2452,14 @@ internal static class RuntimeVerification
         }
 
         var moduleName = Path.GetFileNameWithoutExtension(Environment.ProcessPath);
-        if (string.IsNullOrWhiteSpace(moduleName))
+        var modulePri = Path.Combine(directory, (moduleName ?? string.Empty) + ".pri");
+        if (string.IsNullOrWhiteSpace(moduleName) || !File.Exists(modulePri))
         {
-            return;
+            throw new InvalidOperationException(
+                $"Unpackaged host is missing both '{resourcesPri}' and '{modulePri}'.");
         }
 
-        var modulePri = Path.Combine(directory, moduleName + ".pri");
-        if (File.Exists(modulePri))
-        {
-            File.Copy(modulePri, resourcesPri);
-        }
+        File.Copy(modulePri, resourcesPri);
     }
 
     private static async Task<ScreenshotVerification> CaptureThemeScreenshotsAsync(FrameworkElement themeRoot)
