@@ -1,9 +1,12 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.Win32;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.UI.ViewManagement;
@@ -275,13 +278,22 @@ internal static partial class RuntimeVerification
     {
         themeRoot.RequestedTheme = theme;
         await WaitForAppliedThemeAsync(themeRoot, theme);
+        return await CaptureCurrentPngAsync(themeRoot, path, theme.ToString());
+    }
+
+    private static async Task<(int Width, int Height)> CaptureCurrentPngAsync(
+        FrameworkElement themeRoot,
+        string path,
+        string label)
+    {
         themeRoot.UpdateLayout();
         var bitmap = new RenderTargetBitmap();
         await bitmap.RenderAsync(themeRoot);
         if (bitmap.PixelWidth <= 0 || bitmap.PixelHeight <= 0)
         {
-            throw new InvalidOperationException($"RenderTargetBitmap for {theme} was {bitmap.PixelWidth}x{bitmap.PixelHeight}.");
+            throw new InvalidOperationException($"RenderTargetBitmap for {label} was {bitmap.PixelWidth}x{bitmap.PixelHeight}.");
         }
+
         var pixels = (await bitmap.GetPixelsAsync()).ToArray();
         using var stream = File.Open(path, FileMode.Create, FileAccess.Write);
         var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream.AsRandomAccessStream());
@@ -290,29 +302,22 @@ internal static partial class RuntimeVerification
         return (bitmap.PixelWidth, bitmap.PixelHeight);
     }
 
-    private const string InjectedWindowColor = "#FF00FF00";
-    private const string InjectedWindowTextColor = "#FFFFFF00";
-
-    private static async Task<HighContrastVerification> VerifyForcedHighContrastAsync(
+    private static async Task<HighContrastVerification> VerifyOsSelectedHighContrastAsync(
         FrameworkElement themeRoot,
-        (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls)
+        (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls,
+        string lightCanvasColor,
+        string darkCanvasColor)
     {
-        var osHighContrast = new AccessibilitySettings().HighContrast;
-        if (osHighContrast)
+        var accessibility = new AccessibilitySettings();
+        if (accessibility.HighContrast)
         {
             throw new InvalidOperationException(
-                "OS high contrast is on; this slice forces HighContrast dictionaries while Light/Dark still resolve. Turn off Windows contrast themes and re-run.");
+                "OS high contrast is already on; Light/Dark proofs require it off at the start.");
         }
 
-        var appResources = Application.Current.Resources
-            ?? throw new InvalidOperationException("Application.Current.Resources is null.");
-        var swaps = new List<(ResourceDictionary Owner, object OriginalLight)>();
-        CollectLightHighContrastSwaps(appResources, swaps);
-        if (swaps.Count == 0)
-        {
-            throw new InvalidOperationException(
-                "No ResourceDictionary in Application.Resources exposed both Light and HighContrast ThemeDictionaries.");
-        }
+        var original = NativeHighContrast.Get();
+        var originalThemePath = GetCurrentThemePath();
+        var startedOff = (original.DwFlags & NativeHighContrast.HcfHighContrastOn) == 0;
 
         var directory = Environment.GetEnvironmentVariable("ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR");
         if (string.IsNullOrWhiteSpace(directory))
@@ -325,146 +330,36 @@ internal static partial class RuntimeVerification
         Directory.CreateDirectory(directory);
         var screenshotPath = Path.Combine(directory, "consumer-highcontrast.png");
 
-        object? previousWindow = null;
-        object? previousWindowText = null;
-        object? previousCanvas = null;
-        var hadWindow = appResources.ContainsKey("SystemColorWindowColor");
-        var hadWindowText = appResources.ContainsKey("SystemColorWindowTextColor");
-        var hadCanvas = appResources.ContainsKey("BackgroundCanvas");
-        if (hadWindow)
-        {
-            previousWindow = appResources["SystemColorWindowColor"];
-        }
-        if (hadWindowText)
-        {
-            previousWindowText = appResources["SystemColorWindowTextColor"];
-        }
-        if (hadCanvas)
-        {
-            previousCanvas = appResources["BackgroundCanvas"];
-        }
-
         Exception? captureException = null;
+        Exception? restoreException = null;
         HighContrastVerification? verification = null;
-        var overlayLight = new ResourceDictionary();
-        var overlayNeeded = false;
-        var hadAppLight = appResources.ThemeDictionaries.ContainsKey("Light");
-        object? previousAppLight = hadAppLight ? appResources.ThemeDictionaries["Light"] : null;
-        var overlayApplied = false;
+        var appliedThemeFile = false;
         try
         {
-            foreach (var (owner, _) in swaps)
-            {
-                try
-                {
-                    owner.ThemeDictionaries["Light"] = owner.ThemeDictionaries["HighContrast"];
-                }
-                catch (Exception)
-                {
-                    try
-                    {
-                        var source = (ResourceDictionary)owner.ThemeDictionaries["HighContrast"];
-                        var copy = new ResourceDictionary();
-                        CopyThemeDictionaryKeys(source, copy);
-                        foreach (var nested in source.MergedDictionaries)
-                        {
-                            try
-                            {
-                                copy.MergedDictionaries.Add(nested);
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        }
-                        owner.ThemeDictionaries["Light"] = copy;
-                    }
-                    catch (Exception)
-                    {
-                        // Source-set dictionaries reject ThemeDictionaries replacement
-                        // ("local values are not allowed"). Copy HighContrast keys onto a
-                        // Source-less Light overlay on Application.Resources instead.
-                        var source = (ResourceDictionary)owner.ThemeDictionaries["HighContrast"];
-                        CopyThemeDictionaryKeys(source, overlayLight);
-                        overlayNeeded = true;
-                    }
-                }
-            }
-
-            if (overlayNeeded)
-            {
-                overlayLight["BackgroundCanvas"] = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
-                appResources.ThemeDictionaries["Light"] = overlayLight;
-                overlayApplied = true;
-            }
-
-            appResources["SystemColorWindowColor"] = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
-            appResources["SystemColorWindowTextColor"] = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00));
-
-            themeRoot.RequestedTheme = ElementTheme.Dark;
-            await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Dark);
-            themeRoot.RequestedTheme = ElementTheme.Light;
-            await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Light);
-            themeRoot.UpdateLayout();
-
-            if (themeRoot is not Panel { Background: SolidColorBrush canvasBrush })
-            {
-                throw new InvalidOperationException("Fixture theme root does not expose a SolidColorBrush BackgroundCanvas value after HighContrast force.");
-            }
-
-            var canvasColor = FormatColor(canvasBrush.Color);
-            if (!string.Equals(canvasColor, InjectedWindowColor, StringComparison.Ordinal))
-            {
-                var injectedBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
-                overlayLight["BackgroundCanvas"] = injectedBrush;
-                appResources["BackgroundCanvas"] = injectedBrush;
-                if (overlayNeeded && !overlayApplied)
-                {
-                    appResources.ThemeDictionaries["Light"] = overlayLight;
-                    overlayApplied = true;
-                }
-
-                themeRoot.RequestedTheme = ElementTheme.Dark;
-                await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Dark);
-                themeRoot.RequestedTheme = ElementTheme.Light;
-                await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Light);
-                themeRoot.UpdateLayout();
-                if (themeRoot is not Panel { Background: SolidColorBrush retriedBrush })
-                {
-                    throw new InvalidOperationException("Fixture theme root does not expose a SolidColorBrush BackgroundCanvas value after HighContrast force.");
-                }
-
-                canvasBrush = retriedBrush;
-                canvasColor = FormatColor(canvasBrush.Color);
-            }
-
-            if (!string.Equals(canvasColor, InjectedWindowColor, StringComparison.Ordinal))
-            {
-                throw new InvalidOperationException(
-                    $"BackgroundCanvas after HighContrast force was '{canvasColor}', expected '{InjectedWindowColor}'.");
-            }
-
-            var pngSize = await CapturePngAsync(themeRoot, ElementTheme.Light, screenshotPath);
+            var enable = await EnableOsHighContrastAsync(original, accessibility, () => appliedThemeFile = true);
+            appliedThemeFile = enable.AppliedThemeFile;
+            var canvasColor = await ReadHighContrastCanvasColorAsync(themeRoot, lightCanvasColor, darkCanvasColor);
+            var pngSize = await CaptureCurrentPngAsync(themeRoot, screenshotPath, "HighContrast");
             var namesIntact = true;
             foreach (var (id, control, expectedAutomationName) in controls)
             {
                 control.UpdateLayout();
                 var peer = FrameworkElementAutomationPeer.CreatePeerForElement(control)
-                    ?? throw new InvalidOperationException($"{id} did not create an automation peer after HighContrast force.");
+                    ?? throw new InvalidOperationException($"{id} did not create an automation peer after OS High Contrast.");
                 var automationName = peer.GetName();
                 if (!string.Equals(automationName, expectedAutomationName, StringComparison.Ordinal))
                 {
                     namesIntact = false;
                     throw new InvalidOperationException(
-                        $"{id} automation name after HighContrast force was '{automationName}', expected '{expectedAutomationName}'.");
+                        $"{id} automation name after OS High Contrast was '{automationName}', expected '{expectedAutomationName}'.");
                 }
             }
 
             verification = new HighContrastVerification(
-                OsHighContrast: false,
-                DictionaryForced: true,
+                OsHighContrast: true,
+                DictionaryForced: false,
+                Scheme: enable.Scheme,
                 BackgroundCanvasColor: canvasColor,
-                InjectedWindowColor: InjectedWindowColor,
-                InjectedWindowTextColor: InjectedWindowTextColor,
                 ScreenshotPath: screenshotPath,
                 AutomationNamesIntact: namesIntact,
                 PixelWidth: pngSize.Width,
@@ -476,145 +371,327 @@ internal static partial class RuntimeVerification
         }
         finally
         {
-            Exception? restoreException = null;
             try
             {
-                foreach (var (owner, originalLight) in swaps)
-                {
-                    try
-                    {
-                        owner.ThemeDictionaries["Light"] = originalLight;
-                    }
-                    catch (Exception)
-                    {
-                        // Owner was Source-set and never mutated; original Light is still in place.
-                    }
-                }
-
-                if (overlayApplied)
-                {
-                    if (hadAppLight)
-                    {
-                        appResources.ThemeDictionaries["Light"] = previousAppLight;
-                    }
-                    else
-                    {
-                        appResources.ThemeDictionaries.Remove("Light");
-                    }
-                }
-
-                if (hadWindow)
-                {
-                    appResources["SystemColorWindowColor"] = previousWindow;
-                }
-                else
-                {
-                    appResources.Remove("SystemColorWindowColor");
-                }
-
-                if (hadWindowText)
-                {
-                    appResources["SystemColorWindowTextColor"] = previousWindowText;
-                }
-                else
-                {
-                    appResources.Remove("SystemColorWindowTextColor");
-                }
-
-                if (hadCanvas)
-                {
-                    appResources["BackgroundCanvas"] = previousCanvas;
-                }
-                else if (appResources.ContainsKey("BackgroundCanvas"))
-                {
-                    appResources.Remove("BackgroundCanvas");
-                }
-
-                themeRoot.RequestedTheme = ElementTheme.Light;
-                await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Light);
+                await RestoreOsHighContrastAsync(original, originalThemePath, startedOff, appliedThemeFile, accessibility);
             }
             catch (Exception exception)
             {
                 restoreException = exception;
             }
+        }
 
-            if (captureException is not null && restoreException is not null)
-            {
-                throw new AggregateException(captureException, restoreException);
-            }
+        if (captureException is not null && restoreException is not null)
+        {
+            throw new AggregateException(captureException, restoreException);
+        }
 
-            if (captureException is not null)
-            {
-                throw captureException;
-            }
+        if (captureException is not null)
+        {
+            throw captureException;
+        }
 
-            if (restoreException is not null)
-            {
-                throw restoreException;
-            }
+        if (restoreException is not null)
+        {
+            throw restoreException;
         }
 
         return verification
-            ?? throw new InvalidOperationException("HighContrast force completed without a verification payload.");
+            ?? throw new InvalidOperationException("OS High Contrast capture completed without a verification payload.");
     }
 
-    private static void CopyThemeDictionaryKeys(ResourceDictionary source, ResourceDictionary target)
+    private static async Task<(string Scheme, bool AppliedThemeFile)> EnableOsHighContrastAsync(
+        NativeHighContrast.Snapshot original,
+        AccessibilitySettings settings,
+        Action themeFileApplied)
     {
-        var keys = new List<object>();
-        foreach (var key in source.Keys)
+        var scheme = string.IsNullOrWhiteSpace(original.Scheme) ? "High Contrast Black" : original.Scheme;
+        var flags = original.DwFlags | NativeHighContrast.HcfHighContrastOn | NativeHighContrast.HcfAvailable;
+        try
         {
-            keys.Add(key);
+            NativeHighContrast.Set(flags, scheme);
+            await WaitForOsHighContrastAsync(settings, expected: true, TimeSpan.FromSeconds(10));
+            return (ResolveSchemeName(settings, scheme), false);
         }
-
-        foreach (var key in keys)
+        catch (InvalidOperationException)
         {
-            object? value;
-            try
+            var themePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+                @"Resources\Ease of Access Themes\hcblack.theme");
+            if (!File.Exists(themePath))
             {
-                value = source[key];
-            }
-            catch (Exception)
-            {
-                continue;
-            }
-
-            try
-            {
-                target[key] = value;
-                continue;
-            }
-            catch (Exception)
-            {
+                throw new InvalidOperationException(
+                    "Windows high contrast did not become true via SPI_SETHIGHCONTRAST, and hcblack.theme is missing. Do not fall back to dictionary overlay.");
             }
 
-            if (value is not SolidColorBrush brush)
-            {
-                continue;
-            }
-
+            await ApplyThemeFileAsync(themePath);
+            themeFileApplied();
             try
             {
-                target[key] = new SolidColorBrush(brush.Color);
+                await WaitForOsHighContrastAsync(settings, expected: true, TimeSpan.FromSeconds(10));
             }
-            catch (Exception)
+            catch (InvalidOperationException)
             {
+                throw new InvalidOperationException(
+                    "Windows high contrast did not become true via SPI_SETHIGHCONTRAST or hcblack.theme. Do not fall back to dictionary overlay.");
             }
+
+            return (ResolveSchemeName(settings, "hcblack.theme"), true);
         }
     }
 
-    private static void CollectLightHighContrastSwaps(
-        ResourceDictionary dictionary,
-        List<(ResourceDictionary Owner, object OriginalLight)> swaps)
+    private static async Task RestoreOsHighContrastAsync(
+        NativeHighContrast.Snapshot original,
+        string? originalThemePath,
+        bool startedOff,
+        bool appliedThemeFile,
+        AccessibilitySettings settings)
     {
-        var themes = dictionary.ThemeDictionaries;
-        if (themes.ContainsKey("Light") && themes.ContainsKey("HighContrast"))
+        var expected = !startedOff;
+        NativeHighContrast.Set(original.DwFlags, original.Scheme);
+
+        var restored = await TryWaitForOsHighContrastAsync(settings, expected, TimeSpan.FromSeconds(10));
+        if (restored && !appliedThemeFile)
         {
-            swaps.Add((dictionary, themes["Light"]));
+            return;
         }
 
-        foreach (var merged in dictionary.MergedDictionaries)
+        if (!string.IsNullOrWhiteSpace(originalThemePath) && File.Exists(originalThemePath))
         {
-            CollectLightHighContrastSwaps(merged, swaps);
+            await ApplyThemeFileAsync(originalThemePath);
+            if (await TryWaitForOsHighContrastAsync(settings, expected, TimeSpan.FromSeconds(10)))
+            {
+                return;
+            }
+        }
+
+        var aeroPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+            @"Resources\Themes\aero.theme");
+        if (File.Exists(aeroPath))
+        {
+            await ApplyThemeFileAsync(aeroPath);
+            if (!string.IsNullOrWhiteSpace(originalThemePath) && File.Exists(originalThemePath))
+            {
+                await ApplyThemeFileAsync(originalThemePath);
+            }
+
+            await WaitForOsHighContrastAsync(settings, expected, TimeSpan.FromSeconds(10));
+            return;
+        }
+
+        throw new InvalidOperationException(
+            $"Failed to restore Windows high contrast to startedOff={startedOff}. AccessibilitySettings.HighContrast is {settings.HighContrast}.");
+    }
+
+    private static async Task<bool> TryWaitForOsHighContrastAsync(
+        AccessibilitySettings settings,
+        bool expected,
+        TimeSpan timeout)
+    {
+        try
+        {
+            await WaitForOsHighContrastAsync(settings, expected, timeout);
+            return true;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    private static async Task WaitForOsHighContrastAsync(AccessibilitySettings settings, bool expected, TimeSpan timeout)
+    {
+        if (settings.HighContrast == expected)
+        {
+            return;
+        }
+
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        void Handler(AccessibilitySettings sender, object args)
+        {
+            if (sender.HighContrast == expected)
+            {
+                completion.TrySetResult();
+            }
+        }
+
+        settings.HighContrastChanged += Handler;
+        try
+        {
+            var deadline = DateTime.UtcNow + timeout;
+            while (settings.HighContrast != expected && DateTime.UtcNow < deadline)
+            {
+                if (completion.Task.IsCompleted)
+                {
+                    break;
+                }
+
+                await Task.Delay(100);
+            }
+
+            if (settings.HighContrast != expected)
+            {
+                throw new InvalidOperationException(
+                    $"Windows high contrast did not become {expected} within {timeout.TotalSeconds:0} seconds. AccessibilitySettings.HighContrast is {settings.HighContrast}.");
+            }
+        }
+        finally
+        {
+            settings.HighContrastChanged -= Handler;
+        }
+    }
+
+    private static async Task<string> ReadHighContrastCanvasColorAsync(
+        FrameworkElement themeRoot,
+        string lightCanvasColor,
+        string darkCanvasColor)
+    {
+        string? last = null;
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (DateTime.UtcNow < deadline)
+        {
+            themeRoot.UpdateLayout();
+            if (themeRoot is not Panel { Background: SolidColorBrush canvasBrush })
+            {
+                throw new InvalidOperationException(
+                    "Fixture theme root does not expose a SolidColorBrush BackgroundCanvas value after OS High Contrast.");
+            }
+
+            last = FormatColor(canvasBrush.Color);
+            if (!string.Equals(last, lightCanvasColor, StringComparison.Ordinal) &&
+                !string.Equals(last, darkCanvasColor, StringComparison.Ordinal))
+            {
+                return last;
+            }
+
+            await Task.Delay(100);
+        }
+
+        throw new InvalidOperationException(
+            $"BackgroundCanvas after OS High Contrast was '{last}', expected a SystemColorWindowColor different from Light '{lightCanvasColor}' and Dark '{darkCanvasColor}'. GetSysColor(COLOR_WINDOW)={NativeHighContrast.FormatWindowColor()}.");
+    }
+
+    private static string ResolveSchemeName(AccessibilitySettings settings, string fallback)
+    {
+        var applied = settings.HighContrastScheme;
+        return string.IsNullOrWhiteSpace(applied) ? fallback : applied;
+    }
+
+    private static string? GetCurrentThemePath()
+    {
+        return Registry.GetValue(
+            @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes",
+            "CurrentTheme",
+            null) as string;
+    }
+
+    private static async Task ApplyThemeFileAsync(string themePath)
+    {
+        using var process = Process.Start(new ProcessStartInfo
+        {
+            FileName = themePath,
+            UseShellExecute = true,
+        });
+        await Task.Delay(2000);
+        foreach (var settingsProcess in Process.GetProcessesByName("SystemSettings"))
+        {
+            try
+            {
+                settingsProcess.Kill(entireProcessTree: true);
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                settingsProcess.Dispose();
+            }
+        }
+    }
+
+    private static class NativeHighContrast
+    {
+        private const uint SpiGetHighContrast = 0x0042;
+        private const uint SpiSetHighContrast = 0x0043;
+        private const uint SpifUpdateIniFile = 0x0001;
+        private const uint SpifSendChange = 0x0002;
+        internal const int HcfHighContrastOn = 0x0001;
+        internal const int HcfAvailable = 0x0002;
+        private const int ColorWindow = 5;
+        private const int SchemeBufferChars = 512;
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private struct HIGHCONTRAST
+        {
+            public int cbSize;
+            public int dwFlags;
+            public IntPtr lpszDefaultScheme;
+        }
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, ref HIGHCONTRAST pvParam, uint fWinIni);
+
+        [DllImport("user32.dll")]
+        private static extern uint GetSysColor(int nIndex);
+
+        internal sealed record Snapshot(int DwFlags, string Scheme);
+
+        internal static Snapshot Get()
+        {
+            var buffer = Marshal.AllocHGlobal(SchemeBufferChars * 2);
+            try
+            {
+                var hc = new HIGHCONTRAST
+                {
+                    cbSize = Marshal.SizeOf<HIGHCONTRAST>(),
+                    lpszDefaultScheme = buffer,
+                };
+                if (!SystemParametersInfo(SpiGetHighContrast, (uint)hc.cbSize, ref hc, 0))
+                {
+                    throw new InvalidOperationException($"SPI_GETHIGHCONTRAST failed. Win32 error {Marshal.GetLastWin32Error()}.");
+                }
+
+                var scheme = hc.lpszDefaultScheme != IntPtr.Zero
+                    ? Marshal.PtrToStringUni(hc.lpszDefaultScheme) ?? string.Empty
+                    : string.Empty;
+                return new Snapshot(hc.dwFlags, scheme.TrimEnd('\0'));
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
+        }
+
+        internal static void Set(int dwFlags, string scheme)
+        {
+            var schemePtr = Marshal.StringToHGlobalUni(scheme ?? string.Empty);
+            try
+            {
+                var hc = new HIGHCONTRAST
+                {
+                    cbSize = Marshal.SizeOf<HIGHCONTRAST>(),
+                    dwFlags = dwFlags,
+                    lpszDefaultScheme = schemePtr,
+                };
+                if (!SystemParametersInfo(SpiSetHighContrast, (uint)hc.cbSize, ref hc, SpifUpdateIniFile | SpifSendChange))
+                {
+                    throw new InvalidOperationException($"SPI_SETHIGHCONTRAST failed. Win32 error {Marshal.GetLastWin32Error()}.");
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(schemePtr);
+            }
+        }
+
+        internal static string FormatWindowColor()
+        {
+            var colorRef = GetSysColor(ColorWindow);
+            var r = (byte)(colorRef & 0xFF);
+            var g = (byte)((colorRef >> 8) & 0xFF);
+            var b = (byte)((colorRef >> 16) & 0xFF);
+            return $"#FF{r:X2}{g:X2}{b:X2}";
         }
     }
 

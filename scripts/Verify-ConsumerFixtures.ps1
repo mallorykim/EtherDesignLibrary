@@ -368,20 +368,27 @@ function Assert-HighContrastMarker {
     if ($null -eq $highContrast) {
         throw 'Unpackaged runtime marker is missing the highContrast object.'
     }
-    if ($highContrast.osHighContrast -ne $false) {
-        throw "highContrast.osHighContrast was '$($highContrast.osHighContrast)', expected false (OS contrast themes are not this slice)."
+    if (-not ($highContrast.PSObject.Properties.Name -contains 'scheme')) {
+        throw 'Unpackaged runtime marker is missing highContrast.scheme.'
     }
-    if ($highContrast.dictionaryForced -ne $true) {
-        throw "highContrast.dictionaryForced was '$($highContrast.dictionaryForced)', expected true."
+    if ($highContrast.osHighContrast -ne $true) {
+        throw "highContrast.osHighContrast was '$($highContrast.osHighContrast)', expected true."
     }
-    if ([string]$highContrast.injectedWindowColor -cne '#FF00FF00') {
-        throw "highContrast.injectedWindowColor was '$($highContrast.injectedWindowColor)', expected '#FF00FF00'."
+    if ($highContrast.dictionaryForced -ne $false) {
+        throw "highContrast.dictionaryForced was '$($highContrast.dictionaryForced)', expected false."
     }
-    if ([string]$highContrast.injectedWindowTextColor -cne '#FFFFFF00') {
-        throw "highContrast.injectedWindowTextColor was '$($highContrast.injectedWindowTextColor)', expected '#FFFFFF00'."
+    $scheme = [string]$highContrast.scheme
+    if ([string]::IsNullOrWhiteSpace($scheme)) {
+        throw "highContrast.scheme was '$scheme', expected a non-empty scheme or theme file name."
     }
-    if ([string]$highContrast.backgroundCanvasColor -cne '#FF00FF00') {
-        throw "highContrast.backgroundCanvasColor was '$($highContrast.backgroundCanvasColor)', expected '#FF00FF00'."
+    $canvas = [string]$highContrast.backgroundCanvasColor
+    if ($canvas -notmatch '^#[0-9A-Fa-f]{8}$') {
+        throw "highContrast.backgroundCanvasColor was '$canvas', expected a #AARRGGBB hex string."
+    }
+    $lightCanvas = [string]$RuntimeResult.lightBackgroundCanvasColor
+    $darkCanvas = [string]$RuntimeResult.darkBackgroundCanvasColor
+    if (-not ($canvas -cne $lightCanvas -and $canvas -cne $darkCanvas)) {
+        throw "highContrast.backgroundCanvasColor was '$canvas', expected a # hex string different from Light '$lightCanvas' and Dark '$darkCanvas'."
     }
     if ($highContrast.automationNamesIntact -ne $true) {
         throw "highContrast.automationNamesIntact was '$($highContrast.automationNamesIntact)', expected true."
@@ -402,10 +409,10 @@ function Assert-HighContrastMarker {
     $lightHash = (Get-FileHash -LiteralPath $screenshots.lightPath -Algorithm SHA256).Hash
     $darkHash = (Get-FileHash -LiteralPath $screenshots.darkPath -Algorithm SHA256).Hash
     if ($hcHash -eq $lightHash) {
-        throw 'HighContrast and Light screenshots are identical; dictionary force did not differ.'
+        throw 'HighContrast and Light screenshots are identical; OS-selected HighContrast did not differ.'
     }
     if ($hcHash -eq $darkHash) {
-        throw 'HighContrast and Dark screenshots are identical; dictionary force did not differ.'
+        throw 'HighContrast and Dark screenshots are identical; OS-selected HighContrast did not differ.'
     }
 }
 
@@ -532,7 +539,7 @@ try {
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $markerPath, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', (Join-Path $workRoot 'screenshots'), 'Process')
             $smokeProcess = Start-Process -FilePath $unpackagedExe -WorkingDirectory $unpackagedOutput -PassThru -WindowStyle Hidden
-            if (-not $smokeProcess.WaitForExit(40000)) {
+            if (-not $smokeProcess.WaitForExit(90000)) {
                 Stop-Process -Id $smokeProcess.Id -Force
                 throw "The unpackaged runtime smoke fixture timed out before writing its result marker: $markerPath"
             }
@@ -777,7 +784,7 @@ try {
             Assert-HighContrastMarker $runtimeResult
             Assert-PerformanceMarker $runtimeResult
             $storageFileResolvedCount = @($reportedAssets | Where-Object { $_.storageFileResolved -eq $true }).Count
-            Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; EtherSlider default style, bar-canvas RangeValue GetPattern, and Light/Dark brushes verified; EtherMasthead default style, SearchIconStates, and Light/Dark brushes verified; EtherSwitch keyed style, Off/On states, and Light/Dark brushes verified; implicit ScrollBar 6 px templates and Light/Dark thumb brushes verified; RTL RightToLeft inherited on 13 package controls with automation names intact; UIA automation names, control types, and bounding rects for 13 package controls; 2.25 scale ActualWidth/Height with automation names intact; localization statusText and resourceLoaderText; Light/Dark screenshots; performance elapsedMilliseconds; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); HighContrast dictionary-forced runtime (osHighContrast=false); marker: $markerPath"
+            Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; EtherSlider default style, bar-canvas RangeValue GetPattern, and Light/Dark brushes verified; EtherMasthead default style, SearchIconStates, and Light/Dark brushes verified; EtherSwitch keyed style, Off/On states, and Light/Dark brushes verified; implicit ScrollBar 6 px templates and Light/Dark thumb brushes verified; RTL RightToLeft inherited on 13 package controls with automation names intact; UIA automation names, control types, and bounding rects for 13 package controls; 2.25 scale ActualWidth/Height with automation names intact; localization statusText and resourceLoaderText; Light/Dark screenshots; performance elapsedMilliseconds; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); HighContrast OS-selected runtime (osHighContrast=true); marker: $markerPath"
         }
         finally {
             if ($null -ne $smokeProcess -and -not $smokeProcess.HasExited) {

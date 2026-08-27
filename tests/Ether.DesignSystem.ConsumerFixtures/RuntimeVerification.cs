@@ -256,9 +256,8 @@ internal static partial class RuntimeVerification
     internal sealed record HighContrastVerification(
         bool OsHighContrast,
         bool DictionaryForced,
+        string Scheme,
         string BackgroundCanvasColor,
-        string InjectedWindowColor,
-        string InjectedWindowTextColor,
         string ScreenshotPath,
         bool AutomationNamesIntact,
         int PixelWidth,
@@ -404,7 +403,11 @@ internal static partial class RuntimeVerification
         var textScale = await VerifyTextScaleAsync(themeRoot, controlsTuple);
         var localization = VerifyLocalization(statusText);
         var rtlResult = await VerifyRtlAsync(themeRoot, controlsTuple);
-        var highContrast = await VerifyForcedHighContrastAsync(themeRoot, controlsTuple);
+        var highContrast = await VerifyOsSelectedHighContrastAsync(
+            themeRoot,
+            controlsTuple,
+            FormatColor(light),
+            FormatColor(dark));
         screenshots = screenshots with
         {
             HighContrastPath = highContrast.ScreenshotPath,
