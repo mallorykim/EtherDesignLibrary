@@ -40,7 +40,7 @@ jobs:
           dotnet-version: 8.0.x
       - name: Audit frozen tokens and theme resource keys
         shell: pwsh
-        run: ./scripts/Verify-ResourceKeys.ps1
+        run: ./scripts/Verify-ResourceKeys.ps1 -RequireHighContrastParity
       - name: Audit public resource merge graph
         shell: pwsh
         run: ./scripts/Verify-ResourceGraph.ps1
