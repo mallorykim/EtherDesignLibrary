@@ -76,22 +76,34 @@ This is not a pixel-faithful clone of WinUI Gallery `ControlExample` (no C#
 source expander, no rich-text highlighter, no per-example Options column inside
 the control). Options stay on the page header by design for this pass.
 
-## L4-C deferred (explicit)
+## L4-C in-repo substitutes vs still-red gates
 
-These remain red preview gates and were **not** implemented:
+In-repo package-consumer quality is green. Insights, Appium, hosted GUI CI,
+MSIX install, arm64 runtime, and preview publish are not.
 
-| Gate | Why deferred |
+**In-repo (package consumer):**
+
+| Gate | Status |
 | --- | --- |
-| Pixel screenshot baselines | Needs a capture harness and Light/Dark/HighContrast image store. |
-| Appium / UIA snapshot suite | No Appium host or snapshot corpus in-repo yet. |
-| Accessibility Insights automation | Requires the Insights engine in CI. |
-| RTL package-consumer flow | Unpackaged fixture: root + 13 controls inherit RightToLeft; automation names unchanged. See `docs/architecture/2026-08-26-l4c-rtl-package-consumer.md`. |
-| 225% text scaling / localization | No scaling fixtures or `.resw` / `x:Uid`. |
-| arm64 consumer fixture | Current fixtures and CI are x64. |
-| MSIX install/runtime proof | Gallery and fixtures stay unpackaged; hosted GUI launch is skipped in CI. |
-| Hosted CI WinUI smoke | `Verify-GallerySmoke.ps1` and consumer runtime markers are not on hosted `windows-latest`. `scripts/Verify-RuntimeGates.ps1` owns them locally (or on a future self-hosted interactive runner) before preview publish. |
-| Performance budgets | No startup/scroll/animation budget harness. |
-| Preview package publish | Gate stays red until the rows above exist. |
+| RTL inheritance + automation names | Green. See `docs/architecture/2026-08-26-l4c-rtl-package-consumer.md`. |
+| In-process UIA snapshot (13 named controls) | Green substitute. Not Appium / out-of-process UIA. EtherDropdown bounding rect is explicit `LayoutFallback` (collapsed ContentPresenter); the other 12 require UIA rects. |
+| 225% `ScaleTransform` + `.resw` / `x:Uid` | Green substitute. Not OS text-scale or Gallery localization. |
+| Light/Dark `RenderTargetBitmap` captures | Green generate-under-artifacts. Not High Contrast, not golden-image CI. |
+| Elapsed verification budget `< 20000ms` | Green harness. Not scroll/animation budgets. |
+| Unsigned MSIX produce | Green produce. Install/runtime stays red. |
+| arm64 pack + fixture compile | Green compile. arm64 runtime stays red. |
+
+**Still red:**
+
+| Gate | Why |
+| --- | --- |
+| Appium / out-of-process UIA | No Appium host. |
+| Accessibility Insights automation | Insights engine not in CI. |
+| Hosted CI WinUI smoke | Still `Verify-RuntimeGates.ps1` local-only; `build.yml` keeps `-SkipRuntimeSmoke`. |
+| MSIX install/runtime | Unsigned produce only. |
+| arm64 runtime smoke | Pack/build only. |
+| High Contrast token parity | 145 keys missing. Frozen. |
+| Preview package publish | User hold. `docs/releases/0.1.0-preview.1.md`. |
 
 `RangeValuePatternIdentifiers.ValueProperty` in-process UIA subscription for
 ProgressBar remains undocumented-as-blocked (no public WinUI API); that is
@@ -102,8 +114,9 @@ unchanged from L2.
 `Verify-GalleryControlExample.ps1` checks the control surface, every migrated
 control page wrapping `ControlExample` with `SpecimenXaml`, Foundations
 primitive pages remaining on plain `ComponentPage`, the architecture note, and
-CI wiring for the static contract. Runtime proof for pages is
-`scripts/Verify-RuntimeGates.ps1` (`Verify-GallerySmoke.ps1` Light/Dark 20/20
-plus consumer runtime markers, including RTL inheritance on the unpackaged
-package host), not hosted `build.yml`. This is not a screenshot or Appium
-baseline.
+CI wiring for the static contract. Runtime proof for pages is local
+`scripts/Verify-RuntimeGates.ps1` (`Verify-GallerySmoke.ps1` Light/Dark 20/20,
+unpackaged consumer markers including RightToLeft inheritance, unsigned MSIX
+produce, and arm64 pack/compile), not hosted `build.yml`. Screenshots are
+generated under artifacts. This is not Appium, Insights, MSIX install, arm64
+runtime, or golden-image CI.

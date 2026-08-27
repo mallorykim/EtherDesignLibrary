@@ -130,17 +130,30 @@ toggleSwitch, scrollBar.
 - Doc: `docs/architecture/2026-08-26-l4-gallery-control-example.md`
 - Gallery smoke catalog still **20 pages** Light + Dark
 
-**Explicitly NOT shipped (L4-C, still red):**
+**In-repo L4-C substitutes (green, not publish):**
 
-- Pixel screenshot baselines
-- Appium / UIA snapshot suite
+- RTL inheritance + automation names on the unpackaged package consumer
+- In-process UIA snapshot of 13 named controls (not Appium). EtherDropdown
+  bounding rect is explicit `LayoutFallback` (collapsed ContentPresenter);
+  the other 12 require UIA rects
+- 225% `ScaleTransform` + fixture `.resw` / `x:Uid` (not OS text-scale, not
+  Gallery localization)
+- Light/Dark `RenderTargetBitmap` captures under artifacts (not High Contrast,
+  not golden-image CI)
+- Elapsed verification harness `< 20000ms` (not scroll/animation budgets)
+- Unsigned MSIX **produce** (`Verify-MsixPackage.ps1`; no `Add-AppxPackage`)
+- arm64 **pack + fixture compile** (`Verify-Arm64Packages.ps1`; exe not launched)
+- Local owner: `scripts/Verify-RuntimeGates.ps1`
+
+**Still red:**
+
+- Appium / out-of-process UIA
 - Accessibility Insights automation
-- 225% text scaling / RTL / localization gates
-- arm64 package consumer fixture
-- MSIX install/runtime proof
-- Performance budgets / material fallbacks
-- Multi-input matrix beyond current structured markers
-- **First preview NuGet publish** (blocked until declared preview gates are green)
+- Hosted CI WinUI smoke (`build.yml` keeps `-SkipRuntimeSmoke`)
+- MSIX **install/runtime**
+- arm64 **runtime** smoke
+- High Contrast token parity (145 keys missing; frozen)
+- **First preview NuGet publish** (user hold; `docs/releases/0.1.0-preview.1.md`)
 
 ---
 
@@ -205,7 +218,9 @@ git hash-object src/Resources/Tokens/EtherIconGeometries.xaml
 ```
 
 Expect: builds 0/0; contracts green; HC parity gate red with **exactly** Missing:145;
-consumer markers present for all L3 controls; Gallery smoke Light 20/20 and Dark 20/20.
+consumer markers present for all L3 controls; Gallery smoke Light 20/20 and Dark 20/20;
+unsigned MSIX produce; arm64 pack/compile. Do not treat those last two as install or
+arm64 runtime.
 
 ---
 
@@ -228,9 +243,9 @@ Classify carefully — many are **documented exceptions**, not accidental regres
    notes, `SEMVER.md`, and `Verify-EtherButtonContract.ps1`.
 9. Consumer fixture unpackaged StorageFile host-root limitation still recorded
 10. **Hosted CI does not launch WinUI.** `.github/workflows/build.yml` skips
-    Gallery smoke and consumer runtime markers. `scripts/Verify-RuntimeGates.ps1`
-    owns those gates locally (or on a future self-hosted interactive runner)
-    before preview publish.
+    Gallery smoke, consumer runtime markers, MSIX produce, and arm64 pack.
+    `scripts/Verify-RuntimeGates.ps1` owns those gates locally (or on a future
+    self-hosted interactive runner). Preview publish stays held.
 
 ---
 
@@ -244,18 +259,22 @@ Classify carefully — many are **documented exceptions**, not accidental regres
 5. Spot-check Switch keyed vs ScrollBar implicit
 6. Spot-check ControlExample on Button + one rolled-out page (e.g. Checkbox)
 7. Re-run verification matrix; treat unexpected HC failures / fixture failures as bugs
-8. Confirm L4-C items are **not** falsely claimed complete in docs/HANDOFF
-9. Do not require pixel/Appium/publish for “L4 deepen complete” — those remain future work
+8. Confirm L4-C in-repo substitutes are not over-claimed as Insights, Appium,
+   hosted GUI CI, MSIX install, arm64 runtime, or publish
+9. Do not require Insights/Appium/publish for “L4 deepen complete” — those remain red
 
 ---
 
 ## 8. Out of scope / next work after this handoff
 
-- Opening L4-C gates
+- Opening remaining L4-C **external** gates (Insights, Appium, hosted GUI CI,
+  MSIX install/runtime, arm64 runtime)
 - **Preview package publish (held).** Pack script and unpublished notes:
   `scripts/Pack-PreviewPackages.ps1`, `docs/releases/0.1.0-preview.1.md`.
   Do not `nuget push` until the intended first public control surface is
   complete. In-repo fixtures already prove local PackageReference consumption.
+  Unsigned MSIX produce and arm64 pack/compile are local `Verify-RuntimeGates.ps1`
+  gates; they do not make preview ready to push.
 - Self-hosted / interactive CI lane for `Verify-RuntimeGates.ps1` (hosted
   `windows-latest` stays static-only)
 - Expanding ControlExample to Foundations primitive pages (intentionally skipped)

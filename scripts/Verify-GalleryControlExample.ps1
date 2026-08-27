@@ -120,7 +120,7 @@ foreach ($page in $foundationPrimitivePages) {
 
 $doc = Get-Content -LiteralPath $architectureDoc -Raw
 Assert-Contains $doc 'ControlExample' 'L4 architecture note names ControlExample'
-Assert-Contains $doc 'Deferred' 'L4 architecture note documents deferrals'
+Assert-Contains $doc 'Still red' 'L4 architecture note documents still-red gates'
 Assert-Contains $doc 'Appium' 'L4 architecture note names Appium deferral'
 Assert-Contains $doc 'arm64' 'L4 architecture note names arm64 deferral'
 Assert-Contains $doc 'RightToLeft' 'L4 architecture note records package-consumer RTL'

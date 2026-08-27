@@ -192,11 +192,16 @@ Shipped:
   Home stay on plain `ComponentPage`. Smoke catalog remains 20/20.
 - `scripts/Verify-GalleryControlExample.ps1` wired in CI.
 
-Explicitly deferred (L4-C, still red): pixel screenshot baselines; Appium / UIA
-snapshots; Accessibility Insights; 225% text scaling / RTL / localization;
-arm64 consumer fixture; MSIX install/runtime proof; performance budgets;
-hosted-CI WinUI smoke (Gallery 20/20 and L3 runtime markers stay on
-`scripts/Verify-RuntimeGates.ps1`); preview package **publish** (held).
+In-repo L4-C substitutes (package consumer, not publish): RTL inheritance;
+in-process UIA snapshot (EtherDropdown `LayoutFallback`; other 12 UIA rects);
+225% `ScaleTransform` + fixture `.resw` / `x:Uid`; Light/Dark captures under
+artifacts; elapsed harness `< 20000ms`; unsigned MSIX **produce**; arm64
+**pack/compile**. Local owner: `scripts/Verify-RuntimeGates.ps1`.
+
+Still red: Accessibility Insights; Appium / out-of-process UIA; hosted-CI
+WinUI smoke (`build.yml` keeps `-SkipRuntimeSmoke`); MSIX **install/runtime**;
+arm64 **runtime**; High Contrast 145-key parity; preview package **publish**
+(held).
 
 Local pack is ready (`scripts/Pack-PreviewPackages.ps1` → `artifacts/packages/`).
 Do not push until the first public preview's control set is accepted. Remaining
@@ -220,13 +225,16 @@ and an explicit L4-C deferral list. Prefer that document over `.superpowers/` sc
 - The L2 runtime evidence is structured, not a pixel screenshot baseline.
 - High Contrast validation for EtherProgressBar is currently a static resource-contract check,
   not an on-device pass across all Windows contrast themes.
-- Formal Appium, UIA snapshots, Accessibility Insights, 225% text scaling, RTL Gallery,
-  localization, performance budgets, arm64 package consumers, MSIX install/runtime, and stable
-  readiness remain later-phase work.
+- In-repo substitutes exist for RTL inheritance, in-process UIA (dropdown
+  `LayoutFallback`), 225% `ScaleTransform`, fixture `.resw` / `x:Uid`, artifact
+  screenshots, elapsed harness, unsigned MSIX produce, and arm64 pack/compile.
+  Accessibility Insights, Appium / out-of-process UIA, hosted GUI CI, MSIX
+  install/runtime, arm64 runtime, and preview **publish** remain red.
 - Unpackaged package-consumer RTL (`RightToLeft` inheritance + automation names) is in
   `Verify-ConsumerFixtures.ps1`; it is not Gallery RTL or Insights.
-- Hosted CI does not launch WinUI; Gallery smoke and L3 runtime markers are
-  `scripts/Verify-RuntimeGates.ps1` on a desktop session, not `build.yml`.
+- Hosted CI does not launch WinUI; Gallery smoke, L3 runtime markers, MSIX
+  produce, and arm64 pack are `scripts/Verify-RuntimeGates.ps1` on a desktop
+  session, not `build.yml`.
 - The frozen global token High Contrast parity gate intentionally remains red.
 - Do not broaden L2 into bulk control conversion. After L2 passes review, continue with the
   migration-template phase defined by the repository plan.

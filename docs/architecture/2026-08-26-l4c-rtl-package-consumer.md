@@ -8,8 +8,10 @@ Light/Dark control markers: `RootGrid.FlowDirection = RightToLeft`. Each of the
 13 named package specimens must inherit `RightToLeft` and keep the same
 `AutomationProperties.Name` the LTR pass already required.
 
-This is not Gallery RTL, not `.resw` / `x:Uid`, not 225% scaling, and not a
-pixel-mirroring audit of Slider bars or Dropdown popups.
+This is not Gallery RTL, not OS text-scale, and not a pixel-mirroring audit
+of Slider bars or Dropdown popups. Fixture `.resw` / `x:Uid` and 225%
+`ScaleTransform` are separate in-repo substitutes (see
+`docs/architecture/2026-08-26-l4c-in-repo-quality-gates.md`).
 
 ## Evidence
 
@@ -21,4 +23,7 @@ pixel-mirroring audit of Slider bars or Dropdown popups.
 
 ## Still red
 
-225% text scaling, localization, Insights/Appium, screenshots, arm64, MSIX.
+Insights, Appium, hosted GUI CI, MSIX install/runtime, arm64 runtime, High
+Contrast 145-key parity, and preview package publish. Unsigned MSIX produce
+and arm64 pack/compile are in-repo green; they are not install or arm64
+runtime.
