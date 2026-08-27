@@ -1,5 +1,11 @@
 name: Build
 
+# Hosted windows-latest runs static contracts, resource audits, and package
+# restore only. It does not launch WinUI. Gallery smoke (Light/Dark 20/20) and
+# L3 consumer runtime markers are owned by scripts/Verify-RuntimeGates.ps1 on a
+# local Windows desktop, or a future self-hosted interactive runner, before
+# preview publish.
+
 on:
   push:
   pull_request:
@@ -82,6 +88,6 @@ jobs:
         run: ./scripts/Verify-GalleryControlExample.ps1
       - name: Verify package consumers
         shell: pwsh
-        # Hosted runners build and validate packages and consumer fixtures. GUI runtime markers
-        # are explicitly skipped because hosted WinUI GUI launch is not a reliable smoke environment.
+        # Hosted runners pack/restore fixtures only. GUI runtime markers stay on
+        # scripts/Verify-RuntimeGates.ps1 because hosted WinUI launch is unreliable.
         run: ./scripts/Verify-ConsumerFixtures.ps1 -SkipSolutionBuild -SkipRuntimeSmoke

@@ -195,7 +195,8 @@ Shipped:
 Explicitly deferred (L4-C, still red): pixel screenshot baselines; Appium / UIA
 snapshots; Accessibility Insights; 225% text scaling / RTL / localization;
 arm64 consumer fixture; MSIX install/runtime proof; performance budgets;
-preview package publish.
+hosted-CI WinUI smoke (Gallery 20/20 and L3 runtime markers stay on
+`scripts/Verify-RuntimeGates.ps1`); preview package publish.
 
 Keep Primitive/Semantic Tokens frozen.
 
@@ -217,6 +218,8 @@ and an explicit L4-C deferral list. Prefer that document over `.superpowers/` sc
 - Formal Appium, UIA snapshots, Accessibility Insights, 225% text scaling, RTL, localization,
   performance budgets, arm64 package consumers, MSIX install/runtime, and stable readiness remain
   later-phase work.
+- Hosted CI does not launch WinUI; Gallery smoke and L3 runtime markers are
+  `scripts/Verify-RuntimeGates.ps1` on a desktop session, not `build.yml`.
 - The frozen global token High Contrast parity gate intentionally remains red.
 - Do not broaden L2 into bulk control conversion. After L2 passes review, continue with the
   migration-template phase defined by the repository plan.

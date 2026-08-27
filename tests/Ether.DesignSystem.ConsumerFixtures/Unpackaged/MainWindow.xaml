@@ -6,149 +6,287 @@
     Title="Ether package consumer smoke">
 
     <Grid x:Name="RootGrid" Background="{ThemeResource BackgroundCanvas}">
-        <StackPanel Padding="8" Spacing="{StaticResource Spacing8}">
-            <!-- Kept in the visual tree so SvgImageSource performs an actual ms-appx URI load. -->
-            <Image x:Name="SvgProof" Width="1" Height="1" Opacity="0.01">
-                <Image.Source>
-                    <SvgImageSource UriSource="ms-appx:///Assets/Icons/dds2/dds2_add-cir.svg" />
-                </Image.Source>
-            </Image>
-            <TextBlock Text="Foundation resource resolved from Ether.DesignSystem.Foundation." />
-            <controls:EtherButton Style="{StaticResource EtherButtonPrimary}"
-                                  Content="Ether control from NuGet package" />
-            <controls:EtherButton x:Name="DefaultButtonProof"
-                                  Content="Default package button"
-                                  AutomationProperties.Name="Default package button" />
-            <controls:EtherButton x:Name="ButtonProof"
-                                  Content="Package button"
-                                  AutomationProperties.Name="Package button" />
-            <controls:EtherButton x:Name="SecondaryButtonProof"
-                                  Style="{StaticResource EtherButtonSecondary}"
-                                  Content="Secondary package button"
-                                  AutomationProperties.Name="Secondary package button" />
-            <controls:EtherProgressBar x:Name="DefaultProgressBarProof"
-                                       Width="200"
-                                       Title="Default package progress" />
-            <controls:EtherProgressBar x:Name="ProgressBarProof"
-                                       Width="200"
-                                       Title="Package download"
-                                       ValueContent="65%"
-                                       Value="65"
-                                       AutomationProperties.Name="Package download progress" />
-            <controls:EtherCheckbox x:Name="DefaultCheckboxProof"
-                                    Content="Default package checkbox"
-                                    AutomationProperties.Name="Default package checkbox" />
-            <controls:EtherCheckbox x:Name="CheckboxProof"
-                                    Content="Package checkbox"
-                                    AutomationProperties.Name="Package checkbox" />
-            <controls:EtherRadioButton x:Name="DefaultRadioButtonProof"
-                                       GroupName="default-package-radio"
-                                       Content="Default package radio"
-                                       AutomationProperties.Name="Default package radio button" />
-            <controls:EtherRadioButton x:Name="RadioButtonProof"
-                                       GroupName="package-radio"
-                                       Content="Package radio"
-                                       AutomationProperties.Name="Package radio button" />
-            <controls:EtherInput x:Name="DefaultInputProof"
-                                 PlaceholderText="Default package input"
-                                 Width="200"
-                                 AutomationProperties.Name="Default package input" />
-            <controls:EtherInput x:Name="InputProof"
-                                 PlaceholderText="Package input"
-                                 Width="200"
-                                 AutomationProperties.Name="Package input" />
-            <controls:EtherDropdown x:Name="DefaultDropdownProof"
-                                    SelectedIndex="0"
-                                    AutomationProperties.Name="Default package dropdown">
-                <ComboBoxItem Content="10 Minutes"/>
-                <ComboBoxItem Content="30 Minutes"/>
-            </controls:EtherDropdown>
-            <controls:EtherDropdown x:Name="DropdownProof"
-                                    SelectedIndex="0"
-                                    AutomationProperties.Name="Package dropdown">
-                <ComboBoxItem Content="10 Minutes"/>
-                <ComboBoxItem Content="30 Minutes"/>
-                <ComboBoxItem Content="1 Hour"/>
-            </controls:EtherDropdown>
-            <controls:EtherSegmentedControl x:Name="DefaultSegmentedControlProof"
-                                            AutomationProperties.Name="Default package segmented control">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton Style="{StaticResource EtherSegment}"
-                                 GroupName="default-package-segment"
-                                 Content="A"
-                                 IsChecked="True"/>
-                    <RadioButton Style="{StaticResource EtherSegment}"
-                                 GroupName="default-package-segment"
-                                 Content="B"/>
+        <!-- Kept in the visual tree so SvgImageSource performs an actual ms-appx URI load. -->
+        <Image x:Name="SvgProof"
+               Width="1"
+               Height="1"
+               Opacity="0.01"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Top"
+               IsHitTestVisible="False">
+            <Image.Source>
+                <SvgImageSource UriSource="ms-appx:///Assets/Icons/dds2/dds2_add-cir.svg" />
+            </Image.Source>
+        </Image>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      IsTabStop="True"
+                      UseSystemFocusVisuals="False">
+            <StackPanel Padding="24" Spacing="{StaticResource Spacing24}">
+
+                <StackPanel Spacing="{StaticResource Spacing4}">
+                    <TextBlock Text="Package consumer"
+                               Style="{StaticResource headers/h2}"
+                               Foreground="{ThemeResource text/primary}"/>
+                    <TextBlock Text="Foundation resource resolved from Ether.DesignSystem.Foundation."
+                               Style="{StaticResource body/m-regular}"
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
                 </StackPanel>
-            </controls:EtherSegmentedControl>
-            <controls:EtherSegmentedControl x:Name="SegmentedControlProof"
-                                            AutomationProperties.Name="Package segmented control">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton Style="{StaticResource EtherSegment}"
-                                 GroupName="package-segment"
-                                 Content="A"
-                                 IsChecked="True"/>
-                    <RadioButton Style="{StaticResource EtherSegment}"
-                                 GroupName="package-segment"
-                                 Content="B"/>
+
+                <StackPanel Spacing="{StaticResource Spacing8}">
+                    <TextBlock Text="BUTTON"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <Border Background="{ThemeResource background/surface}"
+                            CornerRadius="{StaticResource radius/surface}"
+                            Padding="24">
+                        <StackPanel Spacing="{StaticResource Spacing12}">
+                            <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing12}">
+                                <controls:EtherButton Style="{StaticResource EtherButtonPrimary}"
+                                                      Content="Ether control from NuGet package" />
+                                <controls:EtherButton x:Name="DefaultButtonProof"
+                                                      Content="Default package button"
+                                                      AutomationProperties.Name="Default package button" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing12}">
+                                <controls:EtherButton x:Name="ButtonProof"
+                                                      Content="Package button"
+                                                      AutomationProperties.Name="Package button" />
+                                <controls:EtherButton x:Name="SecondaryButtonProof"
+                                                      Style="{StaticResource EtherButtonSecondary}"
+                                                      Content="Secondary package button"
+                                                      AutomationProperties.Name="Secondary package button" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
-            </controls:EtherSegmentedControl>
-            <controls:EtherIntelligenceButton x:Name="DefaultIntelligenceButtonProof"
-                                              Content="Default package intelligence"
-                                              AutomationProperties.Name="Default package intelligence button"/>
-            <controls:EtherIntelligenceButton x:Name="IntelligenceButtonProof"
-                                              Content="Package intelligence"
-                                              AutomationProperties.Name="Package intelligence button"/>
-            <controls:EtherSteeringBar x:Name="DefaultSteeringBarProof"
-                                       Width="200"
-                                       Title="Default package steering bar"/>
-            <controls:EtherSteeringBar x:Name="SteeringBarProof"
-                                       Width="200"
-                                       Title="Package playback"
-                                       ValueContent="65%"
-                                       Value="65"
-                                       AutomationProperties.Name="Package steering bar"/>
-            <controls:EtherSlider x:Name="DefaultSliderProof"
-                                  AutomationProperties.Name="Default package slider"/>
-            <controls:EtherSlider x:Name="SliderProof"
-                                  Value="65"
-                                  AutomationProperties.Name="Package slider"/>
-            <controls:EtherMasthead x:Name="DefaultMastheadProof"
-                                    EnableWindowCommands="False"
-                                    AutomationProperties.Name="Default package masthead"/>
-            <controls:EtherMasthead x:Name="MastheadProof"
-                                    EnableWindowCommands="False"
-                                    AutomationProperties.Name="Package masthead"/>
-            <ToggleSwitch x:Name="BareToggleSwitchProof"
-                          OffContent="Off"
-                          OnContent="On"
-                          AutomationProperties.Name="Bare package toggle switch"/>
-            <ToggleSwitch x:Name="DefaultToggleSwitchProof"
-                          Style="{StaticResource EtherSwitch}"
-                          OffContent="Off"
-                          OnContent="On"
-                          AutomationProperties.Name="Default package toggle switch"/>
-            <ToggleSwitch x:Name="ToggleSwitchProof"
-                          Style="{StaticResource EtherSwitch}"
-                          IsOn="True"
-                          OffContent="Off"
-                          OnContent="On"
-                          AutomationProperties.Name="Package toggle switch"/>
-            <ScrollBar x:Name="ScrollBarProof"
-                       Orientation="Vertical"
-                       Height="200"
-                       ViewportSize="40"
-                       Maximum="100"
-                       AutomationProperties.Name="Package scroll bar"/>
-            <ScrollViewer x:Name="ScrollViewerProof"
-                          Width="160"
-                          Height="80"
-                          VerticalScrollBarVisibility="Visible"
-                          HorizontalScrollBarVisibility="Visible"
-                          AutomationProperties.Name="Package scroll viewer">
-                <Border Width="400" Height="400"/>
-            </ScrollViewer>
-        </StackPanel>
+
+                <StackPanel Spacing="{StaticResource Spacing8}">
+                    <TextBlock Text="PROGRESS"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <Border Background="{ThemeResource background/surface}"
+                            CornerRadius="{StaticResource radius/surface}"
+                            Padding="24">
+                        <StackPanel Spacing="{StaticResource Spacing16}">
+                            <controls:EtherProgressBar x:Name="DefaultProgressBarProof"
+                                                       HorizontalAlignment="Stretch"
+                                                       Title="Default package progress" />
+                            <controls:EtherProgressBar x:Name="ProgressBarProof"
+                                                       HorizontalAlignment="Stretch"
+                                                       Title="Package download"
+                                                       ValueContent="65%"
+                                                       Value="65"
+                                                       AutomationProperties.Name="Package download progress" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Spacing="{StaticResource Spacing8}">
+                    <TextBlock Text="SELECTION"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <Border Background="{ThemeResource background/surface}"
+                            CornerRadius="{StaticResource radius/surface}"
+                            Padding="24">
+                        <StackPanel Spacing="{StaticResource Spacing16}">
+                            <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing24}">
+                                <controls:EtherCheckbox x:Name="DefaultCheckboxProof"
+                                                        Content="Default package checkbox"
+                                                        AutomationProperties.Name="Default package checkbox" />
+                                <controls:EtherCheckbox x:Name="CheckboxProof"
+                                                        Content="Package checkbox"
+                                                        AutomationProperties.Name="Package checkbox" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing24}">
+                                <controls:EtherRadioButton x:Name="DefaultRadioButtonProof"
+                                                           GroupName="default-package-radio"
+                                                           Content="Default package radio"
+                                                           AutomationProperties.Name="Default package radio button" />
+                                <controls:EtherRadioButton x:Name="RadioButtonProof"
+                                                           GroupName="package-radio"
+                                                           Content="Package radio"
+                                                           AutomationProperties.Name="Package radio button" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Spacing="{StaticResource Spacing8}">
+                    <TextBlock Text="INPUT"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <Border Background="{ThemeResource background/surface}"
+                            CornerRadius="{StaticResource radius/surface}"
+                            Padding="24">
+                        <StackPanel Spacing="{StaticResource Spacing16}" MaxWidth="360" HorizontalAlignment="Left">
+                            <controls:EtherInput x:Name="DefaultInputProof"
+                                                 PlaceholderText="Default package input"
+                                                 HorizontalAlignment="Stretch"
+                                                 AutomationProperties.Name="Default package input" />
+                            <controls:EtherInput x:Name="InputProof"
+                                                 PlaceholderText="Package input"
+                                                 HorizontalAlignment="Stretch"
+                                                 AutomationProperties.Name="Package input" />
+                            <controls:EtherDropdown x:Name="DefaultDropdownProof"
+                                                    SelectedIndex="0"
+                                                    HorizontalAlignment="Stretch"
+                                                    AutomationProperties.Name="Default package dropdown">
+                                <ComboBoxItem Content="10 Minutes"/>
+                                <ComboBoxItem Content="30 Minutes"/>
+                            </controls:EtherDropdown>
+                            <controls:EtherDropdown x:Name="DropdownProof"
+                                                    SelectedIndex="0"
+                                                    HorizontalAlignment="Stretch"
+                                                    AutomationProperties.Name="Package dropdown">
+                                <ComboBoxItem Content="10 Minutes"/>
+                                <ComboBoxItem Content="30 Minutes"/>
+                                <ComboBoxItem Content="1 Hour"/>
+                            </controls:EtherDropdown>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Spacing="{StaticResource Spacing8}">
+                    <TextBlock Text="SEGMENTED / INTELLIGENCE"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <Border Background="{ThemeResource background/surface}"
+                            CornerRadius="{StaticResource radius/surface}"
+                            Padding="24">
+                        <StackPanel Spacing="{StaticResource Spacing16}">
+                            <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing16}">
+                                <controls:EtherSegmentedControl x:Name="DefaultSegmentedControlProof"
+                                                                AutomationProperties.Name="Default package segmented control">
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton Style="{StaticResource EtherSegment}"
+                                                     GroupName="default-package-segment"
+                                                     Content="A"
+                                                     IsChecked="True"/>
+                                        <RadioButton Style="{StaticResource EtherSegment}"
+                                                     GroupName="default-package-segment"
+                                                     Content="B"/>
+                                    </StackPanel>
+                                </controls:EtherSegmentedControl>
+                                <controls:EtherSegmentedControl x:Name="SegmentedControlProof"
+                                                                AutomationProperties.Name="Package segmented control">
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton Style="{StaticResource EtherSegment}"
+                                                     GroupName="package-segment"
+                                                     Content="A"
+                                                     IsChecked="True"/>
+                                        <RadioButton Style="{StaticResource EtherSegment}"
+                                                     GroupName="package-segment"
+                                                     Content="B"/>
+                                    </StackPanel>
+                                </controls:EtherSegmentedControl>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing12}">
+                                <controls:EtherIntelligenceButton x:Name="DefaultIntelligenceButtonProof"
+                                                                  Content="Default package intelligence"
+                                                                  AutomationProperties.Name="Default package intelligence button"/>
+                                <controls:EtherIntelligenceButton x:Name="IntelligenceButtonProof"
+                                                                  Content="Package intelligence"
+                                                                  AutomationProperties.Name="Package intelligence button"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Spacing="{StaticResource Spacing8}">
+                    <TextBlock Text="RANGE"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <Border Background="{ThemeResource background/surface}"
+                            CornerRadius="{StaticResource radius/surface}"
+                            Padding="24">
+                        <StackPanel Spacing="{StaticResource Spacing16}">
+                            <controls:EtherSteeringBar x:Name="DefaultSteeringBarProof"
+                                                       HorizontalAlignment="Stretch"
+                                                       Title="Default package steering bar"/>
+                            <controls:EtherSteeringBar x:Name="SteeringBarProof"
+                                                       HorizontalAlignment="Stretch"
+                                                       Title="Package playback"
+                                                       ValueContent="65%"
+                                                       Value="65"
+                                                       AutomationProperties.Name="Package steering bar"/>
+                            <controls:EtherSlider x:Name="DefaultSliderProof"
+                                                  HorizontalAlignment="Stretch"
+                                                  AutomationProperties.Name="Default package slider"/>
+                            <controls:EtherSlider x:Name="SliderProof"
+                                                  HorizontalAlignment="Stretch"
+                                                  Value="65"
+                                                  AutomationProperties.Name="Package slider"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Spacing="{StaticResource Spacing8}">
+                    <TextBlock Text="MASTHEAD"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <Border Background="{ThemeResource background/surface}"
+                            CornerRadius="{StaticResource radius/surface}"
+                            Padding="24">
+                        <StackPanel Spacing="{StaticResource Spacing16}">
+                            <controls:EtherMasthead x:Name="DefaultMastheadProof"
+                                                    EnableWindowCommands="False"
+                                                    AutomationProperties.Name="Default package masthead"/>
+                            <controls:EtherMasthead x:Name="MastheadProof"
+                                                    EnableWindowCommands="False"
+                                                    AutomationProperties.Name="Package masthead"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Spacing="{StaticResource Spacing8}">
+                    <TextBlock Text="SWITCH / SCROLL"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <Border Background="{ThemeResource background/surface}"
+                            CornerRadius="{StaticResource radius/surface}"
+                            Padding="24">
+                        <StackPanel Spacing="{StaticResource Spacing16}">
+                            <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing24}">
+                                <ToggleSwitch x:Name="BareToggleSwitchProof"
+                                              OffContent="Off"
+                                              OnContent="On"
+                                              AutomationProperties.Name="Bare package toggle switch"/>
+                                <ToggleSwitch x:Name="DefaultToggleSwitchProof"
+                                              Style="{StaticResource EtherSwitch}"
+                                              OffContent="Off"
+                                              OnContent="On"
+                                              AutomationProperties.Name="Default package toggle switch"/>
+                                <ToggleSwitch x:Name="ToggleSwitchProof"
+                                              Style="{StaticResource EtherSwitch}"
+                                              IsOn="True"
+                                              OffContent="Off"
+                                              OnContent="On"
+                                              AutomationProperties.Name="Package toggle switch"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing24}">
+                                <ScrollBar x:Name="ScrollBarProof"
+                                           Orientation="Vertical"
+                                           Height="200"
+                                           ViewportSize="40"
+                                           Maximum="100"
+                                           AutomationProperties.Name="Package scroll bar"/>
+                                <ScrollViewer x:Name="ScrollViewerProof"
+                                              Width="240"
+                                              Height="200"
+                                              VerticalScrollBarVisibility="Visible"
+                                              HorizontalScrollBarVisibility="Visible"
+                                              AutomationProperties.Name="Package scroll viewer">
+                                    <Border Width="400" Height="400"/>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>

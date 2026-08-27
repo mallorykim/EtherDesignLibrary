@@ -21,6 +21,8 @@ that set an explicit named `Style` are unchanged.
 - The component declares the `RightIcon` template part plus CommonStates, FocusStates, and
   RightIconStates. Trailing-icon visibility is driven with `VisualStateManager`; the previous
   `RightIconVisibility` dependency property is removed (preview/unshipped API).
+  `PublicAPI.Unshipped.txt` is the current surface, not a removal ledger; the contract script
+  rejects the identifier if it returns.
 - Light, Dark, and HighContrast expose the same 18 `EtherButton*` component resources. The
   three control templates consume those component keys only for color-bearing values. Light and
   Dark retain the previous token mappings (including the Primary `#40FFFFFF` hairline, now in

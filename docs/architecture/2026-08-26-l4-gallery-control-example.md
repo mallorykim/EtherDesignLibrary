@@ -35,6 +35,10 @@ These wrap `ComponentPage.InteractiveContent` in `ControlExample` with a
 `SpecimenXaml` snippet. `StatesContent` stays outside the example. Live
 `OutputText` is used where the page has a meaningful interaction:
 
+Folders follow Gallery information architecture, not a single `Controls/` dump
+(`ProgressBarPage` in DataDisplay, `ScrollBarPage` in Foundations as a control
+story, `MastheadPage` in Navigation, `CardPage` in Surfaces).
+
 | Page | Location | Live output |
 | --- | --- | --- |
 | `ButtonPage` | Controls | Last click |
@@ -84,6 +88,7 @@ These remain red preview gates and were **not** implemented:
 | 225% text scaling / RTL / localization | No scaling/flow/resource-language fixtures. |
 | arm64 consumer fixture | Current fixtures and CI are x64. |
 | MSIX install/runtime proof | Gallery and fixtures stay unpackaged; hosted GUI launch is skipped in CI. |
+| Hosted CI WinUI smoke | `Verify-GallerySmoke.ps1` and consumer runtime markers are not on hosted `windows-latest`. `scripts/Verify-RuntimeGates.ps1` owns them locally (or on a future self-hosted interactive runner) before preview publish. |
 | Performance budgets | No startup/scroll/animation budget harness. |
 | Preview package publish | Gate stays red until the rows above exist. |
 
@@ -96,5 +101,7 @@ unchanged from L2.
 `Verify-GalleryControlExample.ps1` checks the control surface, every migrated
 control page wrapping `ControlExample` with `SpecimenXaml`, Foundations
 primitive pages remaining on plain `ComponentPage`, the architecture note, and
-CI wiring. Runtime proof for pages is still `Verify-GallerySmoke.ps1` (20/20
-Light and Dark). This is not a screenshot or Appium baseline.
+CI wiring for the static contract. Runtime proof for pages is
+`scripts/Verify-RuntimeGates.ps1` (`Verify-GallerySmoke.ps1` Light/Dark 20/20
+plus consumer runtime markers), not hosted `build.yml`. This is not a
+screenshot or Appium baseline.

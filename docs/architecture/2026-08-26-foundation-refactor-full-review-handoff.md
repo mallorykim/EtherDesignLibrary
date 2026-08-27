@@ -152,11 +152,20 @@ Ether.DesignSystem.slnx
 ├─ src/Ether.DesignSystem.Controls/       # Generic.xaml / DesignSystem.xaml + PublicAPI
 ├─ src/Controls/**                        # control sources (linked into Controls)
 ├─ src/Views/**                           # Gallery pages (linked into Gallery)
+│    Controls/                            # most control stories
+│    DataDisplay/                         # ProgressBarPage (data-display IA)
+│    Foundations/                         # primitives + ScrollBarPage (control story)
+│    Navigation/                          # MastheadPage
+│    Surfaces/                            # CardPage
 ├─ samples/Ether.DesignSystem.Gallery/
 ├─ tests/Ether.DesignSystem.ConsumerFixtures/
 ├─ scripts/Verify-*.ps1
 └─ docs/architecture/2026-08-26-*.md
 ```
+
+Gallery page folders follow Gallery information architecture, not a single
+`Controls/` dump. `ProgressBarPage`, `ScrollBarPage`, `MastheadPage`, and
+`CardPage` stay in the folders above.
 
 Resource merge (conceptual):
 
@@ -183,9 +192,8 @@ Get-ChildItem .\scripts\Verify-Ether*Contract.ps1 | ForEach-Object { & $_.FullNa
 # Expected fail ONLY for 145 frozen HC gaps:
 .\scripts\Verify-ResourceKeys.ps1 -RequireHighContrastParity
 
-# Runtime
-.\scripts\Verify-ConsumerFixtures.ps1 -SkipSolutionBuild
-.\scripts\Verify-GallerySmoke.ps1
+# Runtime (local Windows desktop / self-hosted interactive runner — not hosted CI)
+.\scripts\Verify-RuntimeGates.ps1 -SkipSolutionBuild
 
 # Frozen tokens
 git diff -- src/Resources/Tokens
@@ -213,9 +221,16 @@ Classify carefully — many are **documented exceptions**, not accidental regres
 6. **EtherSwitch** must remain **keyed**; **ScrollBar** remains **implicit**
 7. **ControlExample** Copy is clipboard-only (no runtime fixture for Copy click);
    SourceXaml snippets are representative, not always byte-identical to live trees
-8. **Preview PublicAPI** — unshipped baselines; preview breaks (e.g. Button
-   `RightIconVisibility` removal) are intentional within preview policy
+8. **Preview PublicAPI** — `PublicAPI.Unshipped.txt` is the current public
+   surface, not a removal ledger (the analyzer format does not record deleted
+   members). Preview breaks such as Button `RightIconVisibility` are
+   intentional under preview policy; the removal is recorded in architecture
+   notes, `SEMVER.md`, and `Verify-EtherButtonContract.ps1`.
 9. Consumer fixture unpackaged StorageFile host-root limitation still recorded
+10. **Hosted CI does not launch WinUI.** `.github/workflows/build.yml` skips
+    Gallery smoke and consumer runtime markers. `scripts/Verify-RuntimeGates.ps1`
+    owns those gates locally (or on a future self-hosted interactive runner)
+    before preview publish.
 
 ---
 
@@ -237,6 +252,8 @@ Classify carefully — many are **documented exceptions**, not accidental regres
 ## 8. Out of scope / next work after this handoff
 
 - Opening L4-C gates and preview package publish
+- Self-hosted / interactive CI lane for `Verify-RuntimeGates.ps1` (hosted
+  `windows-latest` stays static-only)
 - Expanding ControlExample to Foundations primitive pages (intentionally skipped)
 - Token HC parity fill-in (frozen; separate product decision)
 - Framework / Windows App SDK upgrades

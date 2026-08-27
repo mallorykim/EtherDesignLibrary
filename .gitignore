@@ -39,3 +39,6 @@ BundleArtifacts/
 
 # Local test results
 TestResults/
+
+# Local agent scratch (task briefs/reports; not source of truth)
+.superpowers/
