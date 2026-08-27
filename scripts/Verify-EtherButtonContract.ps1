@@ -5,8 +5,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherButton.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherButton.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherButton.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherButton.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
@@ -46,7 +46,8 @@ Assert-Contains $control 'DefaultStyleKey\s*=\s*typeof\(EtherButton\)' 'EtherBut
 if ($control -match '(?m)^\s*(MinHeight|Padding|FontSize)\s*=') {
     throw 'EtherButton constructor must not assign its default visual setters; the keyed style owns them.'
 }
-Assert-Contains $control 'TemplatePart\(Name = .*RightIcon' 'EtherButton TemplatePart contract for RightIcon'
+Assert-Contains $control "TemplatePart\(Name = .*RightIcon" 'EtherButton TemplatePart contract for RightIcon'
+Assert-Contains $control "TemplatePart\(Name = .*Cp" 'EtherButton TemplatePart contract for Cp'
 foreach ($state in 'Normal', 'PointerOver', 'Pressed', 'Disabled') {
     Assert-Contains $control "TemplateVisualState\(GroupName = CommonStatesGroup, Name = ${state}State\)" "EtherButton TemplateVisualState contract for CommonStates/$state"
 }
@@ -76,7 +77,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherButton is missing its implicit style BasedOn DefaultEtherButtonStyle.'
 }
-foreach ($setter in 'MinHeight', 'Padding', 'FontSize', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'UseSystemFocusVisuals', 'Template') {
+foreach ($setter in 'MinHeight', 'Padding', 'FontSize', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherButtonStyle is missing its $setter setter."
     }
@@ -93,6 +94,11 @@ $templates = @($xaml.SelectNodes("//*[local-name()='ControlTemplate']"))
 if ($templates.Count -lt 3) {
     throw 'EtherButton must keep its Primary, Secondary, and Tertiary control templates.'
 }
+$xamlText = Get-Content -LiteralPath $xamlPath -Raw
+if ($xamlText -match 'FontFamily="Inter"') {
+    throw 'EtherButton templates must use {StaticResource InterFont}, not the system family name Inter.'
+}
+Assert-Contains $xamlText 'FontFamily="\{StaticResource InterFont\}"' 'EtherButton primary/secondary templates use packaged InterFont'
 foreach ($template in $templates) {
     if ($template.OuterXml -match '#[0-9A-Fa-f]{3,8}') {
         throw 'EtherButton ControlTemplate contains a literal hex color; only component resources may carry color values.'

@@ -16,8 +16,8 @@
     <!-- Unpackaged — no Package.appxmanifest required -->
     <WindowsPackageType>None</WindowsPackageType>
     <SelfContained>false</SelfContained>
-    <!-- Legacy sandbox owns only its original source tree; exclude generated outputs and the
-         separately built repository projects before SDK default globs create XAML items. -->
+    <!-- Legacy sandbox is a second host of Gallery sources; exclude generated outputs and
+         the separately built repository projects before SDK default globs create XAML items. -->
     <DefaultItemExcludes>$(DefaultItemExcludes);artifacts\**;tests\**;src\Ether.DesignSystem.Foundation\**;src\Ether.DesignSystem.Controls\**;samples\**</DefaultItemExcludes>
   </PropertyGroup>
 
@@ -26,40 +26,65 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Updated to latest Windows App SDK / BuildTools -->
+    <ProjectReference Include="src\Ether.DesignSystem.Foundation\Ether.DesignSystem.Foundation.csproj" />
+    <ProjectReference Include="src\Ether.DesignSystem.Controls\Ether.DesignSystem.Controls.csproj" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
-    <!-- WinUI3 colored shadows (replaces WPF DropShadowEffect). Media brings Win2D + Extensions. -->
-    <PackageReference Include="CommunityToolkit.WinUI.Media" />
-    <PackageReference Include="CommunityToolkit.WinUI.Extensions" />
     <Manifest Include="$(ApplicationManifest)"/>
   </ItemGroup>
 
   <ItemGroup>
-    <!-- The legacy project is intentionally outside Ether.DesignSystem.slnx. Keep it from
-         globbing source and generated files owned by the new projects beneath this repository. -->
-    <Compile Remove="src\Ether.DesignSystem.Foundation\**\*.cs;src\Ether.DesignSystem.Controls\**\*.cs;samples\**\*.cs" />
-    <Page Remove="src\Ether.DesignSystem.Foundation\**\*.xaml;src\Ether.DesignSystem.Controls\**\*.xaml;samples\**\*.xaml" />
-    <ApplicationDefinition Remove="src\Ether.DesignSystem.Foundation\**\*.xaml;src\Ether.DesignSystem.Controls\**\*.xaml;samples\**\*.xaml" />
-    <Page Remove="src\App\App.xaml" />
-    <ApplicationDefinition Include="src\App\App.xaml">
+    <ApplicationDefinition Include="samples\Ether.DesignSystem.Gallery\App.xaml">
+      <Link>App.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Update="src\App\MainWindow.xaml;src\Controls\**\*.xaml;src\Themes\**\*.xaml;src\Views\**\*.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Link>%(Filename)%(Extension)</Link>
-    </Page>
-    <Compile Update="src\App\App.xaml.cs">
+    <Compile Include="samples\Ether.DesignSystem.Gallery\App.xaml.cs">
+      <Link>App.xaml.cs</Link>
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Update="src\App\MainWindow.xaml.cs">
+    <Compile Include="samples\Ether.DesignSystem.Gallery\ComponentCatalog.cs">
+      <Link>ComponentCatalog.cs</Link>
+    </Compile>
+    <Page Include="samples\Ether.DesignSystem.Gallery\MainWindow.xaml">
+      <Link>MainWindow.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="samples\Ether.DesignSystem.Gallery\MainWindow.xaml.cs">
+      <Link>MainWindow.xaml.cs</Link>
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="samples\Ether.DesignSystem.Gallery\Views\**\*.xaml">
+      <Link>Views\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="samples\Ether.DesignSystem.Gallery\Views\**\*.cs">
+      <Link>Views\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+    <Page Include="samples\Ether.DesignSystem.Gallery\GalleryControls\**\*.xaml">
+      <Link>GalleryControls\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="samples\Ether.DesignSystem.Gallery\GalleryControls\**\*.cs">
+      <Link>GalleryControls\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+    <Compile Include="samples\Ether.DesignSystem.Gallery\Converters\*.cs">
+      <Link>Converters\%(Filename)%(Extension)</Link>
+    </Compile>
+    <Page Include="samples\Ether.DesignSystem.Gallery\Resources\Visuals\*.xaml">
+      <Link>Resources\Visuals\%(Filename)%(Extension)</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <PRIResource Include="samples\Ether.DesignSystem.Gallery\Strings\en-US\Resources.resw">
+      <Link>Strings\en-US\Resources.resw</Link>
+    </PRIResource>
   </ItemGroup>
 
-  <!-- Fonts — local copies -->
+  <!-- Fonts — local copies for host-root token URIs -->
   <ItemGroup>
     <Content Include="Fonts\Instrument_Sans\InstrumentSans-VariableFont_wdth,wght.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

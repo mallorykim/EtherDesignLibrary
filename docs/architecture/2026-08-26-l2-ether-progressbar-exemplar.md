@@ -28,7 +28,9 @@ the existing layout columns directly, so reduced-motion support is N/A for this 
 
 The unpackaged NuGet consumer fixture mounts the real control on a UI thread. Its marker records
 keyed style lookup/default setters, template parts, four observable label transitions, a 65%
-fill ratio, read-only automation values, rejected `SetValue`, Light/Dark gradient stops, and
+fill ratio, read-only automation values, rejected `SetValue`, in-process
+`AutomationRangeValueChanged` subscription (`valuePropertyChangedSubscribed`),
+Light/Dark gradient stops, and
 Light/Dark template brush values. `Verify-EtherProgressBarContract.ps1` additionally verifies
 metadata, keyed/implicit styles, theme-key symmetry, High Contrast system resources, no literal
 template hex colors, and the required runtime evidence fields.

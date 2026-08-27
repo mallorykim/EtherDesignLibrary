@@ -410,7 +410,7 @@ try {
     Assert-PackageEntry $foundationEntries $foundationPri 'Ether.DesignSystem.Foundation'
     Assert-PackageEntry $foundationEntries "lib/$packageTfm/Ether.DesignSystem.Foundation/Themes/Foundation.xaml" 'Ether.DesignSystem.Foundation'
     Assert-PackageEntry $foundationEntries "lib/$packageTfm/Ether.DesignSystem.Foundation/Themes/Foundation.xbf" 'Ether.DesignSystem.Foundation'
-    Assert-PackageEntry $foundationEntries "lib/$packageTfm/Resources/Tokens/EtherTypography.xaml" 'Ether.DesignSystem.Foundation'
+    Assert-PackageEntry $foundationEntries "lib/$packageTfm/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml" 'Ether.DesignSystem.Foundation'
     Assert-PackageEntry $foundationEntries "lib/$packageTfm/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xbf" 'Ether.DesignSystem.Foundation'
     Assert-PackageEntry $foundationEntries 'contentFiles/any/any/Fonts/Instrument_Sans/InstrumentSans-VariableFont_wdth,wght.ttf' 'Ether.DesignSystem.Foundation'
     Assert-PackageEntry $foundationEntries 'contentFiles/any/any/Assets/Icons/dds2/dds2_add-cir.svg' 'Ether.DesignSystem.Foundation'
@@ -530,7 +530,7 @@ try {
             $expectedCheckStates = @('Unchecked', 'Checked')
             $expectedInputTemplateParts = @('LayoutRoot', 'BorderElement', 'PlaceholderTextContentPresenter', 'ContentElement')
             $expectedInputCommonStates = @('Normal', 'PointerOver', 'Focused', 'Disabled')
-            $expectedDropdownTemplateParts = @('TriggerText', 'Arrow', 'Popup')
+            $expectedDropdownTemplateParts = @('TriggerText', 'Arrow', 'Popup', 'PopupBorder', 'ScrollViewer')
             $expectedDropDownStates = @('Opened', 'Closed')
             $expectedSegmentedControlTemplateParts = @('ShadowHost', 'TrackSurface')
             $expectedSegmentCheckStates = @('Unchecked', 'Checked')
@@ -539,7 +539,7 @@ try {
             $expectedSteeringBarTemplateParts = @('InteractionSurface', 'FillBorder', 'ThumbHost', 'LabelRow', 'TitleText', 'ValueLabel')
             $expectedSteeringBarLabelStates = @('BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden')
             $expectedSteeringBarGradient = @('#FF0021F3', '#FF0015FF', '#FF0EB2FF', '#FF40E1FD')
-            $expectedSliderTemplateParts = @('ValueText', 'BarCanvas')
+            $expectedSliderTemplateParts = @('ValueText', 'BarCanvas', 'Knob')
             $expectedMastheadTemplateParts = @('SearchIconSlot', 'SettingsButton', 'MinimizeButton', 'MaximizeRestoreButton', 'CloseButton')
             $expectedMastheadOptionalIconStates = @('SearchCollapsed', 'SearchVisible')
             $expectedToggleSwitchTemplateParts = @('TrackOff', 'TrackOn', 'KnobFill')
@@ -578,6 +578,7 @@ try {
                 [double]$progressBar.value -ne 65 -or
                 $progressBar.setValueRejected -ne $true -or
                 $progressBar.valueChangeExercised -ne $true -or
+                $progressBar.valuePropertyChangedSubscribed -ne $true -or
                 (@($progressBar.lightGradientColors) -join ',') -cne ($expectedProgressGradient -join ',') -or
                 (@($progressBar.darkGradientColors) -join ',') -cne ($expectedProgressGradient -join ',') -or
                 (@($progressBar.lightTemplateBrushColors) -join ',') -ceq (@($progressBar.darkTemplateBrushColors) -join ',') -or
@@ -742,11 +743,11 @@ try {
     }
 
     $expectedTokenHashes = @{
-        'src/Resources/Tokens/EtherPrimitives.xaml' = 'd6ff0e5301b3672dbb492484c8d0ea584aca12be'
-        'src/Resources/Tokens/EtherColors.xaml' = '794404850d4eb20a2fc3ec43c3480be8f318ac64'
-        'src/Resources/Tokens/EtherSpacing.xaml' = '5d631cd2ebde306d389a1fa8999000359441bcd2'
-        'src/Resources/Tokens/EtherTypography.xaml' = 'b24444567ee95467408e004fe7fab622eba79759'
-        'src/Resources/Tokens/EtherIconGeometries.xaml' = '134c1667934376ba4943cf350b110a02607c81f4'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml' = 'd6ff0e5301b3672dbb492484c8d0ea584aca12be'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = 'd7c218e5a631e86552ed2b089cbc03bbd571a090'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherSpacing.xaml' = '5d631cd2ebde306d389a1fa8999000359441bcd2'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml' = 'b24444567ee95467408e004fe7fab622eba79759'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherIconGeometries.xaml' = '134c1667934376ba4943cf350b110a02607c81f4'
     }
     foreach ($tokenPath in $expectedTokenHashes.Keys) {
         $actualHash = (& git hash-object $tokenPath).Trim()

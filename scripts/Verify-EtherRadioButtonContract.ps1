@@ -5,8 +5,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherRadioButton.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherRadioButton.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherRadioButton.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherRadioButton.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
@@ -61,7 +61,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherRadioButton is missing its implicit style BasedOn DefaultEtherRadioButtonStyle.'
 }
-foreach ($setter in 'IsThreeState', 'UseSystemFocusVisuals', 'MinWidth', 'MinHeight', 'Padding', 'HorizontalAlignment', 'VerticalAlignment', 'Template') {
+foreach ($setter in 'IsThreeState', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'MinWidth', 'MinHeight', 'Padding', 'HorizontalAlignment', 'VerticalAlignment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherRadioButtonStyle is missing its $setter setter."
     }

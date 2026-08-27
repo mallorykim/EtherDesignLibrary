@@ -23,7 +23,7 @@ of Slider bars or Dropdown popups. Fixture `.resw` / `x:Uid` and 225%
 
 ## Still red
 
-Insights, Appium, hosted GUI CI, MSIX install/runtime, arm64 runtime, High
-Contrast 145-key parity, and preview package publish. Unsigned MSIX produce
-and arm64 pack/compile are in-repo green; they are not install or arm64
-runtime.
+Insights, Appium, hosted GUI CI, MSIX install/runtime, arm64 runtime, and
+preview package publish. Unsigned MSIX produce and arm64 pack/compile are
+in-repo green; they are not install or arm64 runtime. High Contrast semantic
+key parity is green (`SystemColor*`); on-device contrast themes are not.

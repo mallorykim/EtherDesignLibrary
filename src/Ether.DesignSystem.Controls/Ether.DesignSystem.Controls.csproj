@@ -10,7 +10,7 @@
     <Authors>Ether Design System</Authors>
     <Description>Preview WinUI 3 reusable controls and design-system resource entry points for Ether.</Description>
     <PackageTags>winui;winui3;design-system;controls;preview</PackageTags>
-    <PackageReleaseNotes>0.1.0-preview.1. See docs/releases/0.1.0-preview.1.md. EtherButton RightIconVisibility was removed (RightIconStates). x64 unpackaged consumers are verified; MSIX, arm64, accessibility, localization, High Contrast completeness, and stable-release readiness remain incomplete.</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.0-preview.1. See docs/releases/0.1.0-preview.1.md. EtherButton RightIconVisibility was removed (RightIconStates). High Contrast semantic keys map to Windows SystemColor*. x64 unpackaged consumers are verified; MSIX install, arm64 runtime, Insights/Appium, and stable-release readiness remain incomplete.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/yiqizhong/ether-lib</PackageProjectUrl>
     <RepositoryUrl>https://github.com/yiqizhong/ether-lib</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -30,6 +30,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Ether.DesignSystem.ConsumerFixtures.Unpackaged" />
+    <InternalsVisibleTo Include="Ether.DesignSystem.ConsumerFixtures.Packaged" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Ether.DesignSystem.Foundation\Ether.DesignSystem.Foundation.csproj" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
@@ -43,30 +48,6 @@
     <AdditionalFiles Include="PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
     <None Update="README.md" Pack="true" PackagePath="" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="..\Controls\**\*.cs"
-             Exclude="..\Controls\Internal\ColorSwatch.xaml.cs;..\Controls\Internal\HandButton.cs;..\Controls\Internal\HandRadioButton.cs;..\Controls\Internal\PrimitiveBadge.xaml.cs;..\Controls\Internal\UpdatedBadge.xaml.cs">
-      <Link>Controls\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-    <Compile Include="..\Converters\MultiplyConverter.cs">
-      <Link>Converters\MultiplyConverter.cs</Link>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Include="..\Controls\**\*.xaml"
-          Exclude="..\Controls\Internal\ColorSwatch.xaml;..\Controls\Internal\PrimitiveBadge.xaml;..\Controls\Internal\UpdatedBadge.xaml">
-      <Link>Controls\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\Resources\Foundations\EtherCard.xaml">
-      <Link>Resources\Foundations\EtherCard.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
 
   <Target Name="IncludeCompiledXamlForPackage" BeforeTargets="GenerateNuspec">

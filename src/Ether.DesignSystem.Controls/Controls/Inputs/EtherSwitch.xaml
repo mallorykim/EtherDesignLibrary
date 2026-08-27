@@ -1,0 +1,311 @@
+<!--
+    Ether Design System Toggle Switch
+
+    Figma source: ursRC201v8IiVeafliI45F, node 60360:8017
+    Track: 40 x 18, radius 4. Knob: 18 x 10, radius 1.722, 2 px white stroke.
+    The label is Inter SemiBold 12 with an 8 px gap.
+
+    Keyed style (x:Key="EtherSwitch"), not implicit: ToggleSwitch is a stock framework
+    type, so an implicit style here would silently restyle every bare <ToggleSwitch/>
+    anywhere else in the app. Call sites keep Style="{StaticResource EtherSwitch}".
+
+    Colour-bearing values live in EtherSwitch* Light/Dark/HighContrast dictionaries.
+    The template does not use literal hex. High Contrast uses Windows SystemColor*
+    dynamic resources. Track/knob/gradient/disabled layering is preserved: disabled
+    fades the track, glow, shadows, and labels; the knob stays opaque so the track
+    cannot bleed through.
+-->
+<ResourceDictionary
+    x:Class="EtherSandbox.Controls.EtherSwitch"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:EtherSandbox.Controls"
+    xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <StaticResource x:Key="EtherSwitchFocusBrush" ResourceKey="border/focus" />
+            <StaticResource x:Key="EtherSwitchKnobDisabledBrush" ResourceKey="BackgroundSwitchKnobDisabled" />
+            <SolidColorBrush x:Key="EtherSwitchKnobFillBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobFillHoverBrush" Color="#F5F8F9" />
+            <SolidColorBrush x:Key="EtherSwitchKnobFillPressedBrush" Color="#E2E8EA" />
+            <SolidColorBrush x:Key="EtherSwitchKnobShadow1Brush" Color="#06183361" />
+            <SolidColorBrush x:Key="EtherSwitchKnobShadow2Brush" Color="#0D183361" />
+            <SolidColorBrush x:Key="EtherSwitchKnobShadow3Brush" Color="#1C183361" />
+            <SolidColorBrush x:Key="EtherSwitchKnobStrokeBrush" Color="{StaticResource Gray0}" />
+            <StaticResource x:Key="EtherSwitchLabelForegroundBrush" ResourceKey="TextSecondary" />
+            <StaticResource x:Key="EtherSwitchOffTrackBrush" ResourceKey="BackgroundSwitchOff" />
+            <LinearGradientBrush x:Key="EtherSwitchOnTrackBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+                <GradientStop Color="#091595" Offset="0.00" />
+                <GradientStop Color="#0015FF" Offset="0.35" />
+                <GradientStop Color="#0EB2FF" Offset="0.78" />
+                <GradientStop Color="#8FFFC3" Offset="1.00" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="EtherSwitchOnTrackGlowFillBrush" Color="{StaticResource AlphaWhite6}" />
+            <SolidColorBrush x:Key="EtherSwitchOnTrackGlowStrokeBrush" Color="{StaticResource AlphaWhite20}" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <StaticResource x:Key="EtherSwitchFocusBrush" ResourceKey="border/focus" />
+            <StaticResource x:Key="EtherSwitchKnobDisabledBrush" ResourceKey="BackgroundSwitchKnobDisabled" />
+            <SolidColorBrush x:Key="EtherSwitchKnobFillBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobFillHoverBrush" Color="#F5F8F9" />
+            <SolidColorBrush x:Key="EtherSwitchKnobFillPressedBrush" Color="#E2E8EA" />
+            <SolidColorBrush x:Key="EtherSwitchKnobShadow1Brush" Color="#06183361" />
+            <SolidColorBrush x:Key="EtherSwitchKnobShadow2Brush" Color="#0D183361" />
+            <SolidColorBrush x:Key="EtherSwitchKnobShadow3Brush" Color="#1C183361" />
+            <SolidColorBrush x:Key="EtherSwitchKnobStrokeBrush" Color="{StaticResource Gray0}" />
+            <StaticResource x:Key="EtherSwitchLabelForegroundBrush" ResourceKey="TextSecondary" />
+            <StaticResource x:Key="EtherSwitchOffTrackBrush" ResourceKey="BackgroundSwitchOff" />
+            <LinearGradientBrush x:Key="EtherSwitchOnTrackBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+                <GradientStop Color="#091595" Offset="0.00" />
+                <GradientStop Color="#0015FF" Offset="0.35" />
+                <GradientStop Color="#0EB2FF" Offset="0.78" />
+                <GradientStop Color="#8FFFC3" Offset="1.00" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="EtherSwitchOnTrackGlowFillBrush" Color="{StaticResource AlphaWhite6}" />
+            <SolidColorBrush x:Key="EtherSwitchOnTrackGlowStrokeBrush" Color="{StaticResource AlphaWhite20}" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="EtherSwitchFocusBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobDisabledBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobFillBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobFillHoverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobFillPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobShadow1Brush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobShadow2Brush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobShadow3Brush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="EtherSwitchLabelForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="EtherSwitchOffTrackBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="EtherSwitchOnTrackBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherSwitchOnTrackGlowFillBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherSwitchOnTrackGlowStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <ControlTemplate x:Key="EtherSwitchTemplate" TargetType="ToggleSwitch">
+        <Grid>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualStateGroup.Transitions>
+                        <VisualTransition From="Normal" To="PointerOver" GeneratedDuration="0:0:0.12">
+                            <VisualTransition.GeneratedEasingFunction>
+                                <CubicEase EasingMode="EaseOut"/>
+                            </VisualTransition.GeneratedEasingFunction>
+                        </VisualTransition>
+                        <VisualTransition From="PointerOver" To="Normal" GeneratedDuration="0:0:0.12">
+                            <VisualTransition.GeneratedEasingFunction>
+                                <CubicEase EasingMode="EaseOut"/>
+                            </VisualTransition.GeneratedEasingFunction>
+                        </VisualTransition>
+                        <VisualTransition To="Pressed" GeneratedDuration="0:0:0.08">
+                            <VisualTransition.GeneratedEasingFunction>
+                                <CubicEase EasingMode="EaseOut"/>
+                            </VisualTransition.GeneratedEasingFunction>
+                        </VisualTransition>
+                    </VisualStateGroup.Transitions>
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Target="KnobFill.Background" Value="{ThemeResource EtherSwitchKnobFillBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Target="KnobFill.Background" Value="{ThemeResource EtherSwitchKnobFillHoverBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Target="KnobFill.Background" Value="{ThemeResource EtherSwitchKnobFillPressedBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <!-- Fade only the layers with nothing opaque above them — the track,
+                                 its glow, the drop shadow and the labels. The knob stays OPAQUE
+                                 (pre-composited near-white) so it covers the track instead of
+                                 letting it bleed through. See the disabled-knob note above for
+                                 why a single SwitchContent.Opacity would not work. -->
+                            <Setter Target="TrackOff.Opacity" Value="0.4"/>
+                            <Setter Target="TrackOn.Opacity" Value="0.4"/>
+                            <Setter Target="TrackGlow.Opacity" Value="0.4"/>
+                            <Setter Target="Shadow1.Opacity" Value="0.4"/>
+                            <Setter Target="Shadow2.Opacity" Value="0.4"/>
+                            <Setter Target="Shadow3.Opacity" Value="0.4"/>
+                            <Setter Target="OffLabel.Opacity" Value="0.4"/>
+                            <Setter Target="OnLabel.Opacity" Value="0.4"/>
+                            <Setter Target="Knob.BorderBrush" Value="{ThemeResource EtherSwitchKnobDisabledBrush}"/>
+                            <Setter Target="KnobFill.Background" Value="{ThemeResource EtherSwitchKnobDisabledBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+
+                <VisualStateGroup x:Name="ToggleStates">
+                    <VisualStateGroup.Transitions>
+                        <VisualTransition From="Off" To="On" GeneratedDuration="0:0:0.16">
+                            <VisualTransition.GeneratedEasingFunction>
+                                <CubicEase EasingMode="EaseInOut"/>
+                            </VisualTransition.GeneratedEasingFunction>
+                        </VisualTransition>
+                        <VisualTransition From="On" To="Off" GeneratedDuration="0:0:0.16">
+                            <VisualTransition.GeneratedEasingFunction>
+                                <CubicEase EasingMode="EaseInOut"/>
+                            </VisualTransition.GeneratedEasingFunction>
+                        </VisualTransition>
+                    </VisualStateGroup.Transitions>
+                    <VisualState x:Name="Off">
+                        <VisualState.Setters>
+                            <Setter Target="TrackOff.Visibility" Value="Visible"/>
+                            <Setter Target="TrackOn.Visibility" Value="Collapsed"/>
+                            <Setter Target="TrackGlow.Visibility" Value="Collapsed"/>
+                            <Setter Target="OffLabel.Visibility" Value="Visible"/>
+                            <Setter Target="OnLabel.Visibility" Value="Collapsed"/>
+                            <Setter Target="KnobTransform.X" Value="0"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="On">
+                        <VisualState.Setters>
+                            <Setter Target="TrackOff.Visibility" Value="Collapsed"/>
+                            <Setter Target="TrackOn.Visibility" Value="Visible"/>
+                            <Setter Target="TrackGlow.Visibility" Value="Visible"/>
+                            <Setter Target="OffLabel.Visibility" Value="Collapsed"/>
+                            <Setter Target="OnLabel.Visibility" Value="Visible"/>
+                            <!-- 4 px left inset + 14 px travel = x 18. -->
+                            <Setter Target="KnobTransform.X" Value="14"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+
+                <VisualStateGroup x:Name="FocusStates">
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Unfocused"/>
+                    <VisualState x:Name="PointerFocused"/>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+            <StackPanel x:Name="SwitchContent"
+                        Orientation="Horizontal"
+                        Spacing="{StaticResource Spacing8}"
+                        VerticalAlignment="Center">
+                <controls:HandContentControl x:Name="SwitchArea"
+                                             Width="{StaticResource Spacing40}"
+                                             Height="18"
+                                             HorizontalContentAlignment="Stretch"
+                                             VerticalContentAlignment="Stretch">
+                    <Grid Background="Transparent">
+                    <Border x:Name="TrackOff"
+                            Background="{ThemeResource EtherSwitchOffTrackBrush}"
+                            CornerRadius="{StaticResource radius/control-sm}"
+                            Visibility="Visible"/>
+
+                    <Border x:Name="TrackOn"
+                            Background="{ThemeResource EtherSwitchOnTrackBrush}"
+                            CornerRadius="{StaticResource radius/control-sm}"
+                            Visibility="Collapsed"/>
+
+                    <!-- Soft white inset in the On state. -->
+                    <Border x:Name="TrackGlow"
+                            Background="{ThemeResource EtherSwitchOnTrackGlowFillBrush}"
+                            BorderBrush="{ThemeResource EtherSwitchOnTrackGlowStrokeBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource radius/control-sm}"
+                            IsHitTestVisible="False"
+                            Visibility="Collapsed"/>
+
+                    <!--
+                        A compact, low-opacity three-layer shadow based on Figma's navy shadow.
+                        It is deliberately used instead of AttachedCardShadow because that
+                        effect is inconsistent in this unpackaged WinUI application.
+                    -->
+                    <Grid x:Name="KnobHost"
+                          Width="18"
+                          Height="{StaticResource Spacing12}"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          Margin="4,0,0,0">
+                        <Grid.RenderTransform>
+                            <TranslateTransform x:Name="KnobTransform"/>
+                        </Grid.RenderTransform>
+                        <Border x:Name="Shadow1"
+                                Margin="-2,0,-2,-3"
+                                CornerRadius="4"
+                                Background="{ThemeResource EtherSwitchKnobShadow1Brush}"
+                                IsHitTestVisible="False"/>
+                        <Border x:Name="Shadow2"
+                                Margin="-1,1,-1,-2"
+                                CornerRadius="3"
+                                Background="{ThemeResource EtherSwitchKnobShadow2Brush}"
+                                IsHitTestVisible="False"/>
+                        <Border x:Name="Shadow3"
+                                Margin="0,1,0,-1"
+                                CornerRadius="1.722"
+                                Background="{ThemeResource EtherSwitchKnobShadow3Brush}"
+                                IsHitTestVisible="False"/>
+
+                        <Border x:Name="Knob"
+                                CornerRadius="1.722"
+                                BorderBrush="{ThemeResource EtherSwitchKnobStrokeBrush}"
+                                BorderThickness="0.8">
+                            <Grid>
+                                <Border x:Name="KnobBase"
+                                        Background="Transparent"
+                                        CornerRadius="0.5"
+                                        IsHitTestVisible="False"/>
+                                <Border x:Name="KnobFill"
+                                        Background="{ThemeResource EtherSwitchKnobFillBrush}"
+                                        CornerRadius="0.5"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <primitives:Thumb x:Name="SwitchThumb"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
+                                      MinWidth="{StaticResource Spacing0}"
+                                      MinHeight="{StaticResource Spacing0}"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      Opacity="0"
+                                      IsHitTestVisible="True"
+                                      AutomationProperties.AccessibilityView="Raw"/>
+                    </Grid>
+                </controls:HandContentControl>
+
+                <ContentPresenter x:Name="OffLabel"
+                                  Content="{TemplateBinding OffContent}"
+                                  Foreground="{ThemeResource EtherSwitchLabelForegroundBrush}"
+                                  FontFamily="{StaticResource InterFont}"
+                                  FontSize="{StaticResource Size12}"
+                                  FontWeight="{StaticResource WeightSemibold}"
+                                  VerticalAlignment="Center"
+                                  Visibility="Visible"/>
+                <ContentPresenter x:Name="OnLabel"
+                                  Content="{TemplateBinding OnContent}"
+                                  Foreground="{ThemeResource EtherSwitchLabelForegroundBrush}"
+                                  FontFamily="{StaticResource InterFont}"
+                                  FontSize="{StaticResource Size12}"
+                                  FontWeight="{StaticResource WeightSemibold}"
+                                  VerticalAlignment="Center"
+                                  Visibility="Collapsed"/>
+            </StackPanel>
+
+            <Border x:Name="FocusRing"
+                    Margin="-3"
+                    BorderBrush="{ThemeResource EtherSwitchFocusBrush}"
+                    BorderThickness="2"
+                    CornerRadius="{StaticResource RadiusSm}"
+                    IsHitTestVisible="False"
+                    Visibility="Collapsed"/>
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="EtherSwitch" TargetType="ToggleSwitch">
+        <Setter Property="UseSystemFocusVisuals" Value="False"/>
+        <Setter Property="HighContrastAdjustment" Value="None"/>
+        <Setter Property="Template" Value="{StaticResource EtherSwitchTemplate}"/>
+    </Style>
+</ResourceDictionary>

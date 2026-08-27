@@ -33,9 +33,10 @@ always present (44×44 hit targets). Call sites that already set `ShowSettings`,
   (`ActionSecondaryBgHover`, `ActionSecondaryBgPressed`, `border/focus`,
   `text/primary`). High Contrast uses Windows `SystemColor*` dynamic resources.
 - Window chrome is preserved. Minimize/maximize/restore call
-  `OverlappedPresenter` on the host `AppWindow`. Close calls `AppWindow.Destroy()`
-  rather than `App.MainWindow.Close()` so the control does not take a sandbox
-  `App` dependency. Gallery specimens continue to set `EnableWindowCommands=False`
+  `OverlappedPresenter` on the host `AppWindow`. Close posts `WM_CLOSE` to the
+  host HWND (`Window.Close` path) rather than `App.MainWindow.Close()` or
+  `AppWindow.Destroy()`, so the control does not take a sandbox `App`
+  dependency and still raises XAML `Window.Closed`. Gallery specimens continue to set `EnableWindowCommands=False`
   and may force `PreviewIsMaximized`.
 - Gallery `MastheadPage` keeps the default and maximized specimens and adds
   identifiable automation names.

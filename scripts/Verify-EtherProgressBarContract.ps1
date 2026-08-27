@@ -5,8 +5,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherProgressBar.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherProgressBar.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherProgressBar.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherProgressBar.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 
@@ -52,6 +52,7 @@ Assert-Contains $control 'public bool IsReadOnly => true' 'EtherProgressBar read
 Assert-Contains $control 'public double SmallChange => double\.NaN' 'EtherProgressBar read-only small change'
 Assert-Contains $control 'public double LargeChange => double\.NaN' 'EtherProgressBar read-only large change'
 Assert-Contains $control 'RangeValuePatternIdentifiers\.ValueProperty' 'EtherProgressBar RangeValue value-changed event'
+Assert-Contains $control 'AutomationRangeValueChanged' 'EtherProgressBar in-process RangeValue Value subscription'
 Assert-Contains $control 'throw new InvalidOperationException\("EtherProgressBar is read-only\."\)' 'EtherProgressBar automation SetValue rejection'
 Assert-Contains $control 'OwnerControl\.Title is string title' 'EtherProgressBar automation-name title fallback'
 
@@ -67,7 +68,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherProgressBar is missing its implicit style BasedOn DefaultEtherProgressBarStyle.'
 }
-foreach ($setter in 'Minimum', 'Maximum', 'Value', 'ShowTitle', 'ShowValue') {
+foreach ($setter in 'Minimum', 'Maximum', 'Value', 'ShowTitle', 'ShowValue', 'HighContrastAdjustment') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherProgressBarStyle is missing its $setter setter."
     }
@@ -128,7 +129,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
 }
 
 $fixture = Get-Content -LiteralPath $fixturePath -Raw
-foreach ($evidence in 'BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden', 'SetValueRejected', 'LightGradientColors', 'DarkGradientColors', 'LightTemplateBrushColors', 'DarkTemplateBrushColors', 'GetPattern\(PatternInterface\.RangeValue\)') {
+foreach ($evidence in 'BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden', 'SetValueRejected', 'LightGradientColors', 'DarkGradientColors', 'LightTemplateBrushColors', 'DarkTemplateBrushColors', 'GetPattern\(PatternInterface\.RangeValue\)', 'valuePropertyChangedSubscribed', 'RangeValuePatternIdentifiers\.ValueProperty') {
     Assert-Contains $fixture $evidence "EtherProgressBar consumer runtime evidence for $evidence"
 }
 

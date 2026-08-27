@@ -17,11 +17,11 @@ the implicit style with an explicit `Value` are unchanged.
 - The constructor sets `DefaultStyleKey`; `DefaultEtherSliderStyle` owns the
   default setters and template, and the implicit style is `BasedOn` that keyed
   style. The hand cursor stays in the constructor.
-- The component declares `ValueText`, `BarCanvas`, and four collapsed brush-source
+- The component declares `ValueText`, `BarCanvas`, `Knob`, and four collapsed brush-source
   parts (`HighlightBrushSource`, `InactiveBrushSource`, `KnobBrushSource`,
   `KnobPressedBrushSource`). There are no `[TemplateVisualState]` attributes
-  because no VisualStateManager groups are driven; knob hover/press sizing and
-  bar generation stay code-driven.
+  because no VisualStateManager groups are driven; bar fill, `Canvas.Left`, and
+  knob hover/press sizing stay code-driven against template-declared rectangles.
 - Light, Dark, and HighContrast expose the same five `EtherSlider*` component
   resources. The template consumes those component keys only for color-bearing
   ThemeResources. Light and Dark alias the previous product tokens
@@ -43,12 +43,13 @@ the implicit style with an explicit `Value` are unchanged.
 
 ## Direct-mutation exceptions
 
-These stay code-driven because a declarative 63-bar template is impractical and
-moving pointer capture onto VisualStateManager would rewrite drag interaction:
+These stay code-driven because pointer capture and knob hover/press sizing
+should not be rewritten onto VisualStateManager:
 
-- `RenderBars()` generates 63 highlighted/inactive `Rectangle` ticks into
-  `BarCanvas` whenever Value, range, theme, or enabled state changes.
-- The knob is created in code (not a template part). Hover/press expand it from
+- `UpdateBarLayout()` assigns highlight/inactive fills and `Canvas.Left` on the
+  63 template-declared bar rectangles whenever Value, range, theme, or enabled
+  state changes.
+- The knob is the `Knob` template part. Hover/press expand it from
   4×45 / radius 2 to 6×45 / radius 4 and swap the pressed component brush.
 - The value label text and left margin follow the knob.
 - Pointer capture on `BarCanvas` maps X to a 0–63 slot, then to the current
@@ -67,7 +68,7 @@ peer. Disabled interaction is gated on `IsEnabled`; there is no Gallery
 | Base type | `Slider` / `RangeBase` | `RangeBase` | Bar-chart chrome is not a WinUI Slider template clone. |
 | Default style | `DefaultStyleKey` + generic implicit style | Same pattern via `DefaultEtherSliderStyle` | Matches the L2 exemplar and WinUI templated-control guidance. |
 | Automation | RangeValue, `Slider` | Same: `GetPattern(RangeValue)`, `Slider` | Interactive `SetValue`; disabled locks the provider. |
-| Thumb / track | Fluent thumb and track | 63-bar chart + 4px knob | Product visual, generated in code. |
+| Thumb / track | Fluent thumb and track | 63-bar chart + 4px knob | Product visual; bars and knob are template-declared. |
 | Keyboard | Arrow / page / home / end | Same stepping via RangeBase change properties | Added with this conversion. |
 
 A line-by-line template clone of WinUI `Slider` is deferred: Ether's bar-chart

@@ -5,9 +5,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherIntelligenceButton.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherIntelligenceButton.xaml'
-$galleryPath = Join-Path $repoRoot 'src\Views\Controls\IntelligenceButtonPage.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherIntelligenceButton.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherIntelligenceButton.xaml'
+$galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Controls\IntelligenceButtonPage.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
@@ -72,7 +72,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherIntelligenceButton is missing its implicit style BasedOn DefaultEtherIntelligenceButtonStyle.'
 }
-foreach ($setter in 'Padding', 'FontSize', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'UseSystemFocusVisuals', 'Template') {
+foreach ($setter in 'Padding', 'FontSize', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherIntelligenceButtonStyle is missing its $setter setter."
     }

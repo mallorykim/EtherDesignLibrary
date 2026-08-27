@@ -5,9 +5,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Navigation\EtherMasthead.xaml.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Navigation\EtherMasthead.xaml'
-$galleryPath = Join-Path $repoRoot 'src\Views\Navigation\MastheadPage.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Navigation\EtherMasthead.xaml.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Navigation\EtherMasthead.xaml'
+$galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Navigation\MastheadPage.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $controlsProjectPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Ether.DesignSystem.Controls.csproj'
@@ -56,7 +56,12 @@ foreach ($state in $visualStates) {
 Assert-Contains $control 'VisualStateManager\.GoToState\(this, .*SearchVisibleState' 'EtherMasthead search icon state transition'
 Assert-Contains $control 'ContentIslandEnvironment' 'EtherMasthead packable AppWindow host resolution'
 Assert-Contains $control 'AppWindow\.GetFromWindowId' 'EtherMasthead AppWindow chrome wiring'
-Assert-Contains $control 'GetHostAppWindow\(\)\?\.Destroy\(\)' 'EtherMasthead Close uses AppWindow.Destroy rather than sandbox App.MainWindow'
+Assert-Contains $control 'Win32Interop\.GetWindowFromWindowId' 'EtherMasthead Close resolves the host HWND from XamlRoot'
+Assert-Contains $control 'CloseHostWindow\(\)' 'EtherMasthead Close uses a dedicated host-window closer'
+Assert-Contains $control 'PostMessage\(hwnd, WmClose' 'EtherMasthead Close posts WM_CLOSE (Window.Close path) rather than AppWindow.Destroy'
+if ($control -match '\.Destroy\(') {
+    throw 'EtherMasthead must not call AppWindow.Destroy; Close posts WM_CLOSE so Window.Close runs.'
+}
 if ($control -match 'App\.MainWindow') {
     throw 'EtherMasthead must not couple window chrome to sandbox App.MainWindow.'
 }
@@ -76,7 +81,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherMasthead is missing its implicit style BasedOn DefaultEtherMastheadStyle.'
 }
-foreach ($setter in 'UseSystemFocusVisuals', 'Background', 'HorizontalAlignment', 'Template') {
+foreach ($setter in 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Background', 'HorizontalAlignment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherMastheadStyle is missing its $setter setter."
     }

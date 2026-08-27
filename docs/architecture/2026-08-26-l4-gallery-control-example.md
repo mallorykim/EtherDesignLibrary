@@ -13,7 +13,7 @@ primitive pages stay on plain `ComponentPage`.
 
 ## What shipped
 
-- Gallery-only `ControlExample` (`src/Views/ControlExample.xaml`) with:
+- Gallery-only `ControlExample` (`samples/Ether.DesignSystem.Gallery/Views/ControlExample.xaml`) with:
   - **Example** slot (content property) for the live specimen
   - **Output** slot (`OutputText`) for live bound values
   - **Source** panel for the specimen XAML snippet
@@ -87,11 +87,12 @@ MSIX install, arm64 runtime, and preview publish are not.
 | --- | --- |
 | RTL inheritance + automation names | Green. See `docs/architecture/2026-08-26-l4c-rtl-package-consumer.md`. |
 | In-process UIA snapshot (13 named controls) | Green substitute. Not Appium / out-of-process UIA. EtherDropdown bounding rect is explicit `LayoutFallback` (collapsed ContentPresenter); the other 12 require UIA rects. |
-| 225% `ScaleTransform` + `.resw` / `x:Uid` | Green substitute. Not OS text-scale or Gallery localization. |
+| 225% `ScaleTransform` + `.resw` / `x:Uid` | Green substitute for OS text-scale. Gallery chrome (`ControlExample` / `ComponentPage`) now uses Gallery `.resw` + `x:Uid`. Page body copy is still mostly English. |
 | Light/Dark `RenderTargetBitmap` captures | Green generate-under-artifacts. Not High Contrast, not golden-image CI. |
 | Elapsed verification budget `< 20000ms` | Green harness. Not scroll/animation budgets. |
 | Unsigned MSIX produce | Green produce. Install/runtime stays red. |
 | arm64 pack + fixture compile | Green compile. arm64 runtime stays red. |
+| High Contrast semantic key parity | Green. Same slash keys as Light/Dark (234). Leaves are `SystemColor*`, not brand primitives. Not an on-device Aquatic/Desert/Night Sky pass. |
 
 **Still red:**
 
@@ -102,12 +103,7 @@ MSIX install, arm64 runtime, and preview publish are not.
 | Hosted CI WinUI smoke | Still `Verify-RuntimeGates.ps1` local-only; `build.yml` keeps `-SkipRuntimeSmoke`. |
 | MSIX install/runtime | Unsigned produce only. |
 | arm64 runtime smoke | Pack/build only. |
-| High Contrast token parity | 145 keys missing. Frozen. |
 | Preview package publish | User hold. `docs/releases/0.1.0-preview.1.md`. |
-
-`RangeValuePatternIdentifiers.ValueProperty` in-process UIA subscription for
-ProgressBar remains undocumented-as-blocked (no public WinUI API); that is
-unchanged from L2.
 
 ## Evidence
 

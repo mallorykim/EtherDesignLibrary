@@ -5,9 +5,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherSteeringBar.xaml.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherSteeringBar.xaml'
-$galleryPath = Join-Path $repoRoot 'src\Views\Controls\SteeringBarPage.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSteeringBar.xaml.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSteeringBar.xaml'
+$galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Controls\SteeringBarPage.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
@@ -70,7 +70,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherSteeringBar is missing its implicit style BasedOn DefaultEtherSteeringBarStyle.'
 }
-foreach ($setter in 'IsTabStop', 'UseSystemFocusVisuals', 'Minimum', 'Maximum', 'Value', 'ShowTitle', 'ShowValue', 'Template') {
+foreach ($setter in 'IsTabStop', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Minimum', 'Maximum', 'Value', 'ShowTitle', 'ShowValue', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherSteeringBarStyle is missing its $setter setter."
     }

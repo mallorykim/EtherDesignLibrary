@@ -1,9 +1,9 @@
 # Color Token Migration Plan — Legacy PascalCase → Figma slash keys
 
-Source of truth: `src/Resources/Tokens/EtherColors.xaml` (Light theme dictionary +
+Source of truth: `src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml` (Light theme dictionary +
 mode-invariant section define the 104 legacy keys; the Figma slash-key layer,
 already present in the same file per theme dictionary, is the migration target).
-Reference counts were grepped across `src/Controls/**` and `src/Views/**`
+Reference counts were grepped across `src/Ether.DesignSystem.Controls/Controls/**` and `samples/Ether.DesignSystem.Gallery/Views/**`
 (`.xaml` + `.xaml.cs`/`.cs`), matching `{ThemeResource <Key>}` / `{StaticResource <Key>}`.
 
 Legend: **SAME** = new slash key resolves to the identical primitive as the legacy

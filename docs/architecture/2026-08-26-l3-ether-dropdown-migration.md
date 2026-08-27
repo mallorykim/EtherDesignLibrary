@@ -63,10 +63,9 @@ visual tree, TriggerText selection proof with collapsed ContentPresenter,
 Opened/Closed DropDownStates via `GoToState` (no live popup open, to avoid
 flaky timing), automation name, and Light/Dark trigger foreground rebind
 (`TextSecondary` / `Gray1000` vs `Gray0`). `PopupBorder` and `ScrollViewer`
-remain `[TemplatePart]`s and are bound in `OnApplyTemplate` via
-`GetTemplateChild`; ComboBox does not parent those parts into the closed
-visual tree or expose `PopupBorder` as `Popup.Child` until the menu opens, so
-the fixture does not open the popup to reach them. `Verify-EtherDropdownContract.ps1`
+remain `[TemplatePart]`s. ComboBox does not parent those parts into the closed
+visual tree; the fixture walks `Popup.Child` while `popup.IsOpen` is false so
+the closed menu parts are still proven. `Verify-EtherDropdownContract.ps1`
 additionally verifies metadata, keyed/implicit/alias styles, `EtherDropdownItem`,
 theme-key symmetry, High Contrast system resources, no literal template hex
 colors, and the required runtime evidence fields.

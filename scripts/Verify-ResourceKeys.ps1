@@ -1,22 +1,26 @@
 [CmdletBinding()]
 param(
-    [string]$OutputPath = (Join-Path $PSScriptRoot '..\artifacts\resource-key-audit.json'),
+    [string]$OutputPath,
     [switch]$RequireHighContrastParity
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+if ([string]::IsNullOrWhiteSpace($OutputPath)) {
+    $OutputPath = Join-Path $PSScriptRoot '..\artifacts\resource-key-audit.json'
+}
+
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$colorsPath = Join-Path $repoRoot 'src\Resources\Tokens\EtherColors.xaml'
+$colorsPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Foundation\Resources\Tokens\EtherColors.xaml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 
 $expectedTokenHashes = [ordered]@{
-    'src/Resources/Tokens/EtherPrimitives.xaml' = 'd6ff0e5301b3672dbb492484c8d0ea584aca12be'
-    'src/Resources/Tokens/EtherColors.xaml' = '794404850d4eb20a2fc3ec43c3480be8f318ac64'
-    'src/Resources/Tokens/EtherSpacing.xaml' = '5d631cd2ebde306d389a1fa8999000359441bcd2'
-    'src/Resources/Tokens/EtherTypography.xaml' = 'b24444567ee95467408e004fe7fab622eba79759'
-    'src/Resources/Tokens/EtherIconGeometries.xaml' = '134c1667934376ba4943cf350b110a02607c81f4'
+    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml' = 'd6ff0e5301b3672dbb492484c8d0ea584aca12be'
+    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = 'd7c218e5a631e86552ed2b089cbc03bbd571a090'
+    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherSpacing.xaml' = '5d631cd2ebde306d389a1fa8999000359441bcd2'
+    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml' = 'b24444567ee95467408e004fe7fab622eba79759'
+    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherIconGeometries.xaml' = '134c1667934376ba4943cf350b110a02607c81f4'
 }
 
 Push-Location $repoRoot
@@ -87,7 +91,7 @@ $missingFromHighContrast = @(Get-KeyDifference $themeKeys.Light $themeKeys.HighC
 $highContrastOnly = @(Get-KeyDifference $themeKeys.HighContrast $themeKeys.Light)
 
 $result = [ordered]@{
-    source = 'src/Resources/Tokens/EtherColors.xaml'
+    source = 'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml'
     tokenHashes = $expectedTokenHashes
     themes = [ordered]@{
         Light = $themeKeys.Light
@@ -117,7 +121,7 @@ Write-Host "Light: $($themeKeys.Light.Count); Dark: $($themeKeys.Dark.Count); Hi
 Write-Host "Light-only: $($lightOnly.Count); Dark-only: $($darkOnly.Count); Missing from HighContrast: $($missingFromHighContrast.Count); HighContrast-only: $($highContrastOnly.Count)"
 
 if ($missingFromHighContrast.Count -gt 0 -or $highContrastOnly.Count -gt 0) {
-    Write-Warning 'HighContrast key-set differences are reported only; frozen tokens are not modified by this audit.'
+    Write-Warning 'HighContrast key-set differences remain. Preview can report them; stable release requires -RequireHighContrastParity.'
     if ($RequireHighContrastParity) {
         throw "HighContrast ThemeDictionary resource key parity is required for this release gate. Missing: $($missingFromHighContrast.Count); HighContrast-only: $($highContrastOnly.Count)."
     }

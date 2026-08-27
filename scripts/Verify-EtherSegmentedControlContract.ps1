@@ -5,13 +5,13 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherSegmentedControl.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherSegmentedControl.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSegmentedControl.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSegmentedControl.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
-$expectedComponentKeys = 'EtherSegmentedControlFocusStrokeBrush,EtherSegmentedControlSegmentCheckedBrush,EtherSegmentedControlSegmentForegroundBrush,EtherSegmentedControlSegmentForegroundCheckedBrush,EtherSegmentedControlSegmentHoverBrush,EtherSegmentedControlSegmentPressedBrush,EtherSegmentedControlTrackBackgroundBrush'
-$templateParts = @('ShadowHost', 'TrackSurface')
+$expectedComponentKeys = 'EtherSegmentedControlCasterBrush,EtherSegmentedControlFocusStrokeBrush,EtherSegmentedControlSegmentCheckedBrush,EtherSegmentedControlSegmentForegroundBrush,EtherSegmentedControlSegmentForegroundCheckedBrush,EtherSegmentedControlSegmentHoverBrush,EtherSegmentedControlSegmentPressedBrush,EtherSegmentedControlShadowBrush,EtherSegmentedControlTrackBackgroundBrush'
+$templateParts = @('ShadowHost', 'TrackSurface', 'CasterBrushSource', 'ShadowBrushSource')
 $segmentCommonStates = @('Normal', 'PointerOver', 'Pressed', 'Disabled', 'Checked', 'CheckedPointerOver', 'CheckedPressed', 'Indeterminate')
 $segmentFocusStates = @('Focused', 'Unfocused', 'PointerFocused')
 
@@ -49,6 +49,8 @@ foreach ($part in $templateParts) {
 }
 Assert-Contains $control 'GetTemplateChild\(ShadowHostPartName\)' 'EtherSegmentedControl composition shadow host lookup'
 Assert-Contains $control 'GetTemplateChild\(TrackSurfacePartName\)' 'EtherSegmentedControl composition track surface lookup'
+Assert-Contains $control 'GetTemplateChild\(CasterBrushSourcePartName\)' 'EtherSegmentedControl caster brush-source lookup'
+Assert-Contains $control 'GetTemplateChild\(ShadowBrushSourcePartName\)' 'EtherSegmentedControl shadow brush-source lookup'
 Assert-Contains $control 'CreateDropShadow' 'EtherSegmentedControl composition drop-shadow layers'
 if ($control -match 'TemplateVisualState') {
     throw 'EtherSegmentedControl host template has no VisualState groups; do not declare TemplateVisualState metadata on the host.'
@@ -74,7 +76,7 @@ $segmentStyle = @($styles | Where-Object { $_.GetAttribute('Key', $xamlNamespace
 if ($null -eq $segmentStyle) {
     throw 'EtherSegmentedControl is missing keyed EtherSegment RadioButton style.'
 }
-foreach ($setter in 'Padding', 'Background', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'Template') {
+foreach ($setter in 'Padding', 'Background', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherSegmentedControlStyle is missing its $setter setter."
     }

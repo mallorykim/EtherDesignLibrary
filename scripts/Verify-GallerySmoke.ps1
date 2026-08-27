@@ -83,11 +83,13 @@ try {
             $result.totalPageCount -ne ($expectedRoundPageCount * 2) -or
             [string]::IsNullOrWhiteSpace($lightRound[0].backgroundCanvasColor) -or
             [string]::IsNullOrWhiteSpace($darkRound[0].backgroundCanvasColor) -or
-            $lightRound[0].backgroundCanvasColor -eq $darkRound[0].backgroundCanvasColor) {
+            $lightRound[0].backgroundCanvasColor -eq $darkRound[0].backgroundCanvasColor -or
+            $null -eq $result.rtl -or
+            $result.rtl.forcedRtlInherited -ne $true) {
             throw "Gallery smoke did not report success: $(Get-Content -LiteralPath $resultPath -Raw)"
         }
 
-        Write-Host "Gallery smoke passed: Light $($lightRound[0].pageCount)/$expectedRoundPageCount; Dark $($darkRound[0].pageCount)/$expectedRoundPageCount; BackgroundCanvas $($lightRound[0].backgroundCanvasColor) -> $($darkRound[0].backgroundCanvasColor). Evidence: $resultPath"
+        Write-Host "Gallery smoke passed: Light $($lightRound[0].pageCount)/$expectedRoundPageCount; Dark $($darkRound[0].pageCount)/$expectedRoundPageCount; RTL inherited; BackgroundCanvas $($lightRound[0].backgroundCanvasColor) -> $($darkRound[0].backgroundCanvasColor). Evidence: $resultPath"
     }
     finally {
         if ($null -ne $smokeProcess -and -not $smokeProcess.HasExited) {

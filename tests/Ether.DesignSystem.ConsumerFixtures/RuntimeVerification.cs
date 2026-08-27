@@ -51,6 +51,7 @@ internal static class RuntimeVerification
         double Value,
         bool SetValueRejected,
         bool ValueChangeExercised,
+        bool ValuePropertyChangedSubscribed,
         string[] LightGradientColors,
         string[] DarkGradientColors,
         string[] LightTemplateBrushColors,
@@ -763,16 +764,22 @@ internal static class RuntimeVerification
 
         var triggerText = GetTemplatePart<TextBlock>(dropdown, "TriggerText", nameof(EtherDropdown));
         GetTemplatePart<FrameworkElement>(dropdown, "Arrow", nameof(EtherDropdown));
-        GetTemplatePart<Microsoft.UI.Xaml.Controls.Primitives.Popup>(dropdown, "Popup", nameof(EtherDropdown));
         var contentPresenter = GetTemplatePart<ContentPresenter>(dropdown, "ContentPresenter", nameof(EtherDropdown));
         var activeStroke = GetTemplatePart<Border>(dropdown, "ActiveStroke", nameof(EtherDropdown));
         var stateFill = GetTemplatePart<Border>(dropdown, "StateFill", nameof(EtherDropdown));
         var openFill = GetTemplatePart<Border>(dropdown, "OpenFill", nameof(EtherDropdown));
-        // PopupBorder and ScrollViewer live inside ComboBox's popup host. They are not in the
-        // closed visual tree and Popup.Child is not the named Border until the menu opens.
-        // Do not open the popup here: live open timing is flaky. OnApplyTemplate still binds
-        // those parts via GetTemplateChild.
-        var templateParts = new[] { "TriggerText", "Arrow", "Popup" };
+        // PopupBorder and ScrollViewer live inside ComboBox's popup host, which is not
+        // parented into the closed visual tree. Walk Popup.Child so the closed menu
+        // parts are still reachable without opening the live popup.
+        var popup = GetTemplatePart<Microsoft.UI.Xaml.Controls.Primitives.Popup>(dropdown, "Popup", nameof(EtherDropdown));
+        if (popup.IsOpen)
+        {
+            throw new InvalidOperationException("EtherDropdown popup must stay closed while proving closed-tree popup parts.");
+        }
+
+        GetTemplatePart<Border>(dropdown, "PopupBorder", nameof(EtherDropdown));
+        GetTemplatePart<ScrollViewer>(dropdown, "ScrollViewer", nameof(EtherDropdown));
+        var templateParts = new[] { "TriggerText", "Arrow", "Popup", "PopupBorder", "ScrollViewer" };
 
         if (contentPresenter.Visibility != Visibility.Collapsed)
         {
@@ -1176,18 +1183,36 @@ internal static class RuntimeVerification
             throw new InvalidOperationException("The read-only progress bar accepted a UI Automation SetValue request.");
         }
 
-        // WinUI AutomationPeer has no public in-process subscription for
-        // RangeValuePatternIdentifiers.ValueProperty (RaisePropertyChangedEvent is protected;
-        // ListenerExists only reports out-of-process UIA clients). Observe the live GetPattern
-        // provider Value instead of hardcoding the marker after assignments.
-        progressBar.Value = 64d;
-        var observedAfterFirstChange = rangeValue.Value;
-        progressBar.Value = 65d;
-        var observedAfterSecondChange = rangeValue.Value;
-        var valueChangeExercised = observedAfterFirstChange == 64d && observedAfterSecondChange == 65d;
-        if (!valueChangeExercised)
+        // Subscribe to the in-process RangeValue Value notification that the peer
+        // raises together with RangeValuePatternIdentifiers.ValueProperty.
+        var observedPropertyChanges = new List<double>();
+        void OnAutomationRangeValueChanged(object? sender, double value) => observedPropertyChanges.Add(value);
+        progressBar.AutomationRangeValueChanged += OnAutomationRangeValueChanged;
+        bool valueChangeExercised;
+        bool valuePropertyChangedSubscribed;
+        try
         {
-            throw new InvalidOperationException("The RangeValue provider from GetPattern did not track owner Value assignments.");
+            progressBar.Value = 64d;
+            var observedAfterFirstChange = rangeValue.Value;
+            progressBar.Value = 65d;
+            var observedAfterSecondChange = rangeValue.Value;
+            valueChangeExercised = observedAfterFirstChange == 64d && observedAfterSecondChange == 65d;
+            valuePropertyChangedSubscribed = observedPropertyChanges.Count == 2 &&
+                observedPropertyChanges[0] == 64d &&
+                observedPropertyChanges[1] == 65d;
+            if (!valueChangeExercised)
+            {
+                throw new InvalidOperationException("The RangeValue provider from GetPattern did not track owner Value assignments.");
+            }
+
+            if (!valuePropertyChangedSubscribed)
+            {
+                throw new InvalidOperationException("In-process RangeValuePatternIdentifiers.ValueProperty subscription did not observe the 64 then 65 value changes.");
+            }
+        }
+        finally
+        {
+            progressBar.AutomationRangeValueChanged -= OnAutomationRangeValueChanged;
         }
 
         var lightGradient = await GetProgressGradientAsync(themeRoot, progressBar, fill, ElementTheme.Light);
@@ -1219,6 +1244,7 @@ internal static class RuntimeVerification
             rangeValue.Value,
             setValueRejected,
             valueChangeExercised,
+            valuePropertyChangedSubscribed,
             lightGradient,
             darkGradient,
             lightTemplateBrushColors,
@@ -1425,7 +1451,8 @@ internal static class RuntimeVerification
 
         var valueText = GetTemplatePart<TextBlock>(slider, "ValueText", nameof(EtherSlider));
         var barCanvas = GetTemplatePart<Canvas>(slider, "BarCanvas", nameof(EtherSlider));
-        var templateParts = new[] { "ValueText", "BarCanvas" };
+        GetTemplatePart<Microsoft.UI.Xaml.Shapes.Rectangle>(slider, "Knob", nameof(EtherSlider));
+        var templateParts = new[] { "ValueText", "BarCanvas", "Knob" };
 
         slider.Value = 65d;
         slider.UpdateLayout();
@@ -1830,6 +1857,18 @@ internal static class RuntimeVerification
         if (root is T rootPart && root.Name == name)
         {
             return rootPart;
+        }
+
+        if (root is Popup popup && popup.Child is FrameworkElement popupChild)
+        {
+            try
+            {
+                return GetTemplatePart<T>(popupChild, name, ownerName);
+            }
+            catch (InvalidOperationException)
+            {
+                // Search the rest of the closed visual tree, then fail if still missing.
+            }
         }
 
         for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)

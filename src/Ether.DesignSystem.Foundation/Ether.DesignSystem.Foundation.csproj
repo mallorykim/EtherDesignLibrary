@@ -10,7 +10,7 @@
     <Authors>Ether Design System</Authors>
     <Description>Preview WinUI 3 design-system foundation resources for Ether.</Description>
     <PackageTags>winui;winui3;design-system;foundation;preview</PackageTags>
-    <PackageReleaseNotes>0.1.0-preview.1. See docs/releases/0.1.0-preview.1.md. EtherButton RightIconVisibility was removed (RightIconStates). x64 unpackaged consumers are verified; MSIX, arm64, accessibility, localization, High Contrast completeness, and stable-release readiness remain incomplete.</PackageReleaseNotes>
+    <PackageReleaseNotes>0.1.0-preview.1. See docs/releases/0.1.0-preview.1.md. EtherButton RightIconVisibility was removed (RightIconStates). High Contrast semantic keys map to Windows SystemColor*. x64 unpackaged consumers are verified; MSIX install, arm64 runtime, Insights/Appium, and stable-release readiness remain incomplete.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/yiqizhong/ether-lib</PackageProjectUrl>
     <RepositoryUrl>https://github.com/yiqizhong/ether-lib</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -43,15 +43,6 @@
     <None Update="buildTransitive\Ether.DesignSystem.Foundation.targets"
           Pack="true"
           PackagePath="buildTransitive\Ether.DesignSystem.Foundation.targets" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Frozen source files remain in their existing location and are linked byte-for-byte. -->
-    <Page Include="..\Resources\Tokens\*.xaml">
-      <Link>Resources\Tokens\%(Filename)%(Extension)</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
 
   <ItemGroup>

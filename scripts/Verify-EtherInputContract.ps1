@@ -5,8 +5,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherInput.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherInput.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherInput.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherInput.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
@@ -58,7 +58,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherInput is missing its implicit style BasedOn DefaultEtherInputStyle.'
 }
-foreach ($setter in 'Foreground', 'SelectionHighlightColor', 'FontFamily', 'FontSize', 'FontWeight', 'Padding', 'MinWidth', 'MinHeight', 'UseSystemFocusVisuals', 'Template') {
+foreach ($setter in 'Foreground', 'SelectionHighlightColor', 'FontFamily', 'FontSize', 'FontWeight', 'Padding', 'MinWidth', 'MinHeight', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherInputStyle is missing its $setter setter."
     }

@@ -29,7 +29,7 @@ design-library skeleton per:
 | File | Expected `git hash-object` |
 | --- | --- |
 | `src/Resources/Tokens/EtherPrimitives.xaml` | `d6ff0e5301b3672dbb492484c8d0ea584aca12be` |
-| `src/Resources/Tokens/EtherColors.xaml` | `794404850d4eb20a2fc3ec43c3480be8f318ac64` |
+| `src/Resources/Tokens/EtherColors.xaml` | `d7c218e5a631e86552ed2b089cbc03bbd571a090` |
 | `src/Resources/Tokens/EtherSpacing.xaml` | `5d631cd2ebde306d389a1fa8999000359441bcd2` |
 | `src/Resources/Tokens/EtherTypography.xaml` | `b24444567ee95467408e004fe7fab622eba79759` |
 | `src/Resources/Tokens/EtherIconGeometries.xaml` | `134c1667934376ba4943cf350b110a02607c81f4` |
@@ -37,8 +37,9 @@ design-library skeleton per:
 2. Dependency direction: **Foundation ← Controls ← Gallery**. Consumers use NuGet packages,
    not ProjectReference to libraries in fixtures.
 3. Preview API maturity — not stable release readiness.
-4. Global High Contrast key parity for frozen tokens remains an intentional release blocker
-   (145 keys missing from HC vs Light/Dark 234).
+4. Global High Contrast **key parity** for `EtherColors` semantic tokens is green
+   (Light/Dark/HC 234). Leaves are Windows `SystemColor*`, not Light/Dark primitives.
+   On-device contrast themes are still not in CI.
 
 ---
 
@@ -103,8 +104,8 @@ Gallery automation names, consumer runtime marker, contract script, CI wire, arc
 | EtherDropdown | ComboBox workarounds preserved; closed-tree Popup parts evidence limited |
 | EtherSegmentedControl / EtherIntelligenceButton | Plan A parallel Wave1 + Wave2 integration |
 | EtherSteeringBar | Complex peer + PreviewStatus kept; VSM for labels |
-| EtherSlider | **UserControl → RangeBase**; 63-bar render remains code-driven |
-| EtherMasthead | **UserControl → Control**, packable; AppWindow via XamlRoot; Close=`Destroy()` |
+| EtherSlider | **UserControl → RangeBase**; 63 bars and knob are template-declared; code updates fill/`Canvas.Left`/knob hover |
+| EtherMasthead | **UserControl → Control**, packable; AppWindow via XamlRoot; Close posts `WM_CLOSE` (`Window.Close` path) |
 | EtherSwitch | **Keyed** stock ToggleSwitch style (not implicit) |
 | EtherScrollBar | **Implicit** stock ScrollBar style (vertical + horizontal) |
 
@@ -152,7 +153,7 @@ toggleSwitch, scrollBar.
 - Hosted CI WinUI smoke (`build.yml` keeps `-SkipRuntimeSmoke`)
 - MSIX **install/runtime**
 - arm64 **runtime** smoke
-- High Contrast token parity (145 keys missing; frozen)
+- High Contrast token **key parity** (234/234/234 via `SystemColor*`; not on-device contrast themes)
 - **First preview NuGet publish** (user hold; `docs/releases/0.1.0-preview.1.md`)
 
 ---
@@ -202,7 +203,7 @@ Get-ChildItem .\scripts\Verify-Ether*Contract.ps1 | ForEach-Object { & $_.FullNa
 # Resources
 .\scripts\Verify-ResourceGraph.ps1
 .\scripts\Verify-ResourceKeys.ps1
-# Expected fail ONLY for 145 frozen HC gaps:
+# HighContrast semantic keys must match Light/Dark (SystemColor* leaves):
 .\scripts\Verify-ResourceKeys.ps1 -RequireHighContrastParity
 
 # Runtime (local Windows desktop / self-hosted interactive runner — not hosted CI)
@@ -217,7 +218,7 @@ git hash-object src/Resources/Tokens/EtherTypography.xaml
 git hash-object src/Resources/Tokens/EtherIconGeometries.xaml
 ```
 
-Expect: builds 0/0; contracts green; HC parity gate red with **exactly** Missing:145;
+Expect: builds 0/0; contracts green; HC parity gate green (234/234/234);
 consumer markers present for all L3 controls; Gallery smoke Light 20/20 and Dark 20/20;
 unsigned MSIX produce; arm64 pack/compile. Do not treat those last two as install or
 arm64 runtime.
@@ -230,9 +231,9 @@ Classify carefully — many are **documented exceptions**, not accidental regres
 
 1. **Structured evidence ≠ pixel / UIA-out-of-process proof**
 2. **High Contrast** for components is mostly static `SystemColor*` contracts
-3. **EtherSlider** bars/knob still generated in code (`RenderBars`)
+3. **EtherSlider** bars and knob are template-declared; code updates fill, `Canvas.Left`, and knob hover/press sizing (not `RenderBars`)
 4. **EtherDropdown** closed Popup visual tree / GoToState evidence limits
-5. **EtherMasthead** Close uses `AppWindow.Destroy()` instead of sandbox `Window.Close`
+5. **EtherMasthead** Close posts `WM_CLOSE` (`Window.Close` path), not `AppWindow.Destroy()`
 6. **EtherSwitch** must remain **keyed**; **ScrollBar** remains **implicit**
 7. **ControlExample** Copy is clipboard-only (no runtime fixture for Copy click);
    SourceXaml snippets are representative, not always byte-identical to live trees

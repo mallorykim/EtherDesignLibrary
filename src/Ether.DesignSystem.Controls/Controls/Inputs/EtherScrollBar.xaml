@@ -1,0 +1,196 @@
+<!--
+    EtherScrollBar.xaml = Ether Design System · Scroll Bar
+    ============================================================
+
+    Applies app-wide as an implicit ScrollBar style, so every ScrollViewer — pages,
+    the dropdown menu, anything added later — gets the same bar. WinUI's stock bar
+    does not match the design: it draws a #E6E6E6 track rectangle and stepper arrow
+    glyphs (FontIcon "Arrow") at both ends, and a square 16 px #7A7A7A thumb.
+
+    KEY MEASUREMENTS
+      Thickness   6 px
+      Min length  60 px (Figma's 60 px becomes the floor; ScrollBar still sizes the
+                  thumb proportionally to how much content is off screen)
+      CornerRadius 3 (half the thickness — fully rounded ends)
+      Colour      default EtherScrollBarThumbBrush (aliases BackgroundDropdownScrollThumb)
+                  hover   EtherScrollBarThumbHoverBrush
+      Track       none
+      Arrows      none
+
+    Colour-bearing values live in EtherScrollBar* Light/Dark/HighContrast dictionaries.
+    The templates do not use literal hex. High Contrast uses Windows SystemColor*
+    dynamic resources.
+
+    Both orientations are templated: NavigationPage scrolls horizontally, so a
+    vertical-only template would leave that bar unstyled.
+
+    LOCATION
+      This compiled dictionary lives beside its code-behind (Controls/EtherScrollBar.xaml.cs)
+      and still styles the stock ScrollBar type directly (as an implicit, app-wide style — see
+      above). It is instantiated from Generic.xaml. See the "Mechanism refinement" note in
+      docs/superpowers/plans/2026-08-06-self-contained-component-authoring-plan.md.
+-->
+<ResourceDictionary
+    x:Class="EtherSandbox.Controls.EtherScrollBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <StaticResource x:Key="EtherScrollBarThumbBrush" ResourceKey="BackgroundDropdownScrollThumb" />
+            <StaticResource x:Key="EtherScrollBarThumbHoverBrush" ResourceKey="BackgroundDropdownScrollThumbHover" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <StaticResource x:Key="EtherScrollBarThumbBrush" ResourceKey="BackgroundDropdownScrollThumb" />
+            <StaticResource x:Key="EtherScrollBarThumbHoverBrush" ResourceKey="BackgroundDropdownScrollThumbHover" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="EtherScrollBarThumbBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="EtherScrollBarThumbHoverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <!-- The large-change regions stay hit-testable but paint nothing, so page-up /
+         page-down clicks on the track still work without drawing a track. -->
+    <ControlTemplate x:Key="EtherScrollBarRepeatButtonTemplate" TargetType="RepeatButton">
+        <Grid Background="Transparent"/>
+    </ControlTemplate>
+
+    <!-- Thumb darkens on pointer-over / while dragging (Pressed). -->
+    <ControlTemplate x:Key="EtherScrollBarThumbTemplate" TargetType="Thumb">
+        <Grid>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualStateGroup.Transitions>
+                        <VisualTransition From="Normal" To="PointerOver" GeneratedDuration="0:0:0.12">
+                            <VisualTransition.GeneratedEasingFunction>
+                                <CubicEase EasingMode="EaseOut"/>
+                            </VisualTransition.GeneratedEasingFunction>
+                        </VisualTransition>
+                        <VisualTransition From="PointerOver" To="Normal" GeneratedDuration="0:0:0.12">
+                            <VisualTransition.GeneratedEasingFunction>
+                                <CubicEase EasingMode="EaseOut"/>
+                            </VisualTransition.GeneratedEasingFunction>
+                        </VisualTransition>
+                    </VisualStateGroup.Transitions>
+                    <VisualState x:Name="Normal"/>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Target="ThumbFill.Background" Value="{ThemeResource EtherScrollBarThumbHoverBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Target="ThumbFill.Background" Value="{ThemeResource EtherScrollBarThumbHoverBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled"/>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Border x:Name="ThumbFill"
+                    Background="{ThemeResource EtherScrollBarThumbBrush}"
+                    CornerRadius="3"/>
+        </Grid>
+    </ControlTemplate>
+
+    <Style TargetType="ScrollBar">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="HighContrastAdjustment" Value="None"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollBar">
+                    <!-- Deliberately no Background here. ScrollBar is laid out 16 px thick, but
+                         in the dropdown the bar overlays the menu items (the menu has a
+                         symmetric 4 px padding and no scroll gutter), so a hit-testable 16 px
+                         backing would swallow clicks along the right edge of every item.
+                         Leaving it unset keeps the hit area to the 4 px the bar actually paints. -->
+                    <Grid>
+
+                        <!-- ScrollBar shows whichever root matches its Orientation and
+                             collapses the other, so both must be present and named. -->
+                        <Grid x:Name="VerticalRoot"
+                              Width="{StaticResource Spacing6}"
+                              HorizontalAlignment="Right">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="0"/>
+                            </Grid.RowDefinitions>
+                            <!-- Stepper arrows are not part of this design; collapse them
+                                 outright so no ScrollBar state can bring a glyph back. -->
+                            <RepeatButton x:Name="VerticalSmallDecrease"
+                                          Grid.Row="0"
+                                          Visibility="Collapsed"
+                                          IsTabStop="False"
+                                          Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
+                            <RepeatButton x:Name="VerticalLargeDecrease"
+                                          Grid.Row="1"
+                                          Height="{StaticResource Spacing0}"
+                                          Opacity="0"
+                                          IsTabStop="False"
+                                          Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
+                            <Thumb x:Name="VerticalThumb"
+                                   Grid.Row="2"
+                                   Width="{StaticResource Spacing6}"
+                                   MinHeight="60"
+                                   HorizontalAlignment="Right"
+                                   Template="{StaticResource EtherScrollBarThumbTemplate}"/>
+                            <RepeatButton x:Name="VerticalLargeIncrease"
+                                          Grid.Row="3"
+                                          IsTabStop="False"
+                                          Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
+                            <RepeatButton x:Name="VerticalSmallIncrease"
+                                          Grid.Row="4"
+                                          Visibility="Collapsed"
+                                          IsTabStop="False"
+                                          Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
+                        </Grid>
+
+                        <Grid x:Name="HorizontalRoot"
+                              Height="{StaticResource Spacing6}"
+                              VerticalAlignment="Bottom">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0"/>
+                            </Grid.ColumnDefinitions>
+                            <RepeatButton x:Name="HorizontalSmallDecrease"
+                                          Grid.Column="0"
+                                          Visibility="Collapsed"
+                                          IsTabStop="False"
+                                          Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
+                            <RepeatButton x:Name="HorizontalLargeDecrease"
+                                          Grid.Column="1"
+                                          Width="{StaticResource Spacing0}"
+                                          Opacity="0"
+                                          IsTabStop="False"
+                                          Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
+                            <Thumb x:Name="HorizontalThumb"
+                                   Grid.Column="2"
+                                   Height="{StaticResource Spacing6}"
+                                   MinWidth="60"
+                                   VerticalAlignment="Bottom"
+                                   Template="{StaticResource EtherScrollBarThumbTemplate}"/>
+                            <RepeatButton x:Name="HorizontalLargeIncrease"
+                                          Grid.Column="3"
+                                          IsTabStop="False"
+                                          Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
+                            <RepeatButton x:Name="HorizontalSmallIncrease"
+                                          Grid.Column="4"
+                                          Visibility="Collapsed"
+                                          IsTabStop="False"
+                                          Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
+                        </Grid>
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

@@ -5,9 +5,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherSwitch.xaml.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherSwitch.xaml'
-$galleryPath = Join-Path $repoRoot 'src\Views\Controls\ToggleSwitchPage.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSwitch.xaml.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSwitch.xaml'
+$galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Controls\ToggleSwitchPage.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
@@ -58,7 +58,7 @@ $implicitToggle = @($styles | Where-Object {
 if ($implicitToggle.Count -ne 0) {
     throw 'EtherSwitch must stay keyed; an implicit ToggleSwitch style would restyle every bare ToggleSwitch.'
 }
-foreach ($setter in 'UseSystemFocusVisuals', 'Template') {
+foreach ($setter in 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "EtherSwitch style is missing its $setter setter."
     }

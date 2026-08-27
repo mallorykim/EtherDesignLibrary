@@ -8,6 +8,6 @@ Public API is governed by `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt`.
 
 Public resource keys are compatibility surface. Deleting or renaming a published key is breaking, including a resource key consumed from XAML. Changing a resource value is classified by impact: an implementation-only correction with no intended consumer-visible effect is a patch; a new backward-compatible visual capability is minor; and a material visual, accessibility, layout, or behavior change that can break consumer assumptions is breaking. Resource-key audits must keep Light and Dark key sets aligned. High Contrast deficits are reported explicitly in preview; a stable release must run `Verify-ResourceKeys.ps1 -RequireHighContrastParity` and cannot ship while the parity gate fails.
 
-Primitive and semantic token files under `src/Resources/Tokens/` are frozen for this refactor. Their keys, values, theme mappings, and file hashes do not change in this release line.
+Primitive and semantic token files under `src/Ether.DesignSystem.Foundation/Resources/Tokens/` are frozen for this refactor. Their keys, values, theme mappings, and file hashes do not change in this release line.
 
 The Gallery and all test projects are non-packable and are not package compatibility surface.

@@ -5,14 +5,14 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherSlider.xaml.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherSlider.xaml'
-$galleryPath = Join-Path $repoRoot 'src\Views\Controls\SliderPage.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSlider.xaml.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSlider.xaml'
+$galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Controls\SliderPage.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherSliderHighlightBrush,EtherSliderInactiveBrush,EtherSliderKnobBrush,EtherSliderKnobPressedBrush,EtherSliderValueForegroundBrush'
-$templateParts = @('ValueText', 'BarCanvas', 'HighlightBrushSource', 'InactiveBrushSource', 'KnobBrushSource', 'KnobPressedBrushSource')
+$templateParts = @('ValueText', 'BarCanvas', 'Knob', 'HighlightBrushSource', 'InactiveBrushSource', 'KnobBrushSource', 'KnobPressedBrushSource')
 
 function Assert-Contains {
     param([string]$Text, [string]$Pattern, [string]$Description)
@@ -51,8 +51,14 @@ Assert-Contains $control 'AutomationControlType\.Slider' 'EtherSlider automation
 Assert-Contains $control 'PatternInterface\.RangeValue' 'EtherSlider RangeValue pattern'
 Assert-Contains $control 'RangeValuePatternIdentifiers\.ValueProperty' 'EtherSlider RangeValue value-changed event'
 Assert-Contains $control 'public string FormatValue\(double value\)' 'EtherSlider FormatValue public API'
-Assert-Contains $control 'BindBarFill\(rect, _highlightBrushSource, "EtherSliderHighlightBrush"\)' 'EtherSlider code-driven bars consume highlight component key'
-Assert-Contains $control 'BindBarFill\(rect, _inactiveBrushSource, "EtherSliderInactiveBrush"\)' 'EtherSlider code-driven bars consume inactive component key'
+Assert-Contains $control 'BindBarFill\(bar, _highlightBrushSource, "EtherSliderHighlightBrush"\)' 'EtherSlider template bars consume highlight component key'
+Assert-Contains $control 'BindBarFill\(bar, _inactiveBrushSource, "EtherSliderInactiveBrush"\)' 'EtherSlider template bars consume inactive component key'
+if ($control -match 'new\s+Rectangle\b') {
+    throw 'EtherSlider must not construct bar or knob rectangles in code; they are template-declared.'
+}
+if ($control -match 'Children\.Clear\(') {
+    throw 'EtherSlider must not clear BarCanvas children; template-declared bars and knob stay in the tree.'
+}
 if ($control -match 'GetThemeColor\(') {
     throw 'EtherSlider must not resolve colors through GetThemeColor string lookups.'
 }
@@ -72,7 +78,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherSlider is missing its implicit style BasedOn DefaultEtherSliderStyle.'
 }
-foreach ($setter in 'IsTabStop', 'UseSystemFocusVisuals', 'Minimum', 'Maximum', 'Value', 'SmallChange', 'LargeChange', 'Template') {
+foreach ($setter in 'IsTabStop', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Minimum', 'Maximum', 'Value', 'SmallChange', 'LargeChange', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherSliderStyle is missing its $setter setter."
     }
@@ -84,6 +90,13 @@ if ($null -eq $template) {
 }
 if ($template.OuterXml -match '#[0-9A-Fa-f]{3,8}') {
     throw 'EtherSlider ControlTemplate contains a literal hex color; only component resources may carry color values.'
+}
+if ($template.OuterXml -notmatch 'x:Name="Knob"') {
+    throw 'EtherSlider ControlTemplate is missing the named Knob part.'
+}
+$declaredBarCount = @($template.SelectNodes(".//*[local-name()='Rectangle' and @Height='40']")).Count
+if ($declaredBarCount -ne 63) {
+    throw "EtherSlider ControlTemplate must declare 63 Height=40 bar rectangles. Observed $declaredBarCount."
 }
 foreach ($themeResource in @([regex]::Matches($template.OuterXml, '\{ThemeResource\s+([^}\s]+)') | ForEach-Object { $_.Groups[1].Value })) {
     if ($themeResource -notlike 'EtherSlider*') {

@@ -1,0 +1,249 @@
+<!--
+    EtherIntelligenceButton.xaml - Ether Design System · Intelligence Action Button
+    ===============================================================================
+
+    USAGE
+      <controls:EtherIntelligenceButton Content="What's this mean?"/>
+
+      With icon (stack icon + label in a StackPanel as Content):
+        <controls:EtherIntelligenceButton>
+            <StackPanel Orientation="Horizontal" Spacing="4">
+                <Image Width="24" Height="24" Source="ms-appx:///Assets/Icons/Sparkles.png"/>
+                <TextBlock Text="What's this mean?"
+                           FontFamily="{StaticResource InterFont}"
+                           FontSize="14" FontWeight="SemiBold"
+                           Foreground="{ThemeResource EtherIntelligenceButtonForegroundBrush}"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </controls:EtherIntelligenceButton>
+
+    VISUAL (Figma node 60438:579)
+      Background   EtherIntelligenceButtonBackgroundBrush (BackgroundCanvas)
+      Border       two 1 px inside linear-gradient strokes
+      Glow shadow  top-left: #BB00FF @10%, bottom: #196FFF @50%
+                   (component brushes; High Contrast uses SystemColor*)
+      CornerRadius 12 (radius/control-lg)
+      Padding      pl=8 pr=12 py=8 gap=4
+      Font         Inter SemiBold 14 px (InterFont)
+      Text colour  EtherIntelligenceButtonForegroundBrush (TextSecondary)
+      Icon         24×24 sparkles icon (Phosphor / custom)
+
+    SHADOW / GLOW  (Figma: -2px -2px 0px rgba(187,0,255,0.1),
+                           0px 2px 4px rgba(25,111,255,0.5))
+      The unpackaged sandbox does not render AttachedCardShadow consistently, so
+      a layered, low-opacity blue halo and an exact hard purple offset are used.
+
+    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F · node 1212:4940)
+      Padding     pl=8, pr=12, py=8 · gap between icon and text = 4
+      Icon        24×24
+      Label       Inter SemiBold 14 px · TextSecondary
+      CornerRadius 12 (radius/control-lg)
+
+    DefaultEtherIntelligenceButtonStyle owns the default setters; the implicit
+    style is BasedOn that key. Colour-bearing values live in EtherIntelligenceButton*
+    Light/Dark/HighContrast dictionaries. Templates do not use literal hex.
+
+    LOCATION
+      This dictionary lives beside its class (Controls/EtherIntelligenceButton.cs)
+      and is merged from Controls Generic.xaml.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:EtherSandbox.Controls">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <StaticResource x:Key="EtherIntelligenceButtonBackgroundBrush" ResourceKey="BackgroundCanvas" />
+            <StaticResource x:Key="EtherIntelligenceButtonForegroundBrush" ResourceKey="TextSecondary" />
+            <StaticResource x:Key="EtherIntelligenceButtonBorderBlueBrush" ResourceKey="BorderIntelligenceBlue" />
+            <StaticResource x:Key="EtherIntelligenceButtonBorderBrush" ResourceKey="BorderIntelligence" />
+            <StaticResource x:Key="EtherIntelligenceButtonBorderHoverBrush" ResourceKey="BorderIntelligenceHover" />
+            <StaticResource x:Key="EtherIntelligenceButtonFocusStrokeBrush" ResourceKey="ai/accent-purple" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowOuterBrush" Color="#0C196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowMiddleBrush" Color="#20196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowCoreBrush" Color="#40196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonPurpleGlowBrush" Color="#1ABB00FF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowPressedOuterBrush" Color="#00196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowPressedMiddleBrush" Color="#00196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowPressedCoreBrush" Color="#80196FFF" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <StaticResource x:Key="EtherIntelligenceButtonBackgroundBrush" ResourceKey="BackgroundCanvas" />
+            <StaticResource x:Key="EtherIntelligenceButtonForegroundBrush" ResourceKey="TextSecondary" />
+            <StaticResource x:Key="EtherIntelligenceButtonBorderBlueBrush" ResourceKey="BorderIntelligenceBlue" />
+            <StaticResource x:Key="EtherIntelligenceButtonBorderBrush" ResourceKey="BorderIntelligence" />
+            <StaticResource x:Key="EtherIntelligenceButtonBorderHoverBrush" ResourceKey="BorderIntelligenceHover" />
+            <StaticResource x:Key="EtherIntelligenceButtonFocusStrokeBrush" ResourceKey="ai/accent-purple" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowOuterBrush" Color="#0C196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowMiddleBrush" Color="#20196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowCoreBrush" Color="#40196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonPurpleGlowBrush" Color="#1ABB00FF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowPressedOuterBrush" Color="#00196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowPressedMiddleBrush" Color="#00196FFF" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowPressedCoreBrush" Color="#80196FFF" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonForegroundBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBorderBlueBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBorderHoverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonFocusStrokeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowOuterBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowMiddleBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowCoreBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonPurpleGlowBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowPressedOuterBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowPressedMiddleBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="EtherIntelligenceButtonBlueGlowPressedCoreBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <ControlTemplate x:Key="EtherIntelligenceButtonTemplate" TargetType="controls:EtherIntelligenceButton">
+        <!-- Keep the 172×40 Figma button intact while reserving room for its
+             focus ring and outer shadows, so neither is clipped by the template. -->
+        <Grid Padding="6,6,6,8">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualStateGroup.Transitions>
+                        <!-- Default → Hover should be immediate. -->
+                        <VisualTransition From="Normal"
+                                          To="PointerOver"
+                                          GeneratedDuration="0:0:0"/>
+                    </VisualStateGroup.Transitions>
+                    <VisualState x:Name="Normal"/>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <!-- Figma node 60377:541: white-to-grey gradient stroke; canvas fill is unchanged. -->
+                            <Setter Target="Bg.Background" Value="{ThemeResource EtherIntelligenceButtonBackgroundBrush}"/>
+                            <Setter Target="BorderIntelligenceBlue.BorderBrush" Value="{ThemeResource EtherIntelligenceButtonBorderHoverBrush}"/>
+                            <Setter Target="BorderIntelligenceGradient.BorderBrush" Value="{ThemeResource EtherIntelligenceButtonBorderHoverBrush}"/>
+                            <!-- Hover glow: -2,-2,2,1 purple + 0,2,6,1 blue. -->
+                            <Setter Target="BlueGlowOuter.Margin" Value="-5,-3,-5,-7"/>
+                            <Setter Target="BlueGlowOuter.CornerRadius" Value="{StaticResource RadiusXl}"/>
+                            <Setter Target="BlueGlowMiddle.Margin" Value="-3,-1,-3,-5"/>
+                            <Setter Target="BlueGlowMiddle.CornerRadius" Value="{StaticResource RadiusXl}"/>
+                            <Setter Target="BlueGlowCore.Margin" Value="-1,1,-1,-3"/>
+                            <Setter Target="BlueGlowCore.CornerRadius" Value="{StaticResource RadiusLg}"/>
+                            <Setter Target="PurpleGlow.Margin" Value="-3,-3,1,1"/>
+                            <Setter Target="PurpleGlow.CornerRadius" Value="{StaticResource RadiusLg}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <!-- Figma node 60447:602: the fill and intelligence stroke persist. -->
+                            <Setter Target="Bg.Background" Value="{ThemeResource EtherIntelligenceButtonBackgroundBrush}"/>
+                            <!-- Pressed: the blue shadow is a hard 0,2,0,0 brand-blue at 50%. -->
+                            <Setter Target="BlueGlowOuter.Background" Value="{ThemeResource EtherIntelligenceButtonBlueGlowPressedOuterBrush}"/>
+                            <Setter Target="BlueGlowMiddle.Background" Value="{ThemeResource EtherIntelligenceButtonBlueGlowPressedMiddleBrush}"/>
+                            <Setter Target="BlueGlowCore.Background" Value="{ThemeResource EtherIntelligenceButtonBlueGlowPressedCoreBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <!-- Figma node 60377:551: retain the design colors at 40% opacity. -->
+                            <Setter Target="Bg.Opacity" Value="0.4"/>
+                            <Setter Target="BlueGlowOuter.Visibility" Value="Collapsed"/>
+                            <Setter Target="BlueGlowMiddle.Visibility" Value="Collapsed"/>
+                            <Setter Target="BlueGlowCore.Visibility" Value="Collapsed"/>
+                            <Setter Target="PurpleGlow.Visibility" Value="Collapsed"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="FocusStates">
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Unfocused"/>
+                    <VisualState x:Name="PointerFocused"/>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+            <!-- Figma's 0,2,4 brand-blue at 50% drop shadow, approximated with
+                 concentric low-opacity layers so it works in the unpackaged app. -->
+            <Border x:Name="BlueGlowOuter"
+                    Margin="-4,-2,-4,-6"
+                    CornerRadius="{StaticResource RadiusXl}"
+                    Background="{ThemeResource EtherIntelligenceButtonBlueGlowOuterBrush}"
+                    IsHitTestVisible="False"/>
+            <Border x:Name="BlueGlowMiddle"
+                    Margin="-2,0,-2,-4"
+                    CornerRadius="14"
+                    Background="{ThemeResource EtherIntelligenceButtonBlueGlowMiddleBrush}"
+                    IsHitTestVisible="False"/>
+            <Border x:Name="BlueGlowCore"
+                    Margin="0,2,0,-2"
+                    CornerRadius="{StaticResource RadiusLg}"
+                    Background="{ThemeResource EtherIntelligenceButtonBlueGlowCoreBrush}"
+                    IsHitTestVisible="False"/>
+
+            <!-- Figma's -2,-2,0 accent-purple at 10% hard shadow. -->
+            <Border x:Name="PurpleGlow"
+                    Margin="-2,-2,2,2"
+                    CornerRadius="{StaticResource RadiusLg}"
+                    Background="{ThemeResource EtherIntelligenceButtonPurpleGlowBrush}"
+                    IsHitTestVisible="False"/>
+
+            <Border x:Name="Bg"
+                    Background="{ThemeResource EtherIntelligenceButtonBackgroundBrush}"
+                    CornerRadius="{StaticResource radius/control-lg}">
+                <Grid>
+                    <!-- Figma stacks two one-pixel, inside-aligned strokes. -->
+                    <Border x:Name="BorderIntelligenceBlue"
+                            BorderBrush="{ThemeResource EtherIntelligenceButtonBorderBlueBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource radius/control-lg}"
+                            IsHitTestVisible="False"/>
+                    <Border x:Name="BorderIntelligenceGradient"
+                            BorderBrush="{ThemeResource EtherIntelligenceButtonBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource radius/control-lg}"
+                            IsHitTestVisible="False"/>
+                    <Border Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="{StaticResource Spacing4}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Image Width="{StaticResource Spacing24}" Height="{StaticResource Spacing24}" Stretch="Uniform"
+                                   AutomationProperties.AccessibilityView="Raw">
+                                <Image.Source>
+                                    <SvgImageSource UriSource="ms-appx:///Assets/Icons/Sparkles.svg"/>
+                                </Image.Source>
+                            </Image>
+                            <ContentPresenter x:Name="Cp"
+                                              Content="{TemplateBinding Content}"
+                                              VerticalAlignment="Center"
+                                              Foreground="{ThemeResource EtherIntelligenceButtonForegroundBrush}"
+                                              FontFamily="{StaticResource InterFont}"
+                                              FontSize="{StaticResource Size14}"
+                                              FontWeight="{StaticResource WeightSemibold}"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+            <Border x:Name="FocusRing"
+                    Margin="-3"
+                    BorderBrush="{ThemeResource EtherIntelligenceButtonFocusStrokeBrush}"
+                    BorderThickness="2"
+                    CornerRadius="14"
+                    IsHitTestVisible="False"
+                    Visibility="Collapsed"/>
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="DefaultEtherIntelligenceButtonStyle" TargetType="controls:EtherIntelligenceButton">
+        <Setter Property="Padding"                    Value="8,8,12,8"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment"   Value="Center"/>
+        <Setter Property="UseSystemFocusVisuals"      Value="False"/>
+        <Setter Property="HighContrastAdjustment"     Value="None"/>
+        <Setter Property="Template" Value="{StaticResource EtherIntelligenceButtonTemplate}"/>
+    </Style>
+
+    <Style TargetType="controls:EtherIntelligenceButton" BasedOn="{StaticResource DefaultEtherIntelligenceButtonStyle}" />
+
+</ResourceDictionary>

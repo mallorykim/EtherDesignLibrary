@@ -5,9 +5,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$controlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherScrollBar.xaml.cs'
-$xamlPath = Join-Path $repoRoot 'src\Controls\Inputs\EtherScrollBar.xaml'
-$galleryPath = Join-Path $repoRoot 'src\Views\Foundations\ScrollBarPage.xaml'
+$controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherScrollBar.xaml.cs'
+$xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherScrollBar.xaml'
+$galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Foundations\ScrollBarPage.xaml'
 $fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
@@ -57,7 +57,7 @@ $keyedScrollBar = @($styles | Where-Object {
 if ($keyedScrollBar.Count -ne 0) {
     throw 'EtherScrollBar must stay implicit; a keyed ScrollBar style would drop app-wide ScrollViewer coverage.'
 }
-foreach ($setter in 'Background', 'IsTabStop', 'Template') {
+foreach ($setter in 'Background', 'IsTabStop', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $implicitStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "Implicit ScrollBar style is missing its $setter setter."
     }

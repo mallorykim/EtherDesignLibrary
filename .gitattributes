@@ -10,6 +10,7 @@
 *.json text eol=crlf
 *.xml text eol=crlf
 *.config text eol=crlf
+*.resw text eol=crlf
 
 # Binary files should never be modified
 *.png binary

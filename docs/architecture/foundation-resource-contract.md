@@ -39,7 +39,8 @@ required.
 
 ## Release gate
 
-Frozen token files remain byte-for-byte unchanged in L1. `Verify-ResourceKeys.ps1` always fails
-Light/Dark mismatches and duplicate keys. It reports the known High Contrast deficit during
-preview; every stable release must run it with `-RequireHighContrastParity`, which fails until the
-145 missing keys are addressed in an authorized token change.
+`Verify-ResourceKeys.ps1` always fails Light/Dark mismatches and duplicate keys.
+`-RequireHighContrastParity` requires the HighContrast dictionary to expose the same
+resource keys as Light/Dark. That gate is green after an authorized `EtherColors`
+change: the Figma slash-key layer maps to Windows `SystemColor*` (no brand hex).
+Primitives, spacing, typography, and icon geometry token files remain frozen.

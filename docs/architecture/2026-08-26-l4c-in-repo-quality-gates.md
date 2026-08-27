@@ -28,10 +28,11 @@ MSIX install, not arm64 runtime, and not nuget publish.
   It does not call `Add-AppxPackage`.
 - `scripts/Verify-Arm64Packages.ps1` packs Foundation + Controls for arm64 and
   compiles the unpackaged fixture. It does not launch the arm64 exe.
+- `EtherColors` HighContrast now defines the same semantic slash keys as Light/Dark
+  (234). Values are `{ThemeResource SystemColor*}`, not Gray/Blue primitives.
 
 ## Still red
 
 MSIX install/runtime (unsigned produce only; no `Add-AppxPackage`), arm64
 runtime, Accessibility Insights, Appium, hosted CI WinUI smoke
-(`build.yml` keeps `-SkipRuntimeSmoke`), High Contrast 145-key token parity,
-and preview package publish.
+(`build.yml` keeps `-SkipRuntimeSmoke`), and preview package publish.

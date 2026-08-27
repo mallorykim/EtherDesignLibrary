@@ -30,7 +30,7 @@ The governing principles are:
 The existing Primitive Token and Semantic Token files must not be edited during this refactor.
 Their keys, values, theme mappings, and file contents are frozen.
 
-Baseline Git blob hashes:
+Baseline Git blob hashes at plan start:
 
 | File | Blob hash |
 |---|---|
@@ -40,11 +40,15 @@ Baseline Git blob hashes:
 | `src/Resources/Tokens/EtherTypography.xaml` | `b24444567ee95467408e004fe7fab622eba79759` |
 | `src/Resources/Tokens/EtherIconGeometries.xaml` | `134c1667934376ba4943cf350b110a02607c81f4` |
 
+Authorized later exception: `EtherColors.xaml` HighContrast slash-key mapping now hashes
+`d7c218e5a631e86552ed2b089cbc03bbd571a090`. Other token files remain frozen at the
+hashes above.
+
 Every coding slice must finish with both:
 
 ```powershell
-git diff -- src/Resources/Tokens
-git ls-files 'src/Resources/Tokens/*' | ForEach-Object { git hash-object $_ }
+git diff -- src/Ether.DesignSystem.Foundation/Resources/Tokens
+git ls-files 'src/Ether.DesignSystem.Foundation/Resources/Tokens/*' | ForEach-Object { git hash-object $_ }
 ```
 
 Token gaps found by the audit are recorded but not corrected in this refactor.
@@ -163,9 +167,10 @@ Ether/
 └─ docs/
 ```
 
-During the first structural slice, frozen token source files may remain at their current paths and
-be linked into the Foundation project. Relocation is allowed only as a byte-for-byte Git move and
-only when asset/resource resolution has a passing consumer fixture.
+Frozen token source files now live at `src/Ether.DesignSystem.Foundation/Resources/Tokens/` after
+a byte-for-byte Git move (hashes unchanged). Packable controls live under
+`src/Ether.DesignSystem.Controls/`, and Gallery sources live under
+`samples/Ether.DesignSystem.Gallery/`. Fonts and Assets remain at the repository root.
 
 ### 4.2 Dependency direction
 

@@ -13,8 +13,10 @@ Pause point: L2 accepted in working tree (foundation + ProgressBar exemplar + ve
   first, then improve breadth and polish incrementally.
 - The primary agent owns audit, planning, and review. Coding work must be delegated to a
   `gpt-5.6-terra` subagent with high reasoning effort.
-- Do not change existing Primitive or Semantic Tokens. For this refactor, treat every file under
-  `src/Resources/Tokens/` as frozen unless the user explicitly changes that instruction.
+- Do not change existing Primitive or Semantic Tokens **except** the authorized
+  `EtherColors.xaml` HighContrast slash-key mapping (same semantic keys as Light/Dark,
+  `SystemColor*` leaves). Other files under
+  `src/Ether.DesignSystem.Foundation/Resources/Tokens/` remain frozen.
 - When implementation details are uncertain, research the official sources referenced by the
   governing specification.
 
@@ -30,14 +32,15 @@ Expected Git blob hashes:
 
 | File | Hash |
 | --- | --- |
-| `src/Resources/Tokens/EtherPrimitives.xaml` | `d6ff0e5301b3672dbb492484c8d0ea584aca12be` |
-| `src/Resources/Tokens/EtherColors.xaml` | `794404850d4eb20a2fc3ec43c3480be8f318ac64` |
-| `src/Resources/Tokens/EtherSpacing.xaml` | `5d631cd2ebde306d389a1fa8999000359441bcd2` |
-| `src/Resources/Tokens/EtherTypography.xaml` | `b24444567ee95467408e004fe7fab622eba79759` |
-| `src/Resources/Tokens/EtherIconGeometries.xaml` | `134c1667934376ba4943cf350b110a02607c81f4` |
+| `src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml` | `d6ff0e5301b3672dbb492484c8d0ea584aca12be` |
+| `src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml` | `d7c218e5a631e86552ed2b089cbc03bbd571a090` |
+| `src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherSpacing.xaml` | `5d631cd2ebde306d389a1fa8999000359441bcd2` |
+| `src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml` | `b24444567ee95467408e004fe7fab622eba79759` |
+| `src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherIconGeometries.xaml` | `134c1667934376ba4943cf350b110a02607c81f4` |
 
-These hashes matched immediately before this pause commit, and `git diff --
-src/Resources/Tokens` was empty.
+These files were relocated with a byte-for-byte Git move from `src/Resources/Tokens/`.
+Hashes must remain unchanged; `git diff -- src/Ether.DesignSystem.Foundation/Resources/Tokens`
+is content-empty aside from the rename itself.
 
 ## Completed and previously verified
 
@@ -61,8 +64,8 @@ src/Resources/Tokens` was empty.
 - Added transitive font/SVG delivery without `ReferencePath` manipulation.
 - Recorded the unpackaged `StorageFile` host-root `ms-appx` limitation honestly while proving the
   same assets through output files, FontFamily, and a visible `SvgImageSource`.
-- Kept the known global High Contrast deficit as a stable-release blocker: Light and Dark each
-  expose 234 keys, High Contrast exposes 89, and 145 keys remain missing from High Contrast.
+- Global High Contrast key parity for `EtherColors.xaml` is mapped to Windows
+  `SystemColor*` (Light/Dark/HC 234/234/234). Other token files remain frozen.
 
 See `docs/architecture/foundation-resource-contract.md` for the full contract.
 
@@ -82,11 +85,13 @@ Delivered:
 - Component-scoped Light/Dark/HighContrast resources; the template no longer contains literal
   colors. High Contrast uses Windows `SystemColor*` resources. Frozen tokens were not changed.
 - A private, read-only ProgressBar `IRangeValueProvider` automation peer with Value-change events,
-  `double.NaN` small/large changes, and name fallback to string `Title`.
+  `double.NaN` small/large changes, name fallback to string `Title`, and an in-process
+  `AutomationRangeValueChanged` subscription raised with `RangeValuePatternIdentifiers.ValueProperty`.
 - Gallery automation names for the simulator and four label variants.
 - Package-consumer runtime assertions for default style, template parts, all label states, 65%
   fill layout, automation via `GetPattern(PatternInterface.RangeValue)`, rejected `SetValue`,
-  live pattern value observation for `valueChangeExercised`, and Light/Dark template brushes/gradient.
+  live pattern value observation for `valueChangeExercised`, in-process
+  `valuePropertyChangedSubscribed`, and Light/Dark template brushes/gradient.
 - Static contract verifier wired into CI.
 - Consumer-fixture verifier extracts `.nupkg` via `ZipFile` (`Expand-Package`) for Windows
   PowerShell 5.1 compatibility.
@@ -100,9 +105,9 @@ Detailed scope and acknowledged exceptions are in
 2. `dotnet build EtherComponentSandbox.csproj -c Debug -p:Platform=x64` — passed.
 3. `dotnet build EtherComponentSandbox.csproj -c Release -p:Platform=x64` — passed.
 4. `./scripts/Verify-ResourceGraph.ps1` — passed.
-5. `./scripts/Verify-ResourceKeys.ps1` — passed (Light/Dark 234; HC 89; missing 145).
-6. `./scripts/Verify-ResourceKeys.ps1 -RequireHighContrastParity` — expected fail only for the
-   documented 145 frozen-token gaps.
+5. `./scripts/Verify-ResourceKeys.ps1` — passed (Light/Dark/HighContrast 234).
+6. `./scripts/Verify-ResourceKeys.ps1 -RequireHighContrastParity` — passed after the authorized
+   `EtherColors` HighContrast slash-key mapping.
 7. `./scripts/Verify-ConsumerFixtures.ps1 -SkipSolutionBuild` — passed after `Expand-Package` fix;
    unpackaged GUI marker and all `progressBar` fields validated; primary recheck also passed.
 8. `./scripts/Verify-GallerySmoke.ps1` — passed (Light 20/20; Dark 20/20).
@@ -111,8 +116,8 @@ Detailed scope and acknowledged exceptions are in
     strengthening).
 
 Review: APPROVE after Important fixes (PS 5.1 nupkg extract; `GetPattern` RangeValue evidence).
-Remaining UIA `RangeValuePatternIdentifiers.ValueProperty` subscription stays L4 (no public
-in-process WinUI API). Coding/review subagents for this close-out used `cursor-grok-4.6-high-fast`
+In-process `RangeValuePatternIdentifiers.ValueProperty` subscription is proven through
+`AutomationRangeValueChanged` on the unpackaged consumer fixture. Coding/review subagents for this close-out used `cursor-grok-4.6-high-fast`
 (`gpt-5.6-terra` was unavailable in the harness).
 
 ## L3-1 EtherButton — accepted
@@ -136,7 +141,8 @@ See `.superpowers/sdd/task-l3-input-*.md`.
 
 ## L3-4 EtherDropdown — accepted
 
-Accepted with documented ComboBox closed-tree / GoToState evidence exceptions.
+Closed `PopupBorder` / `ScrollViewer` are proven through `Popup.Child` without opening
+the live menu. DropDownStates still use `GoToState` for Opened/Closed chrome.
 See `.superpowers/sdd/task-l3-dropdown-report.md`.
 
 ## L3-5 EtherSegmentedControl + EtherIntelligenceButton — accepted
@@ -154,13 +160,15 @@ See `.superpowers/sdd/plan-a-parallel-protocol.md`.
 
 ## L3-7 EtherSlider — accepted
 
-UserControl → templated `RangeBase`. Code-driven 63-bar rendering documented.
+UserControl → templated `RangeBase`. 63 bar rectangles and Knob are template-declared;
+code updates fill, `Canvas.Left`, and knob hover/press sizing.
 Review: Approved with concerns. Report: `.superpowers/sdd/task-l3-slider-report.md`.
 
 ## L3-8 EtherMasthead — accepted
 
 UserControl → templated `Control`, now packable in Controls. Window chrome via
-`XamlRoot`/`AppWindow` (Close uses `Destroy()`). Review: Approved with concerns.
+`XamlRoot`/`AppWindow` (Close posts `WM_CLOSE`, the `Window.Close` path).
+Review: Approved with concerns.
 Report: `.superpowers/sdd/task-l3-masthead-report.md`.
 
 ## L3-9 EtherSwitch + EtherScrollBar — accepted
@@ -191,16 +199,20 @@ Shipped:
 - Foundations primitives (Colors, Typography, Spacing, Radius, Icons) and
   Home stay on plain `ComponentPage`. Smoke catalog remains 20/20.
 - `scripts/Verify-GalleryControlExample.ps1` wired in CI.
+- Gallery `ControlExample` / `ComponentPage` chrome uses `.resw` + `x:Uid`
+  (`samples/Ether.DesignSystem.Gallery/Strings/en-US/Resources.resw`).
+- `scripts/Verify-WinUiConventions.ps1` (HighContrastAdjustment + easing).
 
 In-repo L4-C substitutes (package consumer, not publish): RTL inheritance;
 in-process UIA snapshot (EtherDropdown `LayoutFallback`; other 12 UIA rects);
-225% `ScaleTransform` + fixture `.resw` / `x:Uid`; Light/Dark captures under
+225% `ScaleTransform` + fixture `.resw` / `x:Uid`; Gallery RTL `FlowDirection`
+inheritance; Light/Dark captures under
 artifacts; elapsed harness `< 20000ms`; unsigned MSIX **produce**; arm64
 **pack/compile**. Local owner: `scripts/Verify-RuntimeGates.ps1`.
 
 Still red: Accessibility Insights; Appium / out-of-process UIA; hosted-CI
 WinUI smoke (`build.yml` keeps `-SkipRuntimeSmoke`); MSIX **install/runtime**;
-arm64 **runtime**; High Contrast 145-key parity; preview package **publish**
+arm64 **runtime**; preview package **publish**
 (held).
 
 Local pack is ready (`scripts/Pack-PreviewPackages.ps1` → `artifacts/packages/`).
@@ -208,7 +220,19 @@ Do not push until the first public preview's control set is accepted. Remaining
 push steps live in `docs/releases/0.1.0-preview.1.md`. In-repo consumer fixtures
 already prove PackageReference consumption from a local nupkg feed.
 
-Keep Primitive/Semantic Tokens frozen.
+Keep Primitive, spacing, typography, and icon-geometry tokens frozen.
+`EtherColors` HighContrast now carries the same semantic slash keys as Light/Dark.
+
+## Physical layout (post-Link relocation)
+
+Sources now sit in the plan §4.1 project folders instead of being linked from the old sandbox tree:
+
+- Tokens: `src/Ether.DesignSystem.Foundation/Resources/Tokens/`
+- Packable controls + EtherCard + `MultiplyConverter`: `src/Ether.DesignSystem.Controls/`
+- Gallery app, pages, and helpers: `samples/Ether.DesignSystem.Gallery/`
+- Fonts and Assets stay at the repository root (`ms-appx:///Fonts/...`, `ms-appx:///Assets/...`)
+- Legacy `EtherComponentSandbox` is a second host: it ProjectReferences Foundation+Controls and compiles Gallery sources. It no longer compiles a second copy of controls or the flattened `Generic.xaml` graph.
+- `tests/Ether.DesignSystem.UnitTests` and `UITests` are still not created.
 
 ## Whole-work independent review handoff
 
@@ -223,10 +247,11 @@ and an explicit L4-C deferral list. Prefer that document over `.superpowers/` sc
 ## Known non-completions and release blockers
 
 - The L2 runtime evidence is structured, not a pixel screenshot baseline.
-- High Contrast validation for EtherProgressBar is currently a static resource-contract check,
-  not an on-device pass across all Windows contrast themes.
+- High Contrast **key parity** for semantic slash tokens is green (234/234/234,
+  `SystemColor*` leaves). On-device Aquatic/Desert/Night Sky is still not automated.
 - In-repo substitutes exist for RTL inheritance, in-process UIA (dropdown
-  `LayoutFallback`), 225% `ScaleTransform`, fixture `.resw` / `x:Uid`, artifact
+  `LayoutFallback`), 225% `ScaleTransform`, fixture `.resw` / `x:Uid`, Gallery
+  RTL `FlowDirection` inheritance, artifact
   screenshots, elapsed harness, unsigned MSIX produce, and arm64 pack/compile.
   Accessibility Insights, Appium / out-of-process UIA, hosted GUI CI, MSIX
   install/runtime, arm64 runtime, and preview **publish** remain red.
@@ -235,7 +260,8 @@ and an explicit L4-C deferral list. Prefer that document over `.superpowers/` sc
 - Hosted CI does not launch WinUI; Gallery smoke, L3 runtime markers, MSIX
   produce, and arm64 pack are `scripts/Verify-RuntimeGates.ps1` on a desktop
   session, not `build.yml`.
-- The frozen global token High Contrast parity gate intentionally remains red.
+- Global `EtherColors` High Contrast keys now match Light/Dark (234) via `SystemColor*`.
+  On-device contrast-theme passes (Aquatic / Desert / Night Sky) are still not automated.
 - Do not broaden L2 into bulk control conversion. After L2 passes review, continue with the
   migration-template phase defined by the repository plan.
 
