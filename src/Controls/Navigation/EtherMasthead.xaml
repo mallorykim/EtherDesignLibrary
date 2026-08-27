@@ -1,248 +1,318 @@
 <!--
-    EtherMasthead.xaml = Ether Design System = App Title Bar (Masthead)
-    =
+    Ether Design System Masthead
+
+    Right-aligned caption bar with optional icon slots and AppWindow minimize,
+    maximize/restore, and close chrome. DefaultEtherMastheadStyle owns the
+    default setters; the implicit style is BasedOn that key. Colour-bearing
+    values live in EtherMasthead* Light/Dark/HighContrast dictionaries. The
+    template does not use literal hex.
+
+    Optional icon visibility and the maximize/restore glyph swap are driven
+    through VisualStateManager. Caption click handling stays code-driven so
+    window chrome is not rewritten onto VSM.
 
     USAGE
-      In your Window's XAML, extend content into the title bar and place this
-      UserControl as the top row of your root Grid.
+      ExtendsContentIntoTitleBar = true;
+      SetTitleBar(MastheadControl);
 
-        [ In Window code=behind (once): ]
-        ExtendsContentIntoTitleBar = true;
-        SetTitleBar(MastheadControl);
-
-        [ In page XAML: ]
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <local:EtherMasthead Grid.Row="0" x:Name="MastheadControl"/>
-            [ main content ]
-        </Grid>
-
-    VISIBILITY PROPS  (set in code=behind or via x:Bind)
-      ShowSettings          bool  default True  = gear icon
-      ShowSearch            bool  default False = search icon
-      ShowMenuIcon          bool  default False = hamburger icon
-      ShowChevron           bool  default False = chevron open/close
-
-    WINDOW CHROME BUTTONS
-      Minimize, Maximize/Restore, Close are always shown.
-      They are rendered as 16=16 placeholder Borders here.
-      In production, wire them to AppWindow.Presenter methods:
-        AppWindow.Presenter as OverlappedPresenter = Minimize(), Maximize(), etc.
-
-    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F = node 58074:2926)
-      Total container  px=24, py=16
-      Icon row         right=aligned = gap 24 px (space/xl)
-      Each icon        16=16 = DDS2 icon library
-      Close icon       10=10 (inset inside 16=16 hit target + 3 px padding)
-
-    TOKENS
-      Background:   Transparent (host window provides bg)
-      Icon colour:  TextPrimary (ThemeResource) = adapts Light/Dark automatically
+    LOCATION
+      This dictionary lives beside its class (Controls/Navigation/EtherMasthead.xaml.cs)
+      and is merged from Controls Generic.xaml.
 -->
-<UserControl
-    x:Class="EtherSandbox.Controls.EtherMasthead"
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:EtherSandbox.Controls">
 
-    <UserControl.Resources>
-        <Style x:Key="MastheadCaptionButtonStyle" TargetType="controls:EtherButton">
-            <Setter Property="Width" Value="44"/>
-            <Setter Property="Height" Value="44"/>
-            <Setter Property="Padding" Value="{StaticResource Padding0}"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="UseSystemFocusVisuals" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal"/>
-                                    <VisualState x:Name="PointerOver">
-                                        <VisualState.Setters>
-                                            <Setter Target="Bg.Background" Value="{ThemeResource ActionSecondaryBgHover}"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState x:Name="Pressed">
-                                        <VisualState.Setters>
-                                            <Setter Target="Bg.Background" Value="{ThemeResource ActionSecondaryBgPressed}"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState x:Name="Disabled">
-                                        <VisualState.Setters>
-                                            <Setter Target="Bg.Opacity" Value="0.4"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                                <VisualStateGroup x:Name="FocusStates">
-                                    <VisualState x:Name="Focused">
-                                        <VisualState.Setters>
-                                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState x:Name="Unfocused"/>
-                                    <VisualState x:Name="PointerFocused"/>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <StaticResource x:Key="EtherMastheadCaptionHoverBrush" ResourceKey="ActionSecondaryBgHover" />
+            <StaticResource x:Key="EtherMastheadCaptionPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
+            <StaticResource x:Key="EtherMastheadFocusBrush" ResourceKey="border/focus" />
+            <StaticResource x:Key="EtherMastheadIconForegroundBrush" ResourceKey="text/primary" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <StaticResource x:Key="EtherMastheadCaptionHoverBrush" ResourceKey="ActionSecondaryBgHover" />
+            <StaticResource x:Key="EtherMastheadCaptionPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
+            <StaticResource x:Key="EtherMastheadFocusBrush" ResourceKey="border/focus" />
+            <StaticResource x:Key="EtherMastheadIconForegroundBrush" ResourceKey="text/primary" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="EtherMastheadCaptionHoverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherMastheadCaptionPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherMastheadFocusBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherMastheadIconForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
 
-                            <Border x:Name="Bg"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="{StaticResource RadiusNone}">
-                                <ContentPresenter HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"/>
-                            </Border>
+    <Style x:Key="EtherMastheadCaptionButtonStyle" TargetType="controls:EtherButton">
+        <Setter Property="Width" Value="44"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="Padding" Value="{StaticResource Padding0}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="UseSystemFocusVisuals" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="Bg.Background" Value="{ThemeResource EtherMastheadCaptionHoverBrush}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="Bg.Background" Value="{ThemeResource EtherMastheadCaptionPressedBrush}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="Bg.Opacity" Value="0.4"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Focused">
+                                    <VisualState.Setters>
+                                        <Setter Target="FocusRing.Visibility" Value="Visible"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Unfocused"/>
+                                <VisualState x:Name="PointerFocused"/>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
 
-                            <Border x:Name="FocusRing"
-                                    Margin="-3"
-                                    BorderBrush="{ThemeResource border/focus}"
-                                    BorderThickness="2"
-                                    CornerRadius="{StaticResource RadiusSm}"
-                                    IsHitTestVisible="False"
-                                    Visibility="Collapsed"/>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
+                        <Border x:Name="Bg"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{StaticResource RadiusNone}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
 
-    <Grid Padding="{StaticResource Padding12}"
-          Background="Transparent">
-        <StackPanel Orientation="Horizontal"
-                    Spacing="{StaticResource Spacing0}"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
-
-            <Grid x:Name="MenuIconSlot"
-                  Width="44"
-                  Height="44"
-                  Visibility="Collapsed">
-                <FontIcon Glyph="&#xE700;"
-                          FontFamily="Segoe MDL2 Assets"
-                          FontSize="{StaticResource Size16}"
-                          Foreground="{ThemeResource text/primary}"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
-                          AutomationProperties.AccessibilityView="Raw"/>
-            </Grid>
-
-            <Grid x:Name="SearchIconSlot"
-                  Width="44"
-                  Height="44"
-                  Visibility="Collapsed">
-                <FontIcon Glyph="&#xE721;"
-                          FontFamily="Segoe MDL2 Assets"
-                          FontSize="{StaticResource Size16}"
-                          Foreground="{ThemeResource text/primary}"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
-                          AutomationProperties.AccessibilityView="Raw"/>
-            </Grid>
-
-            <Grid x:Name="SettingsButton"
-                  Width="44"
-                  Height="44"
-                  Visibility="Visible">
-                <FontIcon Glyph="&#xE713;"
-                          FontFamily="Segoe MDL2 Assets"
-                          FontSize="{StaticResource Size16}"
-                          Foreground="{ThemeResource text/primary}"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
-                          AutomationProperties.AccessibilityView="Raw"/>
-            </Grid>
-
-            <Grid x:Name="ChevronSlot"
-                  Width="44"
-                  Height="44"
-                  Visibility="Collapsed">
-                <FontIcon Glyph="&#xE70D;"
-                          FontFamily="Segoe MDL2 Assets"
-                          FontSize="{StaticResource Size14}"
-                          Foreground="{ThemeResource text/primary}"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
-                          AutomationProperties.AccessibilityView="Raw"/>
-            </Grid>
-
-            <controls:EtherButton x:Name="MinimizeButton"
-                                  Style="{StaticResource MastheadCaptionButtonStyle}"
-                                  Click="MinimizeButton_Click"
-                                  AutomationProperties.Name="Minimize window">
-                <Grid>
-                    <Rectangle Width="{StaticResource Spacing12}"
-                               Height="1"
-                               Fill="{ThemeResource text/primary}"
-                               RadiusX="0.5"
-                               RadiusY="0.5"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-                </Grid>
-            </controls:EtherButton>
-
-            <controls:EtherButton x:Name="MaximizeRestoreButton"
-                                  Style="{StaticResource MastheadCaptionButtonStyle}"
-                                  Click="MaximizeRestoreButton_Click"
-                                  AutomationProperties.Name="Maximize window">
-                <Grid Width="{StaticResource Spacing10}"
-                      Height="{StaticResource Spacing10}">
-                    <Rectangle x:Name="MaximizeIcon"
-                               Width="{StaticResource Spacing10}"
-                               Height="{StaticResource Spacing10}"
-                               Stroke="{ThemeResource text/primary}"
-                               StrokeThickness="1"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-                    <Grid x:Name="RestoreIcon"
-                          Width="{StaticResource Spacing10}"
-                          Height="{StaticResource Spacing10}"
-                          Visibility="Collapsed">
-                        <Rectangle Width="7"
-                                   Height="7"
-                                   Stroke="{ThemeResource text/primary}"
-                                   StrokeThickness="1"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Top"/>
-                        <Rectangle Width="7"
-                                   Height="7"
-                                   Stroke="{ThemeResource text/primary}"
-                                   StrokeThickness="1"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom"/>
+                        <Border x:Name="FocusRing"
+                                Margin="-3"
+                                BorderBrush="{ThemeResource EtherMastheadFocusBrush}"
+                                BorderThickness="2"
+                                CornerRadius="{StaticResource RadiusSm}"
+                                IsHitTestVisible="False"
+                                Visibility="Collapsed"/>
                     </Grid>
-                </Grid>
-            </controls:EtherButton>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-            <controls:EtherButton x:Name="CloseButton"
-                                  Style="{StaticResource MastheadCaptionButtonStyle}"
-                                  Click="CloseButton_Click"
-                                  AutomationProperties.Name="Close window">
-                <Grid Width="{StaticResource Spacing10}"
-                      Height="{StaticResource Spacing10}"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center">
-                    <Path Data="M 0 0 L 10 10"
-                          Stroke="{ThemeResource text/primary}"
-                          StrokeThickness="1"
-                          StrokeStartLineCap="Square"
-                          StrokeEndLineCap="Square"/>
-                    <Path Data="M 10 0 L 0 10"
-                          Stroke="{ThemeResource text/primary}"
-                          StrokeThickness="1"
-                          StrokeStartLineCap="Square"
-                          StrokeEndLineCap="Square"/>
-                </Grid>
-            </controls:EtherButton>
+    <Style x:Key="DefaultEtherMastheadStyle" TargetType="controls:EtherMasthead">
+        <Setter Property="UseSystemFocusVisuals" Value="False" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:EtherMasthead">
+                    <Grid x:Name="LayoutRoot"
+                          Padding="{StaticResource Padding12}"
+                          Background="{TemplateBinding Background}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="SettingsIconStates">
+                                <VisualState x:Name="SettingsVisible">
+                                    <VisualState.Setters>
+                                        <Setter Target="SettingsButton.Visibility" Value="Visible"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="SettingsCollapsed">
+                                    <VisualState.Setters>
+                                        <Setter Target="SettingsButton.Visibility" Value="Collapsed"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="SearchIconStates">
+                                <VisualState x:Name="SearchVisible">
+                                    <VisualState.Setters>
+                                        <Setter Target="SearchIconSlot.Visibility" Value="Visible"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="SearchCollapsed">
+                                    <VisualState.Setters>
+                                        <Setter Target="SearchIconSlot.Visibility" Value="Collapsed"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="MenuIconStates">
+                                <VisualState x:Name="MenuVisible">
+                                    <VisualState.Setters>
+                                        <Setter Target="MenuIconSlot.Visibility" Value="Visible"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="MenuCollapsed">
+                                    <VisualState.Setters>
+                                        <Setter Target="MenuIconSlot.Visibility" Value="Collapsed"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="ChevronStates">
+                                <VisualState x:Name="ChevronVisible">
+                                    <VisualState.Setters>
+                                        <Setter Target="ChevronSlot.Visibility" Value="Visible"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="ChevronCollapsed">
+                                    <VisualState.Setters>
+                                        <Setter Target="ChevronSlot.Visibility" Value="Collapsed"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="WindowStates">
+                                <VisualState x:Name="WindowRestored">
+                                    <VisualState.Setters>
+                                        <Setter Target="MaximizeIcon.Visibility" Value="Visible"/>
+                                        <Setter Target="RestoreIcon.Visibility" Value="Collapsed"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="WindowMaximized">
+                                    <VisualState.Setters>
+                                        <Setter Target="MaximizeIcon.Visibility" Value="Collapsed"/>
+                                        <Setter Target="RestoreIcon.Visibility" Value="Visible"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
 
-        </StackPanel>
-    </Grid>
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="{StaticResource Spacing0}"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
 
-</UserControl>
+                            <Grid x:Name="MenuIconSlot"
+                                  Width="44"
+                                  Height="44"
+                                  Visibility="Collapsed">
+                                <FontIcon Glyph="&#xE700;"
+                                          FontFamily="Segoe MDL2 Assets"
+                                          FontSize="{StaticResource Size16}"
+                                          Foreground="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          AutomationProperties.AccessibilityView="Raw"/>
+                            </Grid>
+
+                            <Grid x:Name="SearchIconSlot"
+                                  Width="44"
+                                  Height="44"
+                                  Visibility="Collapsed">
+                                <FontIcon Glyph="&#xE721;"
+                                          FontFamily="Segoe MDL2 Assets"
+                                          FontSize="{StaticResource Size16}"
+                                          Foreground="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          AutomationProperties.AccessibilityView="Raw"/>
+                            </Grid>
+
+                            <Grid x:Name="SettingsButton"
+                                  Width="44"
+                                  Height="44"
+                                  Visibility="Visible">
+                                <FontIcon Glyph="&#xE713;"
+                                          FontFamily="Segoe MDL2 Assets"
+                                          FontSize="{StaticResource Size16}"
+                                          Foreground="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          AutomationProperties.AccessibilityView="Raw"/>
+                            </Grid>
+
+                            <Grid x:Name="ChevronSlot"
+                                  Width="44"
+                                  Height="44"
+                                  Visibility="Collapsed">
+                                <FontIcon Glyph="&#xE70D;"
+                                          FontFamily="Segoe MDL2 Assets"
+                                          FontSize="{StaticResource Size14}"
+                                          Foreground="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          AutomationProperties.AccessibilityView="Raw"/>
+                            </Grid>
+
+                            <controls:EtherButton x:Name="MinimizeButton"
+                                                  Style="{StaticResource EtherMastheadCaptionButtonStyle}"
+                                                  AutomationProperties.Name="Minimize window">
+                                <Grid>
+                                    <Rectangle Width="{StaticResource Spacing12}"
+                                               Height="1"
+                                               Fill="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                               RadiusX="0.5"
+                                               RadiusY="0.5"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </controls:EtherButton>
+
+                            <controls:EtherButton x:Name="MaximizeRestoreButton"
+                                                  Style="{StaticResource EtherMastheadCaptionButtonStyle}"
+                                                  AutomationProperties.Name="Maximize window">
+                                <Grid Width="{StaticResource Spacing10}"
+                                      Height="{StaticResource Spacing10}">
+                                    <Rectangle x:Name="MaximizeIcon"
+                                               Width="{StaticResource Spacing10}"
+                                               Height="{StaticResource Spacing10}"
+                                               Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                               StrokeThickness="1"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                    <Grid x:Name="RestoreIcon"
+                                          Width="{StaticResource Spacing10}"
+                                          Height="{StaticResource Spacing10}"
+                                          Visibility="Collapsed">
+                                        <Rectangle Width="7"
+                                                   Height="7"
+                                                   Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                                   StrokeThickness="1"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Top"/>
+                                        <Rectangle Width="7"
+                                                   Height="7"
+                                                   Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                                   StrokeThickness="1"
+                                                   HorizontalAlignment="Right"
+                                                   VerticalAlignment="Bottom"/>
+                                    </Grid>
+                                </Grid>
+                            </controls:EtherButton>
+
+                            <controls:EtherButton x:Name="CloseButton"
+                                                  Style="{StaticResource EtherMastheadCaptionButtonStyle}"
+                                                  AutomationProperties.Name="Close window">
+                                <Grid Width="{StaticResource Spacing10}"
+                                      Height="{StaticResource Spacing10}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Path Data="M 0 0 L 10 10"
+                                          Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                          StrokeThickness="1"
+                                          StrokeStartLineCap="Square"
+                                          StrokeEndLineCap="Square"/>
+                                    <Path Data="M 10 0 L 0 10"
+                                          Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                          StrokeThickness="1"
+                                          StrokeStartLineCap="Square"
+                                          StrokeEndLineCap="Square"/>
+                                </Grid>
+                            </controls:EtherButton>
+
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="controls:EtherMasthead" BasedOn="{StaticResource DefaultEtherMastheadStyle}" />
+</ResourceDictionary>

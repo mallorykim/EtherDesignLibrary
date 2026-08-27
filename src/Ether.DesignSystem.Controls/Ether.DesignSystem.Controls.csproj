@@ -47,7 +47,7 @@
 
   <ItemGroup>
     <Compile Include="..\Controls\**\*.cs"
-             Exclude="..\Controls\Internal\ColorSwatch.xaml.cs;..\Controls\Internal\HandButton.cs;..\Controls\Internal\HandRadioButton.cs;..\Controls\Internal\PrimitiveBadge.xaml.cs;..\Controls\Internal\UpdatedBadge.xaml.cs;..\Controls\Navigation\EtherMasthead.xaml.cs">
+             Exclude="..\Controls\Internal\ColorSwatch.xaml.cs;..\Controls\Internal\HandButton.cs;..\Controls\Internal\HandRadioButton.cs;..\Controls\Internal\PrimitiveBadge.xaml.cs;..\Controls\Internal\UpdatedBadge.xaml.cs">
       <Link>Controls\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Compile>
     <Compile Include="..\Converters\MultiplyConverter.cs">
@@ -57,7 +57,7 @@
 
   <ItemGroup>
     <Page Include="..\Controls\**\*.xaml"
-          Exclude="..\Controls\Internal\ColorSwatch.xaml;..\Controls\Internal\PrimitiveBadge.xaml;..\Controls\Internal\UpdatedBadge.xaml;..\Controls\Navigation\EtherMasthead.xaml">
+          Exclude="..\Controls\Internal\ColorSwatch.xaml;..\Controls\Internal\PrimitiveBadge.xaml;..\Controls\Internal\UpdatedBadge.xaml">
       <Link>Controls\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

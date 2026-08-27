@@ -35,7 +35,7 @@
       <SubType>Designer</SubType>
     </Page>
     <!-- These are Gallery presentation helpers, not package controls. -->
-    <Page Include="..\..\src\Controls\Internal\ColorSwatch.xaml;..\..\src\Controls\Internal\PrimitiveBadge.xaml;..\..\src\Controls\Internal\UpdatedBadge.xaml;..\..\src\Controls\Navigation\EtherMasthead.xaml">
+    <Page Include="..\..\src\Controls\Internal\ColorSwatch.xaml;..\..\src\Controls\Internal\PrimitiveBadge.xaml;..\..\src\Controls\Internal\UpdatedBadge.xaml">
       <Link>GalleryControls\%(Filename)%(Extension)</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -57,7 +57,7 @@
     <Compile Include="..\..\src\Converters\BoolToVisibilityConverter.cs">
       <Link>Converters\BoolToVisibilityConverter.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\Controls\Internal\ColorSwatch.xaml.cs;..\..\src\Controls\Internal\HandRadioButton.cs;..\..\src\Controls\Internal\PrimitiveBadge.xaml.cs;..\..\src\Controls\Internal\UpdatedBadge.xaml.cs;..\..\src\Controls\Navigation\EtherMasthead.xaml.cs">
+    <Compile Include="..\..\src\Controls\Internal\ColorSwatch.xaml.cs;..\..\src\Controls\Internal\HandRadioButton.cs;..\..\src\Controls\Internal\PrimitiveBadge.xaml.cs;..\..\src\Controls\Internal\UpdatedBadge.xaml.cs">
       <Link>GalleryControls\%(Filename)%(Extension)</Link>
     </Compile>
     <Compile Update="App.xaml.cs">

@@ -26,7 +26,8 @@
                             BorderThickness="1"
                             CornerRadius="{StaticResource radius/control}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                      HorizontalScrollBarVisibility="Disabled">
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      AutomationProperties.Name="Vertical scroll viewer">
                             <StackPanel Padding="12" Spacing="12">
                                 <TextBlock Text="Battery" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
                                 <TextBlock Text="Display" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
@@ -53,7 +54,8 @@
                             BorderThickness="1"
                             CornerRadius="{StaticResource radius/control}">
                         <ScrollViewer VerticalScrollBarVisibility="Disabled"
-                                      HorizontalScrollBarVisibility="Auto">
+                                      HorizontalScrollBarVisibility="Auto"
+                                      AutomationProperties.Name="Horizontal scroll viewer">
                             <StackPanel Orientation="Horizontal" Padding="12" Spacing="12">
                                 <Border Width="80" Height="48" CornerRadius="6" Background="{ThemeResource BackgroundSurfaceRaised}"/>
                                 <Border Width="80" Height="48" CornerRadius="6" Background="{ThemeResource BackgroundSurfaceRaised}"/>
@@ -79,7 +81,7 @@
                                HorizontalAlignment="Center"/>
                     <Border Width="6" Height="150"
                             CornerRadius="3"
-                            Background="{ThemeResource BackgroundDropdownScrollThumb}"/>
+                            Background="{ThemeResource EtherScrollBarThumbBrush}"/>
                 </StackPanel>
                 <StackPanel Spacing="8" HorizontalAlignment="Center">
                     <TextBlock Text="Hover"
@@ -88,7 +90,7 @@
                                HorizontalAlignment="Center"/>
                     <Border Width="6" Height="150"
                             CornerRadius="3"
-                            Background="{ThemeResource BackgroundDropdownScrollThumbHover}"/>
+                            Background="{ThemeResource EtherScrollBarThumbHoverBrush}"/>
                 </StackPanel>
             </StackPanel>
         </views:ComponentPage.StatesContent>

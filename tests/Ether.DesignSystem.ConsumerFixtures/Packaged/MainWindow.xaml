@@ -108,6 +108,46 @@
                                        ValueContent="65%"
                                        Value="65"
                                        AutomationProperties.Name="Package steering bar"/>
+            <controls:EtherSlider x:Name="DefaultSliderProof"
+                                  AutomationProperties.Name="Default package slider"/>
+            <controls:EtherSlider x:Name="SliderProof"
+                                  Value="65"
+                                  AutomationProperties.Name="Package slider"/>
+            <controls:EtherMasthead x:Name="DefaultMastheadProof"
+                                    EnableWindowCommands="False"
+                                    AutomationProperties.Name="Default package masthead"/>
+            <controls:EtherMasthead x:Name="MastheadProof"
+                                    EnableWindowCommands="False"
+                                    AutomationProperties.Name="Package masthead"/>
+            <ToggleSwitch x:Name="BareToggleSwitchProof"
+                          OffContent="Off"
+                          OnContent="On"
+                          AutomationProperties.Name="Bare package toggle switch"/>
+            <ToggleSwitch x:Name="DefaultToggleSwitchProof"
+                          Style="{StaticResource EtherSwitch}"
+                          OffContent="Off"
+                          OnContent="On"
+                          AutomationProperties.Name="Default package toggle switch"/>
+            <ToggleSwitch x:Name="ToggleSwitchProof"
+                          Style="{StaticResource EtherSwitch}"
+                          IsOn="True"
+                          OffContent="Off"
+                          OnContent="On"
+                          AutomationProperties.Name="Package toggle switch"/>
+            <ScrollBar x:Name="ScrollBarProof"
+                       Orientation="Vertical"
+                       Height="200"
+                       ViewportSize="40"
+                       Maximum="100"
+                       AutomationProperties.Name="Package scroll bar"/>
+            <ScrollViewer x:Name="ScrollViewerProof"
+                          Width="160"
+                          Height="80"
+                          VerticalScrollBarVisibility="Visible"
+                          HorizontalScrollBarVisibility="Visible"
+                          AutomationProperties.Name="Package scroll viewer">
+                <Border Width="400" Height="400"/>
+            </ScrollViewer>
         </StackPanel>
     </Grid>
 </Window>

@@ -152,15 +152,28 @@ and Wave 1 reports.
 - Review subagents use `composer-2.5-fast`; implement uses `cursor-grok-4.6-high-fast`.
 See `.superpowers/sdd/plan-a-parallel-protocol.md`.
 
-## L3-6 EtherSteeringBar — accepted (pause commit)
+## L3-7 EtherSlider — accepted
 
-Serial single-pass migration with merged verification. Contract script passed.
-Slider and Masthead deferred to next session.
+UserControl → templated `RangeBase`. Code-driven 63-bar rendering documented.
+Review: Approved with concerns. Report: `.superpowers/sdd/task-l3-slider-report.md`.
 
-## Next work — L3 incremental control migration
+## L3-8 EtherMasthead — accepted
 
-**Paused at commit checkpoint after L3-6.**
-**Then:** Slider (UserControl conversion), Masthead, stock ToggleSwitch/ScrollBar style contracts.
+UserControl → templated `Control`, now packable in Controls. Window chrome via
+`XamlRoot`/`AppWindow` (Close uses `Destroy()`). Review: Approved with concerns.
+Report: `.superpowers/sdd/task-l3-masthead-report.md`.
+
+## L3-9 EtherSwitch + EtherScrollBar — accepted
+
+Stock-type style contracts (keyed ToggleSwitch / implicit ScrollBar). Review: Approved with
+concerns. Report: `.superpowers/sdd/task-l3-switch-scrollbar-report.md`.
+
+## L3 migration — complete
+
+All plan item 10 controls migrated. **Next phase: L4** (Gallery ControlExample pattern,
+visual baselines, Appium, A11y Insights, etc.) per repository plan.
+
+Uncommitted work since `efe5a21`: L3-7 through L3-9. **Recommend commit checkpoint before L4.**
 
 Keep Primitive/Semantic Tokens frozen.
 

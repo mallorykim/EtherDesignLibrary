@@ -300,6 +300,10 @@ try {
             $segmentedControl = $runtimeResult.segmentedControl
             $intelligenceButton = $runtimeResult.intelligenceButton
             $steeringBar = $runtimeResult.steeringBar
+            $slider = $runtimeResult.slider
+            $masthead = $runtimeResult.masthead
+            $toggleSwitch = $runtimeResult.toggleSwitch
+            $scrollBar = $runtimeResult.scrollBar
             $expectedProgressTemplateParts = @('FillColumn', 'RestColumn', 'LabelRow', 'TitleText', 'ValueLabel')
             $expectedLabelStates = @('BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden')
             $expectedProgressGradient = @('#FF0021F3', '#FF0015FF', '#FF0EB2FF', '#FF40E1FD')
@@ -319,6 +323,11 @@ try {
             $expectedSteeringBarTemplateParts = @('InteractionSurface', 'FillBorder', 'ThumbHost', 'LabelRow', 'TitleText', 'ValueLabel')
             $expectedSteeringBarLabelStates = @('BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden')
             $expectedSteeringBarGradient = @('#FF0021F3', '#FF0015FF', '#FF0EB2FF', '#FF40E1FD')
+            $expectedSliderTemplateParts = @('ValueText', 'BarCanvas')
+            $expectedMastheadTemplateParts = @('SearchIconSlot', 'SettingsButton', 'MinimizeButton', 'MaximizeRestoreButton', 'CloseButton')
+            $expectedMastheadOptionalIconStates = @('SearchCollapsed', 'SearchVisible')
+            $expectedToggleSwitchTemplateParts = @('TrackOff', 'TrackOn', 'KnobFill')
+            $expectedToggleSwitchStates = @('Off', 'On')
             $missingResources = @($expectedResourceKeys | Where-Object { $_ -cnotin $reportedResourceKeys })
             $missingAssets = @($expectedAssetUris | Where-Object { $_ -cnotin $reportedAssetUris })
             $emptyAssets = @($reportedAssets | Where-Object { [uint64]$_.size -eq 0 })
@@ -438,11 +447,62 @@ try {
                 $steeringBar.valueChangeExercised -ne $true -or
                 (@($steeringBar.lightGradientColors) -join ',') -cne ($expectedSteeringBarGradient -join ',') -or
                 (@($steeringBar.darkGradientColors) -join ',') -cne ($expectedSteeringBarGradient -join ',') -or
-                (@($steeringBar.lightTemplateBrushColors) -join ',') -ceq (@($steeringBar.darkTemplateBrushColors) -join ',')) {
+                (@($steeringBar.lightTemplateBrushColors) -join ',') -ceq (@($steeringBar.darkTemplateBrushColors) -join ',') -or
+                $null -eq $slider -or
+                $slider.defaultStyleResolved -ne $true -or
+                $slider.defaultUseSystemFocusVisuals -ne $false -or
+                @($expectedSliderTemplateParts | Where-Object { $_ -cnotin @($slider.templateParts) }).Count -ne 0 -or
+                [Math]::Abs([double]$slider.fillRatio - 0.65) -gt 0.02 -or
+                [int]$slider.highlightedBarCount -lt 1 -or
+                $slider.automationName -ne 'Package slider' -or
+                $slider.defaultAutomationName -ne 'Default package slider' -or
+                $slider.automationClassName -ne 'EtherSlider' -or
+                $slider.automationControlType -ne 'Slider' -or
+                $slider.rangeValueReadOnly -ne $false -or
+                [double]$slider.smallChange -ne 1 -or
+                [double]$slider.largeChange -ne 10 -or
+                [double]$slider.minimum -ne 0 -or
+                [double]$slider.maximum -ne 100 -or
+                [double]$slider.value -ne 65 -or
+                $slider.setValueAccepted -ne $true -or
+                $slider.disabledLocksAutomation -ne $true -or
+                $slider.valueChangeExercised -ne $true -or
+                $slider.formattedValue -ne '65' -or
+                (@($slider.lightTemplateBrushColors) -join ',') -ceq (@($slider.darkTemplateBrushColors) -join ',') -or
+                $null -eq $masthead -or
+                $masthead.defaultStyleResolved -ne $true -or
+                $masthead.defaultUseSystemFocusVisuals -ne $false -or
+                $masthead.defaultShowSettings -ne $true -or
+                $masthead.defaultShowSearch -ne $false -or
+                @($expectedMastheadTemplateParts | Where-Object { $_ -cnotin @($masthead.templateParts) }).Count -ne 0 -or
+                @($expectedMastheadOptionalIconStates | Where-Object { $_ -cnotin @($masthead.optionalIconStates) }).Count -ne 0 -or
+                $masthead.searchVisible -ne $true -or
+                $masthead.automationName -ne 'Package masthead' -or
+                $masthead.defaultAutomationName -ne 'Default package masthead' -or
+                (@($masthead.lightTemplateBrushColors) -join ',') -ceq (@($masthead.darkTemplateBrushColors) -join ',') -or
+                $null -eq $toggleSwitch -or
+                $toggleSwitch.keyedStyleResolved -ne $true -or
+                $toggleSwitch.implicitStyleRejected -ne $true -or
+                $toggleSwitch.defaultUseSystemFocusVisuals -ne $false -or
+                @($expectedToggleSwitchTemplateParts | Where-Object { $_ -cnotin @($toggleSwitch.templateParts) }).Count -ne 0 -or
+                @($expectedToggleSwitchStates | Where-Object { $_ -cnotin @($toggleSwitch.toggleStates) }).Count -ne 0 -or
+                $toggleSwitch.disabledTrackOpacityApplied -ne $true -or
+                $toggleSwitch.automationName -ne 'Package toggle switch' -or
+                $toggleSwitch.defaultAutomationName -ne 'Default package toggle switch' -or
+                (@($toggleSwitch.lightTemplateBrushColors) -join ',') -ceq (@($toggleSwitch.darkTemplateBrushColors) -join ',') -or
+                $null -eq $scrollBar -or
+                $scrollBar.implicitStyleApplied -ne $true -or
+                $scrollBar.verticalRootPresent -ne $true -or
+                $scrollBar.horizontalRootPresent -ne $true -or
+                [double]$scrollBar.thickness -ne 6 -or
+                [double]$scrollBar.thumbMinLength -ne 60 -or
+                $scrollBar.arrowsCollapsed -ne $true -or
+                $scrollBar.automationName -ne 'Package scroll bar' -or
+                (@($scrollBar.lightTemplateBrushColors) -join ',') -ceq (@($scrollBar.darkTemplateBrushColors) -join ',')) {
                 throw "The unpackaged runtime smoke fixture did not verify Foundation resources, assets, and theme re-resolution: $(Get-Content -LiteralPath $markerPath -Raw)"
             }
             $storageFileResolvedCount = @($reportedAssets | Where-Object { $_.storageFileResolved -eq $true }).Count
-            Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); marker: $markerPath"
+            Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; EtherSlider default style, bar-canvas RangeValue GetPattern, and Light/Dark brushes verified; EtherMasthead default style, SearchIconStates, and Light/Dark brushes verified; EtherSwitch keyed style, Off/On states, and Light/Dark brushes verified; implicit ScrollBar 6 px templates and Light/Dark thumb brushes verified; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); marker: $markerPath"
         }
         finally {
             if ($null -ne $smokeProcess -and -not $smokeProcess.HasExited) {

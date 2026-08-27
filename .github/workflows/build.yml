@@ -65,6 +65,18 @@ jobs:
       - name: Verify EtherSteeringBar L3 contract
         shell: pwsh
         run: ./scripts/Verify-EtherSteeringBarContract.ps1
+      - name: Verify EtherSlider L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherSliderContract.ps1
+      - name: Verify EtherMasthead L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherMastheadContract.ps1
+      - name: Verify EtherSwitch L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherSwitchContract.ps1
+      - name: Verify EtherScrollBar L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherScrollBarContract.ps1
       - name: Verify package consumers
         shell: pwsh
         # Hosted runners build and validate packages and consumer fixtures. GUI runtime markers

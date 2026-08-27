@@ -36,6 +36,15 @@ function Assert-SetEquals {
     }
 }
 
+function Assert-CompiledDictionary {
+    param([string]$Path, [string]$TypeName, [string]$Description)
+
+    $text = Get-Content -LiteralPath $Path -Raw
+    if ($text -notmatch "<controls:$TypeName(?:\s|/|>)") {
+        throw "$Description does not instantiate compiled dictionary '$TypeName'."
+    }
+}
+
 $foundation = Join-Path $repoRoot 'src\Ether.DesignSystem.Foundation\Themes\Foundation.xaml'
 $controlsGeneric = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Themes\Generic.xaml'
 $controlsEntry = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Themes\DesignSystem.xaml'
@@ -59,11 +68,15 @@ Assert-SetEquals (Get-MergedDictionarySources $controlsGeneric) @('ms-appx:///Et
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherRadioButton.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherProgressBar.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSteeringBar.xaml',
+    'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSlider.xaml',
+    'ms-appx:///Ether.DesignSystem.Controls/Controls/Navigation/EtherMasthead.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSegmentedControl.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Resources/Foundations/EtherCard.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherIntelligenceButton.xaml') 'Controls Generic.xaml'
+Assert-CompiledDictionary $controlsGeneric 'EtherScrollBar' 'Controls Generic.xaml'
+Assert-CompiledDictionary $controlsGeneric 'EtherSwitch' 'Controls Generic.xaml'
 Assert-SetEquals (Get-MergedDictionarySources $controlsEntry) @('ms-appx:///Ether.DesignSystem.Controls/Themes/Generic.xaml') 'Controls DesignSystem.xaml'
 
 $controlsEntrySource = 'ms-appx:///Ether.DesignSystem.Controls/Themes/DesignSystem.xaml'

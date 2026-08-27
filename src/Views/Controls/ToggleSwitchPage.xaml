@@ -12,7 +12,8 @@
         <views:ComponentPage.InteractiveContent>
             <ToggleSwitch Style="{StaticResource EtherSwitch}"
                           OffContent="Off"
-                          OnContent="On"/>
+                          OnContent="On"
+                          AutomationProperties.Name="Interactive toggle switch"/>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>
@@ -34,7 +35,8 @@
                                           OffContent="Off"
                                           OnContent="On"
                                           IsHitTestVisible="False"
-                                          IsTabStop="False"/>
+                                          IsTabStop="False"
+                                          AutomationProperties.Name="Toggle switch off"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Hover"
@@ -94,7 +96,8 @@
                                           OffContent="Off"
                                           OnContent="On"
                                           IsHitTestVisible="False"
-                                          IsTabStop="False"/>
+                                          IsTabStop="False"
+                                          AutomationProperties.Name="Toggle switch on"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
                             <TextBlock Text="Hover"

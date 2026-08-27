@@ -25,6 +25,15 @@ public sealed partial class MainWindow : Window
     internal EtherSandbox.Controls.EtherIntelligenceButton IntelligenceButtonProofControl => IntelligenceButtonProof;
     internal EtherSandbox.Controls.EtherSteeringBar DefaultSteeringBarProofControl => DefaultSteeringBarProof;
     internal EtherSandbox.Controls.EtherSteeringBar SteeringBarProofControl => SteeringBarProof;
+    internal EtherSandbox.Controls.EtherSlider DefaultSliderProofControl => DefaultSliderProof;
+    internal EtherSandbox.Controls.EtherSlider SliderProofControl => SliderProof;
+    internal EtherSandbox.Controls.EtherMasthead DefaultMastheadProofControl => DefaultMastheadProof;
+    internal EtherSandbox.Controls.EtherMasthead MastheadProofControl => MastheadProof;
+    internal Microsoft.UI.Xaml.Controls.ToggleSwitch BareToggleSwitchProofControl => BareToggleSwitchProof;
+    internal Microsoft.UI.Xaml.Controls.ToggleSwitch DefaultToggleSwitchProofControl => DefaultToggleSwitchProof;
+    internal Microsoft.UI.Xaml.Controls.ToggleSwitch ToggleSwitchProofControl => ToggleSwitchProof;
+    internal Microsoft.UI.Xaml.Controls.Primitives.ScrollBar ScrollBarProofControl => ScrollBarProof;
+    internal Microsoft.UI.Xaml.Controls.ScrollViewer ScrollViewerProofControl => ScrollViewerProof;
 
     public MainWindow()
     {

@@ -43,7 +43,16 @@ public partial class App : Application
                     window.DefaultIntelligenceButtonProofControl,
                     window.IntelligenceButtonProofControl,
                     window.DefaultSteeringBarProofControl,
-                    window.SteeringBarProofControl);
+                    window.SteeringBarProofControl,
+                    window.DefaultSliderProofControl,
+                    window.SliderProofControl,
+                    window.DefaultMastheadProofControl,
+                    window.MastheadProofControl,
+                    window.BareToggleSwitchProofControl,
+                    window.DefaultToggleSwitchProofControl,
+                    window.ToggleSwitchProofControl,
+                    window.ScrollBarProofControl,
+                    window.ScrollViewerProofControl);
                 RuntimeVerification.WriteMarker(true, result);
                 window.Close();
                 Exit();

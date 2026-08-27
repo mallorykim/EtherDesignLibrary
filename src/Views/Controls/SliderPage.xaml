@@ -7,14 +7,15 @@
 
     <views:ComponentPage
         Title="Slider"
-        Description="Updated bar slider with interactive click-and-drag behavior and theme-aware selected bars. Twelve bars rise in height across the scale and fill with ActionPrimaryBg.">
+        Description="Bar-chart slider with interactive click-and-drag behavior and theme-aware selected bars. Sixty-three ticks fill with the component highlight brush up to the knob.">
 
         <views:ComponentPage.InteractiveContent>
             <StackPanel Spacing="8">
                 <TextBlock Text="50% (interactive — drag me)"
                            Style="{StaticResource micro/regular}"
                            Foreground="{ThemeResource TextTertiary}"/>
-                <controls:EtherSlider Value="50"/>
+                <controls:EtherSlider Value="50"
+                                      AutomationProperties.Name="Interactive slider"/>
             </StackPanel>
         </views:ComponentPage.InteractiveContent>
 
@@ -24,13 +25,15 @@
                     <TextBlock Text="25%"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSlider Value="25"/>
+                    <controls:EtherSlider Value="25"
+                                          AutomationProperties.Name="Slider at 25 percent"/>
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="75%"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSlider Value="75"/>
+                    <controls:EtherSlider Value="75"
+                                          AutomationProperties.Name="Slider at 75 percent"/>
                 </StackPanel>
             </StackPanel>
         </views:ComponentPage.StatesContent>

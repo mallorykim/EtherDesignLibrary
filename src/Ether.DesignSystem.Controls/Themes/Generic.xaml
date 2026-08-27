@@ -14,6 +14,8 @@
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherRadioButton.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherProgressBar.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSteeringBar.xaml" />
+        <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSlider.xaml" />
+        <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Navigation/EtherMasthead.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSegmentedControl.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml" />

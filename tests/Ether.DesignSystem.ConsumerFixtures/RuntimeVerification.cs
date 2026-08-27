@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Windows.Storage;
 
@@ -150,6 +151,65 @@ internal static class RuntimeVerification
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors);
 
+    internal sealed record SliderVerification(
+        bool DefaultStyleResolved,
+        bool DefaultUseSystemFocusVisuals,
+        string[] TemplateParts,
+        double FillRatio,
+        int HighlightedBarCount,
+        string AutomationName,
+        string DefaultAutomationName,
+        string AutomationClassName,
+        string AutomationControlType,
+        bool RangeValueReadOnly,
+        double SmallChange,
+        double LargeChange,
+        double Minimum,
+        double Maximum,
+        double Value,
+        bool SetValueAccepted,
+        bool DisabledLocksAutomation,
+        bool ValueChangeExercised,
+        string FormattedValue,
+        string[] LightTemplateBrushColors,
+        string[] DarkTemplateBrushColors);
+
+    internal sealed record MastheadVerification(
+        bool DefaultStyleResolved,
+        bool DefaultUseSystemFocusVisuals,
+        bool DefaultShowSettings,
+        bool DefaultShowSearch,
+        string[] TemplateParts,
+        string[] OptionalIconStates,
+        bool SearchVisible,
+        string AutomationName,
+        string DefaultAutomationName,
+        string[] LightTemplateBrushColors,
+        string[] DarkTemplateBrushColors);
+
+    internal sealed record ToggleSwitchVerification(
+        bool KeyedStyleResolved,
+        bool ImplicitStyleRejected,
+        bool DefaultUseSystemFocusVisuals,
+        string[] TemplateParts,
+        string[] ToggleStates,
+        bool DisabledTrackOpacityApplied,
+        string AutomationName,
+        string DefaultAutomationName,
+        string[] LightTemplateBrushColors,
+        string[] DarkTemplateBrushColors);
+
+    internal sealed record ScrollBarVerification(
+        bool ImplicitStyleApplied,
+        bool VerticalRootPresent,
+        bool HorizontalRootPresent,
+        double Thickness,
+        double ThumbMinLength,
+        bool ArrowsCollapsed,
+        string AutomationName,
+        string[] LightTemplateBrushColors,
+        string[] DarkTemplateBrushColors);
+
     internal sealed record VerificationResult(
         string[] ResourceKeys,
         AssetVerification[] Assets,
@@ -165,7 +225,11 @@ internal static class RuntimeVerification
         DropdownVerification Dropdown,
         SegmentedControlVerification SegmentedControl,
         IntelligenceButtonVerification IntelligenceButton,
-        SteeringBarVerification SteeringBar);
+        SteeringBarVerification SteeringBar,
+        SliderVerification Slider,
+        MastheadVerification Masthead,
+        ToggleSwitchVerification ToggleSwitch,
+        ScrollBarVerification ScrollBar);
 
     internal static async Task<VerificationResult> VerifyAsync(
         FrameworkElement themeRoot,
@@ -188,7 +252,16 @@ internal static class RuntimeVerification
         EtherIntelligenceButton defaultIntelligenceButton,
         EtherIntelligenceButton intelligenceButton,
         EtherSteeringBar defaultSteeringBar,
-        EtherSteeringBar steeringBar)
+        EtherSteeringBar steeringBar,
+        EtherSlider defaultSlider,
+        EtherSlider slider,
+        EtherMasthead defaultMasthead,
+        EtherMasthead masthead,
+        ToggleSwitch bareToggleSwitch,
+        ToggleSwitch defaultToggleSwitch,
+        ToggleSwitch toggleSwitch,
+        ScrollBar scrollBar,
+        ScrollViewer scrollViewer)
     {
         var resourceKeys = new[]
         {
@@ -205,6 +278,9 @@ internal static class RuntimeVerification
             AssertResource("DefaultEtherSegmentedControlStyle", typeof(Style)),
             AssertResource("DefaultEtherIntelligenceButtonStyle", typeof(Style)),
             AssertResource("DefaultEtherSteeringBarStyle", typeof(Style)),
+            AssertResource("DefaultEtherSliderStyle", typeof(Style)),
+            AssertResource("DefaultEtherMastheadStyle", typeof(Style)),
+            AssertResource("EtherSwitch", typeof(Style)),
         };
         var fontFamilySources = new[]
         {
@@ -228,6 +304,10 @@ internal static class RuntimeVerification
         var segmentedControlResult = await VerifySegmentedControlAsync(themeRoot, defaultSegmentedControl, segmentedControl);
         var intelligenceButtonResult = await VerifyIntelligenceButtonAsync(themeRoot, defaultIntelligenceButton, intelligenceButton);
         var steeringBarResult = await VerifySteeringBarAsync(themeRoot, defaultSteeringBar, steeringBar);
+        var sliderResult = await VerifySliderAsync(themeRoot, defaultSlider, slider);
+        var mastheadResult = await VerifyMastheadAsync(themeRoot, defaultMasthead, masthead);
+        var toggleSwitchResult = await VerifyToggleSwitchAsync(themeRoot, bareToggleSwitch, defaultToggleSwitch, toggleSwitch);
+        var scrollBarResult = await VerifyScrollBarAsync(themeRoot, scrollBar, scrollViewer);
 
         var light = await GetBackgroundColorAsync(themeRoot, ElementTheme.Light);
         var dark = await GetBackgroundColorAsync(themeRoot, ElementTheme.Dark);
@@ -252,7 +332,11 @@ internal static class RuntimeVerification
             dropdownResult,
             segmentedControlResult,
             intelligenceButtonResult,
-            steeringBarResult);
+            steeringBarResult,
+            sliderResult,
+            mastheadResult,
+            toggleSwitchResult,
+            scrollBarResult);
     }
 
     internal static void WriteMarker(bool succeeded, VerificationResult? result = null, Exception? exception = null)
@@ -283,6 +367,10 @@ internal static class RuntimeVerification
             segmentedControl = result?.SegmentedControl,
             intelligenceButton = result?.IntelligenceButton,
             steeringBar = result?.SteeringBar,
+            slider = result?.Slider,
+            masthead = result?.Masthead,
+            toggleSwitch = result?.ToggleSwitch,
+            scrollBar = result?.ScrollBar,
             message = exception?.ToString(),
         });
         File.WriteAllText(path, payload);
@@ -1221,6 +1309,407 @@ internal static class RuntimeVerification
             darkTemplateBrushColors);
     }
 
+    private static async Task<SliderVerification> VerifySliderAsync(
+        FrameworkElement themeRoot,
+        EtherSlider defaultSlider,
+        EtherSlider slider)
+    {
+        defaultSlider.ApplyTemplate();
+        slider.ApplyTemplate();
+        defaultSlider.UpdateLayout();
+        slider.UpdateLayout();
+
+        var defaultStyleResolved = defaultSlider.Minimum == 0d &&
+            defaultSlider.Maximum == 100d &&
+            defaultSlider.Value == 50d &&
+            defaultSlider.SmallChange == 1d &&
+            defaultSlider.LargeChange == 10d &&
+            !defaultSlider.UseSystemFocusVisuals &&
+            defaultSlider.IsTabStop &&
+            defaultSlider.Template is not null;
+        if (!defaultStyleResolved)
+        {
+            throw new InvalidOperationException("The keyed EtherSlider style did not apply its default range, change steps, UseSystemFocusVisuals=False, IsTabStop, and template.");
+        }
+
+        var valueText = GetTemplatePart<TextBlock>(slider, "ValueText", nameof(EtherSlider));
+        var barCanvas = GetTemplatePart<Canvas>(slider, "BarCanvas", nameof(EtherSlider));
+        var templateParts = new[] { "ValueText", "BarCanvas" };
+
+        slider.Value = 65d;
+        slider.UpdateLayout();
+        var highlightedBarCount = CountHighlightedBars(barCanvas);
+        var fillRatio = highlightedBarCount / 63d;
+        if (Math.Abs(fillRatio - 0.65d) > 0.02d || highlightedBarCount <= 0)
+        {
+            throw new InvalidOperationException($"Expected a 65% slider fill across 63 bars, but observed {highlightedBarCount} highlighted bars ({fillRatio:P2}).");
+        }
+
+        var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider)
+            ?? throw new InvalidOperationException("EtherSlider did not create an automation peer.");
+        var rangeValue = peer.GetPattern(PatternInterface.RangeValue) as IRangeValueProvider
+            ?? throw new InvalidOperationException("EtherSlider automation peer GetPattern(RangeValue) did not return IRangeValueProvider.");
+        if (peer is not IRangeValueProvider)
+        {
+            throw new InvalidOperationException("EtherSlider automation peer did not expose IRangeValueProvider.");
+        }
+
+        var defaultPeer = FrameworkElementAutomationPeer.CreatePeerForElement(defaultSlider)
+            ?? throw new InvalidOperationException("Default EtherSlider did not create an automation peer.");
+
+        if (peer.GetAutomationControlType() != Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.Slider ||
+            peer.GetClassName() != nameof(EtherSlider) ||
+            peer.GetName() != "Package slider" ||
+            defaultPeer.GetName() != "Default package slider" ||
+            rangeValue.IsReadOnly ||
+            rangeValue.SmallChange != 1d ||
+            rangeValue.LargeChange != 10d ||
+            rangeValue.Minimum != 0d ||
+            rangeValue.Maximum != 100d ||
+            rangeValue.Value != 65d)
+        {
+            throw new InvalidOperationException("EtherSlider did not expose the required interactive Slider RangeValue automation contract.");
+        }
+
+        rangeValue.SetValue(70d);
+        var setValueAccepted = slider.Value == 70d;
+        if (!setValueAccepted)
+        {
+            throw new InvalidOperationException("The interactive slider rejected a UI Automation SetValue request.");
+        }
+
+        slider.Value = 64d;
+        var observedAfterFirstChange = rangeValue.Value;
+        slider.Value = 65d;
+        var observedAfterSecondChange = rangeValue.Value;
+        var valueChangeExercised = observedAfterFirstChange == 64d && observedAfterSecondChange == 65d;
+        if (!valueChangeExercised)
+        {
+            throw new InvalidOperationException("The RangeValue provider from GetPattern did not track owner Value assignments.");
+        }
+
+        var formattedValue = slider.FormatValue(slider.Value);
+        if (formattedValue != "65")
+        {
+            throw new InvalidOperationException($"EtherSlider.FormatValue did not return the expected public-API string. Observed '{formattedValue}'.");
+        }
+
+        slider.IsEnabled = false;
+        var disabledLocksAutomation = false;
+        try
+        {
+            rangeValue.SetValue(12d);
+        }
+        catch (InvalidOperationException)
+        {
+            disabledLocksAutomation = slider.Value == 65d && rangeValue.IsReadOnly;
+        }
+
+        if (!disabledLocksAutomation)
+        {
+            throw new InvalidOperationException("Disabled EtherSlider did not lock the RangeValue provider.");
+        }
+
+        slider.IsEnabled = true;
+
+        var lightTemplateBrushColors = await GetSliderTemplateBrushColorsAsync(themeRoot, slider, valueText, barCanvas, ElementTheme.Light);
+        var darkTemplateBrushColors = await GetSliderTemplateBrushColorsAsync(themeRoot, slider, valueText, barCanvas, ElementTheme.Dark);
+        if (lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
+        {
+            throw new InvalidOperationException("EtherSlider Light and Dark template brushes did not re-resolve to distinct values.");
+        }
+
+        return new SliderVerification(
+            defaultStyleResolved,
+            defaultSlider.UseSystemFocusVisuals,
+            templateParts,
+            fillRatio,
+            highlightedBarCount,
+            peer.GetName(),
+            defaultPeer.GetName(),
+            peer.GetClassName(),
+            peer.GetAutomationControlType().ToString(),
+            rangeValue.IsReadOnly,
+            rangeValue.SmallChange,
+            rangeValue.LargeChange,
+            rangeValue.Minimum,
+            rangeValue.Maximum,
+            rangeValue.Value,
+            setValueAccepted,
+            disabledLocksAutomation,
+            valueChangeExercised,
+            formattedValue,
+            lightTemplateBrushColors,
+            darkTemplateBrushColors);
+    }
+
+    private static async Task<MastheadVerification> VerifyMastheadAsync(
+        FrameworkElement themeRoot,
+        EtherMasthead defaultMasthead,
+        EtherMasthead masthead)
+    {
+        defaultMasthead.ApplyTemplate();
+        masthead.ApplyTemplate();
+        defaultMasthead.UpdateLayout();
+        masthead.UpdateLayout();
+
+        var defaultStyleResolved = defaultMasthead.ShowSettings &&
+            !defaultMasthead.ShowSearch &&
+            !defaultMasthead.ShowMenuIcon &&
+            !defaultMasthead.ShowChevron &&
+            !defaultMasthead.UseSystemFocusVisuals &&
+            defaultMasthead.Template is not null;
+        if (!defaultStyleResolved)
+        {
+            throw new InvalidOperationException("The keyed EtherMasthead style did not apply its default optional-icon metadata, UseSystemFocusVisuals=False, and template.");
+        }
+
+        var defaultSearchSlot = GetTemplatePart<Grid>(defaultMasthead, "SearchIconSlot", nameof(EtherMasthead));
+        var defaultSettingsSlot = GetTemplatePart<Grid>(defaultMasthead, "SettingsButton", nameof(EtherMasthead));
+        GetTemplatePart<EtherButton>(defaultMasthead, "MinimizeButton", nameof(EtherMasthead));
+        GetTemplatePart<EtherButton>(defaultMasthead, "MaximizeRestoreButton", nameof(EtherMasthead));
+        GetTemplatePart<EtherButton>(defaultMasthead, "CloseButton", nameof(EtherMasthead));
+
+        var searchSlot = GetTemplatePart<Grid>(masthead, "SearchIconSlot", nameof(EtherMasthead));
+        var settingsSlot = GetTemplatePart<Grid>(masthead, "SettingsButton", nameof(EtherMasthead));
+        var templateParts = new[] { "SearchIconSlot", "SettingsButton", "MinimizeButton", "MaximizeRestoreButton", "CloseButton" };
+
+        if (defaultSearchSlot.Visibility != Visibility.Collapsed || defaultSettingsSlot.Visibility != Visibility.Visible)
+        {
+            throw new InvalidOperationException("Default EtherMasthead did not apply SearchCollapsed and SettingsVisible.");
+        }
+
+        var optionalIconStates = new List<string>();
+        if (searchSlot.Visibility != Visibility.Collapsed)
+        {
+            throw new InvalidOperationException("The 'SearchCollapsed' SearchIconStates transition did not hide the search slot.");
+        }
+
+        optionalIconStates.Add("SearchCollapsed");
+        masthead.ShowSearch = true;
+        masthead.UpdateLayout();
+        if (searchSlot.Visibility != Visibility.Visible)
+        {
+            throw new InvalidOperationException("The 'SearchVisible' SearchIconStates transition did not show the search slot.");
+        }
+
+        optionalIconStates.Add("SearchVisible");
+
+        var peer = FrameworkElementAutomationPeer.CreatePeerForElement(masthead)
+            ?? throw new InvalidOperationException("EtherMasthead did not create an automation peer.");
+        var defaultPeer = FrameworkElementAutomationPeer.CreatePeerForElement(defaultMasthead)
+            ?? throw new InvalidOperationException("Default EtherMasthead did not create an automation peer.");
+        if (peer.GetName() != "Package masthead" || defaultPeer.GetName() != "Default package masthead")
+        {
+            throw new InvalidOperationException("EtherMasthead gallery-equivalent automation names were not applied on the fixture instances.");
+        }
+
+        var settingsIcon = GetNamedSlotIcon(settingsSlot, "settings");
+        var lightTemplateBrushColors = await GetMastheadTemplateBrushColorsAsync(themeRoot, masthead, settingsIcon, ElementTheme.Light);
+        var darkTemplateBrushColors = await GetMastheadTemplateBrushColorsAsync(themeRoot, masthead, settingsIcon, ElementTheme.Dark);
+        if (lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
+        {
+            throw new InvalidOperationException("EtherMasthead Light and Dark template brushes did not re-resolve to distinct values.");
+        }
+
+        return new MastheadVerification(
+            defaultStyleResolved,
+            defaultMasthead.UseSystemFocusVisuals,
+            defaultMasthead.ShowSettings,
+            defaultMasthead.ShowSearch,
+            templateParts,
+            optionalIconStates.ToArray(),
+            searchSlot.Visibility == Visibility.Visible,
+            peer.GetName(),
+            defaultPeer.GetName(),
+            lightTemplateBrushColors,
+            darkTemplateBrushColors);
+    }
+
+    private static async Task<ToggleSwitchVerification> VerifyToggleSwitchAsync(
+        FrameworkElement themeRoot,
+        ToggleSwitch bareToggleSwitch,
+        ToggleSwitch defaultToggleSwitch,
+        ToggleSwitch toggleSwitch)
+    {
+        defaultToggleSwitch.ApplyTemplate();
+        toggleSwitch.ApplyTemplate();
+        bareToggleSwitch.ApplyTemplate();
+        defaultToggleSwitch.UpdateLayout();
+        toggleSwitch.UpdateLayout();
+        bareToggleSwitch.UpdateLayout();
+
+        if (!Application.Current.Resources.TryGetValue("EtherSwitch", out var keyedStyleObject) ||
+            keyedStyleObject is not Style keyedStyle ||
+            keyedStyle.TargetType != typeof(ToggleSwitch))
+        {
+            throw new InvalidOperationException("The keyed EtherSwitch style was not resolved from the Controls public merge graph.");
+        }
+
+        var keyedStyleResolved = defaultToggleSwitch.Style is not null &&
+            ReferenceEquals(defaultToggleSwitch.Style, keyedStyle) &&
+            ReferenceEquals(toggleSwitch.Style, keyedStyle) &&
+            !defaultToggleSwitch.UseSystemFocusVisuals &&
+            defaultToggleSwitch.Template is not null &&
+            toggleSwitch.Template is not null &&
+            TryGetNamedDescendant<Border>(defaultToggleSwitch, "KnobFill");
+        if (!keyedStyleResolved)
+        {
+            throw new InvalidOperationException("The keyed EtherSwitch style did not apply UseSystemFocusVisuals=False and EtherSwitchTemplate.");
+        }
+
+        var implicitStyleRejected = !TryGetNamedDescendant<Border>(bareToggleSwitch, "KnobFill") &&
+            !TryGetNamedDescendant<Border>(bareToggleSwitch, "TrackOn");
+        if (!implicitStyleRejected)
+        {
+            throw new InvalidOperationException("A bare ToggleSwitch received EtherSwitch chrome; the style must stay keyed, not implicit.");
+        }
+
+        var trackOff = GetTemplatePart<Border>(toggleSwitch, "TrackOff", "EtherSwitch");
+        GetTemplatePart<Border>(toggleSwitch, "TrackOn", "EtherSwitch");
+        GetTemplatePart<Border>(toggleSwitch, "KnobFill", "EtherSwitch");
+        GetTemplatePart<Border>(defaultToggleSwitch, "TrackOff", "EtherSwitch");
+        var templateParts = new[] { "TrackOff", "TrackOn", "KnobFill" };
+
+        var toggleStates = new List<string>();
+        defaultToggleSwitch.IsOn = false;
+        defaultToggleSwitch.UpdateLayout();
+        var defaultTrackOff = GetTemplatePart<Border>(defaultToggleSwitch, "TrackOff", "EtherSwitch");
+        var defaultTrackOn = GetTemplatePart<Border>(defaultToggleSwitch, "TrackOn", "EtherSwitch");
+        if (defaultTrackOff.Visibility != Visibility.Visible || defaultTrackOn.Visibility != Visibility.Collapsed)
+        {
+            throw new InvalidOperationException("EtherSwitch Off ToggleStates did not show TrackOff and collapse TrackOn.");
+        }
+
+        toggleStates.Add("Off");
+        toggleSwitch.IsOn = true;
+        toggleSwitch.UpdateLayout();
+        var onTrackOff = GetTemplatePart<Border>(toggleSwitch, "TrackOff", "EtherSwitch");
+        var onTrackOn = GetTemplatePart<Border>(toggleSwitch, "TrackOn", "EtherSwitch");
+        if (onTrackOff.Visibility != Visibility.Collapsed || onTrackOn.Visibility != Visibility.Visible)
+        {
+            throw new InvalidOperationException("EtherSwitch On ToggleStates did not show TrackOn and collapse TrackOff.");
+        }
+
+        toggleStates.Add("On");
+
+        toggleSwitch.IsEnabled = false;
+        toggleSwitch.UpdateLayout();
+        VisualStateManager.GoToState(toggleSwitch, "Disabled", false);
+        var disabledTrackOpacityApplied = Math.Abs(onTrackOff.Opacity - 0.4d) < 0.01d;
+        if (!disabledTrackOpacityApplied)
+        {
+            throw new InvalidOperationException("Disabled EtherSwitch did not fade TrackOff to 0.4 opacity while keeping the knob opaque.");
+        }
+
+        toggleSwitch.IsEnabled = true;
+        toggleSwitch.IsOn = false;
+        toggleSwitch.UpdateLayout();
+
+        var peer = FrameworkElementAutomationPeer.CreatePeerForElement(toggleSwitch)
+            ?? throw new InvalidOperationException("EtherSwitch-styled ToggleSwitch did not create an automation peer.");
+        var defaultPeer = FrameworkElementAutomationPeer.CreatePeerForElement(defaultToggleSwitch)
+            ?? throw new InvalidOperationException("Default EtherSwitch-styled ToggleSwitch did not create an automation peer.");
+        if (peer.GetName() != "Package toggle switch" || defaultPeer.GetName() != "Default package toggle switch")
+        {
+            throw new InvalidOperationException("EtherSwitch fixture automation names were not applied.");
+        }
+
+        var lightTemplateBrushColors = await GetToggleSwitchTemplateBrushColorsAsync(themeRoot, toggleSwitch, trackOff, ElementTheme.Light);
+        var darkTemplateBrushColors = await GetToggleSwitchTemplateBrushColorsAsync(themeRoot, toggleSwitch, trackOff, ElementTheme.Dark);
+        if (lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
+        {
+            throw new InvalidOperationException("EtherSwitch Light and Dark template brushes did not re-resolve to distinct values.");
+        }
+
+        return new ToggleSwitchVerification(
+            keyedStyleResolved,
+            implicitStyleRejected,
+            defaultToggleSwitch.UseSystemFocusVisuals,
+            templateParts,
+            toggleStates.ToArray(),
+            disabledTrackOpacityApplied,
+            peer.GetName(),
+            defaultPeer.GetName(),
+            lightTemplateBrushColors,
+            darkTemplateBrushColors);
+    }
+
+    private static async Task<ScrollBarVerification> VerifyScrollBarAsync(
+        FrameworkElement themeRoot,
+        ScrollBar scrollBar,
+        ScrollViewer scrollViewer)
+    {
+        scrollBar.ApplyTemplate();
+        scrollViewer.ApplyTemplate();
+        scrollViewer.UpdateLayout();
+        scrollBar.UpdateLayout();
+
+        var verticalRoot = GetTemplatePart<Grid>(scrollBar, "VerticalRoot", "EtherScrollBar");
+        var horizontalRoot = GetTemplatePart<Grid>(scrollBar, "HorizontalRoot", "EtherScrollBar");
+        var verticalThumb = GetTemplatePart<Thumb>(scrollBar, "VerticalThumb", "EtherScrollBar");
+        GetTemplatePart<Thumb>(scrollBar, "HorizontalThumb", "EtherScrollBar");
+        var verticalSmallDecrease = GetTemplatePart<RepeatButton>(scrollBar, "VerticalSmallDecrease", "EtherScrollBar");
+        var verticalSmallIncrease = GetTemplatePart<RepeatButton>(scrollBar, "VerticalSmallIncrease", "EtherScrollBar");
+        verticalThumb.ApplyTemplate();
+        verticalThumb.UpdateLayout();
+        GetTemplatePart<Border>(verticalThumb, "ThumbFill", "EtherScrollBar");
+
+        var implicitStyleApplied = scrollBar.Template is not null &&
+            verticalRoot.Width == 6d &&
+            horizontalRoot.Height == 6d;
+        if (!implicitStyleApplied)
+        {
+            throw new InvalidOperationException("The implicit Ether ScrollBar style did not apply its 6 px vertical and horizontal templates.");
+        }
+
+        var viewerScrollBar = FindDescendant<ScrollBar>(scrollViewer);
+        if (viewerScrollBar is null || viewerScrollBar.Template is null)
+        {
+            throw new InvalidOperationException("ScrollViewer did not receive an implicitly styled ScrollBar.");
+        }
+
+        var arrowsCollapsed = verticalSmallDecrease.Visibility == Visibility.Collapsed &&
+            verticalSmallIncrease.Visibility == Visibility.Collapsed;
+        if (!arrowsCollapsed)
+        {
+            throw new InvalidOperationException("Ether ScrollBar stepper arrows were visible.");
+        }
+
+        var peer = FrameworkElementAutomationPeer.CreatePeerForElement(scrollBar)
+            ?? throw new InvalidOperationException("Implicit ScrollBar did not create an automation peer.");
+        if (peer.GetName() != "Package scroll bar")
+        {
+            throw new InvalidOperationException("Implicit ScrollBar fixture automation name was not applied.");
+        }
+
+        var lightTemplateBrushColors = await GetScrollBarTemplateBrushColorsAsync(themeRoot, scrollBar, verticalThumb, ElementTheme.Light);
+        var darkTemplateBrushColors = await GetScrollBarTemplateBrushColorsAsync(themeRoot, scrollBar, verticalThumb, ElementTheme.Dark);
+        if (lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
+        {
+            throw new InvalidOperationException("EtherScrollBar Light and Dark thumb brushes did not re-resolve to distinct values.");
+        }
+
+        return new ScrollBarVerification(
+            implicitStyleApplied,
+            true,
+            true,
+            verticalRoot.Width,
+            verticalThumb.MinHeight,
+            arrowsCollapsed,
+            peer.GetName(),
+            lightTemplateBrushColors,
+            darkTemplateBrushColors);
+    }
+
+    private static int CountHighlightedBars(Canvas canvas)
+    {
+        var knob = canvas.Children.OfType<Microsoft.UI.Xaml.Shapes.Rectangle>().FirstOrDefault(rectangle => rectangle.Height == 45d)
+            ?? throw new InvalidOperationException("EtherSlider BarCanvas did not contain a knob rectangle.");
+        var knobLeft = Canvas.GetLeft(knob);
+        return canvas.Children.OfType<Microsoft.UI.Xaml.Shapes.Rectangle>().Count(rectangle => rectangle.Height == 40d && Canvas.GetLeft(rectangle) < knobLeft);
+    }
+
     private static void AssertSteeringBarLabelState(
         EtherSteeringBar steeringBar,
         FrameworkElement labelRow,
@@ -1459,6 +1948,145 @@ internal static class RuntimeVerification
             GetSolidBrushColor(trackBackground.Background, "track", theme, nameof(EtherSteeringBar)),
             GetSolidBrushColor(titleText.Foreground, "title", theme, nameof(EtherSteeringBar)),
             GetSolidBrushColor(valueLabel.Foreground, "value", theme, nameof(EtherSteeringBar)),
+        };
+    }
+
+    private static async Task<string[]> GetSliderTemplateBrushColorsAsync(
+        FrameworkElement themeRoot,
+        EtherSlider slider,
+        TextBlock valueText,
+        Canvas barCanvas,
+        ElementTheme theme)
+    {
+        themeRoot.RequestedTheme = theme;
+        await WaitForAppliedThemeAsync(themeRoot, theme);
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (slider.ActualTheme != theme && DateTime.UtcNow < deadline)
+        {
+            await Task.Delay(25);
+        }
+
+        slider.UpdateLayout();
+        var inactiveBar = barCanvas.Children.OfType<Microsoft.UI.Xaml.Shapes.Rectangle>().LastOrDefault(rectangle => rectangle.Height == 40d)
+            ?? throw new InvalidOperationException($"EtherSlider did not generate an inactive bar in {theme} theme.");
+
+        return new[]
+        {
+            GetSolidBrushColor(inactiveBar.Fill, "inactive bar", theme, nameof(EtherSlider)),
+            GetSolidBrushColor(valueText.Foreground, "value", theme, nameof(EtherSlider)),
+        };
+    }
+
+    private static FontIcon GetNamedSlotIcon(Grid slot, string role)
+    {
+        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(slot); index++)
+        {
+            if (VisualTreeHelper.GetChild(slot, index) is FontIcon icon)
+            {
+                return icon;
+            }
+        }
+
+        throw new InvalidOperationException($"EtherMasthead {role} slot did not contain a FontIcon.");
+    }
+
+    private static async Task<string[]> GetMastheadTemplateBrushColorsAsync(
+        FrameworkElement themeRoot,
+        EtherMasthead masthead,
+        FontIcon settingsIcon,
+        ElementTheme theme)
+    {
+        themeRoot.RequestedTheme = theme;
+        await WaitForAppliedThemeAsync(themeRoot, theme);
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (masthead.ActualTheme != theme && DateTime.UtcNow < deadline)
+        {
+            await Task.Delay(25);
+        }
+
+        masthead.UpdateLayout();
+        return new[]
+        {
+            GetSolidBrushColor(settingsIcon.Foreground, "settings icon", theme, nameof(EtherMasthead)),
+        };
+    }
+
+    private static bool TryGetNamedDescendant<T>(FrameworkElement root, string name)
+        where T : class
+    {
+        try
+        {
+            _ = GetTemplatePart<T>(root, name, "probe");
+            return true;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    private static T? FindDescendant<T>(DependencyObject root)
+        where T : DependencyObject
+    {
+        if (root is T match)
+        {
+            return match;
+        }
+
+        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+        {
+            var found = FindDescendant<T>(VisualTreeHelper.GetChild(root, index));
+            if (found is not null)
+            {
+                return found;
+            }
+        }
+
+        return null;
+    }
+
+    private static async Task<string[]> GetToggleSwitchTemplateBrushColorsAsync(
+        FrameworkElement themeRoot,
+        ToggleSwitch toggleSwitch,
+        Border trackOff,
+        ElementTheme theme)
+    {
+        themeRoot.RequestedTheme = theme;
+        await WaitForAppliedThemeAsync(themeRoot, theme);
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (toggleSwitch.ActualTheme != theme && DateTime.UtcNow < deadline)
+        {
+            await Task.Delay(25);
+        }
+
+        toggleSwitch.UpdateLayout();
+        return new[]
+        {
+            GetSolidBrushColor(trackOff.Background, "off track", theme, "EtherSwitch"),
+        };
+    }
+
+    private static async Task<string[]> GetScrollBarTemplateBrushColorsAsync(
+        FrameworkElement themeRoot,
+        ScrollBar scrollBar,
+        Thumb verticalThumb,
+        ElementTheme theme)
+    {
+        themeRoot.RequestedTheme = theme;
+        scrollBar.RequestedTheme = theme;
+        await WaitForAppliedThemeAsync(themeRoot, theme);
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (scrollBar.ActualTheme != theme && DateTime.UtcNow < deadline)
+        {
+            await Task.Delay(25);
+        }
+
+        verticalThumb.ApplyTemplate();
+        scrollBar.UpdateLayout();
+        var thumbFill = GetTemplatePart<Border>(verticalThumb, "ThumbFill", "EtherScrollBar");
+        return new[]
+        {
+            GetSolidBrushColor(thumbFill.Background, "thumb", theme, "EtherScrollBar"),
         };
     }
 

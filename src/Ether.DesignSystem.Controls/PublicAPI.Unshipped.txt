@@ -6,8 +6,6 @@ EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvi
 ~EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXmlnsDefinitions() -> Microsoft.UI.Xaml.Markup.XmlnsDefinition[]
 ~EtherSandbox.Controls.EtherScrollBar.Connect(int connectionId, object target) -> void
 ~EtherSandbox.Controls.EtherScrollBar.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
-~EtherSandbox.Controls.EtherSlider.Connect(int connectionId, object target) -> void
-~EtherSandbox.Controls.EtherSlider.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
 ~EtherSandbox.Controls.EtherSwitch.Connect(int connectionId, object target) -> void
 ~EtherSandbox.Controls.EtherSwitch.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
 EtherSandbox.Controls.EtherButton
@@ -37,6 +35,20 @@ EtherSandbox.Controls.EtherInput
 EtherSandbox.Controls.EtherInput.EtherInput() -> void
 EtherSandbox.Controls.EtherIntelligenceButton
 EtherSandbox.Controls.EtherIntelligenceButton.EtherIntelligenceButton() -> void
+EtherSandbox.Controls.EtherMasthead
+EtherSandbox.Controls.EtherMasthead.EnableWindowCommands.get -> bool
+EtherSandbox.Controls.EtherMasthead.EnableWindowCommands.set -> void
+EtherSandbox.Controls.EtherMasthead.EtherMasthead() -> void
+EtherSandbox.Controls.EtherMasthead.PreviewIsMaximized.get -> bool?
+EtherSandbox.Controls.EtherMasthead.PreviewIsMaximized.set -> void
+EtherSandbox.Controls.EtherMasthead.ShowChevron.get -> bool
+EtherSandbox.Controls.EtherMasthead.ShowChevron.set -> void
+EtherSandbox.Controls.EtherMasthead.ShowMenuIcon.get -> bool
+EtherSandbox.Controls.EtherMasthead.ShowMenuIcon.set -> void
+EtherSandbox.Controls.EtherMasthead.ShowSearch.get -> bool
+EtherSandbox.Controls.EtherMasthead.ShowSearch.set -> void
+EtherSandbox.Controls.EtherMasthead.ShowSettings.get -> bool
+EtherSandbox.Controls.EtherMasthead.ShowSettings.set -> void
 EtherSandbox.Controls.EtherProgressBar
 EtherSandbox.Controls.EtherProgressBar.EtherProgressBar() -> void
 EtherSandbox.Controls.EtherProgressBar.ShowTitle.get -> bool
@@ -59,9 +71,6 @@ EtherSandbox.Controls.EtherSegmentedTrack.EtherSegmentedTrack() -> void
 EtherSandbox.Controls.EtherSlider
 EtherSandbox.Controls.EtherSlider.EtherSlider() -> void
 EtherSandbox.Controls.EtherSlider.FormatValue(double value) -> string!
-EtherSandbox.Controls.EtherSlider.InitializeComponent() -> void
-EtherSandbox.Controls.EtherSlider.Value.get -> double
-EtherSandbox.Controls.EtherSlider.Value.set -> void
 EtherSandbox.Controls.EtherSteeringBar
 EtherSandbox.Controls.EtherSteeringBar.EtherSteeringBar() -> void
 EtherSandbox.Controls.EtherSteeringBar.LargeChange.get -> double
@@ -119,11 +128,16 @@ static readonly EtherSandbox.Controls.EtherButton.SizeProperty -> Microsoft.UI.X
 static readonly EtherSandbox.Controls.EtherButton.VariantProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherDropdown.MaxVisibleItemsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherDropdown.MenuGapProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherMasthead.EnableWindowCommandsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherMasthead.PreviewIsMaximizedProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherMasthead.ShowChevronProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherMasthead.ShowMenuIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherMasthead.ShowSearchProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherMasthead.ShowSettingsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSlider.ValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherSteeringBar.LargeChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherSteeringBar.MaximumProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherSteeringBar.MinimumProperty -> Microsoft.UI.Xaml.DependencyProperty!

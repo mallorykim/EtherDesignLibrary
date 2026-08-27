@@ -26,7 +26,8 @@
                         <Border CornerRadius="{StaticResource radius/surface}">
                             <controls:EtherMasthead ShowSettings="False"
                                                     PreviewIsMaximized="False"
-                                                    EnableWindowCommands="False"/>
+                                                    EnableWindowCommands="False"
+                                                    AutomationProperties.Name="Default masthead"/>
                         </Border>
                     </StackPanel>
                 </Border>
@@ -45,7 +46,8 @@
                         <Border CornerRadius="{StaticResource radius/surface}">
                             <controls:EtherMasthead ShowSettings="False"
                                                     PreviewIsMaximized="True"
-                                                    EnableWindowCommands="False"/>
+                                                    EnableWindowCommands="False"
+                                                    AutomationProperties.Name="Maximized masthead"/>
                         </Border>
                     </StackPanel>
                 </Border>

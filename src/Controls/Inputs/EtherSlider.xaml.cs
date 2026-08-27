@@ -1,25 +1,45 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
-using Windows.UI;
+using Windows.System;
 
 namespace EtherSandbox.Controls;
 
 /// <summary>
-/// EtherSlider — bar-chart style slider UserControl.
-/// Set Value (0–100) to control which bars are highlighted.
-/// The control renders 12 bars of increasing height; bars up to and including
-/// the active index are highlighted with the ActionPrimaryBg color.
+/// Ether bar-chart slider: 63 ticks, a 4px knob, and click/drag range interaction.
+/// Derives from <see cref="RangeBase"/> so Minimum, Maximum, Value, and change
+/// steps share the WinUI range contract.
 /// </summary>
-public sealed partial class EtherSlider : UserControl
+/// <remarks>
+/// Bar rectangles and knob hover/press sizing stay code-driven. A declarative
+/// 63-bar template is impractical, and pointer capture should not be rewritten
+/// onto VisualStateManager. Component <c>EtherSlider*</c> keys supply colors.
+/// </remarks>
+[TemplatePart(Name = ValueTextPart, Type = typeof(TextBlock))]
+[TemplatePart(Name = BarCanvasPart, Type = typeof(Canvas))]
+[TemplatePart(Name = HighlightBrushSourcePart, Type = typeof(Border))]
+[TemplatePart(Name = InactiveBrushSourcePart, Type = typeof(Border))]
+[TemplatePart(Name = KnobBrushSourcePart, Type = typeof(Border))]
+[TemplatePart(Name = KnobPressedBrushSourcePart, Type = typeof(Border))]
+public sealed class EtherSlider : RangeBase
 {
+    private const string ValueTextPart = "ValueText";
+    private const string BarCanvasPart = "BarCanvas";
+    private const string HighlightBrushSourcePart = "HighlightBrushSource";
+    private const string InactiveBrushSourcePart = "InactiveBrushSource";
+    private const string KnobBrushSourcePart = "KnobBrushSource";
+    private const string KnobPressedBrushSourcePart = "KnobPressedBrushSource";
+
     private const int BarCount = 63;
     private const double BarWidth = 2;
     private const double BarGap = 3;
@@ -27,200 +47,272 @@ public sealed partial class EtherSlider : UserControl
     private const double KnobWidth = 4;
     private const double KnobHeight = 45;
     private const double KnobCornerRadius = 2;
+    private const double KnobHoverWidth = 6;
+    private const double KnobHoverCornerRadius = 4;
 
-    public static readonly DependencyProperty ValueProperty =
-        DependencyProperty.Register(
-            nameof(Value), typeof(double), typeof(EtherSlider),
-            new PropertyMetadata(50.0, OnValueChanged));
+    private TextBlock? _valueText;
+    private Canvas? _barCanvas;
+    private Border? _highlightBrushSource;
+    private Border? _inactiveBrushSource;
+    private Border? _knobBrushSource;
+    private Border? _knobPressedBrushSource;
+    private Rectangle? _knob;
+    private bool _dragging;
+    private bool _hoveringKnob;
+    private bool _pressedKnob;
+    private double _knobBaseX;
 
-    public double Value
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EtherSlider"/> class.
+    /// </summary>
+    public EtherSlider()
     {
-        get => (double)GetValue(ValueProperty);
-        set => SetValue(ValueProperty, Math.Clamp(value, 0, 100));
+        DefaultStyleKey = typeof(EtherSlider);
+        ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
+
+        Loaded += (_, _) => RenderBars();
+        IsEnabledChanged += (_, _) => UpdateInteractionState();
+        ActualThemeChanged += (_, _) => RenderBars();
+        KeyDown += OnKeyDown;
     }
 
-    private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-        if (d is EtherSlider s) s.RenderBars();
-    }
-
+    /// <summary>
+    /// Formats <paramref name="value"/> as a whole-number string using the current culture.
+    /// </summary>
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This existing public instance method is part of the declared public API; making it static would be a breaking API change.")]
     public string FormatValue(double value) => ((int)Math.Round(value)).ToString(CultureInfo.CurrentCulture);
 
-    public EtherSlider()
+    protected override void OnApplyTemplate()
     {
-        this.InitializeComponent();
-        RefreshThemeBrushes();
-        this.ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
-        // RenderBars() recreates its own local highlight/inactive brushes from the current
-        // theme every call, and RefreshThemeBrushes() mutates the long-lived knob brushes in
-        // place - together these keep every color on this control in sync when the user
-        // toggles Light/Dark at runtime (RootGrid.RequestedTheme in MainWindow.xaml.cs).
-        this.ActualThemeChanged += (_, _) =>
-        {
-            RefreshThemeBrushes();
-            RenderBars();
-        };
-        this.Loaded += (_, _) => RenderBars();
+        base.OnApplyTemplate();
+
+        DetachInteractionHandlers();
+
+        _valueText = GetTemplateChild(ValueTextPart) as TextBlock;
+        _barCanvas = GetTemplateChild(BarCanvasPart) as Canvas;
+        _highlightBrushSource = GetTemplateChild(HighlightBrushSourcePart) as Border;
+        _inactiveBrushSource = GetTemplateChild(InactiveBrushSourcePart) as Border;
+        _knobBrushSource = GetTemplateChild(KnobBrushSourcePart) as Border;
+        _knobPressedBrushSource = GetTemplateChild(KnobPressedBrushSourcePart) as Border;
+
+        AttachInteractionHandlers();
+        RenderBars();
     }
 
-    /// <summary>Fixed defect: the pressed-knob color was previously hardcoded to #0468DA, which
-    /// does not match the design system's actual ActionPrimaryBgPressed token (#0054E5). Both
-    /// brushes now read their color from the token, with the pre-existing hardcoded values kept
-    /// only as a fallback for the (should-never-happen) case the token is missing.</summary>
-    private void RefreshThemeBrushes()
+    /// <inheritdoc />
+    protected override void OnValueChanged(double oldValue, double newValue)
     {
-        _knobNormalBrush.Color = GetThemeColor("ActionPrimaryBg", Color.FromArgb(0xFF, 0x0D, 0x62, 0xFF));
-        _knobPressedBrush.Color = GetThemeColor("ActionPrimaryBgPressed", Color.FromArgb(0xFF, 0x00, 0x54, 0xE5));
+        base.OnValueChanged(oldValue, newValue);
+        RenderBars();
+
+        if (FrameworkElementAutomationPeer.FromElement(this) is EtherSliderAutomationPeer peer)
+            peer.RaiseValueChanged(oldValue, newValue);
     }
+
+    /// <inheritdoc />
+    protected override void OnMinimumChanged(double oldMinimum, double newMinimum)
+    {
+        base.OnMinimumChanged(oldMinimum, newMinimum);
+        RenderBars();
+    }
+
+    /// <inheritdoc />
+    protected override void OnMaximumChanged(double oldMaximum, double newMaximum)
+    {
+        base.OnMaximumChanged(oldMaximum, newMaximum);
+        RenderBars();
+    }
+
+    /// <inheritdoc />
+    protected override AutomationPeer OnCreateAutomationPeer()
+        => new EtherSliderAutomationPeer(this);
+
+    private void AttachInteractionHandlers()
+    {
+        if (_barCanvas is null)
+            return;
+
+        _barCanvas.PointerPressed += Canvas_PointerPressed;
+        _barCanvas.PointerMoved += Canvas_PointerMoved;
+        _barCanvas.PointerReleased += Canvas_PointerReleased;
+        _barCanvas.PointerCaptureLost += Canvas_PointerCaptureLost;
+        _barCanvas.PointerExited += Canvas_PointerExited;
+    }
+
+    private void DetachInteractionHandlers()
+    {
+        if (_barCanvas is null)
+            return;
+
+        _barCanvas.PointerPressed -= Canvas_PointerPressed;
+        _barCanvas.PointerMoved -= Canvas_PointerMoved;
+        _barCanvas.PointerReleased -= Canvas_PointerReleased;
+        _barCanvas.PointerCaptureLost -= Canvas_PointerCaptureLost;
+        _barCanvas.PointerExited -= Canvas_PointerExited;
+    }
+
+    internal bool CanInteract => IsEnabled;
+
+    internal bool SetValueFromAutomation(double value)
+        => CanInteract && SetValueFromKeyboard(value);
+
+    internal double AutomationSmallChange => Math.Max(SmallChange, 0d);
+
+    internal double AutomationLargeChange => Math.Max(LargeChange, 0d);
+
+    internal double RangeMinimum => Math.Min(Minimum, Maximum);
+
+    internal double RangeMaximum => Math.Max(Minimum, Maximum);
 
     private void RenderBars()
     {
-        if (BarCanvas is not Canvas canvas) return;
+        if (_barCanvas is not Canvas canvas)
+            return;
 
         canvas.Children.Clear();
+        _knob = null;
 
-        int highlightedCount = (int)Math.Round(Value / 100.0 * BarCount);
-        highlightedCount = Math.Clamp(highlightedCount, 0, BarCount);
-        int activeIndex = highlightedCount - 1;
-        double segmentStep = BarWidth + BarGap;
-        double totalWidth = BarCount * segmentStep + KnobWidth;
-        double canvasHeight = KnobHeight;
+        var span = RangeMaximum - RangeMinimum;
+        var ratio = span <= 0d ? 0d : Math.Clamp((Value - RangeMinimum) / span, 0d, 1d);
+        var highlightedCount = Math.Clamp((int)Math.Round(ratio * BarCount), 0, BarCount);
+        var activeIndex = highlightedCount - 1;
+        var segmentStep = BarWidth + BarGap;
+        var totalWidth = BarCount * segmentStep + KnobWidth;
         canvas.Width = totalWidth;
-        canvas.Height = canvasHeight;
+        canvas.Height = KnobHeight;
 
-        // Resolved theme colors — re-resolved on every call (Value change or theme change),
-        // so these two always reflect the current ActualTheme.
-        var highlightBrush = new SolidColorBrush(GetThemeColor("ActionPrimaryBg", Color.FromArgb(0xFF, 0x0D, 0x62, 0xFF)));
-        var inactiveBrush = new SolidColorBrush(GetThemeColor("BackgroundTrack", Color.FromArgb(0xFF, 0xBE, 0xCC, 0xD7)));
+        var barTop = (KnobHeight - BarHeight) / 2.0;
 
-        double barTop = (canvasHeight - BarHeight) / 2.0;
-
-        // Highlighted bars (left of the knob)
-        for (int i = 0; i <= activeIndex; i++)
+        for (var i = 0; i <= activeIndex; i++)
         {
             var rect = new Rectangle
             {
                 Width = BarWidth,
-                Height = BarHeight,
-                Fill = highlightBrush
+                Height = BarHeight
             };
+            BindBarFill(rect, _highlightBrushSource, "EtherSliderHighlightBrush");
             Canvas.SetLeft(rect, i * segmentStep);
             Canvas.SetTop(rect, barTop);
             canvas.Children.Add(rect);
         }
 
-        // Knob — sits at the boundary between highlighted and unselected bars
-        double knobX = highlightedCount * segmentStep;
+        var knobX = highlightedCount * segmentStep;
 
-        if (ValueText is not null)
+        if (_valueText is not null)
         {
-            // Center the label above the knob, but clamp to the slider edges.
-            ValueText.Text = FormatValue(Value);
-            ValueText.Margin = new Thickness(0, 0, 0, 8);
-            ValueText.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            double labelWidth = ValueText.DesiredSize.Width;
-            double labelCenter = knobX + KnobWidth / 2.0;
-            double labelLeft = labelCenter - labelWidth / 2.0;
-            if (labelLeft < 0) labelLeft = 0;
-            else if (labelLeft + labelWidth > totalWidth) labelLeft = totalWidth - labelWidth;
-            ValueText.Margin = new Thickness(labelLeft, 0, 0, 8);
+            _valueText.Text = FormatValue(Value);
+            _valueText.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            var labelWidth = _valueText.DesiredSize.Width;
+            var labelCenter = knobX + KnobWidth / 2.0;
+            var labelLeft = labelCenter - labelWidth / 2.0;
+            if (labelLeft < 0)
+                labelLeft = 0;
+            else if (labelLeft + labelWidth > totalWidth)
+                labelLeft = totalWidth - labelWidth;
+            _valueText.Margin = new Thickness(labelLeft, 0, 0, 8);
         }
 
-        // Build the knob; its Width/Radius expand on hover.
         _knob = new Rectangle
         {
             Width = KnobWidth,
             Height = KnobHeight,
             RadiusX = KnobCornerRadius,
-            RadiusY = KnobCornerRadius,
-            Fill = _knobNormalBrush
+            RadiusY = KnobCornerRadius
         };
+        BindBarFill(_knob, _knobBrushSource, "EtherSliderKnobBrush");
         _knobBaseX = knobX;
         UpdateKnobVisual();
         Canvas.SetTop(_knob, 0);
         canvas.Children.Add(_knob);
 
-        // Unselected bars (right of the knob)
-        int unselectedCount = BarCount - highlightedCount;
-        double firstUnselectedX = knobX + KnobWidth + BarGap;
-        for (int i = 0; i < unselectedCount; i++)
+        var unselectedCount = BarCount - highlightedCount;
+        var firstUnselectedX = knobX + KnobWidth + BarGap;
+        for (var i = 0; i < unselectedCount; i++)
         {
             var rect = new Rectangle
             {
                 Width = BarWidth,
-                Height = BarHeight,
-                Fill = inactiveBrush
+                Height = BarHeight
             };
+            BindBarFill(rect, _inactiveBrushSource, "EtherSliderInactiveBrush");
             Canvas.SetLeft(rect, firstUnselectedX + i * segmentStep);
             Canvas.SetTop(rect, barTop);
             canvas.Children.Add(rect);
         }
-
-        // Pointer interaction on the canvas
-        canvas.PointerPressed -= Canvas_PointerPressed;
-        canvas.PointerMoved -= Canvas_PointerMoved;
-        canvas.PointerReleased -= Canvas_PointerReleased;
-        canvas.PointerCaptureLost -= Canvas_PointerCaptureLost;
-        canvas.PointerExited -= Canvas_PointerExited;
-        canvas.PointerPressed += Canvas_PointerPressed;
-        canvas.PointerMoved += Canvas_PointerMoved;
-        canvas.PointerReleased += Canvas_PointerReleased;
-        canvas.PointerCaptureLost += Canvas_PointerCaptureLost;
-        canvas.PointerExited += Canvas_PointerExited;
     }
 
-    private bool _dragging;
-    private Rectangle? _knob;
-    private bool _hoveringKnob;
-    private bool _pressedKnob;
-    private double _knobBaseX;
-    private readonly SolidColorBrush _knobNormalBrush = new(Colors.Transparent);
-    private readonly SolidColorBrush _knobPressedBrush = new(Colors.Transparent);
+    private void UpdateInteractionState()
+    {
+        if (!IsEnabled)
+        {
+            _dragging = false;
+            _pressedKnob = false;
+            _hoveringKnob = false;
+        }
+
+        RenderBars();
+    }
 
     private void Canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
     {
+        if (!CanInteract)
+            return;
+
+        Focus(FocusState.Programmatic);
         _dragging = true;
         _pressedKnob = true;
         (sender as Canvas)?.CapturePointer(e.Pointer);
         UpdateValueFromPointer(e);
-        if (_knob is not null) UpdateKnobVisual();
+        if (_knob is not null)
+            UpdateKnobVisual();
     }
 
     private void Canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
     {
-        if (_dragging) UpdateValueFromPointer(e);
+        if (!CanInteract)
+            return;
+
+        if (_dragging)
+            UpdateValueFromPointer(e);
         UpdateKnobHoverState(e);
     }
 
     private void Canvas_PointerReleased(object sender, PointerRoutedEventArgs e)
     {
+        if (!CanInteract)
+            return;
+
         _dragging = false;
         _pressedKnob = false;
         (sender as Canvas)?.ReleasePointerCapture(e.Pointer);
-        if (_knob is not null) UpdateKnobVisual();
+        if (_knob is not null)
+            UpdateKnobVisual();
     }
 
     private void Canvas_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
     {
         _dragging = false;
         _pressedKnob = false;
-        if (_knob is not null) UpdateKnobVisual();
+        if (_knob is not null)
+            UpdateKnobVisual();
     }
 
     private void Canvas_PointerExited(object sender, PointerRoutedEventArgs e)
     {
         _hoveringKnob = false;
-        if (_knob is not null) UpdateKnobVisual();
+        if (_knob is not null)
+            UpdateKnobVisual();
     }
 
     private void UpdateKnobHoverState(PointerRoutedEventArgs e)
     {
-        if (_knob is null || BarCanvas is not Canvas canvas) return;
+        if (_knob is null || _barCanvas is not Canvas canvas)
+            return;
+
         var pt = e.GetCurrentPoint(canvas).Position;
-        double left = Canvas.GetLeft(_knob);
-        double right = left + _knob.Width;
-        bool isOver = pt.X >= left && pt.X <= right &&
+        var left = Canvas.GetLeft(_knob);
+        var right = left + _knob.Width;
+        var isOver = pt.X >= left && pt.X <= right &&
                      pt.Y >= 0 && pt.Y <= KnobHeight;
         if (isOver != _hoveringKnob)
         {
@@ -231,72 +323,127 @@ public sealed partial class EtherSlider : UserControl
 
     private void UpdateKnobVisual()
     {
-        if (_knob is null) return;
-        double w = (_hoveringKnob || _pressedKnob) ? 6.0 : KnobWidth;
-        double r = (_hoveringKnob || _pressedKnob) ? 4.0 : KnobCornerRadius;
+        if (_knob is null)
+            return;
+
+        var w = (_hoveringKnob || _pressedKnob) ? KnobHoverWidth : KnobWidth;
+        var r = (_hoveringKnob || _pressedKnob) ? KnobHoverCornerRadius : KnobCornerRadius;
         _knob.Width = w;
         _knob.Height = KnobHeight;
         _knob.RadiusX = r;
         _knob.RadiusY = r;
-        _knob.Fill = _pressedKnob ? _knobPressedBrush : _knobNormalBrush;
+        BindBarFill(
+            _knob,
+            _pressedKnob ? _knobPressedBrushSource : _knobBrushSource,
+            _pressedKnob ? "EtherSliderKnobPressedBrush" : "EtherSliderKnobBrush");
 
-        // Keep the expanded knob fully inside the slider track.
-        double desiredLeft = _knobBaseX + KnobWidth / 2.0 - w / 2.0;
-        double totalWidth = BarCount * (BarWidth + BarGap) + KnobWidth;
-        double clampedLeft = Math.Max(0, Math.Min(desiredLeft, totalWidth - w));
+        var desiredLeft = _knobBaseX + KnobWidth / 2.0 - w / 2.0;
+        var totalWidth = BarCount * (BarWidth + BarGap) + KnobWidth;
+        var clampedLeft = Math.Max(0, Math.Min(desiredLeft, totalWidth - w));
         Canvas.SetLeft(_knob, clampedLeft);
     }
 
     private void UpdateValueFromPointer(PointerRoutedEventArgs e)
     {
-        if (BarCanvas is not Canvas canvas) return;
+        if (!CanInteract || _barCanvas is not Canvas canvas)
+            return;
+
         var pt = e.GetCurrentPoint(canvas).Position;
-        double segmentStep = BarWidth + BarGap;
-        int slot = (int)Math.Round((pt.X - BarWidth / 2.0) / segmentStep);
+        var segmentStep = BarWidth + BarGap;
+        var slot = (int)Math.Round((pt.X - BarWidth / 2.0) / segmentStep);
         slot = Math.Clamp(slot, 0, BarCount);
-        double rawValue = slot / (double)BarCount * 100.0;
-        Value = (int)Math.Round(rawValue);
+        var span = RangeMaximum - RangeMinimum;
+        var rawValue = RangeMinimum + slot / (double)BarCount * span;
+        Value = Math.Round(rawValue);
     }
 
-    /// <summary>
-    /// Resolves a token's Color for the element's CURRENT effective theme, keyed by
-    /// ActualTheme rather than doing a flat Application.Current.Resources lookup (which is
-    /// not guaranteed to reflect a local RequestedTheme override like RootGrid.RequestedTheme
-    /// in MainWindow.xaml.cs).
-    /// The design-system tokens now live inside a master Themes/Generic.xaml dictionary that is
-    /// itself merged into Application.Resources, so this helper recurses through the merged
-    /// dictionary tree until it finds a matching theme dictionary and resource key.
-    /// ActualTheme is always resolved to Light or Dark (never ElementTheme.Default), so only
-    /// those two branches are needed. High Contrast is not handled here — this app's runtime
-    /// theme toggle only switches Light/Dark, and ActualTheme cannot report High Contrast the
-    /// way the declarative {ThemeResource} markup extension can; out of scope for this fix.
-    /// </summary>
-    private Color GetThemeColor(string resourceKey, Color fallback)
+    private void OnKeyDown(object sender, KeyRoutedEventArgs e)
     {
-        var themeKey = ActualTheme == ElementTheme.Dark ? "Dark" : "Light";
+        if (!CanInteract)
+            return;
 
-        if (FindThemeBrush(Application.Current.Resources, themeKey, resourceKey) is { } brush)
-            return brush.Color;
+        var handled = e.Key switch
+        {
+            VirtualKey.Left or VirtualKey.Down => MoveByKeyboardStep(false, false),
+            VirtualKey.Right or VirtualKey.Up => MoveByKeyboardStep(true, false),
+            VirtualKey.PageDown => MoveByKeyboardStep(false, true),
+            VirtualKey.PageUp => MoveByKeyboardStep(true, true),
+            VirtualKey.Home => SetValueFromKeyboard(RangeMinimum),
+            VirtualKey.End => SetValueFromKeyboard(RangeMaximum),
+            _ => false
+        };
 
-        return fallback;
+        if (handled)
+            e.Handled = true;
     }
 
-    private static SolidColorBrush? FindThemeBrush(ResourceDictionary root, string themeKey, string resourceKey)
+    private bool MoveByKeyboardStep(bool increase, bool useLargeChange)
     {
-        if (root.ThemeDictionaries.TryGetValue(themeKey, out var dictObj) &&
-            dictObj is ResourceDictionary themeDict &&
-            themeDict.TryGetValue(resourceKey, out var res) &&
-            res is SolidColorBrush b)
+        var step = Math.Max(useLargeChange ? LargeChange : SmallChange, 0d);
+        if (step <= 0)
+            return false;
+
+        var nextValue = Math.Clamp(Value + (increase ? step : -step), RangeMinimum, RangeMaximum);
+        return SetValueFromKeyboard(nextValue);
+    }
+
+    private bool SetValueFromKeyboard(double value)
+    {
+        if (AreClose(value, Value))
+            return false;
+
+        Value = value;
+        return true;
+    }
+
+    private static bool AreClose(double left, double right)
+        => Math.Abs(left - right) < 0.0001;
+
+    private static void BindBarFill(Shape shape, Border? source, string resourceKey)
+    {
+        if (source is null)
+            throw new InvalidOperationException($"EtherSlider is missing component resource '{resourceKey}'.");
+
+        shape.SetBinding(Shape.FillProperty, new Binding
         {
-            return b;
+            Source = source,
+            Path = new PropertyPath(nameof(Border.Background))
+        });
+    }
+
+    private sealed class EtherSliderAutomationPeer(EtherSlider owner)
+        : FrameworkElementAutomationPeer(owner), IRangeValueProvider
+    {
+        private EtherSlider OwnerControl => (EtherSlider)Owner;
+
+        public bool IsReadOnly => !OwnerControl.CanInteract;
+
+        public double LargeChange => OwnerControl.AutomationLargeChange;
+
+        public double Maximum => OwnerControl.RangeMaximum;
+
+        public double Minimum => OwnerControl.RangeMinimum;
+
+        public double SmallChange => OwnerControl.AutomationSmallChange;
+
+        public double Value => OwnerControl.Value;
+
+        public void SetValue(double value)
+        {
+            if (!OwnerControl.SetValueFromAutomation(value))
+                throw new InvalidOperationException("The slider cannot accept automation-driven value changes in its current state.");
         }
 
-        foreach (var merged in root.MergedDictionaries)
-        {
-            if (FindThemeBrush(merged, themeKey, resourceKey) is { } found)
-                return found;
-        }
+        internal void RaiseValueChanged(double oldValue, double newValue)
+            => RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty, oldValue, newValue);
 
-        return null;
+        protected override string GetClassNameCore()
+            => nameof(EtherSlider);
+
+        protected override AutomationControlType GetAutomationControlTypeCore()
+            => AutomationControlType.Slider;
+
+        protected override object? GetPatternCore(PatternInterface patternInterface)
+            => patternInterface == PatternInterface.RangeValue ? this : base.GetPatternCore(patternInterface);
     }
 }
