@@ -2,7 +2,7 @@
 
 Date: 2026-08-27  
 Branch: `codex/refactor`  
-HEAD: `2d56d6f` — *Move design-system sources into Foundation, Controls, and Gallery.*  
+HEAD: `48cac9f` plus HighContrast OS-selected runtime docs in this commit  
 Audience: any agent continuing, reviewing, or verifying this branch **without chat history**.
 
 This file is the operational context. It supersedes the 2026-08-26 pause notes that still talked about L2-in-progress and linked `src/Views/**`. Slice-level architecture notes under `docs/architecture/2026-08-26-*.md` remain valid for control-specific exceptions; if a path in those notes still says `src/Controls` or `src/Views`, the files now live under `src/Ether.DesignSystem.Controls/` and `samples/Ether.DesignSystem.Gallery/`.
@@ -76,6 +76,8 @@ Gallery also merges Gallery-only `ms-appx:///Resources/Visuals/EtherPageTitleGra
 **Legacy sandbox** ProjectReferences Foundation + Controls and compiles Gallery sources. It no longer compiles a second copy of controls or the flattened `src/Themes/Generic.xaml` graph (that file was deleted).
 
 **Not created:** `tests/Ether.DesignSystem.UnitTests`, `tests/Ether.DesignSystem.UITests`.
+
+**HighContrast runtime (docs in this commit):** unpackaged consumer proof is OS-selected (`SPI_SETHIGHCONTRAST`), not dictionary overlay. Named OS themes remain red; see §4.
 
 ---
 
@@ -225,7 +227,8 @@ Treat these as **known open work**, not as “the last agent forgot.” Do not f
 - `SourceXaml` snippets are representative, not always byte-identical to the live tree
 - Slider / Segmented host fake `TemplateVisualState` where the platform tree cannot prove the state otherwise
 - Public namespace still `EtherSandbox*`
-- Gallery page-body copy is not fully `.resw` (chrome is)
+- Gallery page-body copy is in `Strings/en-US/Resources.resw` (en-US only; `SourceXaml` stays English)
+- HighContrast consumer runtime is OS-selected (`SPI_SETHIGHCONTRAST`); dictionary overlay / injected SystemColor* is not the claim. Contrast Aquatic / Desert / Night Sky are not proven unless those `.theme` files exist and were applied
 
 ### Do not “improve” without a new mandate
 

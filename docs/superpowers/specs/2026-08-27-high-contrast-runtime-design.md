@@ -1,5 +1,12 @@
 # High Contrast runtime (forced dictionary) — design
 
+> **Implementation override (landed):** Runtime proof uses OS High Contrast
+> (`SPI_GET/SETHIGHCONTRAST` + `AccessibilitySettings`), `osHighContrast: true`,
+> `dictionaryForced: false`. Dictionary overlay / injected `#FF00FF00` was
+> attempted and rejected. Restore is mandatory (fixture `finally` + script
+> `Restore-OsHighContrastIfOn` after force-kill). Aquatic / Desert / Night Sky
+> stay unclaimed unless those `.theme` files exist and were applied.
+
 Date: 2026-08-27  
 Branch: `codex/refactor`  
 Status: approved for implementation planning  

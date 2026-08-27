@@ -4,7 +4,7 @@ Date: 2026-08-26
 Status: in-repo quality substitutes, not preview publish
 
 Unpackaged package consumers now extend the existing `ETHER_CONSUMER_SMOKE`
-marker with UIA, 225% scale, localization, Light/Dark screenshots, and an
+marker with UIA, 225% scale, localization, Light/Dark/HighContrast screenshots, and an
 elapsed-time budget. Local `scripts/Verify-RuntimeGates.ps1` also runs unsigned
 MSIX produce and arm64 pack/compile. These are in-repo substitutes. They are
 not Accessibility Insights, not Appium / WinAppDriver, not hosted GUI CI, not
@@ -30,9 +30,20 @@ MSIX install, not arm64 runtime, and not nuget publish.
   compiles the unpackaged fixture. It does not launch the arm64 exe.
 - `EtherColors` HighContrast now defines the same semantic slash keys as Light/Dark
   (234). Values are `{ThemeResource SystemColor*}`, not Gray/Blue primitives.
+- Unpackaged HighContrast runtime is OS-selected: the fixture turns Windows
+  High Contrast on via `SPI_SETHIGHCONTRAST`, waits for
+  `AccessibilitySettings.HighContrast`, captures `consumer-highcontrast.png`,
+  then restores in `finally`. Marker fields: `highContrast.osHighContrast`
+  true, `dictionaryForced` false. Canvas color is the live SystemColor window
+  (not injected `#FF00FF00`). Dictionary overlay is not the claim. The scheme
+  is whatever this machine provides (`hc1` / `hc2` / `hcblack` / `hcwhite` on
+  this host). This is not Contrast Aquatic, Desert, or Night Sky, and not
+  Accessibility Insights.
 
 ## Still red
 
 MSIX install/runtime (unsigned produce only; no `Add-AppxPackage`), arm64
 runtime, Accessibility Insights, Appium, hosted CI WinUI smoke
-(`build.yml` keeps `-SkipRuntimeSmoke`), and preview package publish.
+(`build.yml` keeps `-SkipRuntimeSmoke`), OS contrast themes (Aquatic /
+Desert / Night Sky) unless those `.theme` files exist and were applied, and
+preview package publish.
