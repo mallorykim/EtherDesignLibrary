@@ -26,26 +26,49 @@ internal static partial class RuntimeVerification
             defaultSlider.Value == 50d &&
             defaultSlider.SmallChange == 1d &&
             defaultSlider.LargeChange == 10d &&
+            defaultSlider.ShowTitle &&
+            defaultSlider.ShowLabels &&
+            EtherSlider.MaxLabelCount == 11 &&
+            EtherSlider.MinBarCount == 8 &&
+            EtherSlider.MaxBarCount == 512 &&
+            defaultSlider.HorizontalAlignment == HorizontalAlignment.Stretch &&
             !defaultSlider.UseSystemFocusVisuals &&
             defaultSlider.IsTabStop &&
             defaultSlider.Template is not null;
         if (!defaultStyleResolved)
         {
-            throw new InvalidOperationException("The keyed EtherSlider style did not apply its default range, change steps, UseSystemFocusVisuals=False, IsTabStop, and template.");
+            throw new InvalidOperationException("The keyed EtherSlider style did not apply its default range, chrome, even-tick caps, Stretch alignment, change steps, UseSystemFocusVisuals=False, IsTabStop, and template.");
         }
 
         var valueText = GetTemplatePart<TextBlock>(slider, "ValueText", nameof(EtherSlider));
         var barCanvas = GetTemplatePart<Canvas>(slider, "BarCanvas", nameof(EtherSlider));
+        var labelRow = GetTemplatePart<Grid>(slider, "LabelRow", nameof(EtherSlider));
         GetTemplatePart<Microsoft.UI.Xaml.Shapes.Rectangle>(slider, "Knob", nameof(EtherSlider));
-        var templateParts = new[] { "ValueText", "BarCanvas", "Knob" };
+        var templateParts = new[] { "ValueText", "BarCanvas", "Knob", "LabelRow" };
+
+        var visibleLabels = labelRow.Children.OfType<TextBlock>().Where(label => label.Visibility == Visibility.Visible).ToArray();
+        if (visibleLabels.Length != 6 ||
+            visibleLabels[0].Text != "0" ||
+            visibleLabels[1].Text != "20" ||
+            visibleLabels[5].Text != "100")
+        {
+            throw new InvalidOperationException("EtherSlider did not generate even auto tick labels from Minimum–Maximum (0, 20, …, 100).");
+        }
 
         slider.Value = 65d;
         slider.UpdateLayout();
-        var highlightedBarCount = CountHighlightedBars(barCanvas);
-        var fillRatio = highlightedBarCount / 63d;
-        if (Math.Abs(fillRatio - 0.65d) > 0.02d || highlightedBarCount <= 0)
+        var totalBarCount = barCanvas.Children.OfType<Microsoft.UI.Xaml.Shapes.Rectangle>().Count(rectangle => rectangle.Height == 40d);
+        if (totalBarCount < EtherSlider.MinBarCount || totalBarCount % 2 != 0)
         {
-            throw new InvalidOperationException($"Expected a 65% slider fill across 63 bars, but observed {highlightedBarCount} highlighted bars ({fillRatio:P2}).");
+            throw new InvalidOperationException($"Expected an even tick count of at least {EtherSlider.MinBarCount}, but observed {totalBarCount}.");
+        }
+
+        var highlightedBarCount = CountHighlightedBars(barCanvas);
+        var expectedHighlighted = (int)Math.Round(0.65d * totalBarCount);
+        var fillRatio = highlightedBarCount / (double)totalBarCount;
+        if (highlightedBarCount != expectedHighlighted || highlightedBarCount <= 0)
+        {
+            throw new InvalidOperationException($"Expected {expectedHighlighted} highlighted bars of {totalBarCount} even ticks (65%), but observed {highlightedBarCount} ({fillRatio:P2}).");
         }
 
         var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider)
@@ -114,17 +137,81 @@ internal static partial class RuntimeVerification
         }
 
         var disabledOpacityApplied = Math.Abs(barCanvas.Opacity - 0.4d) < 0.001d &&
-            Math.Abs(valueText.Opacity - 0.4d) < 0.001d;
+            Math.Abs(valueText.Opacity - 0.4d) < 0.001d &&
+            Math.Abs(labelRow.Opacity - 0.4d) < 0.001d;
         if (!disabledOpacityApplied)
         {
             throw new InvalidOperationException("Disabled EtherSlider did not dim its ticks and value label.");
         }
 
         slider.IsEnabled = true;
-        if (Math.Abs(barCanvas.Opacity - 1d) > 0.001d || Math.Abs(valueText.Opacity - 1d) > 0.001d)
+        if (Math.Abs(barCanvas.Opacity - 1d) > 0.001d ||
+            Math.Abs(valueText.Opacity - 1d) > 0.001d ||
+            Math.Abs(labelRow.Opacity - 1d) > 0.001d)
         {
             throw new InvalidOperationException("Re-enabled EtherSlider did not restore its ticks and value label opacity.");
         }
+
+        var setValueNoOpAccepted = false;
+        try
+        {
+            rangeValue.SetValue(65.4d);
+            setValueNoOpAccepted = slider.Value == 65d;
+        }
+        catch (InvalidOperationException)
+        {
+            setValueNoOpAccepted = false;
+        }
+
+        if (!setValueNoOpAccepted)
+        {
+            throw new InvalidOperationException("Enabled EtherSlider rejected a no-op RangeValue SetValue after integer rounding.");
+        }
+
+        slider.Labels!.Clear();
+        foreach (var name in new[] { "Off", "Low", "Mid", "High", "Max" })
+            slider.Labels.Add(name);
+        slider.UpdateLayout();
+        var namedLabels = labelRow.Children.OfType<TextBlock>().Where(label => label.Visibility == Visibility.Visible).ToArray();
+        var namedLabelsApplied = namedLabels.Length == 5 &&
+            namedLabels[0].Text == "Off" &&
+            namedLabels[2].Text == "Mid" &&
+            namedLabels[4].Text == "Max";
+        if (!namedLabelsApplied)
+        {
+            throw new InvalidOperationException("EtherSlider did not render named Labels content (Off–Max).");
+        }
+
+        slider.Value = 47d;
+        slider.SnapToStops = true;
+        var snapCoerced = slider.Value == 50d;
+        if (!snapCoerced)
+        {
+            throw new InvalidOperationException($"Enabling SnapToStops with five named labels should coerce 47 to 50. Observed {slider.Value}.");
+        }
+
+        var movedNext = slider.MoveToNextStop() && slider.Value == 75d;
+        var movedPrevious = slider.MoveToPreviousStop() && slider.Value == 50d;
+        var moveToStopExercised = movedNext && movedPrevious;
+        if (!moveToStopExercised)
+        {
+            throw new InvalidOperationException($"EtherSlider stop stepping failed. Observed {slider.Value} after MoveToNextStop/MoveToPreviousStop.");
+        }
+
+        slider.SnapToStops = false;
+        slider.Stops = new DoubleCollection { 0, 10, 50, 90, 100 };
+        slider.Value = 47d;
+        slider.SnapToStops = true;
+        if (slider.Value != 50d)
+        {
+            throw new InvalidOperationException($"Explicit Stops with SnapToStops should coerce 47 to 50. Observed {slider.Value}.");
+        }
+
+        slider.SnapToStops = false;
+        slider.Stops = null;
+        slider.Labels!.Clear();
+        slider.Value = 65d;
+        slider.UpdateLayout();
 
         var lightTemplateBrushColors = await GetSliderTemplateBrushColorsAsync(themeRoot, slider, valueText, barCanvas, ElementTheme.Light);
         var darkTemplateBrushColors = await GetSliderTemplateBrushColorsAsync(themeRoot, slider, valueText, barCanvas, ElementTheme.Dark);
@@ -154,6 +241,10 @@ internal static partial class RuntimeVerification
             disabledOpacityApplied,
             valueChangeExercised,
             formattedValue,
+            setValueNoOpAccepted,
+            namedLabelsApplied,
+            snapCoerced,
+            moveToStopExercised,
             lightTemplateBrushColors,
             darkTemplateBrushColors);
     }

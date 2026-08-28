@@ -174,6 +174,10 @@ internal static partial class RuntimeVerification
         bool DisabledOpacityApplied,
         bool ValueChangeExercised,
         string FormattedValue,
+        bool SetValueNoOpAccepted,
+        bool NamedLabelsApplied,
+        bool SnapCoerced,
+        bool MoveToStopExercised,
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors);
 

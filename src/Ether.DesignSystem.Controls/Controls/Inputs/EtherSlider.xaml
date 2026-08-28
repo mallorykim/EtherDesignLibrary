@@ -1,14 +1,25 @@
 <!--
     Ether Design System Slider
 
-    A bar-chart slider with 63×2px ticks, a 4px knob, and click/drag Value
-    interaction. DefaultEtherSliderStyle owns the default setters; the implicit
-    style is BasedOn that key. Colour-bearing values live in EtherSlider*
-    Light/Dark/HighContrast dictionaries. The template does not use literal hex.
+    Figma source: ursRC201v8IiVeafliI45F
+      Light Tick slider 62181:5284 · Dark 62181:5341
+    2×40 epx ticks with a 3 epx gap, 4×45 epx knob (radius 2). Tick count is
+    even and follows the parent width at Figma density (2 epx bar + 3 epx
+    gap). Title is
+    Instrument Sans SemiBold 14; tick labels are Inter Medium 11. Title and
+    labels are optional (`ShowTitle` / `ShowLabels`); at most 11 labels.
+    Labels are UI only; the payload is RangeBase.Value.
 
-    The 63 bar rectangles and Knob are template-declared. Code updates
-    Canvas.Left, Fill, and knob hover/press sizing; pointer capture stays on
-    BarCanvas rather than VisualStateManager.
+    DefaultEtherSliderStyle owns the default setters; the implicit style is
+    BasedOn that key. Light/Dark component brushes bind Color to primitive
+    StaticResources. High Contrast uses Windows SystemColor*.
+
+    The Knob is template-declared. Tick bars are created to an even count that
+    fills the stretched track. Code updates Canvas.Left, Fill, and knob
+    hover/press sizing; pointer capture stays on BarCanvas rather than
+    VisualStateManager. UseSystemFocusVisuals stays False so custom High
+    Contrast brushes are not overdrawn by a system halo. Keyboard focus uses
+    the hover knob size (6×45, radius 4) as the visible focus cue.
 
     LOCATION
       This dictionary lives beside its class (Controls/Inputs/EtherSlider.xaml.cs)
@@ -21,27 +32,47 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="EtherSliderHighlightBrush" ResourceKey="ActionPrimaryBg" />
-            <StaticResource x:Key="EtherSliderInactiveBrush" ResourceKey="BackgroundTrack" />
-            <StaticResource x:Key="EtherSliderKnobBrush" ResourceKey="ActionPrimaryBg" />
-            <StaticResource x:Key="EtherSliderKnobPressedBrush" ResourceKey="ActionPrimaryBgPressed" />
-            <StaticResource x:Key="EtherSliderValueForegroundBrush" ResourceKey="text/primary" />
+            <SolidColorBrush x:Key="EtherSliderHighlightBrush" Color="{StaticResource AlphaBrandGlow65}"/>
+            <SolidColorBrush x:Key="EtherSliderInactiveBrush" Color="{StaticResource Gray300}"/>
+            <SolidColorBrush x:Key="EtherSliderKnobBrush" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="EtherSliderKnobPressedBrush" Color="{StaticResource Blue700}"/>
+            <SolidColorBrush x:Key="EtherSliderLabelForegroundBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherSliderValueForegroundBrush" Color="{StaticResource Gray1000}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <StaticResource x:Key="EtherSliderHighlightBrush" ResourceKey="ActionPrimaryBg" />
-            <StaticResource x:Key="EtherSliderInactiveBrush" ResourceKey="BackgroundTrack" />
-            <StaticResource x:Key="EtherSliderKnobBrush" ResourceKey="ActionPrimaryBg" />
-            <StaticResource x:Key="EtherSliderKnobPressedBrush" ResourceKey="ActionPrimaryBgPressed" />
-            <StaticResource x:Key="EtherSliderValueForegroundBrush" ResourceKey="text/primary" />
+            <SolidColorBrush x:Key="EtherSliderHighlightBrush" Color="{StaticResource AlphaBrandGlow65}"/>
+            <SolidColorBrush x:Key="EtherSliderInactiveBrush" Color="{StaticResource Gray600}"/>
+            <SolidColorBrush x:Key="EtherSliderKnobBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherSliderKnobPressedBrush" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="EtherSliderLabelForegroundBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherSliderValueForegroundBrush" Color="{StaticResource Gray0}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherSliderHighlightBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="EtherSliderInactiveBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
             <SolidColorBrush x:Key="EtherSliderKnobBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="EtherSliderKnobPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherSliderLabelForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
             <SolidColorBrush x:Key="EtherSliderValueForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
+
+    <!-- Hit-test fill for BarCanvas: not themed, so High Contrast can keep
+         SystemColor-only theme keys while the canvas stays empty. -->
+    <SolidColorBrush x:Key="EtherSliderTransparentBrush" Color="Transparent"/>
+
+    <Style x:Key="EtherSliderTickLabelStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{ThemeResource EtherSliderLabelForegroundBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize" Value="{StaticResource Size11}"/>
+        <Setter Property="FontWeight" Value="{StaticResource WeightMedium}"/>
+        <Setter Property="CharacterSpacing" Value="20"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="AutomationProperties.AccessibilityView" Value="Raw"/>
+    </Style>
 
     <Style x:Key="DefaultEtherSliderStyle" TargetType="controls:EtherSlider">
         <Setter Property="IsTabStop" Value="True" />
@@ -52,6 +83,9 @@
         <Setter Property="Value" Value="50" />
         <Setter Property="SmallChange" Value="1" />
         <Setter Property="LargeChange" Value="10" />
+        <Setter Property="ShowTitle" Value="True" />
+        <Setter Property="ShowLabels" Value="True" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:EtherSlider">
@@ -91,75 +125,17 @@
                         <StackPanel>
                             <TextBlock x:Name="ValueText"
                                        HorizontalAlignment="Left"
+                                       Height="18"
+                                       Margin="0,0,0,4"
                                        Foreground="{ThemeResource EtherSliderValueForegroundBrush}"
-                                       FontSize="{StaticResource Size14}" />
+                                       FontFamily="{StaticResource InstrumentSans}"
+                                       FontSize="{StaticResource Size14}"
+                                       FontWeight="{StaticResource WeightSemibold}"
+                                       AutomationProperties.AccessibilityView="Raw"/>
                             <Canvas x:Name="BarCanvas"
                                     VerticalAlignment="Center"
-                                    HorizontalAlignment="Left"
-                                    Background="Transparent">
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
-                            <Rectangle Width="2" Height="40" Canvas.Top="2.5" IsHitTestVisible="False" />
+                                    HorizontalAlignment="Stretch"
+                                    Background="{StaticResource EtherSliderTransparentBrush}">
                                 <Rectangle x:Name="Knob"
                                            Width="4"
                                            Height="45"
@@ -168,6 +144,23 @@
                                            Canvas.Top="0"
                                            IsHitTestVisible="False" />
                             </Canvas>
+                            <Grid x:Name="LabelRow"
+                                  Margin="0,4,0,0"
+                                  HorizontalAlignment="Stretch">
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"
+                                           HorizontalAlignment="Left"
+                                           TextAlignment="Left"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                                <TextBlock Style="{StaticResource EtherSliderTickLabelStyle}"/>
+                            </Grid>
                         </StackPanel>
                     </Grid>
                 </ControlTemplate>

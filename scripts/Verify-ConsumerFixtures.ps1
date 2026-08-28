@@ -766,7 +766,7 @@ try {
             $expectedSteeringBarTemplateParts = @('InteractionSurface', 'FillBorder', 'ThumbHost', 'LabelRow', 'TitleText', 'ValueLabel')
             $expectedSteeringBarLabelStates = @('BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden')
             $expectedSteeringBarGradient = @('#FF0021F3', '#FF0015FF', '#FF0EB2FF', '#FF40E1FD')
-            $expectedSliderTemplateParts = @('ValueText', 'BarCanvas', 'Knob')
+            $expectedSliderTemplateParts = @('ValueText', 'BarCanvas', 'Knob', 'LabelRow')
             $expectedMastheadTemplateParts = @('SearchIconSlot', 'SettingsButton', 'MinimizeButton', 'MaximizeRestoreButton', 'CloseButton')
             $expectedMastheadOptionalIconStates = @('SearchCollapsed', 'SearchVisible')
             $expectedToggleSwitchTemplateParts = @('TrackOff', 'TrackOn', 'KnobFill')
@@ -897,7 +897,7 @@ try {
                 $slider.defaultStyleResolved -ne $true -or
                 $slider.defaultUseSystemFocusVisuals -ne $false -or
                 @($expectedSliderTemplateParts | Where-Object { $_ -cnotin @($slider.templateParts) }).Count -ne 0 -or
-                [Math]::Abs([double]$slider.fillRatio - 0.65) -gt 0.02 -or
+                [Math]::Abs([double]$slider.fillRatio - 0.65) -gt 0.06 -or
                 [int]$slider.highlightedBarCount -lt 1 -or
                 $slider.automationName -ne 'Package slider' -or
                 $slider.defaultAutomationName -ne 'Default package slider' -or

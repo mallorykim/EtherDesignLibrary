@@ -77,6 +77,25 @@ EtherSandbox.Controls.EtherSegmentedTrack.EtherSegmentedTrack() -> void
 EtherSandbox.Controls.EtherSlider
 EtherSandbox.Controls.EtherSlider.EtherSlider() -> void
 EtherSandbox.Controls.EtherSlider.FormatValue(double value) -> string!
+EtherSandbox.Controls.EtherSlider.Labels.get -> EtherSandbox.Controls.EtherSliderLabelCollection?
+EtherSandbox.Controls.EtherSlider.Labels.set -> void
+EtherSandbox.Controls.EtherSlider.MoveToNextStop() -> bool
+EtherSandbox.Controls.EtherSlider.MoveToPreviousStop() -> bool
+EtherSandbox.Controls.EtherSlider.ShowLabels.get -> bool
+EtherSandbox.Controls.EtherSlider.ShowLabels.set -> void
+EtherSandbox.Controls.EtherSlider.ShowTitle.get -> bool
+EtherSandbox.Controls.EtherSlider.ShowTitle.set -> void
+EtherSandbox.Controls.EtherSlider.SnapToStops.get -> bool
+EtherSandbox.Controls.EtherSlider.SnapToStops.set -> void
+EtherSandbox.Controls.EtherSlider.Stops.get -> Microsoft.UI.Xaml.Media.DoubleCollection?
+EtherSandbox.Controls.EtherSlider.Stops.set -> void
+EtherSandbox.Controls.EtherSlider.Title.get -> string?
+EtherSandbox.Controls.EtherSlider.Title.set -> void
+const EtherSandbox.Controls.EtherSlider.MaxBarCount = 512 -> int
+const EtherSandbox.Controls.EtherSlider.MaxLabelCount = 11 -> int
+const EtherSandbox.Controls.EtherSlider.MinBarCount = 8 -> int
+EtherSandbox.Controls.EtherSliderLabelCollection
+EtherSandbox.Controls.EtherSliderLabelCollection.EtherSliderLabelCollection() -> void
 EtherSandbox.Controls.EtherSteeringBar
 EtherSandbox.Controls.EtherSteeringBar.EtherSteeringBar() -> void
 EtherSandbox.Controls.EtherSteeringBar.LargeChange.get -> double
@@ -142,6 +161,12 @@ static readonly EtherSandbox.Controls.EtherMasthead.ShowMenuIconProperty -> Micr
 static readonly EtherSandbox.Controls.EtherMasthead.ShowSearchProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherMasthead.ShowSettingsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherSegmentPanel.SpacingProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSlider.LabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSlider.ShowLabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSlider.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSlider.SnapToStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSlider.StopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSlider.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!

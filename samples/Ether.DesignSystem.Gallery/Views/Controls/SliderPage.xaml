@@ -3,46 +3,260 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:EtherSandbox.Controls"
-    xmlns:views="using:EtherSandbox.Views">
+    xmlns:views="using:EtherSandbox.Views"
+    Loaded="Page_Loaded">
 
 <views:ComponentPage x:Uid="GalleryViewsControlsSliderPage206"
         Title="Slider"
         HasDisabledToggle="True"
-        Description="Bar-chart slider with interactive click-and-drag behavior and theme-aware selected bars. Sixty-three ticks fill with the component highlight brush up to the knob.">
+        Description="Every specimen is a real EtherSlider. Bind Value (double) TwoWay — that number is the backend payload. Labels and title are captions only.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
                                   x:Uid="GalleryViewsControlsSliderPageOutput"
-                                  OutputText="Value: 50%"
+                                  ExampleHorizontalContentAlignment="Stretch"
+                                  OutputText="{}{&quot;continuous&quot;: 50, &quot;named&quot;: 50}"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
-            <StackPanel Spacing="8">
-<TextBlock x:Uid="GalleryViewsControlsSliderPage207" Text="50% (interactive — drag me)"
-                           Style="{StaticResource micro/regular}"
-                           Foreground="{ThemeResource TextTertiary}"/>
-                <controls:EtherSlider x:Name="InteractiveSlider"
-                                      Value="50"
-                                      AutomationProperties.Name="Interactive slider"
-                                      ValueChanged="InteractiveSlider_ValueChanged"/>
+            <StackPanel Spacing="24" HorizontalAlignment="Stretch">
+                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                    <TextBlock Text="CONTINUOUS (DEFAULT)"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <TextBlock Text="TwoWay bind Value to a double on the page or view model. OUTPUT is that property. Tick text is not sent."
+                               Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
+                    <controls:EtherSlider x:Name="InteractiveSlider"
+                                          Title="Title"
+                                          Value="{x:Bind ContinuousLevel, Mode=TwoWay}"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="Interactive slider"/>
+                </StackPanel>
+
+                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                    <TextBlock Text="NAMED VALUES + SNAP"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <TextBlock Text="Same bind. SnapToStops makes Value 0, 25, 50, 75, or 100. Off–Max is the caption, not the field you POST."
+                               Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
+                    <controls:EtherSlider x:Name="InteractiveNamedSlider"
+                                          Title="Title"
+                                          Value="{x:Bind NamedLevel, Mode=TwoWay}"
+                                          SnapToStops="True"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="Interactive slider with named stops">
+                        <x:String>Off</x:String>
+                        <x:String>Low</x:String>
+                        <x:String>Mid</x:String>
+                        <x:String>High</x:String>
+                        <x:String>Max</x:String>
+                    </controls:EtherSlider>
+                </StackPanel>
             </StackPanel>
             </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>
-            <StackPanel Orientation="Horizontal" Spacing="48">
-                <StackPanel Spacing="8">
-                    <TextBlock Text="25%"
-                               Style="{StaticResource micro/regular}"
+            <StackPanel Spacing="32" HorizontalAlignment="Stretch">
+
+                <Grid ColumnSpacing="48">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Spacing="8" HorizontalAlignment="Stretch">
+                        <TextBlock Text="VALUE 25"
+                                   Style="{StaticResource micro/semibold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="Value is 25. The live number below is the same DependencyProperty a backend would store."
+                                   Style="{StaticResource micro/regular}"
+                                   Foreground="{ThemeResource TextSecondary}"
+                                   TextWrapping="Wrap"/>
+                        <controls:EtherSlider x:Name="SliderAt25"
+                                              Title="Title"
+                                              Value="25"
+                                              HorizontalAlignment="Stretch"
+                                              AutomationProperties.Name="Slider at 25 percent"/>
+                        <TextBlock Style="{StaticResource micro/regular}"
+                                   Foreground="{ThemeResource TextTertiary}">
+                            <Run Text="POST "/><Run Text="{Binding Value, ElementName=SliderAt25, Mode=OneWay}"/>
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="8" HorizontalAlignment="Stretch">
+                        <TextBlock Text="VALUE 75"
+                                   Style="{StaticResource micro/semibold}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <TextBlock Text="Value is 75. Same contract as the 25 specimen."
+                                   Style="{StaticResource micro/regular}"
+                                   Foreground="{ThemeResource TextSecondary}"
+                                   TextWrapping="Wrap"/>
+                        <controls:EtherSlider x:Name="SliderAt75"
+                                              Title="Title"
+                                              Value="75"
+                                              HorizontalAlignment="Stretch"
+                                              AutomationProperties.Name="Slider at 75 percent"/>
+                        <TextBlock Style="{StaticResource micro/regular}"
+                                   Foreground="{ThemeResource TextTertiary}">
+                            <Run Text="POST "/><Run Text="{Binding Value, ElementName=SliderAt75, Mode=OneWay}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                    <TextBlock Text="TITLE ONLY"
+                               Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSlider Value="25"
-                                          AutomationProperties.Name="Slider at 25 percent"/>
-                </StackPanel>
-                <StackPanel Spacing="8">
-                    <TextBlock Text="75%"
+                    <TextBlock Text="ShowLabels false. Chrome only — Value is still posted (here 50)."
                                Style="{StaticResource micro/regular}"
-                               Foreground="{ThemeResource TextTertiary}"/>
-                    <controls:EtherSlider Value="75"
-                                          AutomationProperties.Name="Slider at 75 percent"/>
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
+                    <controls:EtherSlider x:Name="SliderTitleOnly"
+                                          Title="Title"
+                                          Value="50"
+                                          ShowLabels="False"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="Slider title only"/>
+                    <TextBlock Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextTertiary}">
+                        <Run Text="POST "/><Run Text="{Binding Value, ElementName=SliderTitleOnly, Mode=OneWay}"/>
+                    </TextBlock>
                 </StackPanel>
+
+                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                    <TextBlock Text="LABELS ONLY"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <TextBlock Text="ShowTitle false. Labels stay; Value is still posted (here 50)."
+                               Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
+                    <controls:EtherSlider x:Name="SliderLabelsOnly"
+                                          Title="Title"
+                                          Value="50"
+                                          ShowTitle="False"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="Slider labels only"/>
+                    <TextBlock Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextTertiary}">
+                        <Run Text="POST "/><Run Text="{Binding Value, ElementName=SliderLabelsOnly, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                    <TextBlock Text="TRACK ONLY"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <TextBlock Text="Title and labels off. Track only — Value is still posted (here 50)."
+                               Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
+                    <controls:EtherSlider x:Name="SliderTrackOnly"
+                                          Title="Title"
+                                          Value="50"
+                                          ShowTitle="False"
+                                          ShowLabels="False"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="Slider track only"/>
+                    <TextBlock Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextTertiary}">
+                        <Run Text="POST "/><Run Text="{Binding Value, ElementName=SliderTrackOnly, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                    <TextBlock Text="NAMED LABELS (NO SNAP)"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <TextBlock Text="Named captions, no snap. Drag still POSTs 0–100 integers, not Off/Low/Mid."
+                               Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
+                    <controls:EtherSlider x:Name="SliderNamedNoSnap"
+                                          Title="Title"
+                                          Value="50"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="Slider named labels">
+                        <x:String>Off</x:String>
+                        <x:String>Low</x:String>
+                        <x:String>Mid</x:String>
+                        <x:String>High</x:String>
+                        <x:String>Max</x:String>
+                    </controls:EtherSlider>
+                    <TextBlock Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextTertiary}">
+                        <Run Text="POST "/><Run Text="{Binding Value, ElementName=SliderNamedNoSnap, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                    <TextBlock Text="NAMED LABELS + SNAP TO STOPS"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <TextBlock Text="Snap infers 0, 25, 50, 75, 100. POST that number; Off–Max is caption only."
+                               Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
+                    <controls:EtherSlider x:Name="SliderNamedSnap"
+                                          Title="Title"
+                                          Value="50"
+                                          SnapToStops="True"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="Slider with named labels">
+                        <x:String>Off</x:String>
+                        <x:String>Low</x:String>
+                        <x:String>Mid</x:String>
+                        <x:String>High</x:String>
+                        <x:String>Max</x:String>
+                    </controls:EtherSlider>
+                    <TextBlock Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextTertiary}">
+                        <Run Text="POST "/><Run Text="{Binding Value, ElementName=SliderNamedSnap, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                    <TextBlock Text="EXPLICIT STOPS"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <TextBlock Text="Stops 0, 10, 50, 90, 100. POST is one of those five numbers."
+                               Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
+                    <controls:EtherSlider x:Name="ExplicitStopsSlider"
+                                          Title="Title"
+                                          Value="50"
+                                          SnapToStops="True"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="Slider with explicit stops"/>
+                    <TextBlock Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextTertiary}">
+                        <Run Text="POST "/><Run Text="{Binding Value, ElementName=ExplicitStopsSlider, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Spacing="8" HorizontalAlignment="Stretch">
+                    <TextBlock Text="CUSTOM RANGE (0–10)"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <TextBlock Text="Minimum=0 Maximum=10. POST is a number in that range (here 4)."
+                               Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextSecondary}"
+                               TextWrapping="Wrap"/>
+                    <controls:EtherSlider x:Name="SliderCustomRange"
+                                          Title="Title"
+                                          Minimum="0"
+                                          Maximum="10"
+                                          Value="4"
+                                          HorizontalAlignment="Stretch"
+                                          AutomationProperties.Name="Slider custom range"/>
+                    <TextBlock Style="{StaticResource micro/regular}"
+                               Foreground="{ThemeResource TextTertiary}">
+                        <Run Text="POST "/><Run Text="{Binding Value, ElementName=SliderCustomRange, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+
             </StackPanel>
         </views:ComponentPage.StatesContent>
 

@@ -686,10 +686,7 @@
     <value>Slider</value>
   </data>
   <data name="GalleryViewsControlsSliderPage206.Description" xml:space="preserve">
-    <value>Bar-chart slider with interactive click-and-drag behavior and theme-aware selected bars. Sixty-three ticks fill with the component highlight brush up to the knob.</value>
-  </data>
-  <data name="GalleryViewsControlsSliderPage207.Text" xml:space="preserve">
-    <value>50% (interactive — drag me)</value>
+    <value>Bar-chart slider. Every specimen binds Value (double). Labels and title are captions only.</value>
   </data>
   <data name="GalleryViewsControlsSteeringBarPage208.Title" xml:space="preserve">
     <value>Steering Bar</value>
@@ -1616,7 +1613,7 @@
     <value>State: Off</value>
   </data>
   <data name="GalleryViewsControlsSliderPageOutput.OutputText" xml:space="preserve">
-    <value>Value: 50%</value>
+    <value>{"continuous": 50, "named": 50}</value>
   </data>
   <data name="GalleryViewsControlsSteeringBarPageOutput.OutputText" xml:space="preserve">
     <value>Value: 31</value>
