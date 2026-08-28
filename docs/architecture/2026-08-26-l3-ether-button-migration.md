@@ -104,3 +104,25 @@ Rendering note: Figma strokes composite over the component's own fill, so the Pr
 border is visible on the blue background. WinUI `Border.BorderBrush` composites against the page
 behind the control instead, which made the ring invisible on light pages. The Primary and
 Secondary templates therefore draw the stroke as a separate `Stroke` overlay `Border` above `Bg`.
+
+### Dark (source: nodes 62159:1935 / 1948 / 1949)
+
+Foundation already publishes these as `buttons/*` in the Dark theme dictionary. EtherButton Light
+and Dark currently bind **primitive** Color tokens (`Blue600`, `AlphaWhite16`, …). Semantic
+`buttons/*` / `action/*` linking is deferred.
+
+| Figma variable | Figma Dark value | WinUI resource | Token | Status |
+| --- | --- | --- | --- | --- |
+| `Buttons/Primary/Background/Default` | `#0D62FF` | `EtherButtonPrimaryBackgroundBrush` | `buttons/primary/background/default` → `Blue600` | match |
+| `Buttons/Primary/Background/Hover` | `#0055FF` | `EtherButtonPrimaryBackgroundHoverBrush` | `buttons/primary/background/hover` → `Blue700` | match |
+| `Buttons/Primary/Background/Pressed` | `#0054E5` | `EtherButtonPrimaryBackgroundPressedBrush` | `buttons/primary/background/pressed` → `Blue800` | match |
+| `Buttons/Primary/border/Default` | `#FFFFFF` @ 16% (`#29`) | `EtherButtonPrimaryBorderBrush` | `buttons/primary/border/default` → `AlphaWhite16` | match (was Light's 25% `AlphaWhite25`) |
+| `text/on-brand` | `#FFFFFF` | `EtherButtonPrimaryForegroundBrush` | `action/primary/fg` → `Gray0` | match |
+| `Buttons/Secondary/Background/Default` | transparent | `EtherButtonSecondaryBackgroundBrush` | `buttons/secondary/background/default` | match |
+| `Buttons/Secondary/Background/Hover` | `#1E2025` | `EtherButtonSecondaryBackgroundHoverBrush` | `buttons/secondary/background/hover` → `Gray800` | match (was `Gray750`) |
+| `Buttons/Secondary/Background/Pressed` | `#181A1F` | `EtherButtonSecondaryBackgroundPressedBrush` | `buttons/secondary/background/pressed` → `Gray850` | match (was `Gray800`) |
+| `Borders/border-light` | `#FFFFFF` @ 12% | `EtherButtonSecondaryBorderBrush` | `border/default` → `AlphaWhite12` | match |
+| `text/primary` | `#FFFFFF` | `EtherButtonSecondaryForegroundBrush` | `action/secondary/fg` → `Gray0` | match |
+| `Buttons/Tertiary/Text/Default` | `#88CBFF` | `EtherButtonTertiaryForegroundBrush` | `buttons/tertiary/text/default` → `Blue300` | match (was `Blue600`) |
+| `Buttons/Tertiary/Text/Hover` | `#ADDEFF` | `EtherButtonTertiaryForegroundHoverBrush` | `buttons/tertiary/text/hover` → `Blue200` | match (was `Blue700`) |
+| `Buttons/Tertiary/Text/Pressed` | `#D0D9FC` | `EtherButtonTertiaryForegroundPressedBrush` | `buttons/tertiary/text/pressed` → `Blue100` | match (was `Blue800`) |

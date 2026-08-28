@@ -48,44 +48,44 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="EtherButtonPrimaryBackgroundBrush" ResourceKey="action/primary/bg" />
+            <SolidColorBrush x:Key="EtherButtonPrimaryBackgroundBrush" Color="{StaticResource Blue600}" />
             <SolidColorBrush x:Key="EtherButtonPrimaryBackgroundHoverBrush" Color="{StaticResource Blue700}" />
             <SolidColorBrush x:Key="EtherButtonPrimaryBackgroundPressedBrush" Color="{StaticResource Blue800}" />
             <SolidColorBrush x:Key="EtherButtonPrimaryBackgroundDisabledBrush" Color="{StaticResource Blue600}" />
-            <SolidColorBrush x:Key="EtherButtonPrimaryBorderBrush" Color="#40FFFFFF" />
-            <SolidColorBrush x:Key="EtherButtonPrimaryBorderDisabledBrush" Color="Transparent" />
-            <StaticResource x:Key="EtherButtonPrimaryForegroundBrush" ResourceKey="action/primary/fg" />
+            <SolidColorBrush x:Key="EtherButtonPrimaryBorderBrush" Color="{StaticResource AlphaWhite25}" />
+            <SolidColorBrush x:Key="EtherButtonPrimaryBorderDisabledBrush" Color="{StaticResource AlphaWhite0}" />
+            <SolidColorBrush x:Key="EtherButtonPrimaryForegroundBrush" Color="{StaticResource Gray0}" />
             <SolidColorBrush x:Key="EtherButtonPrimaryForegroundDisabledBrush" Color="{StaticResource Gray0}" />
-            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundBrush" Color="Transparent" />
-            <StaticResource x:Key="EtherButtonSecondaryBackgroundHoverBrush" ResourceKey="ActionSecondaryBgHover" />
-            <StaticResource x:Key="EtherButtonSecondaryBackgroundPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
-            <SolidColorBrush x:Key="EtherButtonSecondaryBorderBrush" Color="#33011C4B" />
-            <StaticResource x:Key="EtherButtonSecondaryForegroundBrush" ResourceKey="action/secondary/fg" />
-            <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundBrush" Color="{StaticResource AlphaWhite0}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundHoverBrush" Color="{StaticResource Gray25}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundPressedBrush" Color="{StaticResource Gray50}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBorderBrush" Color="{StaticResource AlphaNavy20}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryForegroundBrush" Color="{StaticResource Gray1000}" />
+            <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="{StaticResource AlphaWhite0}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue600}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundHoverBrush" Color="{StaticResource Blue700}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundPressedBrush" Color="{StaticResource Blue800}" />
-            <StaticResource x:Key="EtherButtonFocusStrokeBrush" ResourceKey="border/focus" />
+            <SolidColorBrush x:Key="EtherButtonFocusStrokeBrush" Color="{StaticResource Blue600}" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <StaticResource x:Key="EtherButtonPrimaryBackgroundBrush" ResourceKey="action/primary/bg" />
+            <SolidColorBrush x:Key="EtherButtonPrimaryBackgroundBrush" Color="{StaticResource Blue600}" />
             <SolidColorBrush x:Key="EtherButtonPrimaryBackgroundHoverBrush" Color="{StaticResource Blue700}" />
             <SolidColorBrush x:Key="EtherButtonPrimaryBackgroundPressedBrush" Color="{StaticResource Blue800}" />
             <SolidColorBrush x:Key="EtherButtonPrimaryBackgroundDisabledBrush" Color="{StaticResource Blue600}" />
-            <SolidColorBrush x:Key="EtherButtonPrimaryBorderBrush" Color="#40FFFFFF" />
-            <SolidColorBrush x:Key="EtherButtonPrimaryBorderDisabledBrush" Color="Transparent" />
-            <StaticResource x:Key="EtherButtonPrimaryForegroundBrush" ResourceKey="action/primary/fg" />
+            <SolidColorBrush x:Key="EtherButtonPrimaryBorderBrush" Color="{StaticResource AlphaWhite16}" />
+            <SolidColorBrush x:Key="EtherButtonPrimaryBorderDisabledBrush" Color="{StaticResource AlphaWhite0}" />
+            <SolidColorBrush x:Key="EtherButtonPrimaryForegroundBrush" Color="{StaticResource Gray0}" />
             <SolidColorBrush x:Key="EtherButtonPrimaryForegroundDisabledBrush" Color="{StaticResource Gray0}" />
-            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundBrush" Color="Transparent" />
-            <StaticResource x:Key="EtherButtonSecondaryBackgroundHoverBrush" ResourceKey="ActionSecondaryBgHover" />
-            <StaticResource x:Key="EtherButtonSecondaryBackgroundPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
-            <StaticResource x:Key="EtherButtonSecondaryBorderBrush" ResourceKey="border/default" />
-            <StaticResource x:Key="EtherButtonSecondaryForegroundBrush" ResourceKey="action/secondary/fg" />
-            <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="Transparent" />
-            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue600}" />
-            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundHoverBrush" Color="{StaticResource Blue700}" />
-            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundPressedBrush" Color="{StaticResource Blue800}" />
-            <StaticResource x:Key="EtherButtonFocusStrokeBrush" ResourceKey="border/focus" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundBrush" Color="{StaticResource AlphaWhite0}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundHoverBrush" Color="{StaticResource Gray800}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundPressedBrush" Color="{StaticResource Gray850}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBorderBrush" Color="{StaticResource AlphaWhite12}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryForegroundBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="{StaticResource AlphaWhite0}" />
+            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue300}" />
+            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundHoverBrush" Color="{StaticResource Blue200}" />
+            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundPressedBrush" Color="{StaticResource Blue100}" />
+            <SolidColorBrush x:Key="EtherButtonFocusStrokeBrush" Color="{StaticResource Blue500}" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherButtonPrimaryBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
