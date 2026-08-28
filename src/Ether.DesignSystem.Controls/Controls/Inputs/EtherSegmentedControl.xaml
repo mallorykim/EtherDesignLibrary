@@ -6,14 +6,14 @@
       Default (DefaultEtherSegmentedControlStyle via DefaultStyleKey):
 
         <controls:EtherSegmentedControl>
-            <StackPanel Orientation="Horizontal">
+            <controls:EtherSegmentPanel>
                 <RadioButton Style="{StaticResource EtherSegment}" GroupName="MyCtrl"
                              Content="Overview"  IsChecked="True"/>
                 <RadioButton Style="{StaticResource EtherSegment}" GroupName="MyCtrl"
                              Content="Details"/>
                 <RadioButton Style="{StaticResource EtherSegment}" GroupName="MyCtrl"
                              Content="History"/>
-            </StackPanel>
+            </controls:EtherSegmentPanel>
         </controls:EtherSegmentedControl>
 
       Named track alias (same visual; older call sites):
@@ -25,20 +25,19 @@
     EVENTS
       Bind each RadioButton.Checked to a handler or use x:Bind to a ViewModel bool.
 
-    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F · node 60340:7245)
-      Track     padding 4 · CornerRadius 8 · BackgroundSegmentTrack
-                soft blue shadow (Figma node 1210:1463)
-      Segment   px=16 py=10 · CornerRadius 4 · min-height 40
-                selected: background/brand · text/on-brand
-                hover: BackgroundSegmentHover (brand @ 6%)
-                pressed: BackgroundSegmentPressed (brand @ 10%)
+    KEY MEASUREMENTS (Figma: ursRC201v8IiVeafliI45F
+      selected 62110:23700 · Light track 62110:24735 · Dark 62110:24850)
+      Track     padding 4 · RadiusMd 8 · Light AlphaWhite40 · Dark AlphaBlack70
+                soft blue shadows (Blue800 @ 8% / 10%)
+      Segment   px=16 py=12 · RadiusSm 4 · min-height 33
+                selected: Blue600 fill · Gray0 label
+                default: transparent · Light AlphaBlack70 / Dark AlphaWhite70
+                hover: AlphaBrand6 / Dark AlphaBrand10
+                pressed: AlphaBrand10 / Dark AlphaBrand16
       Font      Instrument Sans SemiBold 12 px, centred
 
-    TOKENS (Light/Dark keep these aliases; High Contrast uses SystemColor*)
-      Track bg:   BackgroundSegmentTrack
-      Segment bg: background/brand (selected) / transparent (default)
-      Text:       text/on-brand (selected) / TextSecondary (unselected)
-      Radius:     radius/control (8) for track · radius/control-sm (4) for segment pill
+    Light/Dark component brushes bind Color to primitive StaticResources.
+    High Contrast uses Windows SystemColor*.
 
     LOCATION
       This dictionary lives beside its class (Controls/Inputs/EtherSegmentedControl.cs)
@@ -51,26 +50,26 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="EtherSegmentedControlCasterBrush" ResourceKey="BackgroundSurface"/>
-            <StaticResource x:Key="EtherSegmentedControlFocusStrokeBrush" ResourceKey="border/focus"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentCheckedBrush" ResourceKey="background/brand"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentForegroundBrush" ResourceKey="TextSecondary"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentForegroundCheckedBrush" ResourceKey="text/on-brand"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentHoverBrush" ResourceKey="BackgroundSegmentHover"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentPressedBrush" ResourceKey="BackgroundSegmentPressed"/>
-            <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="#FF0054E5"/>
-            <StaticResource x:Key="EtherSegmentedControlTrackBackgroundBrush" ResourceKey="BackgroundSegmentTrack"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlCasterBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlFocusStrokeBrush" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentCheckedBrush" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundCheckedBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{StaticResource AlphaBrand6}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{StaticResource AlphaBrand10}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="{StaticResource Blue800}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlTrackBackgroundBrush" Color="{StaticResource AlphaWhite40}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <StaticResource x:Key="EtherSegmentedControlCasterBrush" ResourceKey="BackgroundSurface"/>
-            <StaticResource x:Key="EtherSegmentedControlFocusStrokeBrush" ResourceKey="border/focus"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentCheckedBrush" ResourceKey="background/brand"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentForegroundBrush" ResourceKey="TextSecondary"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentForegroundCheckedBrush" ResourceKey="text/on-brand"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentHoverBrush" ResourceKey="BackgroundSegmentHover"/>
-            <StaticResource x:Key="EtherSegmentedControlSegmentPressedBrush" ResourceKey="BackgroundSegmentPressed"/>
-            <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="#FF0054E5"/>
-            <StaticResource x:Key="EtherSegmentedControlTrackBackgroundBrush" ResourceKey="BackgroundSegmentTrack"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlCasterBrush" Color="{StaticResource Gray900}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlFocusStrokeBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentCheckedBrush" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundCheckedBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{StaticResource AlphaBrand10}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{StaticResource AlphaBrand16}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="{StaticResource Blue800}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlTrackBackgroundBrush" Color="{StaticResource AlphaBlack70}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherSegmentedControlCasterBrush" Color="{ThemeResource SystemColorWindowColor}"/>
@@ -90,7 +89,8 @@
     <SolidColorBrush x:Key="EtherSegmentedControlTransparentBrush" Color="Transparent"/>
 
     <!-- Track container template. Composition shadows are rendered behind TrackSurface
-         by EtherSegmentedControl. Reserve vertical layout space for the 18px blur / 12px offset. -->
+         by EtherSegmentedControl. TrackSurface reserves 8/30 epx vertical space for the
+         18px blur / 12px offset; ShadowHost is wider on the sides for horizontal blur bleed. -->
     <ControlTemplate x:Key="EtherSegmentedTrackTemplate" TargetType="controls:EtherSegmentedControl">
         <Grid>
             <Border x:Name="CasterBrushSource"
@@ -109,16 +109,24 @@
                     Opacity="0"
                     IsHitTestVisible="False"
                     Background="{ThemeResource EtherSegmentedControlShadowBrush}"/>
-            <Canvas x:Name="ShadowHost" IsHitTestVisible="False"/>
+            <!-- Wider than TrackSurface so the blurred far shadow (18px) can bleed
+                 left/right instead of being cut at the track edge. -->
+            <Border x:Name="ShadowHost"
+                    Margin="-24,0"
+                    Background="{StaticResource EtherSegmentedControlTransparentBrush}"
+                    IsHitTestVisible="False"/>
             <Border x:Name="TrackSurface"
                     Margin="0,8,0,30"
                     Background="{TemplateBinding Background}"
                     Padding="{TemplateBinding Padding}"
-                    CornerRadius="{StaticResource radius/control}">
+                    CornerRadius="{StaticResource RadiusMd}">
                 <ContentPresenter Content="{TemplateBinding Content}"
                                   ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                  ContentTransitions="{TemplateBinding ContentTransitions}"
                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  AutomationProperties.AccessibilityView="Raw"/>
             </Border>
         </Grid>
     </ControlTemplate>
@@ -178,29 +186,33 @@
             <!-- Background state layers (behind the text). Opacity toggled by HandRadioButton. -->
             <Border x:Name="HoverLayer"
                     Background="{ThemeResource EtherSegmentedControlSegmentHoverBrush}"
-                    CornerRadius="{StaticResource radius/control-sm}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     Opacity="0"/>
             <Border x:Name="PressedLayer"
                     Background="{ThemeResource EtherSegmentedControlSegmentPressedBrush}"
-                    CornerRadius="{StaticResource radius/control-sm}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     Opacity="0"/>
             <Border x:Name="CheckedLayer"
                     Background="{ThemeResource EtherSegmentedControlSegmentCheckedBrush}"
-                    CornerRadius="{StaticResource radius/control-sm}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     Opacity="0"/>
 
             <Border x:Name="Bg"
                     Background="{StaticResource EtherSegmentedControlTransparentBrush}"
-                    CornerRadius="{StaticResource radius/control-sm}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     Padding="{TemplateBinding Padding}">
                 <ContentPresenter x:Name="Cp"
                                   Content="{TemplateBinding Content}"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                  ContentTransitions="{TemplateBinding ContentTransitions}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                   Foreground="{ThemeResource EtherSegmentedControlSegmentForegroundBrush}"
-                                  FontFamily="{StaticResource InstrumentSans}"
-                                  FontSize="{StaticResource Size12}"
-                                  FontWeight="{StaticResource WeightSemibold}"/>
+                                  FontFamily="{TemplateBinding FontFamily}"
+                                  FontSize="{TemplateBinding FontSize}"
+                                  FontWeight="{TemplateBinding FontWeight}"
+                                  AutomationProperties.AccessibilityView="Raw"/>
             </Border>
 
             <Border x:Name="FocusRing"
@@ -214,8 +226,12 @@
     </ControlTemplate>
 
     <Style x:Key="EtherSegment" TargetType="RadioButton">
-        <Setter Property="Padding"                    Value="16,10"/>
-        <Setter Property="MinHeight"                  Value="{StaticResource Spacing40}"/>
+        <Setter Property="FontFamily"                 Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size12}"/>
+        <Setter Property="FontWeight"                 Value="{StaticResource WeightSemibold}"/>
+        <Setter Property="Padding"                    Value="16,12"/>
+        <Setter Property="MinHeight"                  Value="33"/>
+        <Setter Property="MinWidth"                   Value="0"/>
         <Setter Property="HorizontalAlignment"        Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
@@ -225,10 +241,13 @@
     </Style>
 
     <Style x:Key="DefaultEtherSegmentedControlStyle" TargetType="controls:EtherSegmentedControl">
-        <Setter Property="Padding"       Value="{StaticResource Padding4}"/>
-        <Setter Property="Background"    Value="{ThemeResource EtherSegmentedControlTrackBackgroundBrush}"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding"                    Value="4"/>
+        <Setter Property="Background"                 Value="{ThemeResource EtherSegmentedControlTrackBackgroundBrush}"/>
+        <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
+        <Setter Property="IsTabStop"                  Value="False"/>
+        <Setter Property="UseSystemFocusVisuals"      Value="False"/>
         <Setter Property="HighContrastAdjustment"     Value="None"/>
         <Setter Property="Template" Value="{StaticResource EtherSegmentedTrackTemplate}"/>
     </Style>

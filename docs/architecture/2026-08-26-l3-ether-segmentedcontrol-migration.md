@@ -6,13 +6,18 @@ Status: preview implementation evidence, not stable-release readiness
 `EtherSegmentedControl` is an L3 slice migrated onto the L2 `EtherProgressBar` /
 L3 Button / Checkbox / Input / Dropdown exemplar contract. It remains a
 `ContentControl` host for `RadioButton` / `HandRadioButton` segments. Composition
-drop-shadow layers in `EtherSegmentedControl.cs` are unchanged. Wave 2 adds the
+drop-shadow layers in `EtherSegmentedControl.cs` stay on `ShadowHost`. Wave 2 adds the
 consumer-fixture runtime marker, CI wiring, and PublicAPI confirmation.
 
-**Default visual:** `Padding4`, `BackgroundSegmentTrack`, left/center content
-alignment, existing track template (`ShadowHost` + `TrackSurface` with 8/30
-shadow inset). Call sites that set `Style="{StaticResource EtherSegmentedTrack}"`
+**Default visual:** padding `4`, Light `AlphaWhite40` / Dark `AlphaBlack70` track,
+stretch host and content alignment, `IsTabStop=False`, `UseSystemFocusVisuals=False`.
+`ShadowHost` is a `Border` with `-24,0` horizontal bleed; `TrackSurface` keeps the
+8/30 vertical inset. Segments are Instrument Sans SemiBold 12, padding `16,12`,
+min-height 33. Call sites that set `Style="{StaticResource EtherSegmentedTrack}"`
 are unchanged. `EtherSegment` remains the keyed `RadioButton` item style.
+`EtherSegmentPanel` equal-width row is the supported items host.
+`EtherSegmentedTrack` is a compatibility subclass; `DefaultStyleKey` stays
+`typeof(EtherSegmentedControl)`.
 
 ## Implemented contract
 
@@ -21,17 +26,25 @@ are unchanged. `EtherSegment` remains the keyed `RadioButton` item style.
   `BasedOn` that keyed style. `EtherSegmentedTrack` remains a keyed alias of
   the default style. `EtherSegment` stays the public segment style key.
 - The host declares the template parts the track template actually uses
-  (`ShadowHost`, `TrackSurface`). The host has no VisualState groups;
-  CommonStates / FocusStates live on the `EtherSegment` `RadioButton` template.
-  `HandRadioButton` still drives hover/pressed/checked layer opacity in code.
-- Light, Dark, and HighContrast expose the same seven `EtherSegmentedControl*`
+  (`ShadowHost`, `TrackSurface`, `CasterBrushSource`, `ShadowBrushSource`).
+  The host has no VisualState groups; CommonStates / FocusStates live on the
+  `EtherSegment` `RadioButton` template. `HandRadioButton` still drives
+  hover/pressed/checked layer opacity in code (Gallery-only type).
+- Track and segment `ContentPresenter`s bind Content / ContentTemplate /
+  ContentTemplateSelector / ContentTransitions, TemplateBind content
+  alignment, and set `AutomationProperties.AccessibilityView=Raw` so the
+  native radio peer does not announce the presenter twice.
+- Light, Dark, and HighContrast expose the same nine `EtherSegmentedControl*`
   component resources. Track and segment templates consume those component keys
-  only for color-bearing ThemeResources. Light and Dark retain the previous
-  token aliases (`BackgroundSegmentTrack`, `BackgroundSegmentHover`,
-  `BackgroundSegmentPressed`, `background/brand`, `TextSecondary`,
-  `text/on-brand`, `border/focus`). High Contrast uses Windows `SystemColor*`
-  dynamic resources rather than changing frozen Foundation tokens. The empty
+  only for color-bearing ThemeResources. Light and Dark bind `Color` to
+  primitive tokens (Figma selected `62110:23700`, Light track `62110:24735`,
+  Dark `62110:24850`). High Contrast uses Windows `SystemColor*` dynamic
+  resources rather than changing frozen Foundation tokens. The empty
   segment overlay uses unthemed `EtherSegmentedControlTransparentBrush`.
+  Track radius is `RadiusMd`; segment pills use `RadiusSm`. Caster and shadow
+  RGB come from collapsed template `Border` parts (`EtherSegmentedControlCasterBrush`
+  / `EtherSegmentedControlShadowBrush`) so High Contrast rebind follows
+  `ActualTheme`.
 - Gallery specimens keep the 2/3/4-segment interactive stories and the
   default/selected/hover/pressed state matrix. The two-segment host uses the
   implicit default style; the others keep the `EtherSegmentedTrack` alias.
@@ -45,6 +58,7 @@ are unchanged. `EtherSegment` remains the keyed `RadioButton` item style.
 | Default style | `DefaultStyleKey` + generic implicit style | Same pattern via `DefaultEtherSegmentedControlStyle` | Matches the L2 exemplar and WinUI templated-control guidance. |
 | Selection | Toolkit `Segmented` owns selected index | Native `RadioButton` `GroupName` | Not invented. |
 | Shadows | Typically XAML `ThemeShadow` / `DropShadowPanel` | Composition `DropShadow` on `ShadowHost` | Existing Figma-calibrated layers are preserved in code. |
+| Host tab stop | Chrome hosts are not extra tab stops | `IsTabStop=False` | Tab order goes to the segment `RadioButton`s. |
 
 A line-by-line clone of Community Toolkit `Segmented` is deferred: Ether's
 composition shadows, opacity-layer hover, and `HandRadioButton` workaround are
@@ -54,17 +68,18 @@ product design, not missing Fluent chrome.
 
 The unpackaged NuGet consumer fixture mounts default and interactive
 `EtherSegmentedControl` instances on a UI thread. Its `segmentedControl` marker
-records keyed default-style resolution (`Padding4`, left/center content
-alignment, and template), `ShadowHost` / `TrackSurface` in the visual tree,
-at least two `EtherSegment` radio buttons, Unchecked/Checked segment
-CommonStates via `IsChecked` plus `GoToState` (current-state name; Dark
-`TextSecondary` and `text/on-brand` both alias `Gray0`, so foreground color
-is not a Dark-safe proof), automation
-name, and Light/Dark track-background rebind (`BackgroundSegmentTrack`
-`Gray25` vs `Gray0`). Host VisualState groups remain absent on purpose;
-`HandRadioButton` is a Gallery-only type and is excluded from the Controls
-package, so the consumer fixture uses documented `RadioButton` + `EtherSegment`
-call sites. `Verify-EtherSegmentedControlContract.ps1` additionally verifies
+records keyed default-style resolution (`Padding` 4, stretch alignment,
+`IsTabStop=False`, `UseSystemFocusVisuals=False`, and template), `ShadowHost` /
+`TrackSurface` in the visual tree, at least two `EtherSegment` radio buttons,
+Unchecked/Checked segment CommonStates via `IsChecked` plus `GoToState`
+(current-state name; Dark unselected text is `AlphaWhite70` and checked text is
+`Gray0`), automation name, and Light/Dark track-background rebind
+(`AlphaWhite40` vs `AlphaBlack70`). Host VisualState groups remain absent on
+purpose; `HandRadioButton` is a Gallery-only type and is excluded from the
+Controls package, so the consumer fixture uses documented `RadioButton` +
+`EtherSegment` call sites. Named VSM parts on `EtherSegment` cannot take
+`[TemplatePart]` because the item is a keyed `RadioButton` style, not a custom
+class. `Verify-EtherSegmentedControlContract.ps1` additionally verifies
 metadata, keyed/implicit/alias styles, `EtherSegment`, theme-key symmetry,
 High Contrast system resources, no literal template hex colors, composition
 shadow lookups, runtime evidence fields, and CI wiring.
@@ -76,7 +91,6 @@ coverage remain L4 work. The repository's known frozen global-token High
 Contrast deficit remains a release blocker; this component does not alter those
 tokens or claim stable readiness.
 
-Composition caster fills in `ApplyCasterColor` remain hardcoded
-`BackgroundSurface` ARGB values (`#FF121215` dark / `#FFFFFFFF` light). That is
-existing composition behavior, not a template color, and is preserved so the
-translucent dark track does not show a mismatched caster patch.
+Composition drop-shadow clipping on multi-segment tracks (far blur cut at a
+segment boundary) remains an open visual defect. AUDIT does not change shadow
+metrics or clip geometry.

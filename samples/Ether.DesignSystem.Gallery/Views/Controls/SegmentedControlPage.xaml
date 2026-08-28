@@ -13,15 +13,16 @@
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"
                                   x:Uid="GalleryViewsControlsSegmentedControlPageOutput"
+                                  ExampleHorizontalContentAlignment="Stretch"
                                   OutputText="Selected: List"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
-            <StackPanel Orientation="Horizontal" Spacing="24">
+            <StackPanel Spacing="16">
                 <StackPanel Spacing="6">
 <TextBlock x:Uid="GalleryViewsControlsSegmentedControlPage186" Text="2 SEGMENTS"
                                Style="{StaticResource micro/semibold}"
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSegmentedControl AutomationProperties.Name="Two-segment control">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
+                        <controls:EtherSegmentPanel>
 <controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage187" GroupName="SegmentedTwo" Content="List"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Two-segment list"
@@ -31,7 +32,7 @@
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Two-segment grid"
                                          Checked="InteractiveSegment_Checked"/>
-                        </StackPanel>
+                        </controls:EtherSegmentPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
                 <StackPanel Spacing="6">
@@ -40,7 +41,7 @@
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}"
                                                     AutomationProperties.Name="Three-segment control">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
+                        <controls:EtherSegmentPanel>
 <controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage190" GroupName="SegmentedThree" Content="Overview"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Three-segment overview"
@@ -54,7 +55,7 @@
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Three-segment history"
                                          Checked="InteractiveSegment_Checked"/>
-                        </StackPanel>
+                        </controls:EtherSegmentPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
                 <StackPanel Spacing="6">
@@ -63,7 +64,7 @@
                                Foreground="{ThemeResource TextTertiary}"/>
                     <controls:EtherSegmentedControl Style="{StaticResource EtherSegmentedTrack}"
                                                     AutomationProperties.Name="Four-segment control">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
+                        <controls:EtherSegmentPanel>
 <controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage194" GroupName="SegmentedFour" Content="Day"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment day"
@@ -81,7 +82,7 @@
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment year"
                                          Checked="InteractiveSegment_Checked"/>
-                        </StackPanel>
+                        </controls:EtherSegmentPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
             </StackPanel>

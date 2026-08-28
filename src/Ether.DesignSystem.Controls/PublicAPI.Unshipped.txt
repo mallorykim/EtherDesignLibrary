@@ -66,6 +66,10 @@ EtherSandbox.Controls.EtherRadioButton.EtherRadioButton() -> void
 EtherSandbox.Controls.EtherScrollBar
 EtherSandbox.Controls.EtherScrollBar.EtherScrollBar() -> void
 EtherSandbox.Controls.EtherScrollBar.InitializeComponent() -> void
+EtherSandbox.Controls.EtherSegmentPanel
+EtherSandbox.Controls.EtherSegmentPanel.EtherSegmentPanel() -> void
+EtherSandbox.Controls.EtherSegmentPanel.Spacing.get -> double
+EtherSandbox.Controls.EtherSegmentPanel.Spacing.set -> void
 EtherSandbox.Controls.EtherSegmentedControl
 EtherSandbox.Controls.EtherSegmentedControl.EtherSegmentedControl() -> void
 EtherSandbox.Controls.EtherSegmentedTrack
@@ -137,6 +141,7 @@ static readonly EtherSandbox.Controls.EtherMasthead.ShowChevronProperty -> Micro
 static readonly EtherSandbox.Controls.EtherMasthead.ShowMenuIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherMasthead.ShowSearchProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherMasthead.ShowSettingsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSegmentPanel.SpacingProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherProgressBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!

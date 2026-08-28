@@ -22,14 +22,17 @@ internal static partial class RuntimeVerification
         segmentedControl.UpdateLayout();
 
         if (defaultSegmentedControl.Padding != new Thickness(4) ||
-            defaultSegmentedControl.HorizontalContentAlignment != HorizontalAlignment.Left ||
+            defaultSegmentedControl.HorizontalAlignment != HorizontalAlignment.Stretch ||
+            defaultSegmentedControl.HorizontalContentAlignment != HorizontalAlignment.Stretch ||
             defaultSegmentedControl.VerticalContentAlignment != VerticalAlignment.Center ||
+            defaultSegmentedControl.IsTabStop ||
+            defaultSegmentedControl.UseSystemFocusVisuals ||
             defaultSegmentedControl.Template is null)
         {
-            throw new InvalidOperationException("The keyed EtherSegmentedControl style did not apply its default Padding, content alignment, and template.");
+            throw new InvalidOperationException("The keyed EtherSegmentedControl style did not apply its default Padding, stretch alignment, IsTabStop=False, UseSystemFocusVisuals=False, and template.");
         }
 
-        GetTemplatePart<Canvas>(segmentedControl, "ShadowHost", nameof(EtherSegmentedControl));
+        GetTemplatePart<Border>(segmentedControl, "ShadowHost", nameof(EtherSegmentedControl));
         var trackSurface = GetTemplatePart<Border>(segmentedControl, "TrackSurface", nameof(EtherSegmentedControl));
         var templateParts = new[] { "ShadowHost", "TrackSurface" };
         var segments = GetSegmentRadioButtons(segmentedControl);

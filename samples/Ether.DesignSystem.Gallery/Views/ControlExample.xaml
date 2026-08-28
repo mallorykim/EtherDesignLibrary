@@ -50,7 +50,7 @@
                        Foreground="{ThemeResource TextTertiary}"/>
             <ContentControl x:Name="ExampleHost"
                             HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
+                            HorizontalContentAlignment="{x:Bind ExampleHorizontalContentAlignment, Mode=OneWay}"
                             VerticalContentAlignment="Top"
                             IsTabStop="False"
                             IsEnabled="{x:Bind IsExampleEnabled, Mode=OneWay}"

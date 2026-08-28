@@ -29,10 +29,23 @@ public sealed partial class ControlExample : UserControl
     public static readonly DependencyProperty IsExampleEnabledProperty =
         DependencyProperty.Register(nameof(IsExampleEnabled), typeof(bool), typeof(ControlExample), new PropertyMetadata(true));
 
+    public static readonly DependencyProperty ExampleHorizontalContentAlignmentProperty =
+        DependencyProperty.Register(
+            nameof(ExampleHorizontalContentAlignment),
+            typeof(HorizontalAlignment),
+            typeof(ControlExample),
+            new PropertyMetadata(HorizontalAlignment.Left));
+
     public object Example
     {
         get => GetValue(ExampleProperty);
         set => SetValue(ExampleProperty, value);
+    }
+
+    public HorizontalAlignment ExampleHorizontalContentAlignment
+    {
+        get => (HorizontalAlignment)GetValue(ExampleHorizontalContentAlignmentProperty);
+        set => SetValue(ExampleHorizontalContentAlignmentProperty, value);
     }
 
     public string OutputText

@@ -16,11 +16,13 @@ namespace EtherSandbox.Controls;
 /// <remarks>
 /// Call sites may still set <c>Style="{StaticResource EtherSegmentedTrack}"</c>; that key
 /// is an alias of the default style. Segment item chrome stays on the keyed
-/// <c>EtherSegment</c> <see cref="RadioButton"/> style. This control does not add
-/// selection APIs or VisualState groups on the host — native radio grouping and
-/// <c>HandRadioButton</c> layer opacity remain the interaction model.
+/// <c>EtherSegment</c> <see cref="RadioButton"/> style. Put segments in
+/// <see cref="EtherSegmentPanel"/> so the track can stretch with the parent and keep
+/// equal-width slots. This control does not add selection APIs or VisualState groups
+/// on the host — native radio grouping and <c>HandRadioButton</c> layer opacity remain
+/// the interaction model.
 /// </remarks>
-[TemplatePart(Name = ShadowHostPartName, Type = typeof(Canvas))]
+[TemplatePart(Name = ShadowHostPartName, Type = typeof(Border))]
 [TemplatePart(Name = TrackSurfacePartName, Type = typeof(Border))]
 [TemplatePart(Name = CasterBrushSourcePartName, Type = typeof(Border))]
 [TemplatePart(Name = ShadowBrushSourcePartName, Type = typeof(Border))]
@@ -31,8 +33,14 @@ public class EtherSegmentedControl : ContentControl
     private const string CasterBrushSourcePartName = "CasterBrushSource";
     private const string ShadowBrushSourcePartName = "ShadowBrushSource";
     private const float TrackCornerRadius = 8f;
+    private const float FarBlur = 18f;
+    private const float FarOffsetY = 12f;
+    private const float NearBlur = 4f;
+    private const float NearOffsetY = 2f;
+    private const float FarOpacity = 0.08f;
+    private const float NearOpacity = 0.10f;
 
-    private Canvas? _shadowHost;
+    private Border? _shadowHost;
     private Border? _trackSurface;
     private Border? _casterBrushSource;
     private Border? _shadowBrushSource;
@@ -47,7 +55,6 @@ public class EtherSegmentedControl : ContentControl
     {
         DefaultStyleKey = typeof(EtherSegmentedControl);
         Loaded += OnLoaded;
-        SizeChanged += OnSizeChanged;
         ActualThemeChanged += OnActualThemeChanged;
     }
 
@@ -55,11 +62,11 @@ public class EtherSegmentedControl : ContentControl
 
     /// <summary>
     /// The shadow caster is an opaque shape sitting behind the track surface. In light the
-    /// surface (BackgroundSegmentTrack) is fully opaque and hides it, but in dark that token
-    /// is only 10% alpha, so the caster shows straight through. It must therefore match the
-    /// SURFACE the control sits on (BackgroundSurface), not the canvas — otherwise the
+    /// surface (AlphaWhite40 / AlphaBlack70) is translucent, so the caster shows
+    /// through. It must therefore match the SURFACE the control sits on
+    /// (Gray0 light / Gray900 dark), not the canvas — otherwise the
     /// translucent track reads a different shade over the caster than over the surface next to
-    /// it, producing the patchy "grey base" (only in dark, and only where the caster reaches).
+    /// it, producing the patchy "grey base" (only where the caster reaches).
     /// Matching the surface makes the caster invisible regardless of how it is sized. The drop
     /// shadow casts from the shape's alpha, so its colour is unaffected.
     /// Colours come from collapsed template <c>Border</c> parts whose fills are
@@ -90,7 +97,7 @@ public class EtherSegmentedControl : ContentControl
         _shadowContainer = null;
         _nearShadow = null;
         _farShadow = null;
-        _shadowHost = GetTemplateChild(ShadowHostPartName) as Canvas;
+        _shadowHost = GetTemplateChild(ShadowHostPartName) as Border;
         _trackSurface = GetTemplateChild(TrackSurfacePartName) as Border;
         _casterBrushSource = GetTemplateChild(CasterBrushSourcePartName) as Border;
         _shadowBrushSource = GetTemplateChild(ShadowBrushSourcePartName) as Border;
@@ -99,41 +106,51 @@ public class EtherSegmentedControl : ContentControl
 
     private void OnLoaded(object sender, RoutedEventArgs args) => InitializeShadows();
 
-    private void OnSizeChanged(object sender, SizeChangedEventArgs args) => UpdateShadowSize();
-
     private void InitializeShadows()
     {
-        if (_shadowContainer is not null || _shadowHost is null || _trackSurface is null ||
-            _trackSurface.ActualWidth <= 0 || _trackSurface.ActualHeight <= 0)
+        if (_shadowContainer is not null || _shadowHost is null || _trackSurface is null)
             return;
 
-        var compositor = ElementCompositionPreview.GetElementVisual(_shadowHost).Compositor;
+        var hostVisual = ElementCompositionPreview.GetElementVisual(_shadowHost);
+        var trackVisual = ElementCompositionPreview.GetElementVisual(_trackSurface);
+        var compositor = hostVisual.Compositor;
+
         // WinUI Composition's blur spread is wider than Figma's CSS shadow blur.
         // These calibrated values visually match Figma's 0 24px 36px layer.
-        _farShadow = CreateShadowLayer(compositor, blurRadius: 18f, offsetY: 12f, opacity: 0.08f);
-        _nearShadow = CreateShadowLayer(compositor, blurRadius: 4f, offsetY: 2f, opacity: 0.10f);
+        _farShadow = CreateShadowLayer(compositor, FarBlur, FarOffsetY, FarOpacity);
+        _nearShadow = CreateShadowLayer(compositor, NearBlur, NearOffsetY, NearOpacity);
 
         _shadowContainer = compositor.CreateContainerVisual();
         _shadowContainer.Children.InsertAtBottom(_farShadow.Layer);
         _shadowContainer.Children.InsertAtTop(_nearShadow.Layer);
         ElementCompositionPreview.SetElementChildVisual(_shadowHost, _shadowContainer);
 
+        // Hand-in visuals are clipped to the host UIElement. ShadowHost is wider than
+        // TrackSurface (XAML Margin="-24,0") so the blurred far shadow has room to bleed
+        // instead of ending at the track's edge. Bind sizes/offsets through
+        // ExpressionAnimation so the island, the rounded caster, and the host stay in
+        // the same space at any DPI.
+        BindSize(_shadowContainer, hostVisual);
+        _nearShadow.Bind(hostVisual, trackVisual);
+        _farShadow.Bind(hostVisual, trackVisual);
+
         ApplyThemeBrushes();
-        UpdateShadowSize();
     }
 
-    private void UpdateShadowSize()
+    private static void BindSize(Visual target, Visual sizeSource)
     {
-        if (_shadowContainer is null || _nearShadow is null || _farShadow is null ||
-            _shadowHost is null || _trackSurface is null)
-            return;
+        var animation = target.Compositor.CreateExpressionAnimation("source.Size");
+        animation.SetReferenceParameter("source", sizeSource);
+        target.StartAnimation("Size", animation);
+    }
 
-        var size = new Vector2((float)_trackSurface.ActualWidth, (float)_trackSurface.ActualHeight);
-        var origin = _trackSurface.TransformToVisual(_shadowHost).TransformPoint(new Windows.Foundation.Point());
-        _shadowContainer.Offset = new Vector3((float)origin.X, (float)origin.Y, 0);
-        _shadowContainer.Size = size;
-        _nearShadow.Resize(size);
-        _farShadow.Resize(size);
+    private static void BindOffset(Visual target, Visual hostVisual, Visual trackVisual)
+    {
+        var animation = target.Compositor.CreateExpressionAnimation(
+            "Vector3(trackVisual.Offset.X - hostVisual.Offset.X, trackVisual.Offset.Y - hostVisual.Offset.Y, 0)");
+        animation.SetReferenceParameter("hostVisual", hostVisual);
+        animation.SetReferenceParameter("trackVisual", trackVisual);
+        target.StartAnimation("Offset", animation);
     }
 
     private ShadowLayer CreateShadowLayer(Compositor compositor, float blurRadius, float offsetY, float opacity)
@@ -175,11 +192,15 @@ public class EtherSegmentedControl : ContentControl
         DropShadow Shadow,
         float Opacity)
     {
-        public void Resize(Vector2 size)
+        public void Bind(Visual hostVisual, Visual trackVisual)
         {
-            Layer.Size = size;
-            ShapeVisual.Size = size;
-            Geometry.Size = size;
+            BindSize(Layer, hostVisual);
+            BindSize(ShapeVisual, trackVisual);
+            BindOffset(ShapeVisual, hostVisual, trackVisual);
+
+            var animation = Geometry.Compositor.CreateExpressionAnimation("source.Size");
+            animation.SetReferenceParameter("source", trackVisual);
+            Geometry.StartAnimation("Size", animation);
         }
 
         public void SetFill(Color color) => Fill.Color = color;

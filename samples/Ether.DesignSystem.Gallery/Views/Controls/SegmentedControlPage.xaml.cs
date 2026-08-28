@@ -9,13 +9,13 @@ public sealed partial class SegmentedControlPage : Page
     public string SpecimenXaml { get; } =
         """
         <controls:EtherSegmentedControl>
-            <StackPanel Orientation="Horizontal" Spacing="4">
+            <controls:EtherSegmentPanel>
                 <controls:HandRadioButton GroupName="SegmentedTwo" Content="List"
                                          Style="{StaticResource EtherSegment}"
                                          IsChecked="True"/>
                 <controls:HandRadioButton GroupName="SegmentedTwo" Content="Grid"
                                          Style="{StaticResource EtherSegment}"/>
-            </StackPanel>
+            </controls:EtherSegmentPanel>
         </controls:EtherSegmentedControl>
         """;
 

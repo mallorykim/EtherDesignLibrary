@@ -41,7 +41,7 @@ Assert-Contains $control 'DefaultStyleKey\s*=\s*typeof\(EtherSegmentedControl\)'
 if ($control -notmatch '(?s)public EtherSegmentedControl\(\)\s*\{(?<ctor>.*?)\n    \}') {
     throw 'EtherSegmentedControl constructor body could not be isolated for default-setter audit.'
 }
-if ($Matches['ctor'] -match '(Padding|Background|HorizontalContentAlignment|VerticalContentAlignment|Template)\s*=') {
+if ($Matches['ctor'] -match '(Padding|Background|HorizontalContentAlignment|VerticalContentAlignment|IsTabStop|UseSystemFocusVisuals|HighContrastAdjustment|Template)\s*=') {
     throw 'EtherSegmentedControl constructor must not assign its default visual setters; the keyed style owns them.'
 }
 foreach ($part in $templateParts) {
@@ -51,12 +51,14 @@ Assert-Contains $control 'GetTemplateChild\(ShadowHostPartName\)' 'EtherSegmente
 Assert-Contains $control 'GetTemplateChild\(TrackSurfacePartName\)' 'EtherSegmentedControl composition track surface lookup'
 Assert-Contains $control 'GetTemplateChild\(CasterBrushSourcePartName\)' 'EtherSegmentedControl caster brush-source lookup'
 Assert-Contains $control 'GetTemplateChild\(ShadowBrushSourcePartName\)' 'EtherSegmentedControl shadow brush-source lookup'
+Assert-Contains $control 'CreateExpressionAnimation' 'EtherSegmentedControl binds composition shadow size to the track visual'
 Assert-Contains $control 'CreateDropShadow' 'EtherSegmentedControl composition drop-shadow layers'
 if ($control -match 'TemplateVisualState') {
     throw 'EtherSegmentedControl host template has no VisualState groups; do not declare TemplateVisualState metadata on the host.'
 }
 
 [xml]$xaml = Get-Content -LiteralPath $xamlPath -Raw
+$xamlRaw = Get-Content -LiteralPath $xamlPath -Raw
 $styles = @($xaml.SelectNodes("//*[local-name()='Style']"))
 $keyedStyle = @($styles | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'DefaultEtherSegmentedControlStyle' })[0]
 if ($null -eq $keyedStyle) {
@@ -76,7 +78,7 @@ $segmentStyle = @($styles | Where-Object { $_.GetAttribute('Key', $xamlNamespace
 if ($null -eq $segmentStyle) {
     throw 'EtherSegmentedControl is missing keyed EtherSegment RadioButton style.'
 }
-foreach ($setter in 'Padding', 'Background', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'HighContrastAdjustment', 'Template') {
+foreach ($setter in 'Padding', 'Background', 'HorizontalAlignment', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'IsTabStop', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherSegmentedControlStyle is missing its $setter setter."
     }
@@ -128,6 +130,26 @@ foreach ($state in $segmentFocusStates) {
     }).Count -ne 1) {
         throw "EtherSegmentTemplate is missing FocusStates/$state."
     }
+}
+
+Assert-Contains $xamlRaw 'Color="\{StaticResource Blue600\}"' 'EtherSegmentedControl selected fill binds Blue600'
+Assert-Contains $xamlRaw 'Color="\{StaticResource AlphaWhite40\}"' 'EtherSegmentedControl Light track binds AlphaWhite40'
+Assert-Contains $xamlRaw 'Color="\{StaticResource AlphaBlack70\}"' 'EtherSegmentedControl Dark track binds AlphaBlack70'
+Assert-Contains $xamlRaw 'CornerRadius="\{StaticResource RadiusMd\}"' 'EtherSegmentedControl track uses RadiusMd'
+Assert-Contains $xamlRaw 'CornerRadius="\{StaticResource RadiusSm\}"' 'EtherSegmentedControl segment uses RadiusSm'
+Assert-Contains $xamlRaw 'Value="16,12"' 'EtherSegmentedControl segment padding matches Figma 16,12'
+Assert-Contains $xamlRaw 'Value="33"' 'EtherSegmentedControl segment min-height matches Figma 33'
+Assert-Contains $xamlRaw 'Value="\{StaticResource InstrumentSans\}"' 'EtherSegmentedControl segment FontFamily is Instrument Sans'
+Assert-Contains $xamlRaw 'Value="\{StaticResource Size12\}"' 'EtherSegmentedControl segment FontSize is Size12'
+Assert-Contains $xamlRaw 'Value="\{StaticResource WeightSemibold\}"' 'EtherSegmentedControl segment FontWeight is WeightSemibold'
+Assert-Contains $xamlRaw 'AutomationProperties.AccessibilityView="Raw"' 'EtherSegmentedControl content presenters mark content Raw like WinUI RadioButton'
+Assert-Contains $xamlRaw 'Margin="-24,0"' 'EtherSegmentedControl ShadowHost reserves horizontal blur bleed'
+Assert-Contains $xamlRaw 'Value="Stretch"' 'EtherSegmentedControl stretches with the parent width'
+if ($xamlRaw -match 'radius/control') {
+    throw 'EtherSegmentedControl templates must use RadiusMd/RadiusSm, not radius/control aliases.'
+}
+if ($xamlRaw -match 'BackgroundSegmentTrack|background/brand|#FF0054E5') {
+    throw 'EtherSegmentedControl Light/Dark fills must bind primitives, not semantic aliases or literal hex.'
 }
 
 $themeDictionaries = @($xaml.SelectNodes("//*[local-name()='ResourceDictionary.ThemeDictionaries']/*[local-name()='ResourceDictionary']"))
