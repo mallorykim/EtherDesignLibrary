@@ -39,10 +39,12 @@ receives the 6 px thumb with no track and no stepper arrows.
 
 - Compiled `ResourceDictionary` class; no `DefaultStyleKey`, no `ScrollBar`
   subclass.
-- Implicit `Style TargetType="ScrollBar"` owns transparent background,
-  `IsTabStop=False`, and both vertical and horizontal templates (`VerticalRoot`
-  / `HorizontalRoot`, 6 px thickness, 60 px thumb floor, stepper arrows
-  collapsed).
+- Implicit `Style TargetType="ScrollBar"` owns transparent background via unthemed
+  `EtherScrollBarTransparentBrush`, `IsTabStop=False`, `UseSystemFocusVisuals=False`,
+  and both vertical and horizontal templates (`VerticalRoot` / `HorizontalRoot`,
+  6 px thickness, 60 px thumb floor, stepper arrows collapsed). Track RepeatButton
+  templates also consume that transparent brush so High Contrast dictionaries stay
+  SystemColor-only.
 - Thumb `CommonStates` PointerOver/Pressed swap to
   `EtherScrollBarThumbHoverBrush`. The Normal state does not overwrite
   `ThumbFill.Background`; the template `{ThemeResource EtherScrollBarThumbBrush}`
@@ -50,9 +52,10 @@ receives the 6 px thumb with no track and no stepper arrows.
   restores the default fill when the pointer leaves because the base
   ThemeResource remains the locally set value.
 - Light, Dark, and High Contrast expose the same two `EtherScrollBar*`
-  component resources. Thumb fills alias `BackgroundDropdownScrollThumb` and
-  `BackgroundDropdownScrollThumbHover`. High Contrast uses
-  `SystemColorWindowTextColor` / `SystemColorHighlightColor`.
+  component resources. Light and Dark bind `Color` to primitive `Gray400` /
+  `Gray500` (Figma Light spec `62110:22970`, Dark spec `62124:312` use the
+  same hexes). High Contrast uses `SystemColorWindowTextColor` /
+  `SystemColorHighlightColor`.
 
 ## Gallery
 
@@ -77,7 +80,7 @@ The unpackaged NuGet consumer fixture mounts:
 `TrackOff` / `TrackOn` / `KnobFill` parts, Off → On, disabled 0.4 track
 opacity, and Light/Dark Off-track rebind. `scrollBar` records implicit 6 px
 templates, both orientation roots, 60 px thumb floor, collapsed arrows, and
-Light/Dark thumb rebind.
+Light/Dark Gray400 Default fills (Figma uses the same primitive in both themes).
 
 `Verify-EtherSwitchContract.ps1` and `Verify-EtherScrollBarContract.ps1`
 additionally verify ResourceDictionary (not templated-control) metadata, keyed

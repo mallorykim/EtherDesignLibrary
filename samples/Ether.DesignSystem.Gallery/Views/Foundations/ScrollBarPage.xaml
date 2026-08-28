@@ -73,7 +73,7 @@
         </views:ComponentPage.InteractiveContent>
 
         <views:ComponentPage.StatesContent>
-            <!-- Static swatches per the spec's STATE PREVIEWS: 8 x 150, radius 4, drawn
+            <!-- Static swatches per the spec's STATE PREVIEWS: 6 x 150, radius 3, drawn
                  in the live bar's own two fills. -->
             <StackPanel Orientation="Horizontal" Spacing="80">
                 <StackPanel Spacing="8" HorizontalAlignment="Center">

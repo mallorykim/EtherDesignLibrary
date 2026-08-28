@@ -943,7 +943,7 @@ try {
                 [double]$scrollBar.thumbMinLength -ne 60 -or
                 $scrollBar.arrowsCollapsed -ne $true -or
                 $scrollBar.automationName -ne 'Package scroll bar' -or
-                (@($scrollBar.lightTemplateBrushColors) -join ',') -ceq (@($scrollBar.darkTemplateBrushColors) -join ',')) {
+                (@($scrollBar.lightTemplateBrushColors) -join ',') -cne (@($scrollBar.darkTemplateBrushColors) -join ',')) {
                 throw "The unpackaged runtime smoke fixture did not verify Foundation resources, assets, and theme re-resolution: $(Get-Content -LiteralPath $markerPath -Raw)"
             }
             Assert-RtlMarker $runtimeResult

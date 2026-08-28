@@ -61,9 +61,10 @@ internal static partial class RuntimeVerification
 
         var lightTemplateBrushColors = await GetScrollBarTemplateBrushColorsAsync(themeRoot, scrollBar, verticalThumb, ElementTheme.Light);
         var darkTemplateBrushColors = await GetScrollBarTemplateBrushColorsAsync(themeRoot, scrollBar, verticalThumb, ElementTheme.Dark);
-        if (lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
+        // Figma Light spec 62110:22970 and Dark spec 62124:312 use the same Gray400 Default fill.
+        if (!lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
         {
-            throw new InvalidOperationException("EtherScrollBar Light and Dark thumb brushes did not re-resolve to distinct values.");
+            throw new InvalidOperationException("EtherScrollBar Light and Dark Default thumb fills must both resolve to Gray400.");
         }
 
         return new ScrollBarVerification(

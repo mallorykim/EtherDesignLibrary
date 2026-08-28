@@ -44,6 +44,7 @@ if ($control -match 'class EtherScrollBar\s*:\s*(Control|ScrollBar)') {
 }
 
 [xml]$xaml = Get-Content -LiteralPath $xamlPath -Raw
+$xamlRaw = Get-Content -LiteralPath $xamlPath -Raw
 $styles = @($xaml.SelectNodes("//*[local-name()='Style']"))
 $implicitStyle = @($styles | Where-Object {
     -not $_.HasAttribute('Key', $xamlNamespace) -and $_.GetAttribute('TargetType') -eq 'ScrollBar'
@@ -57,10 +58,19 @@ $keyedScrollBar = @($styles | Where-Object {
 if ($keyedScrollBar.Count -ne 0) {
     throw 'EtherScrollBar must stay implicit; a keyed ScrollBar style would drop app-wide ScrollViewer coverage.'
 }
-foreach ($setter in 'Background', 'IsTabStop', 'HighContrastAdjustment', 'Template') {
+foreach ($setter in 'Background', 'IsTabStop', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $implicitStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "Implicit ScrollBar style is missing its $setter setter."
     }
+}
+
+$rootTransparent = @($xaml.DocumentElement.ChildNodes | Where-Object {
+    $_ -is [System.Xml.XmlElement] -and
+    $_.LocalName -eq 'SolidColorBrush' -and
+    $_.GetAttribute('Key', $xamlNamespace) -eq 'EtherScrollBarTransparentBrush'
+})[0]
+if ($null -eq $rootTransparent) {
+    throw 'EtherScrollBar is missing its unthemed EtherScrollBarTransparentBrush for structural overlay fills.'
 }
 
 $templates = @($xaml.SelectNodes("//*[local-name()='ControlTemplate']"))
@@ -77,7 +87,7 @@ $scrollBarTemplate = $implicitStyle.SelectSingleNode(".//*[local-name()='Control
 if ($null -eq $scrollBarTemplate) {
     throw 'Implicit ScrollBar style is missing its ControlTemplate.'
 }
-foreach ($part in 'VerticalRoot', 'HorizontalRoot', 'VerticalThumb', 'HorizontalThumb') {
+foreach ($part in 'VerticalRoot', 'HorizontalRoot', 'VerticalThumb', 'HorizontalThumb', 'VerticalSmallDecrease', 'VerticalSmallIncrease', 'VerticalLargeDecrease', 'VerticalLargeIncrease', 'HorizontalSmallDecrease', 'HorizontalSmallIncrease', 'HorizontalLargeDecrease', 'HorizontalLargeIncrease') {
     if ($scrollBarTemplate.OuterXml -notmatch "x:Name=`"$part`"") {
         throw "EtherScrollBar template is missing named part '$part'."
     }
@@ -87,11 +97,24 @@ foreach ($template in $templates) {
     if ($template.OuterXml -match '#[0-9A-Fa-f]{3,8}') {
         throw 'EtherScrollBar ControlTemplate contains a literal hex color; only component resources may carry color values.'
     }
+    if ($template.OuterXml -match '(Background|BorderBrush|Foreground|Stroke|Fill)="Transparent"') {
+        throw 'EtherScrollBar ControlTemplate contains a literal Transparent color; only component resources may carry color values.'
+    }
     foreach ($themeResource in @([regex]::Matches($template.OuterXml, '\{ThemeResource\s+([^}\s]+)') | ForEach-Object { $_.Groups[1].Value })) {
         if ($themeResource -notlike 'EtherScrollBar*') {
             throw "EtherScrollBar template references non-component ThemeResource '$themeResource'."
         }
     }
+}
+
+Assert-Contains $xamlRaw 'Color="\{StaticResource Gray400\}"' 'EtherScrollBar Default fill binds Gray400'
+Assert-Contains $xamlRaw 'Color="\{StaticResource Gray500\}"' 'EtherScrollBar Hover fill binds Gray500'
+Assert-Contains $xamlRaw 'CornerRadius="3"' 'EtherScrollBar 6px thumb uses geometric radius 3'
+if ($xamlRaw -match 'BackgroundDropdownScrollThumb') {
+    throw 'EtherScrollBar Light/Dark fills must bind primitive Gray400/Gray500, not dropdown aliases.'
+}
+if ($xamlRaw -match 'Spacing6') {
+    throw 'EtherScrollBar thickness must be a literal 6, not Spacing6.'
 }
 
 $themeDictionaries = @($xaml.SelectNodes("//*[local-name()='ResourceDictionary.ThemeDictionaries']/*[local-name()='ResourceDictionary']"))

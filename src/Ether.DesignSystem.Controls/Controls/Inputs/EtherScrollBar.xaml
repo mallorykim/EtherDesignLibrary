@@ -8,14 +8,12 @@
     glyphs (FontIcon "Arrow") at both ends, and a square 16 px #7A7A7A thumb.
 
     KEY MEASUREMENTS
-      Thickness   6 px
-      Min length  60 px (Figma's 60 px becomes the floor; ScrollBar still sizes the
-                  thumb proportionally to how much content is off screen)
+      Thickness   6 px (kept over Figma Default 8 px)
+      Min length  60 px (content-proportional floor; Figma specimens are 150 px)
       CornerRadius 3 (half the thickness — fully rounded ends)
-      Colour      default EtherScrollBarThumbBrush (aliases BackgroundDropdownScrollThumb)
-                  hover   EtherScrollBarThumbHoverBrush
-      Track       none
-      Arrows      none
+      Colour      Light/Dark Default Gray400, Hover Gray500 (spec sheets
+                  62110:22970 / 62124:312). Pressed reuses Hover. Track none.
+      Arrows      none (Figma Icon layer is hidden)
 
     Colour-bearing values live in EtherScrollBar* Light/Dark/HighContrast dictionaries.
     The templates do not use literal hex. High Contrast uses Windows SystemColor*
@@ -37,12 +35,12 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="EtherScrollBarThumbBrush" ResourceKey="BackgroundDropdownScrollThumb" />
-            <StaticResource x:Key="EtherScrollBarThumbHoverBrush" ResourceKey="BackgroundDropdownScrollThumbHover" />
+            <SolidColorBrush x:Key="EtherScrollBarThumbBrush" Color="{StaticResource Gray400}"/>
+            <SolidColorBrush x:Key="EtherScrollBarThumbHoverBrush" Color="{StaticResource Gray500}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <StaticResource x:Key="EtherScrollBarThumbBrush" ResourceKey="BackgroundDropdownScrollThumb" />
-            <StaticResource x:Key="EtherScrollBarThumbHoverBrush" ResourceKey="BackgroundDropdownScrollThumbHover" />
+            <SolidColorBrush x:Key="EtherScrollBarThumbBrush" Color="{StaticResource Gray400}"/>
+            <SolidColorBrush x:Key="EtherScrollBarThumbHoverBrush" Color="{StaticResource Gray500}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherScrollBarThumbBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
@@ -50,10 +48,14 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
+    <!-- Structural overlay fill: not themed, so High Contrast can keep SystemColor-only
+         theme keys while track RepeatButtons and the implicit Background stay empty. -->
+    <SolidColorBrush x:Key="EtherScrollBarTransparentBrush" Color="Transparent"/>
+
     <!-- The large-change regions stay hit-testable but paint nothing, so page-up /
          page-down clicks on the track still work without drawing a track. -->
     <ControlTemplate x:Key="EtherScrollBarRepeatButtonTemplate" TargetType="RepeatButton">
-        <Grid Background="Transparent"/>
+        <Grid Background="{StaticResource EtherScrollBarTransparentBrush}"/>
     </ControlTemplate>
 
     <!-- Thumb darkens on pointer-over / while dragging (Pressed). -->
@@ -94,8 +96,9 @@
     </ControlTemplate>
 
     <Style TargetType="ScrollBar">
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="{StaticResource EtherScrollBarTransparentBrush}"/>
         <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="UseSystemFocusVisuals" Value="False"/>
         <Setter Property="HighContrastAdjustment" Value="None"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -104,13 +107,13 @@
                          in the dropdown the bar overlays the menu items (the menu has a
                          symmetric 4 px padding and no scroll gutter), so a hit-testable 16 px
                          backing would swallow clicks along the right edge of every item.
-                         Leaving it unset keeps the hit area to the 4 px the bar actually paints. -->
+                         Leaving it unset keeps the hit area to the 6 px the bar actually paints. -->
                     <Grid>
 
                         <!-- ScrollBar shows whichever root matches its Orientation and
                              collapses the other, so both must be present and named. -->
                         <Grid x:Name="VerticalRoot"
-                              Width="{StaticResource Spacing6}"
+                              Width="6"
                               HorizontalAlignment="Right">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="0"/>
@@ -128,13 +131,13 @@
                                           Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
                             <RepeatButton x:Name="VerticalLargeDecrease"
                                           Grid.Row="1"
-                                          Height="{StaticResource Spacing0}"
+                                          Height="0"
                                           Opacity="0"
                                           IsTabStop="False"
                                           Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
                             <Thumb x:Name="VerticalThumb"
                                    Grid.Row="2"
-                                   Width="{StaticResource Spacing6}"
+                                   Width="6"
                                    MinHeight="60"
                                    HorizontalAlignment="Right"
                                    Template="{StaticResource EtherScrollBarThumbTemplate}"/>
@@ -150,7 +153,7 @@
                         </Grid>
 
                         <Grid x:Name="HorizontalRoot"
-                              Height="{StaticResource Spacing6}"
+                              Height="6"
                               VerticalAlignment="Bottom">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0"/>
@@ -166,13 +169,13 @@
                                           Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
                             <RepeatButton x:Name="HorizontalLargeDecrease"
                                           Grid.Column="1"
-                                          Width="{StaticResource Spacing0}"
+                                          Width="0"
                                           Opacity="0"
                                           IsTabStop="False"
                                           Template="{StaticResource EtherScrollBarRepeatButtonTemplate}"/>
                             <Thumb x:Name="HorizontalThumb"
                                    Grid.Column="2"
-                                   Height="{StaticResource Spacing6}"
+                                   Height="6"
                                    MinWidth="60"
                                    VerticalAlignment="Bottom"
                                    Template="{StaticResource EtherScrollBarThumbTemplate}"/>
