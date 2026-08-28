@@ -604,6 +604,12 @@
   <data name="GalleryViewsControlsRadioButtonPage182.Content" xml:space="preserve">
     <value>Option</value>
   </data>
+  <data name="GalleryViewsControlsRadioButtonPageCheckedPressed.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsRadioButtonPageCheckedPressedOption.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
   <data name="GalleryViewsControlsRadioButtonPage183.Text" xml:space="preserve">
     <value>Disabled</value>
   </data>

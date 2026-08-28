@@ -10,8 +10,8 @@ $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs
 $fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
-$expectedComponentKeys = 'EtherRadioButtonCheckedFillDefaultBrush,EtherRadioButtonCheckedFillHoverBrush,EtherRadioButtonCheckedStrokeBrush,EtherRadioButtonCircleFillDefaultBrush,EtherRadioButtonCircleFillHoverBrush,EtherRadioButtonCircleFillPressedBrush,EtherRadioButtonCircleStrokeBrush,EtherRadioButtonDisabledCheckedDotBrush,EtherRadioButtonDisabledCheckedFillBrush,EtherRadioButtonDisabledUncheckedFillBrush,EtherRadioButtonDisabledUncheckedStrokeBrush,EtherRadioButtonInnerDotBrush,EtherRadioButtonLabelBrush'
-$templateParts = @('UncheckedFill', 'UncheckedFace', 'CheckedFace', 'Dot', 'Label')
+$expectedComponentKeys = 'EtherRadioButtonCheckedFillDefaultBrush,EtherRadioButtonCheckedFillHoverBrush,EtherRadioButtonCheckedFillPressedBrush,EtherRadioButtonCheckedStrokeBrush,EtherRadioButtonCircleFillDefaultBrush,EtherRadioButtonCircleFillHoverBrush,EtherRadioButtonCircleFillPressedBrush,EtherRadioButtonCircleStrokeBrush,EtherRadioButtonDisabledCheckedDotBrush,EtherRadioButtonDisabledCheckedFillBrush,EtherRadioButtonDisabledUncheckedFillBrush,EtherRadioButtonDisabledUncheckedStrokeBrush,EtherRadioButtonInnerDotBrush,EtherRadioButtonLabelBrush'
+$templateParts = @('LayoutRoot', 'UncheckedFill', 'UncheckedStroke', 'UncheckedFace', 'CheckedFace', 'CheckedFill', 'CheckedStroke', 'Dot', 'Label')
 
 function Assert-Contains {
     param([string]$Text, [string]$Pattern, [string]$Description)
@@ -50,6 +50,7 @@ foreach ($state in 'Unchecked', 'Checked') {
 }
 
 [xml]$xaml = Get-Content -LiteralPath $xamlPath -Raw
+$xamlRaw = Get-Content -LiteralPath $xamlPath -Raw
 $styles = @($xaml.SelectNodes("//*[local-name()='Style']"))
 $keyedStyle = @($styles | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'DefaultEtherRadioButtonStyle' })[0]
 if ($null -eq $keyedStyle) {
@@ -105,6 +106,14 @@ foreach ($template in $templates) {
         }
     }
 }
+
+Assert-Contains $xamlRaw 'EtherRadioButtonCheckedFillPressedBrush' 'EtherRadioButton Checked Pressed fill'
+Assert-Contains $xamlRaw 'Target="LayoutRoot.Opacity" Value="0.4"' 'EtherRadioButton Disabled uses 40% layout opacity'
+Assert-Contains $xamlRaw 'Target="Dot.Opacity" Value="0"' 'EtherRadioButton Disabled hides the separate dot so the gradient face stays one layer'
+Assert-Contains $xamlRaw 'CheckedFill.Background.*EtherRadioButtonDisabledCheckedFillBrush' 'EtherRadioButton Disabled uses the one-layer checked face brush'
+Assert-Contains $xamlRaw 'ContentTemplateSelector="\{TemplateBinding ContentTemplateSelector\}"' 'EtherRadioButton Label template-binds ContentTemplateSelector like WinUI RadioButton'
+Assert-Contains $xamlRaw 'ContentTransitions="\{TemplateBinding ContentTransitions\}"' 'EtherRadioButton Label template-binds ContentTransitions like WinUI RadioButton'
+Assert-Contains $xamlRaw 'AutomationProperties.AccessibilityView="Raw"' 'EtherRadioButton Label marks content Raw like WinUI RadioButton'
 
 $themeDictionaries = @($xaml.SelectNodes("//*[local-name()='ResourceDictionary.ThemeDictionaries']/*[local-name()='ResourceDictionary']"))
 $keysByTheme = @{}

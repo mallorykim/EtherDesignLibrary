@@ -26,12 +26,16 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("The keyed EtherRadioButton style did not apply its default IsThreeState=False setter and template.");
         }
 
+        GetTemplatePart<Grid>(radioButton, "LayoutRoot", nameof(EtherRadioButton));
         GetTemplatePart<Border>(radioButton, "UncheckedFill", nameof(EtherRadioButton));
+        GetTemplatePart<Border>(radioButton, "UncheckedStroke", nameof(EtherRadioButton));
         var uncheckedFace = GetTemplatePart<Grid>(radioButton, "UncheckedFace", nameof(EtherRadioButton));
         var checkedFace = GetTemplatePart<Grid>(radioButton, "CheckedFace", nameof(EtherRadioButton));
+        GetTemplatePart<Border>(radioButton, "CheckedFill", nameof(EtherRadioButton));
+        GetTemplatePart<Border>(radioButton, "CheckedStroke", nameof(EtherRadioButton));
         GetTemplatePart<Microsoft.UI.Xaml.Shapes.Ellipse>(radioButton, "Dot", nameof(EtherRadioButton));
         var label = GetTemplatePart<ContentPresenter>(radioButton, "Label", nameof(EtherRadioButton));
-        var templateParts = new[] { "UncheckedFill", "UncheckedFace", "CheckedFace", "Dot", "Label" };
+        var templateParts = new[] { "LayoutRoot", "UncheckedFill", "UncheckedStroke", "UncheckedFace", "CheckedFace", "CheckedFill", "CheckedStroke", "Dot", "Label" };
         var checkStates = new List<string>();
 
         radioButton.IsChecked = false;

@@ -26,6 +26,12 @@ public sealed partial class RadioButtonPage : Page
                     VisualStateManager.GoToState(UncheckedPressed, "Pressed", false);
                 if (CheckedHover is not null)
                     VisualStateManager.GoToState(CheckedHover, "PointerOver", false);
+                if (CheckedPressed is not null)
+                    VisualStateManager.GoToState(CheckedPressed, "Pressed", false);
+                if (UncheckedDisabled is not null)
+                    VisualStateManager.GoToState(UncheckedDisabled, "Disabled", false);
+                if (CheckedDisabled is not null)
+                    VisualStateManager.GoToState(CheckedDisabled, "Disabled", false);
             });
         };
     }

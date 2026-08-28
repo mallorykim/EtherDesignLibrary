@@ -20,18 +20,21 @@ an explicit named `Style` are unchanged (these controls have no extra named styl
 - Each component declares the template parts the templates actually use
   (`LayoutRoot`, fill/stroke faces, `Label`, plus `Glyph` or `Dot`)
   and CommonStates / CheckStates. Native toggle visuals still drive those states.
-  Checkbox additionally names `UncheckedStroke`, `CheckedFill`, and `CheckedStroke`
-  (VSM targets) and binds `ContentTemplate` / `ContentTemplateSelector` /
-  `ContentTransitions` on `Label`, matching WinUI `CheckBox` ContentPresenter.
+  Both name `UncheckedStroke`, `CheckedFill`, and `CheckedStroke` (VSM targets)
+  and bind `ContentTemplate` / `ContentTemplateSelector` / `ContentTransitions`
+  on `Label`, matching WinUI CheckBox / RadioButton ContentPresenter.
+  RadioButton also sets `AutomationProperties.AccessibilityView=Raw` on `Label`
+  so the native peer does not announce the content twice.
 - Light, Dark, and HighContrast expose the same `EtherCheckbox*` /
   `EtherRadioButton*` component resources. Templates consume those component keys
-  only for color-bearing ThemeResources. Checkbox Light/Dark bind `Color` to
-  primitive tokens (Figma Light set `62085:7907`, Dark spec tables `62093:60` /
-  `62093:163`); RadioButton Light/Dark still retain literal hex. High Contrast
-  uses Windows `SystemColor*` dynamic resources rather than changing frozen
-  Foundation tokens. Checkbox Disabled is Default colours at 40% opacity; unused
-  `*DisabledBrush` keys remain for High Contrast key symmetry. Checked Pressed
-  uses `Blue700` fill and stroke.
+  only for color-bearing ThemeResources. Light/Dark bind `Color` to primitive
+  tokens (Checkbox Figma Light set `62085:7907`, Dark spec tables `62093:60` /
+  `62093:163`; RadioButton Light set `62102:8755`, Dark specimens
+  `62102:8800`–`8805`). High Contrast uses Windows `SystemColor*` dynamic
+  resources rather than changing frozen Foundation tokens. Disabled is Default
+  colours at 40% opacity. RadioButton checked-disabled paints the inner disc
+  into the fill as one gradient so 40% group opacity cannot turn the centre
+  blue. Unused remaining `*DisabledBrush` keys stay for High Contrast symmetry.
 - Structural overlay fills (`LayoutRoot` and stroke-ring backgrounds) use unthemed
   `EtherCheckboxTransparentBrush` / `EtherRadioButtonTransparentBrush` so the ring
   still reveals the face beneath it without putting a non-SystemColor brush in High

@@ -12,9 +12,13 @@ namespace EtherSandbox.Controls;
 /// The control reuses CommonStates and CheckStates. It does not add an indeterminate
 /// visual or animation APIs.
 /// </remarks>
+[TemplatePart(Name = LayoutRootPart, Type = typeof(Grid))]
 [TemplatePart(Name = UncheckedFillPart, Type = typeof(Border))]
+[TemplatePart(Name = UncheckedStrokePart, Type = typeof(Border))]
 [TemplatePart(Name = UncheckedFacePart, Type = typeof(Grid))]
 [TemplatePart(Name = CheckedFacePart, Type = typeof(Grid))]
+[TemplatePart(Name = CheckedFillPart, Type = typeof(Border))]
+[TemplatePart(Name = CheckedStrokePart, Type = typeof(Border))]
 [TemplatePart(Name = DotPart, Type = typeof(Microsoft.UI.Xaml.Shapes.Ellipse))]
 [TemplatePart(Name = LabelPart, Type = typeof(ContentPresenter))]
 [TemplateVisualState(GroupName = CommonStatesGroup, Name = NormalState)]
@@ -25,9 +29,13 @@ namespace EtherSandbox.Controls;
 [TemplateVisualState(GroupName = CheckStatesGroup, Name = CheckedState)]
 public sealed class EtherRadioButton : RadioButton
 {
+    private const string LayoutRootPart = "LayoutRoot";
     private const string UncheckedFillPart = "UncheckedFill";
+    private const string UncheckedStrokePart = "UncheckedStroke";
     private const string UncheckedFacePart = "UncheckedFace";
     private const string CheckedFacePart = "CheckedFace";
+    private const string CheckedFillPart = "CheckedFill";
+    private const string CheckedStrokePart = "CheckedStroke";
     private const string DotPart = "Dot";
     private const string LabelPart = "Label";
     private const string CommonStatesGroup = "CommonStates";

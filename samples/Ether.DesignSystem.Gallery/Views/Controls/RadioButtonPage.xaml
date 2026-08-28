@@ -79,7 +79,7 @@
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage177"
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage177" x:Name="UncheckedDisabled"
                                                       GroupName="u-disabled"
                                                       Content="Option"
                                                       IsChecked="False"
@@ -119,11 +119,22 @@
                                                       IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
+<TextBlock x:Uid="GalleryViewsControlsRadioButtonPageCheckedPressed" Text="Pressed"
+                                       Style="{StaticResource micro/regular}"
+                                       Foreground="{ThemeResource TextTertiary}"
+                                       HorizontalAlignment="Center"/>
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPageCheckedPressedOption" x:Name="CheckedPressed"
+                                                      GroupName="c-pressed"
+                                                      Content="Option"
+                                                      IsChecked="True"
+                                                      IsHitTestVisible="False" IsTabStop="False"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsControlsRadioButtonPage183" Text="Disabled"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"
                                        HorizontalAlignment="Center"/>
-<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage184"
+<controls:EtherRadioButton x:Uid="GalleryViewsControlsRadioButtonPage184" x:Name="CheckedDisabled"
                                                       GroupName="c-disabled"
                                                       Content="Option"
                                                       IsChecked="True"
