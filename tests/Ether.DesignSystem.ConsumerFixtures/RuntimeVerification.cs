@@ -53,10 +53,13 @@ internal static partial class RuntimeVerification
 
     internal sealed record ButtonVerification(
         bool DefaultStyleResolved,
+        double DefaultMinWidth,
         double DefaultMinHeight,
         double DefaultFontSize,
         string[] TemplateParts,
+        string[] LeftIconStates,
         string[] RightIconStates,
+        bool LeftIconCollapsed,
         bool RightIconCollapsed,
         string AutomationName,
         string[] LightTemplateBrushColors,
@@ -168,6 +171,7 @@ internal static partial class RuntimeVerification
         double Value,
         bool SetValueAccepted,
         bool DisabledLocksAutomation,
+        bool DisabledOpacityApplied,
         bool ValueChangeExercised,
         string FormattedValue,
         string[] LightTemplateBrushColors,

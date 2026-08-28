@@ -1,6 +1,9 @@
+using System.Linq;
 using EtherSandbox.Controls;
+using EtherSandbox.Views.Foundations;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
 namespace EtherSandbox.Views.Controls;
@@ -18,8 +21,9 @@ public sealed partial class ButtonPage : Page
         this.InitializeComponent();
         this.Loaded += (_, _) =>
         {
-            // Apply the initial icon state from the checkbox (defaults to checked/with-icon).
-            ApplyIcons(IconToggle?.IsChecked ?? false);
+            ApplyIcons(
+                LeftIconToggle?.IsChecked ?? false,
+                RightIconToggle?.IsChecked ?? false);
 
             this.DispatcherQueue.TryEnqueue(() =>
             {
@@ -52,7 +56,9 @@ public sealed partial class ButtonPage : Page
     }
 
     private void IconToggle_Changed(object sender, RoutedEventArgs e) =>
-        ApplyIcons((sender as CheckBox)?.IsChecked ?? false);
+        ApplyIcons(
+            LeftIconToggle?.IsChecked ?? false,
+            RightIconToggle?.IsChecked ?? false);
 
     private void InteractiveButton_Click(object sender, RoutedEventArgs e)
     {
@@ -60,34 +66,60 @@ public sealed partial class ButtonPage : Page
             LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Clicked", "Clicked: {0}", button.Content);
     }
 
-    /// <summary>Adds a trailing chevron to every interactive specimen when
-    /// <paramref name="show"/> is true, or clears it (text-only) when false.
-    /// Demonstrates that the button icon is optional.</summary>
-    private void ApplyIcons(bool show)
+    /// <summary>Sets independently optional leading and trailing icons on every live specimen.
+    /// Either slot may be empty, so a pure-text button remains a first-class configuration.</summary>
+    private void ApplyIcons(bool showLeft, bool showRight)
     {
-        SetRightIcon(PrimaryLargeDemo, show, 10);
-        SetRightIcon(PrimarySmallDemo, show, 8);
-        SetRightIcon(SecondaryLargeDemo, show, 10);
-        SetRightIcon(SecondarySmallDemo, show, 8);
-        SetRightIcon(TertiaryLargeDemo, show, 10);
-        SetRightIcon(TertiarySmallDemo, show, 8);
-        SetRightIcon(DefaultStyleDemo, show, 10);
+        SetIcons(PrimaryLargeDemo, showLeft, showRight, 20);
+        SetIcons(PrimarySmallDemo, showLeft, showRight, 16);
+        SetIcons(SecondaryLargeDemo, showLeft, showRight, 20);
+        SetIcons(SecondarySmallDemo, showLeft, showRight, 16);
+        SetIcons(TertiaryLargeDemo, showLeft, showRight, 20);
+        SetIcons(TertiarySmallDemo, showLeft, showRight, 16);
+        SetIcons(DefaultStyleDemo, showLeft, showRight, 20);
     }
 
-    private static void SetRightIcon(EtherButton? button, bool show, double size)
+    private static void SetIcons(EtherButton? button, bool showLeft, bool showRight, double size)
     {
         if (button is null)
             return;
 
-        // Foreground left unset so the icon inherits the slot's per-variant colour from
-        // the control template (white on Primary, ink on Secondary/Tertiary).
-        button.RightIcon = show
-            ? new FontIcon
-            {
-                Glyph = "\uE72A", // ChevronRight (Segoe MDL2 Assets)
-                FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                FontSize = size,
-            }
-            : null;
+        // Foreground stays unset so each template supplies the appropriate Primary,
+        // Secondary, or Tertiary colour. Callers may supply any IconElement instead.
+        button.LeftIcon = showLeft ? CreateLibraryChevron("IconChevronLeft", size) : null;
+        button.RightIcon = showRight ? CreateLibraryChevron("IconChevronRight", size) : null;
+    }
+
+    private static PathIcon CreateLibraryChevron(string resourceKey, double size)
+    {
+        var iconResources = MergedResourceDictionaries.Find(
+            Application.Current.Resources, "EtherIconGeometries.xaml", resourceKey)
+            ?? throw new InvalidOperationException($"Ether icon dictionary for '{resourceKey}' was not found.");
+        if (iconResources[resourceKey] is not Style iconStyle)
+            throw new InvalidOperationException($"Ether icon resource '{resourceKey}' was not found.");
+
+        // The icon dictionary owns the geometry.  Do not attach the same Style
+        // instance to several live PathIcons: WinUI can retain the Style's
+        // Freezable Data value on the first consumer, leaving later buttons blank.
+        // Clone the library geometry for each slot while keeping the source of
+        // truth in EtherIconGeometries.xaml.
+        var dataSetter = iconStyle.Setters
+            .OfType<Setter>()
+            .FirstOrDefault(setter => setter.Property == PathIcon.DataProperty);
+        if (dataSetter?.Value is not Geometry geometry)
+            throw new InvalidOperationException($"Ether icon resource '{resourceKey}' has no geometry data.");
+
+        try
+        {
+            var clonedGeometry = (Geometry)XamlReader.Load(
+                $"<Geometry xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{geometry}</Geometry>");
+            return new PathIcon { Data = clonedGeometry, Width = size, Height = size };
+        }
+        catch (Exception)
+        {
+            // Keep the Gallery usable if a platform build cannot round-trip the
+            // Geometry representation; the library style remains the fallback.
+            return new PathIcon { Style = iconStyle, Width = size, Height = size };
+        }
     }
 }

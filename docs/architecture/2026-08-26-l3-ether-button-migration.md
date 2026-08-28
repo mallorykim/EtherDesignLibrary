@@ -4,12 +4,14 @@ Date: 2026-08-26
 Status: preview implementation evidence, not stable-release readiness
 
 `EtherButton` is the first L3 control migrated onto the L2 `EtherProgressBar` exemplar
-contract. It remains a native `Button` subclass with a hand cursor and an optional trailing
-`RightIcon`. It does not add an indeterminate mode or animation APIs.
+contract. It remains a native `Button` subclass with a hand cursor and independently optional
+leading (`LeftIcon`) and trailing (`RightIcon`) `IconElement` slots. It does not add an
+indeterminate mode or animation APIs.
 
-**Default visual:** Primary medium (`EtherButtonVariant.Primary` + `EtherButtonSize.Large`),
-matching `EtherButtonPrimary` (MinHeight 40, padding `16,10,16,10`, font size 14). Call sites
-that set an explicit named `Style` are unchanged.
+**Default visual:** Figma "Default" mapped to the existing public Primary large API
+(`EtherButtonVariant.Primary` + `EtherButtonSize.Large`), matching `EtherButtonPrimary`
+(minimum width `82EPX`, height `46EPX`, padding `12EPX`, font size `14EPX`, 4EPX radius). Existing call sites that set an
+explicit named `Style` are unchanged.
 
 ## Implemented contract
 
@@ -18,9 +20,10 @@ that set an explicit named `Style` are unchanged.
 - The six named styles (`EtherButtonPrimary` / `PrimarySmall` / `Secondary` /
   `SecondarySmall` / `Tertiary` / `TertiarySmall`) remain public keys. `Variant`/`Size`
   selection still resolves those same keys.
-- The component declares the `RightIcon` template part plus CommonStates, FocusStates, and
-  RightIconStates. Trailing-icon visibility is driven with `VisualStateManager`; the previous
-  `RightIconVisibility` dependency property is removed (preview/unshipped API).
+- The component declares `LeftIcon` and `RightIcon` template parts plus CommonStates,
+  FocusStates, and independent icon-state groups. Each icon slot is driven with
+  `VisualStateManager`; the previous `RightIconVisibility` dependency property is removed
+  (preview/unshipped API).
   `PublicAPI.Unshipped.txt` is the current surface, not a removal ledger; the contract script
   rejects the identifier if it returns.
 - Light, Dark, and HighContrast expose the same 18 `EtherButton*` component resources. The
@@ -37,8 +40,8 @@ that set an explicit named `Style` are unchanged.
 | --- | --- | --- | --- |
 | Base type | `Button` | `Button` | Native interaction, click, command, and CommonStates/FocusStates are reused. |
 | Default style | `DefaultStyleKey` + generic implicit style | Same pattern via `DefaultEtherButtonStyle` | Matches the L2 exemplar and WinUI templated-control guidance. |
-| Content | `ContentPresenter` | Label `TextBlock` + optional `RightIcon` slot | Custom layout (optical nudge, trailing icon) is an Ether visual, not a WinUI template clone. |
-| Right icon | Not a first-class `Button` API (`AppBarButton.Icon` is the closest relative) | `RightIcon` + RightIconStates | Kept; collapsing the empty slot is required to preserve current visuals. |
+| Content | `ContentPresenter` | Label + optional `LeftIcon` / `RightIcon` slots | Custom layout (optical nudge and independent icon slots) is an Ether visual, not a WinUI template clone. |
+| Icons | Not a first-class `Button` API (`AppBarButton.Icon` is the closest relative) | `LeftIcon` + `RightIcon` | Both slots collapse independently, preserving pure-text buttons and allowing any `IconElement`. |
 | Indeterminate | N/A | N/A | Not invented. |
 
 A line-by-line template clone of WinUI `Button` is deferred: Ether's three visual variants and
@@ -48,9 +51,10 @@ optical label nudge are product design, not missing Fluent chrome.
 
 The unpackaged NuGet consumer fixture mounts default, named-style, and Secondary `EtherButton`
 instances on a UI thread. Its `button` marker records keyed default-style resolution (Primary
-medium MinHeight/FontSize/template), the `RightIcon` part, both RightIconStates, collapse
-proof, automation name, and Light/Dark Secondary background/border rebind (Primary fills are
-the same Blue600/Gray0 pair in both themes, so Secondary border is the differing pair).
+Default dimensions/typography/template), both optional icon parts and their independent state
+transitions/collapse proof, automation name, and Light/Dark Secondary background/border rebind
+(Primary fills are the same Blue600/Gray0 pair in both themes, so Secondary border is the
+differing pair).
 `Verify-EtherButtonContract.ps1` additionally verifies metadata, keyed/implicit/named styles,
 theme-key symmetry, High Contrast system resources, no literal template hex colors, and the
 required runtime evidence fields.
@@ -61,5 +65,7 @@ themes. Formal Appium and Accessibility Insights coverage remain L4 work. The re
 known frozen global-token High Contrast deficit remains a release blocker; this component does
 not alter those tokens or claim stable readiness.
 
-Tertiary styles override `MinHeight` to `0` so BasedOn `DefaultEtherButtonStyle` does not
-inherit the Primary 40px minimum; that preserves the previous auto-height tertiary layout.
+All three variants retain the Figma 46EPX Default / 32EPX Small hit targets. The existing public
+`Large` enum name is therefore a compatibility name for Figma's "Default" size; no API rename
+is needed. Figma documents 20EPX Default and 16EPX Small icon instances, while the optional slots
+intentionally preserve each caller-supplied `IconElement` size and glyph.

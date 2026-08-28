@@ -10,6 +10,8 @@ EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvi
 ~EtherSandbox.Controls.EtherSwitch.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
 EtherSandbox.Controls.EtherButton
 EtherSandbox.Controls.EtherButton.EtherButton() -> void
+EtherSandbox.Controls.EtherButton.LeftIcon.get -> Microsoft.UI.Xaml.Controls.IconElement?
+EtherSandbox.Controls.EtherButton.LeftIcon.set -> void
 EtherSandbox.Controls.EtherButton.RightIcon.get -> Microsoft.UI.Xaml.Controls.IconElement?
 EtherSandbox.Controls.EtherButton.RightIcon.set -> void
 EtherSandbox.Controls.EtherButton.Size.get -> EtherSandbox.Controls.EtherButtonSize?
@@ -124,6 +126,7 @@ EtherSandbox.Converters.MultiplyConverter.MultiplyConverter() -> void
 override EtherSandbox.Controls.EtherButton.OnApplyTemplate() -> void
 override EtherSandbox.Controls.EtherSegmentedControl.OnApplyTemplate() -> void
 static readonly EtherSandbox.Controls.EtherButton.RightIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherButton.LeftIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherButton.SizeProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherButton.VariantProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherDropdown.MaxVisibleItemsProperty -> Microsoft.UI.Xaml.DependencyProperty!

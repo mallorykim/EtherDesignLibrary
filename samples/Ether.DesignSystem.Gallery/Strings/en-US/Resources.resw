@@ -62,6 +62,9 @@
     <value>Updated primary, secondary, and tertiary buttons in large and small sizes. Hover, pressed, and disabled treatments are shown side by side for quick comparison.</value>
   </data>
   <data name="GalleryViewsControlsButtonPage010.Content" xml:space="preserve">
+    <value>Leading icon</value>
+  </data>
+  <data name="GalleryViewsControlsButtonPage010a.Content" xml:space="preserve">
     <value>Trailing icon</value>
   </data>
   <data name="GalleryViewsControlsButtonPage011.Text" xml:space="preserve">

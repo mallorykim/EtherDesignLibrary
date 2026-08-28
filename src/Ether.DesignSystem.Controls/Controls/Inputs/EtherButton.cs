@@ -6,20 +6,21 @@ using Microsoft.UI.Xaml.Controls;
 namespace EtherSandbox.Controls;
 
 /// <summary>
-/// A templated <see cref="Button"/> with a hand cursor and an optional trailing
-/// <see cref="RightIcon"/>. The default visual is Primary medium
+/// A templated <see cref="Button"/> with a hand cursor and optional leading and
+/// trailing icons. The default visual is Primary medium
 /// (<see cref="EtherButtonVariant.Primary"/> + <see cref="EtherButtonSize.Large"/>)
 /// via <c>DefaultEtherButtonStyle</c>.
 /// </summary>
 /// <remarks>
 /// Set <see cref="Variant"/> and <see cref="Size"/> together to select one of the six named
-/// styles, or assign <c>Style</c> explicitly. The <c>RightIcon</c> slot is collapsed through
-/// <c>RightIconStates</c> when the icon is unset. The control uses native <see cref="Button"/>
+/// styles, or assign <c>Style</c> explicitly. Icon slots collapse independently when unset.
+/// The control uses native <see cref="Button"/>
 /// CommonStates and FocusStates; it does not add indeterminate APIs.
 /// </remarks>
 [TemplatePart(Name = BgPart, Type = typeof(Border))]
 [TemplatePart(Name = CpPart, Type = typeof(ContentPresenter))]
 [TemplatePart(Name = FocusRingPart, Type = typeof(Border))]
+[TemplatePart(Name = LeftIconPart, Type = typeof(ContentPresenter))]
 [TemplatePart(Name = RightIconPart, Type = typeof(ContentPresenter))]
 [TemplateVisualState(GroupName = CommonStatesGroup, Name = NormalState)]
 [TemplateVisualState(GroupName = CommonStatesGroup, Name = PointerOverState)]
@@ -28,6 +29,8 @@ namespace EtherSandbox.Controls;
 [TemplateVisualState(GroupName = FocusStatesGroup, Name = FocusedState)]
 [TemplateVisualState(GroupName = FocusStatesGroup, Name = UnfocusedState)]
 [TemplateVisualState(GroupName = FocusStatesGroup, Name = PointerFocusedState)]
+[TemplateVisualState(GroupName = LeftIconStatesGroup, Name = LeftIconVisibleState)]
+[TemplateVisualState(GroupName = LeftIconStatesGroup, Name = LeftIconCollapsedState)]
 [TemplateVisualState(GroupName = RightIconStatesGroup, Name = RightIconVisibleState)]
 [TemplateVisualState(GroupName = RightIconStatesGroup, Name = RightIconCollapsedState)]
 public class EtherButton : Button
@@ -35,6 +38,7 @@ public class EtherButton : Button
     private const string BgPart = "Bg";
     private const string CpPart = "Cp";
     private const string FocusRingPart = "FocusRing";
+    private const string LeftIconPart = "LeftIcon";
     private const string RightIconPart = "RightIcon";
     private const string CommonStatesGroup = "CommonStates";
     private const string NormalState = "Normal";
@@ -45,6 +49,9 @@ public class EtherButton : Button
     private const string FocusedState = "Focused";
     private const string UnfocusedState = "Unfocused";
     private const string PointerFocusedState = "PointerFocused";
+    private const string LeftIconStatesGroup = "LeftIconStates";
+    private const string LeftIconVisibleState = "LeftIconVisible";
+    private const string LeftIconCollapsedState = "LeftIconCollapsed";
     private const string RightIconStatesGroup = "RightIconStates";
     private const string RightIconVisibleState = "RightIconVisible";
     private const string RightIconCollapsedState = "RightIconCollapsed";
@@ -58,13 +65,28 @@ public class EtherButton : Button
         ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
     }
 
+    /// <summary>Identifies the <see cref="LeftIcon"/> dependency property.</summary>
+    public static readonly DependencyProperty LeftIconProperty =
+        DependencyProperty.Register(
+            nameof(LeftIcon),
+            typeof(IconElement),
+            typeof(EtherButton),
+            new PropertyMetadata(null, OnIconChanged));
+
+    /// <summary>Optional leading icon. Null = text only on the leading edge.</summary>
+    public IconElement? LeftIcon
+    {
+        get => (IconElement?)GetValue(LeftIconProperty);
+        set => SetValue(LeftIconProperty, value);
+    }
+
     /// <summary>Identifies the <see cref="RightIcon"/> dependency property.</summary>
     public static readonly DependencyProperty RightIconProperty =
         DependencyProperty.Register(
             nameof(RightIcon),
             typeof(IconElement),
             typeof(EtherButton),
-            new PropertyMetadata(null, OnRightIconChanged));
+            new PropertyMetadata(null, OnIconChanged));
 
     /// <summary>Optional trailing icon. Null = text only. Set (or replace) to show an icon.</summary>
     public IconElement? RightIcon
@@ -107,7 +129,7 @@ public class EtherButton : Button
     protected override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
-        UpdateRightIconState();
+        UpdateIconStates();
     }
 
     /// <summary>
@@ -141,13 +163,19 @@ public class EtherButton : Button
             button.Style = s;
     }
 
-    private static void OnRightIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        => ((EtherButton)d).UpdateRightIconState();
+    private static void OnIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((EtherButton)d).UpdateIconStates();
 
-    private void UpdateRightIconState()
+    private void UpdateIconStates()
     {
-        var state = RightIcon is null ? RightIconCollapsedState : RightIconVisibleState;
-        VisualStateManager.GoToState(this, state, false);
+        VisualStateManager.GoToState(
+            this,
+            LeftIcon is null ? LeftIconCollapsedState : LeftIconVisibleState,
+            false);
+        VisualStateManager.GoToState(
+            this,
+            RightIcon is null ? RightIconCollapsedState : RightIconVisibleState,
+            false);
     }
 }
 

@@ -2,7 +2,7 @@
     EtherButton.xaml = Ether Design System · Button Styles
     =======================================================
 
-    Applied to controls:EtherButton (a Button subclass with a hand cursor + optional icon).
+    Applied to controls:EtherButton (a Button subclass with a hand cursor + optional icons).
     DefaultEtherButtonStyle is Primary medium (large). The implicit style is BasedOn that key.
     Existing named Style keys remain the supported explicit contract.
 
@@ -10,12 +10,12 @@
       Default            <controls:EtherButton Content="Save changes"/>
       Primary (large)    <controls:EtherButton Style="{StaticResource EtherButtonPrimary}"      Content="Save changes"/>
       Primary (small)    <controls:EtherButton Style="{StaticResource EtherButtonPrimarySmall}" Content="Save"/>
-      Right icon         EtherButton.RightIcon — OPTIONAL, strongly-typed IconElement. Unset =
-                         text only (RightIconStates collapses the slot). Set (or replace) with
-                         any FontIcon / BitmapIcon / PathIcon / SymbolIcon to show a trailing icon:
+      Left / Right icon  EtherButton.LeftIcon and EtherButton.RightIcon — independently optional,
+                         strongly-typed IconElement slots. An unset slot is collapsed by its
+                         matching visual state; callers may supply either, both, or neither:
                            <controls:EtherButton Style="{StaticResource EtherButtonPrimary}" Content="Next">
                                <controls:EtherButton.RightIcon>
-                                   <FontIcon Glyph="&#xE72A;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
+                                    <PathIcon Style="{StaticResource IconChevronRight}" Width="20" Height="20"/>
                                </controls:EtherButton.RightIcon>
                            </controls:EtherButton>
       Secondary (large)  <controls:EtherButton Style="{StaticResource EtherButtonSecondary}"      Content="Cancel"/>
@@ -30,21 +30,18 @@
     VISUAL STATES
       CommonStates: Normal · PointerOver · Pressed · Disabled
       FocusStates:  Focused · Unfocused · PointerFocused
+      LeftIconStates:  LeftIconVisible · LeftIconCollapsed
       RightIconStates: RightIconVisible · RightIconCollapsed
 
-    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F · node 1210:1846)
-      Primary large     min=height 40 · Padding 16,10,16,10 · font 14 · radius 4
-      Primary small     min=height 32 · Padding 12,8,12,8   · font 12 · radius 4
-      Secondary large   min=height 40 · Padding 16,10,16,10 · font 14
-      Secondary small   min=height 32 · Padding 12,8,12,8   · font 12
-      Tertiary large    auto height   · Padding 4           · font 14
-      Tertiary small    auto height   · Padding 4           · font 12
+    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F · node 62075:5624)
+      Default           min-width=82EPX · 46EPX height · 12EPX padding · 14EPX font · Figma icon 20EPX · radius 4EPX
+      Small             min-width=82EPX · 32EPX height · 8EPX padding  · 12EPX font · Figma icon 16EPX · radius 4EPX
+      Icon size remains caller-controlled: the slots accept any IconElement.
 -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:EtherSandbox.Controls"
-    xmlns:converters="using:EtherSandbox.Converters">
+    xmlns:controls="using:EtherSandbox.Controls">
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
@@ -56,10 +53,10 @@
             <SolidColorBrush x:Key="EtherButtonPrimaryBorderDisabledBrush" Color="Transparent" />
             <StaticResource x:Key="EtherButtonPrimaryForegroundBrush" ResourceKey="action/primary/fg" />
             <SolidColorBrush x:Key="EtherButtonPrimaryForegroundDisabledBrush" Color="{StaticResource Gray0}" />
-            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundBrush" Color="Transparent" />
             <StaticResource x:Key="EtherButtonSecondaryBackgroundHoverBrush" ResourceKey="ActionSecondaryBgHover" />
             <StaticResource x:Key="EtherButtonSecondaryBackgroundPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
-            <StaticResource x:Key="EtherButtonSecondaryBorderBrush" ResourceKey="ActionSecondaryBorder" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBorderBrush" Color="#33011C4B" />
             <StaticResource x:Key="EtherButtonSecondaryForegroundBrush" ResourceKey="action/secondary/fg" />
             <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="Transparent" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue800}" />
@@ -76,10 +73,10 @@
             <SolidColorBrush x:Key="EtherButtonPrimaryBorderDisabledBrush" Color="Transparent" />
             <StaticResource x:Key="EtherButtonPrimaryForegroundBrush" ResourceKey="action/primary/fg" />
             <SolidColorBrush x:Key="EtherButtonPrimaryForegroundDisabledBrush" Color="{StaticResource Gray0}" />
-            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundBrush" Color="Transparent" />
             <StaticResource x:Key="EtherButtonSecondaryBackgroundHoverBrush" ResourceKey="ActionSecondaryBgHover" />
             <StaticResource x:Key="EtherButtonSecondaryBackgroundPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
-            <StaticResource x:Key="EtherButtonSecondaryBorderBrush" ResourceKey="ActionSecondaryBorder" />
+            <StaticResource x:Key="EtherButtonSecondaryBorderBrush" ResourceKey="border/default" />
             <StaticResource x:Key="EtherButtonSecondaryForegroundBrush" ResourceKey="action/secondary/fg" />
             <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="Transparent" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue800}" />
@@ -109,10 +106,6 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-    <!-- Label optical-centering nudge = FontSize x this factor (see the RenderTransform
-         on each label). Scales the nudge with size so large and small both centre. -->
-    <converters:MultiplyConverter x:Key="LabelNudge"/>
-
     <!-- ===========================================================
          CONTROL TEMPLATES  (shared by large + small style pairs)
     =============================================================== -->
@@ -135,14 +128,8 @@
                     </VisualState>
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
-                            <!-- Pre-composited disabled colours (like the radio/checkbox), NOT a
-                                 group opacity: fading the whole Border dims the fill AND the white
-                                 label together, washing the text out. Instead the fill takes the
-                                 disabled token and the label stays full-opacity white so it reads. -->
-                            <Setter Target="Bg.Background" Value="{ThemeResource EtherButtonPrimaryBackgroundDisabledBrush}"/>
-                            <Setter Target="Bg.BorderBrush" Value="{ThemeResource EtherButtonPrimaryBorderDisabledBrush}"/>
-                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherButtonPrimaryForegroundDisabledBrush}"/>
-                            <Setter Target="RightIcon.Foreground" Value="{ThemeResource EtherButtonPrimaryForegroundDisabledBrush}"/>
+                            <Setter Target="Bg.Opacity" Value="0.4"/>
+                            <Setter Target="FocusRing.Visibility" Value="Collapsed"/>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -154,6 +141,18 @@
                     </VisualState>
                     <VisualState x:Name="Unfocused"/>
                     <VisualState x:Name="PointerFocused"/>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="LeftIconStates">
+                    <VisualState x:Name="LeftIconVisible">
+                        <VisualState.Setters>
+                            <Setter Target="LeftIcon.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="LeftIconCollapsed">
+                        <VisualState.Setters>
+                            <Setter Target="LeftIcon.Visibility" Value="Collapsed"/>
+                        </VisualState.Setters>
+                    </VisualState>
                 </VisualStateGroup>
                 <VisualStateGroup x:Name="RightIconStates">
                     <VisualState x:Name="RightIconVisible">
@@ -172,33 +171,36 @@
             <Border x:Name="Bg"
                     Background="{ThemeResource EtherButtonPrimaryBackgroundBrush}"
                     BorderBrush="{ThemeResource EtherButtonPrimaryBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{StaticResource RadiusMd}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
                             Spacing="{StaticResource Spacing6}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                    <ContentPresenter x:Name="LeftIcon"
+                                      Content="{TemplateBinding LeftIcon}"
+                                      Visibility="Collapsed"
+                                      Foreground="{ThemeResource EtherButtonPrimaryForegroundBrush}"
+                                      HorizontalAlignment="Center"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalAlignment="Center"/>
                     <ContentPresenter x:Name="Cp"
                                       Content="{TemplateBinding Content}"
                                       Foreground="{ThemeResource EtherButtonPrimaryForegroundBrush}"
-                                      FontFamily="{StaticResource InterFont}"
+                                      FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
                                       FontWeight="{StaticResource WeightSemibold}"
-                                      VerticalAlignment="Center">
-                        <!-- Nudge the label down (FontSize x 0.096): XAML centers the full line
-                             box (incl. descent leading), which leaves an empty descent
-                             gap below no-descender text so it sits optically high.
-                             RenderTransform shifts only the pixels, not layout. -->
-                        <ContentPresenter.RenderTransform>
-                            <TranslateTransform Y="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource LabelNudge}, ConverterParameter=0.0962}"/>
-                        </ContentPresenter.RenderTransform>
-                    </ContentPresenter>
+                                      HorizontalAlignment="Center"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalAlignment="Center"/>
                     <!-- Optional trailing icon slot (collapses when RightIcon is unset). -->
                     <ContentPresenter x:Name="RightIcon"
                                       Content="{TemplateBinding RightIcon}"
                                       Visibility="Collapsed"
                                       Foreground="{ThemeResource EtherButtonPrimaryForegroundBrush}"
+                                      HorizontalAlignment="Center"
+                                      HorizontalContentAlignment="Center"
                                       VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
@@ -232,6 +234,7 @@
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Target="Bg.Opacity" Value="0.4"/>
+                            <Setter Target="FocusRing.Visibility" Value="Collapsed"/>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -243,6 +246,18 @@
                     </VisualState>
                     <VisualState x:Name="Unfocused"/>
                     <VisualState x:Name="PointerFocused"/>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="LeftIconStates">
+                    <VisualState x:Name="LeftIconVisible">
+                        <VisualState.Setters>
+                            <Setter Target="LeftIcon.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="LeftIconCollapsed">
+                        <VisualState.Setters>
+                            <Setter Target="LeftIcon.Visibility" Value="Collapsed"/>
+                        </VisualState.Setters>
+                    </VisualState>
                 </VisualStateGroup>
                 <VisualStateGroup x:Name="RightIconStates">
                     <VisualState x:Name="RightIconVisible">
@@ -261,32 +276,35 @@
             <Border x:Name="Bg"
                     Background="{ThemeResource EtherButtonSecondaryBackgroundBrush}"
                     BorderBrush="{ThemeResource EtherButtonSecondaryBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{StaticResource RadiusMd}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
                             Spacing="{StaticResource Spacing6}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                    <ContentPresenter x:Name="LeftIcon"
+                                      Content="{TemplateBinding LeftIcon}"
+                                      Visibility="Collapsed"
+                                      Foreground="{ThemeResource EtherButtonSecondaryForegroundBrush}"
+                                      HorizontalAlignment="Center"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalAlignment="Center"/>
                     <ContentPresenter x:Name="Cp"
                                       Content="{TemplateBinding Content}"
                                       Foreground="{ThemeResource EtherButtonSecondaryForegroundBrush}"
-                                      FontFamily="{StaticResource InterFont}"
+                                      FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
                                       FontWeight="{StaticResource WeightSemibold}"
-                                      VerticalAlignment="Center">
-                        <!-- Nudge the label down (FontSize x 0.096): XAML centers the full line
-                             box (incl. descent leading), which leaves an empty descent
-                             gap below no-descender text so it sits optically high.
-                             RenderTransform shifts only the pixels, not layout. -->
-                        <ContentPresenter.RenderTransform>
-                            <TranslateTransform Y="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource LabelNudge}, ConverterParameter=0.0962}"/>
-                        </ContentPresenter.RenderTransform>
-                    </ContentPresenter>
+                                      HorizontalAlignment="Center"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalAlignment="Center"/>
                     <ContentPresenter x:Name="RightIcon"
                                       Content="{TemplateBinding RightIcon}"
                                       Visibility="Collapsed"
                                       Foreground="{ThemeResource EtherButtonSecondaryForegroundBrush}"
+                                      HorizontalAlignment="Center"
+                                      HorizontalContentAlignment="Center"
                                       VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
@@ -310,18 +328,21 @@
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
                             <Setter Target="Cp.Foreground" Value="{ThemeResource EtherButtonTertiaryForegroundHoverBrush}"/>
+                            <Setter Target="LeftIcon.Foreground" Value="{ThemeResource EtherButtonTertiaryForegroundHoverBrush}"/>
                             <Setter Target="RightIcon.Foreground" Value="{ThemeResource EtherButtonTertiaryForegroundHoverBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
                             <Setter Target="Cp.Foreground" Value="{ThemeResource EtherButtonTertiaryForegroundPressedBrush}"/>
+                            <Setter Target="LeftIcon.Foreground" Value="{ThemeResource EtherButtonTertiaryForegroundPressedBrush}"/>
                             <Setter Target="RightIcon.Foreground" Value="{ThemeResource EtherButtonTertiaryForegroundPressedBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Target="Bg.Opacity" Value="0.4"/>
+                            <Setter Target="FocusRing.Visibility" Value="Collapsed"/>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -333,6 +354,18 @@
                     </VisualState>
                     <VisualState x:Name="Unfocused"/>
                     <VisualState x:Name="PointerFocused"/>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="LeftIconStates">
+                    <VisualState x:Name="LeftIconVisible">
+                        <VisualState.Setters>
+                            <Setter Target="LeftIcon.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="LeftIconCollapsed">
+                        <VisualState.Setters>
+                            <Setter Target="LeftIcon.Visibility" Value="Collapsed"/>
+                        </VisualState.Setters>
+                    </VisualState>
                 </VisualStateGroup>
                 <VisualStateGroup x:Name="RightIconStates">
                     <VisualState x:Name="RightIconVisible">
@@ -356,25 +389,28 @@
                             Spacing="{StaticResource Spacing6}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                    <ContentPresenter x:Name="LeftIcon"
+                                      Content="{TemplateBinding LeftIcon}"
+                                      Visibility="Collapsed"
+                                      Foreground="{ThemeResource EtherButtonTertiaryForegroundBrush}"
+                                      HorizontalAlignment="Center"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalAlignment="Center"/>
                     <ContentPresenter x:Name="Cp"
                                       Content="{TemplateBinding Content}"
                                       Foreground="{ThemeResource EtherButtonTertiaryForegroundBrush}"
                                       FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
                                       FontWeight="{StaticResource WeightSemibold}"
-                                      VerticalAlignment="Center">
-                        <!-- Nudge the label down (FontSize x 0.096): XAML centers the full line
-                             box (incl. descent leading), which leaves an empty descent
-                             gap below no-descender text so it sits optically high.
-                             RenderTransform shifts only the pixels, not layout. -->
-                        <ContentPresenter.RenderTransform>
-                            <TranslateTransform Y="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource LabelNudge}, ConverterParameter=0.0962}"/>
-                        </ContentPresenter.RenderTransform>
-                    </ContentPresenter>
+                                      HorizontalAlignment="Center"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalAlignment="Center"/>
                     <ContentPresenter x:Name="RightIcon"
                                       Content="{TemplateBinding RightIcon}"
                                       Visibility="Collapsed"
                                       Foreground="{ThemeResource EtherButtonTertiaryForegroundBrush}"
+                                      HorizontalAlignment="Center"
+                                      HorizontalContentAlignment="Center"
                                       VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
@@ -394,9 +430,11 @@
     =============================================================== -->
 
     <Style x:Key="DefaultEtherButtonStyle" TargetType="controls:EtherButton">
-        <Setter Property="MinHeight"                  Value="{StaticResource Spacing40}"/>
-        <Setter Property="Padding"                    Value="16,10,16,10"/>
+        <Setter Property="MinWidth"                   Value="82"/>
+        <Setter Property="MinHeight"                  Value="46"/>
+        <Setter Property="Padding"                    Value="12"/>
         <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
+        <Setter Property="BorderThickness"            Value="1"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>
@@ -411,36 +449,41 @@
 
     <Style x:Key="EtherButtonPrimarySmall" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
-        <Setter Property="MinHeight" Value="{StaticResource Spacing32}"/>
-        <Setter Property="Padding"   Value="12,8,12,8"/>
+        <Setter Property="MinWidth"  Value="82"/>
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="Padding"   Value="8"/>
         <Setter Property="FontSize"  Value="{StaticResource Size12}"/>
     </Style>
 
     <Style x:Key="EtherButtonSecondary" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
+        <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="Template" Value="{StaticResource EtherButtonSecondaryTemplate}"/>
     </Style>
 
     <Style x:Key="EtherButtonSecondarySmall" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
-        <Setter Property="MinHeight" Value="{StaticResource Spacing32}"/>
-        <Setter Property="Padding"   Value="12,8,12,8"/>
+        <Setter Property="MinWidth"  Value="82"/>
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="Padding"   Value="8"/>
         <Setter Property="FontSize"  Value="{StaticResource Size12}"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Template"  Value="{StaticResource EtherButtonSecondaryTemplate}"/>
     </Style>
 
     <Style x:Key="EtherButtonTertiary" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
-        <Setter Property="MinHeight" Value="0"/>
-        <Setter Property="Padding"   Value="{StaticResource Padding4}"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template"  Value="{StaticResource EtherButtonTertiaryTemplate}"/>
     </Style>
 
     <Style x:Key="EtherButtonTertiarySmall" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
-        <Setter Property="MinHeight" Value="0"/>
-        <Setter Property="Padding"   Value="{StaticResource Padding4}"/>
+        <Setter Property="MinWidth"  Value="82"/>
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="Padding"   Value="8"/>
         <Setter Property="FontSize"  Value="{StaticResource Size12}"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template"  Value="{StaticResource EtherButtonTertiaryTemplate}"/>
     </Style>
 

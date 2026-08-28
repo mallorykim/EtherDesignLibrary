@@ -46,6 +46,7 @@ Assert-Contains $control 'DefaultStyleKey\s*=\s*typeof\(EtherButton\)' 'EtherBut
 if ($control -match '(?m)^\s*(MinHeight|Padding|FontSize)\s*=') {
     throw 'EtherButton constructor must not assign its default visual setters; the keyed style owns them.'
 }
+Assert-Contains $control "TemplatePart\(Name = .*LeftIcon" 'EtherButton TemplatePart contract for LeftIcon'
 Assert-Contains $control "TemplatePart\(Name = .*RightIcon" 'EtherButton TemplatePart contract for RightIcon'
 Assert-Contains $control "TemplatePart\(Name = .*Cp" 'EtherButton TemplatePart contract for Cp'
 foreach ($state in 'Normal', 'PointerOver', 'Pressed', 'Disabled') {
@@ -54,10 +55,14 @@ foreach ($state in 'Normal', 'PointerOver', 'Pressed', 'Disabled') {
 foreach ($state in 'Focused', 'Unfocused', 'PointerFocused') {
     Assert-Contains $control "TemplateVisualState\(GroupName = FocusStatesGroup, Name = ${state}State\)" "EtherButton TemplateVisualState contract for FocusStates/$state"
 }
+foreach ($state in 'LeftIconVisible', 'LeftIconCollapsed') {
+    Assert-Contains $control "TemplateVisualState\(GroupName = LeftIconStatesGroup, Name = ${state}State\)" "EtherButton TemplateVisualState contract for LeftIconStates/$state"
+}
 foreach ($state in 'RightIconVisible', 'RightIconCollapsed') {
     Assert-Contains $control "TemplateVisualState\(GroupName = RightIconStatesGroup, Name = ${state}State\)" "EtherButton TemplateVisualState contract for RightIconStates/$state"
 }
-Assert-Contains $control 'VisualStateManager\.GoToState\(this, state, false\)' 'EtherButton RightIcon state transition'
+Assert-Contains $control 'LeftIcon is null \? LeftIconCollapsedState : LeftIconVisibleState' 'EtherButton LeftIcon state transition'
+Assert-Contains $control 'RightIcon is null \? RightIconCollapsedState : RightIconVisibleState' 'EtherButton RightIcon state transition'
 if ($control -match '\.Visibility\s*=') {
     throw 'EtherButton must drive RightIcon visibility with VisualStateManager, not direct Visibility assignments.'
 }
@@ -77,7 +82,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherButton is missing its implicit style BasedOn DefaultEtherButtonStyle.'
 }
-foreach ($setter in 'MinHeight', 'Padding', 'FontSize', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
+foreach ($setter in 'MinWidth', 'MinHeight', 'Padding', 'FontSize', 'BorderThickness', 'HorizontalContentAlignment', 'VerticalContentAlignment', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherButtonStyle is missing its $setter setter."
     }
@@ -96,9 +101,29 @@ if ($templates.Count -lt 3) {
 }
 $xamlText = Get-Content -LiteralPath $xamlPath -Raw
 if ($xamlText -match 'FontFamily="Inter"') {
-    throw 'EtherButton templates must use {StaticResource InterFont}, not the system family name Inter.'
+    throw 'EtherButton templates must use the packaged InstrumentSans resource, not the system family name Inter.'
 }
-Assert-Contains $xamlText 'FontFamily="\{StaticResource InterFont\}"' 'EtherButton primary/secondary templates use packaged InterFont'
+foreach ($measurement in @(
+    @{ Style = $keyedStyle; Property = 'MinWidth'; Value = '82' },
+    @{ Style = $keyedStyle; Property = 'MinHeight'; Value = '46' },
+    @{ Style = $keyedStyle; Property = 'Padding'; Value = '12' },
+    @{ Style = $keyedStyle; Property = 'FontSize'; Value = '{StaticResource Size14}' }
+)) {
+    $setter = $measurement.Style.SelectSingleNode("./*[local-name()='Setter' and @Property='$($measurement.Property)']")
+    if ($null -eq $setter -or $setter.GetAttribute('Value') -ne $measurement.Value) {
+        throw "DefaultEtherButtonStyle must set $($measurement.Property) to Figma value '$($measurement.Value)'."
+    }
+}
+Assert-Contains $xamlText 'FontFamily="\{StaticResource InstrumentSans\}"' 'EtherButton templates use packaged InstrumentSans'
+if ($xamlText -match 'Segoe MDL2|FontIcon') {
+    throw 'EtherButton must not document or embed system glyph icons; use the DDS2 PathIcon library.'
+}
+Assert-Contains $xamlText 'Style="\{StaticResource IconChevronRight\}" Width="20" Height="20"' 'EtherButton library icon example uses 20EPX DDS2 PathIcon'
+Assert-Contains $xamlText 'CornerRadius="\{StaticResource RadiusSm\}"' 'EtherButton Primary and Secondary Figma 4px radius'
+Assert-Contains $xamlText 'CornerRadius="\{StaticResource radius/control-sm\}"' 'EtherButton Tertiary Figma 4px radius alias'
+if ($xamlText -match 'LabelNudge|RenderTransform') {
+    throw 'EtherButton label must remain geometrically centered; optical RenderTransform nudges are not allowed.'
+}
 foreach ($template in $templates) {
     if ($template.OuterXml -match '#[0-9A-Fa-f]{3,8}') {
         throw 'EtherButton ControlTemplate contains a literal hex color; only component resources may carry color values.'
@@ -126,6 +151,37 @@ foreach ($template in $templates) {
             $_.GetAttribute('Name', $xamlNamespace) -eq $state
         }).Count -ne 1) {
             throw "EtherButton template is missing FocusStates/$state."
+        }
+    }
+    $contentGroup = @($template.SelectNodes(".//*[local-name()='StackPanel']") | Where-Object {
+        $_.GetAttribute('Orientation') -eq 'Horizontal'
+    })[0]
+    if ($null -eq $contentGroup) {
+        throw 'EtherButton template must use a horizontal content group for icons and label.'
+    }
+    if ($contentGroup.GetAttribute('HorizontalAlignment') -ne '{TemplateBinding HorizontalContentAlignment}' -or
+        $contentGroup.GetAttribute('VerticalAlignment') -ne '{TemplateBinding VerticalContentAlignment}') {
+        throw 'EtherButton content group must be centered through both content-alignment template bindings.'
+    }
+    foreach ($partName in 'LeftIcon', 'Cp', 'RightIcon') {
+        $part = @($contentGroup.SelectNodes("./*[local-name()='ContentPresenter']") | Where-Object {
+            $_.GetAttribute('Name', $xamlNamespace) -eq $partName
+        })[0]
+        if ($null -eq $part -or $part.GetAttribute('VerticalAlignment') -ne 'Center') {
+            throw "EtherButton $partName must be vertically centered within the horizontal content group."
+        }
+    }
+    $disabled = @($template.SelectNodes(".//*[local-name()='VisualState']") | Where-Object {
+        $_.GetAttribute('Name', $xamlNamespace) -eq 'Disabled'
+    })[0]
+    if ($disabled.OuterXml -notmatch 'Target="FocusRing.Visibility" Value="Collapsed"') {
+        throw 'EtherButton Disabled state must collapse FocusRing.'
+    }
+    foreach ($state in 'LeftIconVisible', 'LeftIconCollapsed') {
+        if (@($template.SelectNodes(".//*[local-name()='VisualState']") | Where-Object {
+            $_.GetAttribute('Name', $xamlNamespace) -eq $state
+        }).Count -ne 1) {
+            throw "EtherButton template is missing LeftIconStates/$state."
         }
     }
     foreach ($state in 'RightIconVisible', 'RightIconCollapsed') {
@@ -172,7 +228,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
 }
 
 $fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
-foreach ($evidence in 'DefaultEtherButtonStyle', 'RightIconVisible', 'RightIconCollapsed', 'ButtonVerification', 'button = result\?\.Button') {
+foreach ($evidence in 'DefaultEtherButtonStyle', 'LeftIconVisible', 'LeftIconCollapsed', 'RightIconVisible', 'RightIconCollapsed', 'ButtonVerification', 'button = result\?\.Button') {
     Assert-Contains $fixture $evidence "EtherButton consumer runtime evidence for $evidence"
 }
 

@@ -24,17 +24,37 @@ internal static partial class RuntimeVerification
         button.UpdateLayout();
         secondaryButton.UpdateLayout();
 
-        if (defaultButton.MinHeight != 40d || defaultButton.FontSize != 14d || defaultButton.Template is null)
+        if (defaultButton.MinWidth != 82d || defaultButton.MinHeight != 46d || defaultButton.FontSize != 14d || defaultButton.Template is null)
         {
-            throw new InvalidOperationException("The keyed EtherButton style did not apply its default Primary medium setters and template.");
+            throw new InvalidOperationException("The keyed EtherButton style did not apply its default Figma dimensions, typography, and template.");
         }
 
+        var leftIcon = GetTemplatePart<ContentPresenter>(button, "LeftIcon", nameof(EtherButton));
         var rightIcon = GetTemplatePart<ContentPresenter>(button, "RightIcon", nameof(EtherButton));
         var secondaryBackground = GetTemplatePart<Border>(secondaryButton, "Bg", nameof(EtherButton));
-        var templateParts = new[] { "RightIcon" };
+        var templateParts = new[] { "LeftIcon", "RightIcon" };
+        var leftIconStates = new List<string>();
         var rightIconStates = new List<string>();
 
-        button.RightIcon = new FontIcon { Glyph = "\uE72A", FontFamily = new FontFamily("Segoe MDL2 Assets"), FontSize = 10 };
+        button.LeftIcon = CreateLibraryChevron("IconChevronLeft", 20);
+        button.UpdateLayout();
+        if (leftIcon.Visibility != Visibility.Visible)
+        {
+            throw new InvalidOperationException("The 'LeftIconVisible' LeftIconStates transition did not show the leading icon slot.");
+        }
+
+        leftIconStates.Add("LeftIconVisible");
+
+        button.LeftIcon = null;
+        button.UpdateLayout();
+        if (leftIcon.Visibility != Visibility.Collapsed)
+        {
+            throw new InvalidOperationException("The 'LeftIconCollapsed' LeftIconStates transition did not collapse the leading icon slot.");
+        }
+
+        leftIconStates.Add("LeftIconCollapsed");
+
+        button.RightIcon = CreateLibraryChevron("IconChevronRight", 20);
         button.UpdateLayout();
         if (rightIcon.Visibility != Visibility.Visible)
         {
@@ -70,14 +90,42 @@ internal static partial class RuntimeVerification
 
         return new ButtonVerification(
             true,
+            defaultButton.MinWidth,
             defaultButton.MinHeight,
             defaultButton.FontSize,
             templateParts,
+            leftIconStates.ToArray(),
             rightIconStates.ToArray(),
+            leftIcon.Visibility == Visibility.Collapsed,
             rightIcon.Visibility == Visibility.Collapsed,
             peer.GetName(),
             lightTemplateBrushColors,
             darkTemplateBrushColors);
+    }
+
+    private static PathIcon CreateLibraryChevron(string resourceKey, double size)
+    {
+        var iconStyle = FindResourceStyle(Application.Current.Resources, "EtherIconGeometries.xaml", resourceKey)
+            ?? throw new InvalidOperationException($"Ether icon resource '{resourceKey}' was not found.");
+        return new PathIcon { Style = iconStyle, Width = size, Height = size };
+    }
+
+    private static Style? FindResourceStyle(ResourceDictionary resources, string dictionaryName, string resourceKey)
+    {
+        foreach (var dictionary in resources.MergedDictionaries)
+        {
+            if (dictionary.Source?.OriginalString.EndsWith(dictionaryName, StringComparison.OrdinalIgnoreCase) == true &&
+                dictionary.TryGetValue(resourceKey, out var value) && value is Style style)
+                return style;
+
+            var nested = FindResourceStyle(dictionary, dictionaryName, resourceKey);
+            if (nested is not null)
+                return nested;
+        }
+
+        return resources.TryGetValue(resourceKey, out var direct) && direct is Style directStyle
+            ? directStyle
+            : null;
     }
 
     private static async Task<string[]> GetButtonTemplateBrushColorsAsync(

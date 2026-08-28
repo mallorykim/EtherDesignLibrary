@@ -11,13 +11,19 @@
         Description="Updated primary, secondary, and tertiary buttons in large and small sizes. Hover, pressed, and disabled treatments are shown side by side for quick comparison.">
 
         <views:ComponentPage.InteractiveControls>
-            <!-- Trailing icon is optional; this checkbox adds / removes it on every specimen
-                 (code-behind sets or clears each EtherButton.RightIcon). -->
-<controls:EtherCheckbox x:Uid="GalleryViewsControlsButtonPage010" x:Name="IconToggle"
-                      Content="Trailing icon"
-                      IsChecked="True"
-                      Checked="IconToggle_Changed"
-                      Unchecked="IconToggle_Changed"/>
+            <!-- Icon slots are independently optional; the live specimen can show neither,
+                 either, or both without changing its Button variant. -->
+            <StackPanel Orientation="Horizontal" Spacing="12">
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsButtonPage010" x:Name="LeftIconToggle"
+                          Content="Leading icon"
+                          IsChecked="True"
+                          Checked="IconToggle_Changed"
+                          Unchecked="IconToggle_Changed"/>
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsButtonPage010a" x:Name="RightIconToggle"
+                          Content="Trailing icon"
+                          Checked="IconToggle_Changed"
+                          Unchecked="IconToggle_Changed"/>
+            </StackPanel>
         </views:ComponentPage.InteractiveControls>
 
         <views:ComponentPage.InteractiveContent>
