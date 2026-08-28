@@ -191,6 +191,8 @@ public sealed class EtherSlider : RangeBase
 
     private void UpdateBarLayout()
     {
+        UpdateEnabledAppearance();
+
         if (_barCanvas is not Canvas canvas || _knob is null || _bars.Length != BarCount)
             return;
 
@@ -255,6 +257,17 @@ public sealed class EtherSlider : RangeBase
         }
 
         UpdateBarLayout();
+    }
+
+    private void UpdateEnabledAppearance()
+    {
+        // RangeBase already prevents interaction while disabled. Dim the entire
+        // rendered value (ticks, knob, and label) as well, so the visual state
+        // communicates that same contract instead of looking interactive.
+        if (_barCanvas is not null)
+            _barCanvas.Opacity = IsEnabled ? 1d : 0.4d;
+        if (_valueText is not null)
+            _valueText.Opacity = IsEnabled ? 1d : 0.4d;
     }
 
     private void Canvas_PointerPressed(object sender, PointerRoutedEventArgs e)

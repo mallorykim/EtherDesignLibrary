@@ -7,6 +7,7 @@
 
 <views:ComponentPage x:Uid="GalleryViewsControlsSegmentedControlPage185"
         Title="Segmented Control"
+        HasDisabledToggle="True"
         Description="Updated segmented control with a functional selection model plus specimen states for default, hover, pressed, and active treatments.">
 
         <views:ComponentPage.InteractiveContent>

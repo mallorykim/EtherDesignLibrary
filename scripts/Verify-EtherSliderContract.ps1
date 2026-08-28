@@ -47,6 +47,8 @@ if ($Matches['ctor'] -match '(Minimum|Maximum|Value|SmallChange|LargeChange|UseS
 foreach ($part in $templateParts) {
     Assert-Contains $control "TemplatePart\(Name = .*${part}" "EtherSlider TemplatePart contract for $part"
 }
+Assert-Contains $control '_barCanvas\.Opacity\s*=\s*IsEnabled \? 1d : 0\.4d' 'EtherSlider disabled tick opacity treatment'
+Assert-Contains $control '_valueText\.Opacity\s*=\s*IsEnabled \? 1d : 0\.4d' 'EtherSlider disabled value-label opacity treatment'
 Assert-Contains $control 'AutomationControlType\.Slider' 'EtherSlider automation control type'
 Assert-Contains $control 'PatternInterface\.RangeValue' 'EtherSlider RangeValue pattern'
 Assert-Contains $control 'RangeValuePatternIdentifiers\.ValueProperty' 'EtherSlider RangeValue value-changed event'
@@ -139,12 +141,12 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
 }
 
 $gallery = Get-Content -LiteralPath $galleryPath -Raw
-foreach ($name in 'Interactive slider', 'Slider at 25 percent', 'Slider at 75 percent') {
+foreach ($name in 'HasDisabledToggle="True"', 'Interactive slider', 'Slider at 25 percent', 'Slider at 75 percent') {
     Assert-Contains $gallery ([regex]::Escape($name)) "EtherSlider gallery automation name '$name'"
 }
 
 $fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
-foreach ($evidence in 'DefaultEtherSliderStyle', 'GetPattern\(PatternInterface\.RangeValue\)', 'SliderVerification', 'slider = result\?\.Slider', 'DisabledLocksAutomation', 'SetValueAccepted') {
+foreach ($evidence in 'DefaultEtherSliderStyle', 'GetPattern\(PatternInterface\.RangeValue\)', 'SliderVerification', 'slider = result\?\.Slider', 'DisabledLocksAutomation', 'DisabledOpacityApplied', 'SetValueAccepted') {
     Assert-Contains $fixture $evidence "EtherSlider consumer runtime evidence for $evidence"
 }
 

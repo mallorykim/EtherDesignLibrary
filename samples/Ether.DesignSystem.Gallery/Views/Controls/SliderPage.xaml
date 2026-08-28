@@ -7,6 +7,7 @@
 
 <views:ComponentPage x:Uid="GalleryViewsControlsSliderPage206"
         Title="Slider"
+        HasDisabledToggle="True"
         Description="Bar-chart slider with interactive click-and-drag behavior and theme-aware selected bars. Sixty-three ticks fill with the component highlight brush up to the knob.">
 
         <views:ComponentPage.InteractiveContent>

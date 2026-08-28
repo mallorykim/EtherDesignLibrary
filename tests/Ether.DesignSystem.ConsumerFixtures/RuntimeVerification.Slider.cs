@@ -113,7 +113,18 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("Disabled EtherSlider did not lock the RangeValue provider.");
         }
 
+        var disabledOpacityApplied = Math.Abs(barCanvas.Opacity - 0.4d) < 0.001d &&
+            Math.Abs(valueText.Opacity - 0.4d) < 0.001d;
+        if (!disabledOpacityApplied)
+        {
+            throw new InvalidOperationException("Disabled EtherSlider did not dim its ticks and value label.");
+        }
+
         slider.IsEnabled = true;
+        if (Math.Abs(barCanvas.Opacity - 1d) > 0.001d || Math.Abs(valueText.Opacity - 1d) > 0.001d)
+        {
+            throw new InvalidOperationException("Re-enabled EtherSlider did not restore its ticks and value label opacity.");
+        }
 
         var lightTemplateBrushColors = await GetSliderTemplateBrushColorsAsync(themeRoot, slider, valueText, barCanvas, ElementTheme.Light);
         var darkTemplateBrushColors = await GetSliderTemplateBrushColorsAsync(themeRoot, slider, valueText, barCanvas, ElementTheme.Dark);
@@ -140,6 +151,7 @@ internal static partial class RuntimeVerification
             rangeValue.Value,
             setValueAccepted,
             disabledLocksAutomation,
+            disabledOpacityApplied,
             valueChangeExercised,
             formattedValue,
             lightTemplateBrushColors,
