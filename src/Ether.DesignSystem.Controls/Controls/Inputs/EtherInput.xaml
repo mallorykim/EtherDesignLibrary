@@ -1,38 +1,30 @@
 <!--
     Ether Design System InputContainer (single-line text field)
 
-    Figma source: ursRC201v8IiVeafliI45F, node 60582:847 (spec-sheet-input-container)
+    Figma source: ursRC201v8IiVeafliI45F
+      Light set 62102:10891 · Dark specimens 62110:12110–12114
 
-    SPEC (literal per the spec sheet — fill remains component-local, not a frozen
-    EtherColors token, mirroring EtherCheckbox):
-                     Default        Hover          Active(focus)  Filled     Disabled
-      Fill           C0C8CD 40%     C0C8CD 60%     C0C8CD 40%     40%        40%
-      Border         #000000 30%    #000000 30%    #196FFF 100%   30%        30%
-      Border weight  1px            1px            1px            1px        1px
-      Text           #000000        #000000        #000000        #000000    #000000
-      Font           Inter Regular 14 (all states)
-      Corner radius  8px            Padding 16px   Opacity 100%              50%
+    STATES
+      Default / Hover / Active (focus) / Filled / Disabled
+      Default, Hover, Filled, Disabled have no stroke. Active is a 1 px
+      Blue500 (Light) / Blue400 (Dark) inside stroke on the same 1 px border
+      so focus does not jump layout. Disabled is Default colours at 50 %.
+      Filled uses the Default fill; typed text is text/primary, placeholder
+      is text/secondary. Button-Send is hidden in Figma and is not templated.
 
-    STATE MAPPING (WinUI TextBox drives these state names itself):
-      Normal      -> Default / Filled (Filled has no distinct treatment; it is
-                     just the field carrying text)
-      PointerOver -> Hover  (fill darkens 40% -> 60%; border unchanged)
-      Focused     -> Active (fill returns to 40%; border turns brand blue)
-      Disabled    -> whole control at 50% opacity. Safe as a single element
-                     opacity here: fill and border sit on ONE Border, so there
-                     is no separate-visual compositing artifact (cf. the
-                     EtherCheckbox disabled note, which had a glyph over a fill).
-
-    Alpha hex (from EtherColors header): 30%=0x4D  40%=0x66  50%=0x80  60%=0x99
-
-    Colours live in EtherInput* component theme dictionaries (Light/Dark keep the
-    previous fill literals and token aliases; High Contrast uses Windows
-    SystemColor*). DefaultEtherInputStyle owns the default setters; the implicit
-    style is BasedOn that key.
+    Light/Dark component brushes bind Color to primitive StaticResources.
+    High Contrast uses Windows SystemColor*. Layout follows WinUI 3
+    DefaultTextBoxStyle (Windows App SDK generic.xaml): BorderElement carries
+    MinHeight; ContentElement and placeholder use Margin=BorderThickness then
+    Padding. MinHeight is 48. Padding is 16,12 — Figma 16 horizontal, 12
+    vertical. The 14 px line keeps ~22 px (48 − 2 − 12 − 12) so descenders
+    are not clipped. Placeholder is a TextBlock centered in that same padded
+    slot so it sits on the same midline as typed TextBoxView text. Corner
+    radius uses RadiusMd (Figma 8px), template-bound like DefaultTextBoxStyle.
 
     LOCATION
-      This dictionary lives beside its class (Controls/EtherInput.cs) and is merged
-      explicitly from App.xaml. See the "Mechanism refinement" note in
+      This dictionary lives beside its class (Controls/EtherInput.cs) and is
+      merged explicitly from App.xaml. See the "Mechanism refinement" note in
       docs/superpowers/plans/2026-08-06-self-contained-component-authoring-plan.md.
 -->
 <ResourceDictionary
@@ -42,22 +34,22 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="EtherInputFillDefaultBrush" Color="#66C0C8CD"/>
-            <SolidColorBrush x:Key="EtherInputFillHoverBrush" Color="#99C0C8CD"/>
-            <StaticResource x:Key="EtherInputBorderBrush" ResourceKey="BorderDefault"/>
-            <StaticResource x:Key="EtherInputBorderFocusBrush" ResourceKey="border/focus"/>
-            <StaticResource x:Key="EtherInputForegroundBrush" ResourceKey="text/primary"/>
-            <StaticResource x:Key="EtherInputPlaceholderBrush" ResourceKey="TextTertiary"/>
-            <StaticResource x:Key="EtherInputSelectionHighlightBrush" ResourceKey="action/primary/bg"/>
+            <SolidColorBrush x:Key="EtherInputFillDefaultBrush" Color="{StaticResource AlphaGray40}"/>
+            <SolidColorBrush x:Key="EtherInputFillHoverBrush" Color="{StaticResource AlphaGray15}"/>
+            <SolidColorBrush x:Key="EtherInputBorderBrush" Color="{StaticResource AlphaWhite0}"/>
+            <SolidColorBrush x:Key="EtherInputBorderFocusBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherInputForegroundBrush" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="EtherInputPlaceholderBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherInputSelectionHighlightBrush" Color="{StaticResource Blue600}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="EtherInputFillDefaultBrush" Color="#40FFFFFF"/>
-            <SolidColorBrush x:Key="EtherInputFillHoverBrush" Color="#66FFFFFF"/>
-            <StaticResource x:Key="EtherInputBorderBrush" ResourceKey="BorderDefault"/>
-            <StaticResource x:Key="EtherInputBorderFocusBrush" ResourceKey="border/focus"/>
-            <StaticResource x:Key="EtherInputForegroundBrush" ResourceKey="text/primary"/>
-            <StaticResource x:Key="EtherInputPlaceholderBrush" ResourceKey="TextTertiary"/>
-            <StaticResource x:Key="EtherInputSelectionHighlightBrush" ResourceKey="action/primary/bg"/>
+            <SolidColorBrush x:Key="EtherInputFillDefaultBrush" Color="{StaticResource AlphaBlack40}"/>
+            <SolidColorBrush x:Key="EtherInputFillHoverBrush" Color="{StaticResource AlphaBlack50}"/>
+            <SolidColorBrush x:Key="EtherInputBorderBrush" Color="{StaticResource AlphaBlack0}"/>
+            <SolidColorBrush x:Key="EtherInputBorderFocusBrush" Color="{StaticResource Blue400}"/>
+            <SolidColorBrush x:Key="EtherInputForegroundBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherInputPlaceholderBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherInputSelectionHighlightBrush" Color="{StaticResource Blue600}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherInputFillDefaultBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
@@ -72,11 +64,6 @@
 
     <ControlTemplate x:Key="EtherInputTemplate" TargetType="controls:EtherInput">
         <Grid x:Name="LayoutRoot">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualStateGroup.Transitions>
@@ -101,7 +88,7 @@
 
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
-                            <!-- Hover: fill 40% -> 60%; border stays the default stroke. -->
+                            <!-- Hover: AlphaGray15 / AlphaBlack50 fill; no visible stroke. -->
                             <Setter Target="BorderElement.Background" Value="{ThemeResource EtherInputFillHoverBrush}"/>
                             <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource EtherInputBorderBrush}"/>
                         </VisualState.Setters>
@@ -109,7 +96,7 @@
 
                     <VisualState x:Name="Focused">
                         <VisualState.Setters>
-                            <!-- Active: fill returns to 40%; border turns brand blue. -->
+                            <!-- Active: Default fill; 1 px Blue500 / Blue400 stroke. -->
                             <Setter Target="BorderElement.Background" Value="{ThemeResource EtherInputFillDefaultBrush}"/>
                             <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource EtherInputBorderFocusBrush}"/>
                         </VisualState.Setters>
@@ -117,41 +104,30 @@
 
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
-                            <!-- Whole control at 50%; fill/border keep their default brushes. -->
+                            <!-- Whole control at 50%; fill and stroke stay on Default. -->
                             <Setter Target="LayoutRoot.Opacity" Value="0.5"/>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
 
-            <!-- Single Border carries both the fill and the 1px stroke. -->
+            <!-- WinUI DefaultTextBoxStyle: BorderElement owns MinHeight; the editor
+                 and placeholder sit in the same cell with Margin=BorderThickness
+                 so padding is inside the stroke, not on top of it. -->
             <Border x:Name="BorderElement"
-                    Grid.Row="1"
                     Background="{ThemeResource EtherInputFillDefaultBrush}"
                     BorderBrush="{ThemeResource EtherInputBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{StaticResource radius/control}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    BackgroundSizing="InnerBorderEdge"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    MinWidth="{TemplateBinding MinWidth}"
+                    MinHeight="{TemplateBinding MinHeight}"
                     Control.IsTemplateFocusTarget="True"/>
 
-            <!-- Placeholder sits behind the editable text; TextBox toggles its visibility. -->
-            <ContentControl x:Name="PlaceholderTextContentPresenter"
-                            Grid.Row="1"
-                            Content="{TemplateBinding PlaceholderText}"
-                            Foreground="{ThemeResource EtherInputPlaceholderBrush}"
-                            FontFamily="{StaticResource InterFont}"
-                            FontSize="{StaticResource Size14}"
-                            IsHitTestVisible="False"
-                            IsTabStop="False"
-                            Padding="{TemplateBinding Padding}"
-                            HorizontalContentAlignment="Left"
-                            VerticalContentAlignment="Center"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"/>
-
-            <!-- Required part: hosts the editable text. -->
             <ScrollViewer x:Name="ContentElement"
-                          Grid.Row="1"
+                          Margin="{TemplateBinding BorderThickness}"
                           Padding="{TemplateBinding Padding}"
+                          Foreground="{TemplateBinding Foreground}"
                           HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
                           HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                           VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
@@ -162,6 +138,24 @@
                           AutomationProperties.AccessibilityView="Raw"
                           ZoomMode="Disabled"
                           IsTabStop="False"/>
+
+            <!-- Same Margin+Padding slot as ContentElement. TextBlock top-aligns inside
+                 that slot; TextBoxView does not. Center the placeholder so Default and
+                 typed text share the field's horizontal midline. -->
+            <Grid Margin="{TemplateBinding BorderThickness}"
+                  Padding="{TemplateBinding Padding}"
+                  IsHitTestVisible="False">
+                <TextBlock x:Name="PlaceholderTextContentPresenter"
+                           VerticalAlignment="Center"
+                           Text="{TemplateBinding PlaceholderText}"
+                           TextAlignment="{TemplateBinding TextAlignment}"
+                           Foreground="{ThemeResource EtherInputPlaceholderBrush}"
+                           FontFamily="{TemplateBinding FontFamily}"
+                           FontSize="{TemplateBinding FontSize}"
+                           FontWeight="{TemplateBinding FontWeight}"
+                           TextWrapping="{TemplateBinding TextWrapping}"
+                           IsHitTestVisible="False"/>
+            </Grid>
         </Grid>
     </ControlTemplate>
 
@@ -171,9 +165,15 @@
         <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
         <Setter Property="FontSize" Value="{StaticResource Size14}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>
-        <Setter Property="Padding" Value="{StaticResource PaddingMd}"/>
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{StaticResource RadiusMd}"/>
+        <Setter Property="BackgroundSizing" Value="InnerBorderEdge"/>
         <Setter Property="MinWidth" Value="{StaticResource Spacing0}"/>
-        <Setter Property="MinHeight" Value="{StaticResource Spacing0}"/>
+        <Setter Property="MinHeight" Value="48"/>
+        <Setter Property="MaxHeight" Value="48"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+        <Setter Property="AcceptsReturn" Value="False"/>
         <Setter Property="UseSystemFocusVisuals" Value="False"/>
         <Setter Property="HighContrastAdjustment" Value="None"/>
         <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Auto"/>

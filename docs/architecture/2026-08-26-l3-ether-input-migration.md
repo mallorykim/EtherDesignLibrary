@@ -9,7 +9,12 @@ L3 `EtherButton` / `EtherCheckbox` exemplar contract. It remains a native
 indeterminate visuals, animation APIs, or a FocusStates group (focus is the
 brand-blue CommonStates border).
 
-**Default visual:** Inter Regular 14, `PaddingMd`, zero min size,
+**Default visual:** Inter Regular 14, padding `16,12` (Figma 16
+  horizontal, 12 vertical; 48 px field keeps a ~22 px line slot), MinHeight
+  and MaxHeight 48.
+  `ContentElement` uses `Margin="{TemplateBinding BorderThickness}"` like
+  `DefaultTextBoxStyle`. Placeholder is centered in that same padded slot so
+  it shares the typed text midline (`TextBlock` otherwise top-aligns).
 `UseSystemFocusVisuals=False`, existing single-border template. Call sites
 that already used the implicit style are unchanged (this control has no extra
 named styles).
@@ -22,13 +27,16 @@ named styles).
 - The component declares the template parts the template actually uses
   (`LayoutRoot`, `BorderElement`, `PlaceholderTextContentPresenter`,
   `ContentElement`) and CommonStates (Normal / PointerOver / Focused /
-  Disabled). Native `TextBox` still drives those states.
+  Disabled). Native `TextBox` still drives those states. Corner radius uses
+  `RadiusMd`; `BorderElement` template-binds `CornerRadius` like
+  `DefaultTextBoxStyle`.
 - Light, Dark, and HighContrast expose the same seven `EtherInput*` component
   resources. The template consumes those component keys only for color-bearing
-  ThemeResources. Light and Dark retain the previous fill literals and token
-  aliases (`BorderDefault`, `border/focus`, `text/primary`, `TextTertiary`,
-  `action/primary/bg`). High Contrast uses Windows `SystemColor*` dynamic
-  resources rather than changing frozen Foundation tokens.
+  ThemeResources. Light and Dark bind `Color` to primitive tokens (Figma Light
+  set `62102:10891`, Dark specimens `62110:12110`–`12114`). Default/Hover/Filled
+  stroke is `AlphaWhite0` / `AlphaBlack0`; Active is `Blue500` / `Blue400`.
+  High Contrast uses Windows `SystemColor*` dynamic resources rather than
+  changing frozen Foundation tokens.
 - Gallery specimens keep the existing state matrix and add identifiable
   automation names on the interactive, default, hover, active, filled, and
   disabled specimens.
@@ -40,6 +48,7 @@ named styles).
 | Base type | `TextBox` | `TextBox` | Native editing, placeholder, selection, and CommonStates are reused. |
 | Default style | `DefaultStyleKey` + generic implicit style | Same pattern via `DefaultEtherInputStyle` | Matches the L2 exemplar and WinUI templated-control guidance. |
 | Template parts | `ContentElement`, placeholder presenter, optional delete button / header | `ContentElement`, `PlaceholderTextContentPresenter`, `BorderElement`, `LayoutRoot` | Ether keeps the current single-border field; delete button and header/description are not in today's spec. |
+| Corner radius | `CornerRadius` on the control; `BorderElement` template-binds it | Same, default `RadiusMd` (8px) | Primitive token, not the `radius/control` alias. |
 | Focus | System focus visuals and/or FocusStates | `UseSystemFocusVisuals=False`; CommonStates `Focused` brand-blue border | Preserves today's Ether spec. |
 | Clear button | Optional `Button` part | Not present | Not invented. |
 
@@ -54,7 +63,7 @@ The unpackaged NuGet consumer fixture mounts default and interactive
 default-style resolution (`FontSize` 14 plus `UseSystemFocusVisuals=False`
 and template), template parts, all four CommonStates (hover fill, focus
 border, disabled 50% opacity), automation name, and Light/Dark placeholder
-foreground rebind (`TextTertiary` / `Gray1000` vs `Gray0`). Fill and border
+foreground rebind (`AlphaBlack70` vs `AlphaWhite70`). Fill and border
 brushes also differ by theme in the dictionaries, but CommonStates
 VisualState setters apply a local `Background`/`BorderBrush` that does not
 re-evaluate `ThemeResource` on theme change; the fixture therefore samples

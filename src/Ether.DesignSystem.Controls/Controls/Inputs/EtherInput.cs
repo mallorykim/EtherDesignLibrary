@@ -15,7 +15,7 @@ namespace EtherSandbox.Controls;
 /// </remarks>
 [TemplatePart(Name = LayoutRootPart, Type = typeof(Grid))]
 [TemplatePart(Name = BorderElementPart, Type = typeof(Border))]
-[TemplatePart(Name = PlaceholderTextContentPresenterPart, Type = typeof(ContentControl))]
+[TemplatePart(Name = PlaceholderTextContentPresenterPart, Type = typeof(TextBlock))]
 [TemplatePart(Name = ContentElementPart, Type = typeof(ScrollViewer))]
 [TemplateVisualState(GroupName = CommonStatesGroup, Name = NormalState)]
 [TemplateVisualState(GroupName = CommonStatesGroup, Name = PointerOverState)]

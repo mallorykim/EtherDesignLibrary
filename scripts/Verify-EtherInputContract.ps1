@@ -47,6 +47,8 @@ foreach ($state in 'Normal', 'PointerOver', 'Focused', 'Disabled') {
 }
 
 [xml]$xaml = Get-Content -LiteralPath $xamlPath -Raw
+$xamlRaw = Get-Content -LiteralPath $xamlPath -Raw
+Assert-Contains $xamlRaw 'Property="CornerRadius" Value="\{StaticResource RadiusMd\}"' 'EtherInput Figma 8px radius uses RadiusMd'
 $styles = @($xaml.SelectNodes("//*[local-name()='Style']"))
 $keyedStyle = @($styles | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'DefaultEtherInputStyle' })[0]
 if ($null -eq $keyedStyle) {
@@ -58,7 +60,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherInput is missing its implicit style BasedOn DefaultEtherInputStyle.'
 }
-foreach ($setter in 'Foreground', 'SelectionHighlightColor', 'FontFamily', 'FontSize', 'FontWeight', 'Padding', 'MinWidth', 'MinHeight', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
+foreach ($setter in 'Foreground', 'SelectionHighlightColor', 'FontFamily', 'FontSize', 'FontWeight', 'Padding', 'MinWidth', 'MinHeight', 'CornerRadius', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherInputStyle is missing its $setter setter."
     }
@@ -80,6 +82,10 @@ foreach ($template in $templates) {
             throw "EtherInput template references non-component ThemeResource '$themeResource'."
         }
     }
+    if ($template.OuterXml -match 'radius/control') {
+        throw 'EtherInput templates must use RadiusMd for corner radius, not the radius/control alias.'
+    }
+    Assert-Contains $template.OuterXml 'CornerRadius="\{TemplateBinding CornerRadius\}"' 'EtherInput BorderElement template-binds CornerRadius like WinUI TextBox'
     foreach ($state in 'Normal', 'PointerOver', 'Focused', 'Disabled') {
         if (@($template.SelectNodes(".//*[local-name()='VisualState']") | Where-Object {
             $_.GetAttribute('Name', $xamlNamespace) -eq $state

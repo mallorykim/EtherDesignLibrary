@@ -28,7 +28,7 @@ internal static partial class RuntimeVerification
 
         var layoutRoot = GetTemplatePart<Grid>(input, "LayoutRoot", nameof(EtherInput));
         var borderElement = GetTemplatePart<Border>(input, "BorderElement", nameof(EtherInput));
-        var placeholder = GetTemplatePart<ContentControl>(input, "PlaceholderTextContentPresenter", nameof(EtherInput));
+        var placeholder = GetTemplatePart<TextBlock>(input, "PlaceholderTextContentPresenter", nameof(EtherInput));
         GetTemplatePart<ScrollViewer>(input, "ContentElement", nameof(EtherInput));
         var templateParts = new[] { "LayoutRoot", "BorderElement", "PlaceholderTextContentPresenter", "ContentElement" };
         var commonStates = new List<string>();
@@ -103,7 +103,7 @@ internal static partial class RuntimeVerification
     private static async Task<string[]> GetInputPlaceholderBrushColorsAsync(
         FrameworkElement themeRoot,
         EtherInput input,
-        ContentControl placeholder,
+        TextBlock placeholder,
         ElementTheme theme)
     {
         themeRoot.RequestedTheme = theme;
