@@ -8,7 +8,7 @@ $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSteeringBar.xaml.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSteeringBar.xaml'
 $galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Controls\SteeringBarPage.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherSteeringBarFillBrush,EtherSteeringBarStopMarkerActiveBrush,EtherSteeringBarStopMarkerDisabledActiveBrush,EtherSteeringBarStopMarkerDisabledInactiveBrush,EtherSteeringBarStopMarkerInactiveBrush,EtherSteeringBarThumbBorderBrush,EtherSteeringBarThumbDisabledFillBrush,EtherSteeringBarThumbFillBrush,EtherSteeringBarThumbHighlightBrush,EtherSteeringBarThumbShadowFarBrush,EtherSteeringBarThumbShadowNearBrush,EtherSteeringBarThumbSheenBrush,EtherSteeringBarThumbTopHighlightBrush,EtherSteeringBarTitleForegroundBrush,EtherSteeringBarTrackBrush,EtherSteeringBarValueForegroundBrush'
@@ -135,7 +135,7 @@ foreach ($name in 'Interactive steering bar', 'Interactive steering bar with sto
     Assert-Contains $gallery ([regex]::Escape($name)) "EtherSteeringBar gallery automation name '$name'"
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'DefaultEtherSteeringBarStyle', 'GetPattern\(PatternInterface\.RangeValue\)', 'SteeringBarVerification', 'steeringBar = result\?\.SteeringBar', 'PreviewStatusLocksAutomation', 'SetValueAccepted') {
     Assert-Contains $fixture $evidence "EtherSteeringBar consumer runtime evidence for $evidence"
 }

@@ -8,7 +8,7 @@ $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSwitch.xaml.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSwitch.xaml'
 $galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Controls\ToggleSwitchPage.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherSwitchFocusBrush,EtherSwitchKnobDisabledBrush,EtherSwitchKnobFillBrush,EtherSwitchKnobFillHoverBrush,EtherSwitchKnobFillPressedBrush,EtherSwitchKnobShadow1Brush,EtherSwitchKnobShadow2Brush,EtherSwitchKnobShadow3Brush,EtherSwitchKnobStrokeBrush,EtherSwitchLabelForegroundBrush,EtherSwitchOffTrackBrush,EtherSwitchOnTrackBrush,EtherSwitchOnTrackGlowFillBrush,EtherSwitchOnTrackGlowStrokeBrush'
@@ -122,7 +122,7 @@ foreach ($name in 'Interactive toggle switch', 'Toggle switch off', 'Toggle swit
     Assert-Contains $gallery ([regex]::Escape($name)) "EtherSwitch gallery automation name '$name'"
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'ToggleSwitchVerification', 'toggleSwitch = result\?\.ToggleSwitch', 'KeyedStyleResolved', 'ImplicitStyleRejected', 'EtherSwitch') {
     Assert-Contains $fixture $evidence "EtherSwitch consumer runtime evidence for $evidence"
 }

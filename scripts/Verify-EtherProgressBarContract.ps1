@@ -7,7 +7,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherProgressBar.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherProgressBar.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 
 function Assert-Contains {
@@ -128,7 +128,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
     }
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden', 'SetValueRejected', 'LightGradientColors', 'DarkGradientColors', 'LightTemplateBrushColors', 'DarkTemplateBrushColors', 'GetPattern\(PatternInterface\.RangeValue\)', 'valuePropertyChangedSubscribed', 'RangeValuePatternIdentifiers\.ValueProperty') {
     Assert-Contains $fixture $evidence "EtherProgressBar consumer runtime evidence for $evidence"
 }

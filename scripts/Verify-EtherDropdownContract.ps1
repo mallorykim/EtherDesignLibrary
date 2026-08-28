@@ -7,7 +7,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherDropdown.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherDropdown.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherDropdownActiveStrokeBrush,EtherDropdownFillDefaultBrush,EtherDropdownFillHoverBrush,EtherDropdownFillPressedBrush,EtherDropdownFocusBrush,EtherDropdownForegroundBrush,EtherDropdownItemSelectedBrush,EtherDropdownItemSelectedHoverBrush,EtherDropdownItemSelectedPressedBrush,EtherDropdownMenuBackgroundBrush'
@@ -152,7 +152,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
     }
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'DefaultEtherDropdownStyle', 'Opened', 'Closed', 'DropdownVerification', 'dropdown = result\?\.Dropdown', 'PopupBorder', 'ScrollViewer', 'popup\.IsOpen') {
     Assert-Contains $fixture $evidence "EtherDropdown consumer runtime evidence for $evidence"
 }

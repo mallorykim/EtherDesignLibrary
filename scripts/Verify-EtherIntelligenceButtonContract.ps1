@@ -8,7 +8,7 @@ $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherIntelligenceButton.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherIntelligenceButton.xaml'
 $galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Controls\IntelligenceButtonPage.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherIntelligenceButtonBackgroundBrush,EtherIntelligenceButtonBlueGlowCoreBrush,EtherIntelligenceButtonBlueGlowMiddleBrush,EtherIntelligenceButtonBlueGlowOuterBrush,EtherIntelligenceButtonBlueGlowPressedCoreBrush,EtherIntelligenceButtonBlueGlowPressedMiddleBrush,EtherIntelligenceButtonBlueGlowPressedOuterBrush,EtherIntelligenceButtonBorderBlueBrush,EtherIntelligenceButtonBorderBrush,EtherIntelligenceButtonBorderHoverBrush,EtherIntelligenceButtonFocusStrokeBrush,EtherIntelligenceButtonForegroundBrush,EtherIntelligenceButtonPurpleGlowBrush'
@@ -152,7 +152,7 @@ foreach ($name in 'Interactive intelligence button', 'Default intelligence butto
     Assert-Contains $gallery ([regex]::Escape($name)) "EtherIntelligenceButton gallery automation name '$name'"
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'DefaultEtherIntelligenceButtonStyle', 'IntelligenceButtonVerification', 'intelligenceButton = result\?\.IntelligenceButton') {
     Assert-Contains $fixture $evidence "EtherIntelligenceButton consumer runtime evidence for $evidence"
 }

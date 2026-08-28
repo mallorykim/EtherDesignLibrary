@@ -7,7 +7,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherCheckbox.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherCheckbox.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherCheckboxCheckedFillDefaultBrush,EtherCheckboxCheckedFillHoverBrush,EtherCheckboxCheckedStrokeBrush,EtherCheckboxDisabledCheckedFillBrush,EtherCheckboxDisabledGlyphBrush,EtherCheckboxDisabledUncheckedFillBrush,EtherCheckboxDisabledUncheckedStrokeBrush,EtherCheckboxFillDefaultBrush,EtherCheckboxFillHoverBrush,EtherCheckboxFillPressedBrush,EtherCheckboxGlyphBrush,EtherCheckboxLabelBrush,EtherCheckboxStrokeBrush'
@@ -140,7 +140,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
     }
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'DefaultEtherCheckboxStyle', 'Unchecked', 'Checked', 'CheckboxVerification', 'checkbox = result\?\.Checkbox') {
     Assert-Contains $fixture $evidence "EtherCheckbox consumer runtime evidence for $evidence"
 }

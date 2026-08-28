@@ -8,7 +8,7 @@ $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherScrollBar.xaml.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherScrollBar.xaml'
 $galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Foundations\ScrollBarPage.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherScrollBarThumbBrush,EtherScrollBarThumbHoverBrush'
@@ -133,7 +133,7 @@ foreach ($name in 'Vertical scroll viewer', 'Horizontal scroll viewer') {
     Assert-Contains $gallery ([regex]::Escape($name)) "EtherScrollBar gallery automation name '$name'"
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'ScrollBarVerification', 'scrollBar = result\?\.ScrollBar', 'ImplicitStyleApplied', 'VerticalRootPresent', 'HorizontalRootPresent') {
     Assert-Contains $fixture $evidence "EtherScrollBar consumer runtime evidence for $evidence"
 }

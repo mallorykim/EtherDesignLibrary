@@ -7,7 +7,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherRadioButton.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherRadioButton.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherRadioButtonCheckedFillDefaultBrush,EtherRadioButtonCheckedFillHoverBrush,EtherRadioButtonCheckedStrokeBrush,EtherRadioButtonCircleFillDefaultBrush,EtherRadioButtonCircleFillHoverBrush,EtherRadioButtonCircleFillPressedBrush,EtherRadioButtonCircleStrokeBrush,EtherRadioButtonDisabledCheckedDotBrush,EtherRadioButtonDisabledCheckedFillBrush,EtherRadioButtonDisabledUncheckedFillBrush,EtherRadioButtonDisabledUncheckedStrokeBrush,EtherRadioButtonInnerDotBrush,EtherRadioButtonLabelBrush'
@@ -140,7 +140,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
     }
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'DefaultEtherRadioButtonStyle', 'Unchecked', 'Checked', 'RadioButtonVerification', 'radioButton = result\?\.RadioButton') {
     Assert-Contains $fixture $evidence "EtherRadioButton consumer runtime evidence for $evidence"
 }

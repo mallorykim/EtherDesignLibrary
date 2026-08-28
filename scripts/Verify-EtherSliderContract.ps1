@@ -8,7 +8,7 @@ $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSlider.xaml.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSlider.xaml'
 $galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Controls\SliderPage.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherSliderHighlightBrush,EtherSliderInactiveBrush,EtherSliderKnobBrush,EtherSliderKnobPressedBrush,EtherSliderValueForegroundBrush'
@@ -143,7 +143,7 @@ foreach ($name in 'Interactive slider', 'Slider at 25 percent', 'Slider at 75 pe
     Assert-Contains $gallery ([regex]::Escape($name)) "EtherSlider gallery automation name '$name'"
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'DefaultEtherSliderStyle', 'GetPattern\(PatternInterface\.RangeValue\)', 'SliderVerification', 'slider = result\?\.Slider', 'DisabledLocksAutomation', 'SetValueAccepted') {
     Assert-Contains $fixture $evidence "EtherSlider consumer runtime evidence for $evidence"
 }

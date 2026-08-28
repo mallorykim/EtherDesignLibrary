@@ -7,7 +7,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherButton.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherButton.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherButtonFocusStrokeBrush,EtherButtonPrimaryBackgroundBrush,EtherButtonPrimaryBackgroundDisabledBrush,EtherButtonPrimaryBackgroundHoverBrush,EtherButtonPrimaryBackgroundPressedBrush,EtherButtonPrimaryBorderBrush,EtherButtonPrimaryBorderDisabledBrush,EtherButtonPrimaryForegroundBrush,EtherButtonPrimaryForegroundDisabledBrush,EtherButtonSecondaryBackgroundBrush,EtherButtonSecondaryBackgroundHoverBrush,EtherButtonSecondaryBackgroundPressedBrush,EtherButtonSecondaryBorderBrush,EtherButtonSecondaryForegroundBrush,EtherButtonTertiaryBackgroundBrush,EtherButtonTertiaryForegroundBrush,EtherButtonTertiaryForegroundHoverBrush,EtherButtonTertiaryForegroundPressedBrush'
@@ -171,7 +171,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
     }
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'DefaultEtherButtonStyle', 'RightIconVisible', 'RightIconCollapsed', 'ButtonVerification', 'button = result\?\.Button') {
     Assert-Contains $fixture $evidence "EtherButton consumer runtime evidence for $evidence"
 }

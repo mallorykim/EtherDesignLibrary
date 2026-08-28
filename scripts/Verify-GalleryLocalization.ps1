@@ -40,7 +40,8 @@ if (Test-Path -LiteralPath $labelPage -PathType Leaf) {
 
 $strings = Get-Content -LiteralPath $stringsPath -Raw
 Assert-Contains $strings 'class GalleryStrings' 'GalleryStrings helper'
-Assert-Contains $strings 'ResourceLoader\.GetForViewIndependentUse' 'GalleryStrings uses ResourceLoader'
+Assert-Contains $strings 'new ResourceLoader\(\)' 'GalleryStrings creates a ResourceLoader compatible with the unpackaged host'
+Assert-Contains $strings '\.GetString\(key\)' 'GalleryStrings reads the requested resource key'
 Assert-Contains $strings 'CatalogKey' 'GalleryStrings catalog key helper'
 
 $catalog = Get-Content -LiteralPath $catalogPath -Raw

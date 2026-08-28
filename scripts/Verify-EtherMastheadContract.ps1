@@ -8,7 +8,7 @@ $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Navigation\EtherMasthead.xaml.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Navigation\EtherMasthead.xaml'
 $galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Navigation\MastheadPage.xaml'
-$fixturePath = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\RuntimeVerification.cs'
+$fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $controlsProjectPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Ether.DesignSystem.Controls.csproj'
 $galleryProjectPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Ether.DesignSystem.Gallery.csproj'
@@ -156,7 +156,7 @@ foreach ($name in 'Default masthead', 'Maximized masthead') {
     Assert-Contains $gallery ([regex]::Escape($name)) "EtherMasthead gallery automation name '$name'"
 }
 
-$fixture = Get-Content -LiteralPath $fixturePath -Raw
+$fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
 foreach ($evidence in 'DefaultEtherMastheadStyle', 'MastheadVerification', 'masthead = result\?\.Masthead', 'SearchVisible', 'SearchIconSlot') {
     Assert-Contains $fixture $evidence "EtherMasthead consumer runtime evidence for $evidence"
 }
