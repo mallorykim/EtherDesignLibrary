@@ -34,9 +34,12 @@
       RightIconStates: RightIconVisible · RightIconCollapsed
 
     KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F · node 62075:5624)
-      Default           min-width=82EPX · 46EPX height · 12EPX padding · 14EPX font · Figma icon 20EPX · radius 4EPX
-      Small             min-width=82EPX · 32EPX height · 8EPX padding  · 12EPX font · Figma icon 16EPX · radius 4EPX
+      Default           min-width=108EPX · 46EPX height · 20EPX horizontal / 12EPX vertical padding · 14EPX font · Figma icon 20EPX · radius 4EPX
+      Small             min-width=94EPX  · 32EPX height · 16EPX horizontal / 8EPX vertical padding · 12EPX font · Figma icon 16EPX · radius 4EPX
       Icon size remains caller-controlled: the slots accept any IconElement.
+      Horizontal padding is a deliberate 2026-08-27 product deviation from Figma (12/8EPX):
+      Figma's Default button is fixed at 108EPX wide, so its effective visual inset exceeds
+      p-12 on short labels; content-sized WinUI buttons need the extra 4EPX to match that look.
 -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -59,7 +62,7 @@
             <SolidColorBrush x:Key="EtherButtonSecondaryBorderBrush" Color="#33011C4B" />
             <StaticResource x:Key="EtherButtonSecondaryForegroundBrush" ResourceKey="action/secondary/fg" />
             <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="Transparent" />
-            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue800}" />
+            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue600}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundHoverBrush" Color="{StaticResource Blue700}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundPressedBrush" Color="{StaticResource Blue800}" />
             <StaticResource x:Key="EtherButtonFocusStrokeBrush" ResourceKey="border/focus" />
@@ -79,7 +82,7 @@
             <StaticResource x:Key="EtherButtonSecondaryBorderBrush" ResourceKey="border/default" />
             <StaticResource x:Key="EtherButtonSecondaryForegroundBrush" ResourceKey="action/secondary/fg" />
             <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="Transparent" />
-            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue800}" />
+            <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue600}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundHoverBrush" Color="{StaticResource Blue700}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundPressedBrush" Color="{StaticResource Blue800}" />
             <StaticResource x:Key="EtherButtonFocusStrokeBrush" ResourceKey="border/focus" />
@@ -128,7 +131,11 @@
                     </VisualState>
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
+                            <!-- Figma disabled is a 40% fade. *DisabledBrush keys stay in the
+                                 theme dictionaries for key symmetry (High Contrast) and are not
+                                 consumed here — swapping to those brushes would change the visual. -->
                             <Setter Target="Bg.Opacity" Value="0.4"/>
+                            <Setter Target="Stroke.Opacity" Value="0.4"/>
                             <Setter Target="FocusRing.Visibility" Value="Collapsed"/>
                         </VisualState.Setters>
                     </VisualState>
@@ -170,8 +177,6 @@
 
             <Border x:Name="Bg"
                     Background="{ThemeResource EtherButtonPrimaryBackgroundBrush}"
-                    BorderBrush="{ThemeResource EtherButtonPrimaryBorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="{StaticResource RadiusSm}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
@@ -187,6 +192,7 @@
                                       VerticalAlignment="Center"/>
                     <ContentPresenter x:Name="Cp"
                                       Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
                                       Foreground="{ThemeResource EtherButtonPrimaryForegroundBrush}"
                                       FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
@@ -204,6 +210,17 @@
                                       VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
+
+            <!-- Stroke is a sibling overlay, NOT a property of Bg: the spec's border token is
+                 semi-transparent (rgba(255,255,255,0.25)), and a Border's own BorderBrush
+                 composites against the page behind the control — over a white page a 25%-white
+                 ring is invisible. As an overlay it composites over Bg, matching Figma's
+                 inside stroke (visible light ring on the filled background). -->
+            <Border x:Name="Stroke"
+                    BorderBrush="{ThemeResource EtherButtonPrimaryBorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{StaticResource RadiusSm}"
+                    IsHitTestVisible="False"/>
 
             <Border x:Name="FocusRing"
                     Margin="-3"
@@ -234,6 +251,7 @@
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Target="Bg.Opacity" Value="0.4"/>
+                            <Setter Target="Stroke.Opacity" Value="0.4"/>
                             <Setter Target="FocusRing.Visibility" Value="Collapsed"/>
                         </VisualState.Setters>
                     </VisualState>
@@ -275,8 +293,6 @@
 
             <Border x:Name="Bg"
                     Background="{ThemeResource EtherButtonSecondaryBackgroundBrush}"
-                    BorderBrush="{ThemeResource EtherButtonSecondaryBorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="{StaticResource RadiusSm}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
@@ -292,6 +308,7 @@
                                       VerticalAlignment="Center"/>
                     <ContentPresenter x:Name="Cp"
                                       Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
                                       Foreground="{ThemeResource EtherButtonSecondaryForegroundBrush}"
                                       FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
@@ -308,6 +325,14 @@
                                       VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
+
+            <!-- See Primary: overlay stroke so the semi-transparent border token composites
+                 over the button background, not the page. -->
+            <Border x:Name="Stroke"
+                    BorderBrush="{ThemeResource EtherButtonSecondaryBorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{StaticResource RadiusSm}"
+                    IsHitTestVisible="False"/>
 
             <Border x:Name="FocusRing"
                     Margin="-3"
@@ -383,7 +408,7 @@
 
             <Border x:Name="Bg"
                     Background="{ThemeResource EtherButtonTertiaryBackgroundBrush}"
-                    CornerRadius="{StaticResource radius/control-sm}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
                             Spacing="{StaticResource Spacing6}"
@@ -398,6 +423,7 @@
                                       VerticalAlignment="Center"/>
                     <ContentPresenter x:Name="Cp"
                                       Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
                                       Foreground="{ThemeResource EtherButtonTertiaryForegroundBrush}"
                                       FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
@@ -430,9 +456,9 @@
     =============================================================== -->
 
     <Style x:Key="DefaultEtherButtonStyle" TargetType="controls:EtherButton">
-        <Setter Property="MinWidth"                   Value="82"/>
+        <Setter Property="MinWidth"                   Value="108"/>
         <Setter Property="MinHeight"                  Value="46"/>
-        <Setter Property="Padding"                    Value="12"/>
+        <Setter Property="Padding"                    Value="20,12"/>
         <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
         <Setter Property="BorderThickness"            Value="1"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -449,9 +475,9 @@
 
     <Style x:Key="EtherButtonPrimarySmall" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
-        <Setter Property="MinWidth"  Value="82"/>
+        <Setter Property="MinWidth"  Value="94"/>
         <Setter Property="MinHeight" Value="32"/>
-        <Setter Property="Padding"   Value="8"/>
+        <Setter Property="Padding"   Value="16,8"/>
         <Setter Property="FontSize"  Value="{StaticResource Size12}"/>
     </Style>
 
@@ -463,9 +489,9 @@
 
     <Style x:Key="EtherButtonSecondarySmall" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
-        <Setter Property="MinWidth"  Value="82"/>
+        <Setter Property="MinWidth"  Value="94"/>
         <Setter Property="MinHeight" Value="32"/>
-        <Setter Property="Padding"   Value="8"/>
+        <Setter Property="Padding"   Value="16,8"/>
         <Setter Property="FontSize"  Value="{StaticResource Size12}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Template"  Value="{StaticResource EtherButtonSecondaryTemplate}"/>
@@ -479,9 +505,9 @@
 
     <Style x:Key="EtherButtonTertiarySmall" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
-        <Setter Property="MinWidth"  Value="82"/>
+        <Setter Property="MinWidth"  Value="94"/>
         <Setter Property="MinHeight" Value="32"/>
-        <Setter Property="Padding"   Value="8"/>
+        <Setter Property="Padding"   Value="16,8"/>
         <Setter Property="FontSize"  Value="{StaticResource Size12}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template"  Value="{StaticResource EtherButtonTertiaryTemplate}"/>

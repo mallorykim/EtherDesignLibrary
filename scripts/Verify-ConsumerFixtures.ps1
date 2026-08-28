@@ -811,7 +811,8 @@ try {
                 (@($progressBar.lightTemplateBrushColors) -join ',') -ceq (@($progressBar.darkTemplateBrushColors) -join ',') -or
                 $null -eq $button -or
                 $button.defaultStyleResolved -ne $true -or
-                [double]$button.defaultMinHeight -ne 40 -or
+                [double]$button.defaultMinWidth -ne 108 -or
+                [double]$button.defaultMinHeight -ne 46 -or
                 [double]$button.defaultFontSize -ne 14 -or
                 @($expectedButtonTemplateParts | Where-Object { $_ -cnotin @($button.templateParts) }).Count -ne 0 -or
                 @($expectedRightIconStates | Where-Object { $_ -cnotin @($button.rightIconStates) }).Count -ne 0 -or

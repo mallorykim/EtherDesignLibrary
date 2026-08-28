@@ -18,6 +18,7 @@ namespace EtherSandbox.Controls;
 /// CommonStates and FocusStates; it does not add indeterminate APIs.
 /// </remarks>
 [TemplatePart(Name = BgPart, Type = typeof(Border))]
+[TemplatePart(Name = StrokePart, Type = typeof(Border))]
 [TemplatePart(Name = CpPart, Type = typeof(ContentPresenter))]
 [TemplatePart(Name = FocusRingPart, Type = typeof(Border))]
 [TemplatePart(Name = LeftIconPart, Type = typeof(ContentPresenter))]
@@ -36,6 +37,7 @@ namespace EtherSandbox.Controls;
 public class EtherButton : Button
 {
     private const string BgPart = "Bg";
+    private const string StrokePart = "Stroke";
     private const string CpPart = "Cp";
     private const string FocusRingPart = "FocusRing";
     private const string LeftIconPart = "LeftIcon";
@@ -159,8 +161,27 @@ public class EtherButton : Button
             _ => throw new InvalidOperationException($"Unsupported EtherButton variant/size combination: {variant}/{size}."),
         };
 
-        if (Application.Current.Resources.TryGetValue(key, out var style) && style is Style s)
-            button.Style = s;
+        var style = ResolveNamedStyle(button, key);
+        if (style is not null)
+            button.Style = style;
+    }
+
+    /// <summary>
+    /// Resolves a named style from the element's resource scope (local → parents →
+    /// application), matching WinUI <c>FindResource</c> order without throwing when absent.
+    /// </summary>
+    private static Style? ResolveNamedStyle(EtherButton button, string key)
+    {
+        for (FrameworkElement? current = button; current is not null; current = current.Parent as FrameworkElement)
+        {
+            if (current.Resources.TryGetValue(key, out var local) && local is Style localStyle)
+                return localStyle;
+        }
+
+        if (Application.Current?.Resources.TryGetValue(key, out var app) == true && app is Style appStyle)
+            return appStyle;
+
+        return null;
     }
 
     private static void OnIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

@@ -74,13 +74,13 @@
     <value>Large</value>
   </data>
   <data name="GalleryViewsControlsButtonPage013.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage014.Text" xml:space="preserve">
     <value>Small</value>
   </data>
   <data name="GalleryViewsControlsButtonPage015.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage016.Text" xml:space="preserve">
     <value>SECONDARY</value>
@@ -89,13 +89,13 @@
     <value>Large</value>
   </data>
   <data name="GalleryViewsControlsButtonPage018.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage019.Text" xml:space="preserve">
     <value>Small</value>
   </data>
   <data name="GalleryViewsControlsButtonPage020.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage021.Text" xml:space="preserve">
     <value>TERTIARY</value>
@@ -104,19 +104,19 @@
     <value>Large</value>
   </data>
   <data name="GalleryViewsControlsButtonPage023.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage024.Text" xml:space="preserve">
     <value>Small</value>
   </data>
   <data name="GalleryViewsControlsButtonPage025.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage026.Text" xml:space="preserve">
     <value>DEFAULT STYLE</value>
   </data>
   <data name="GalleryViewsControlsButtonPage027.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage028.Text" xml:space="preserve">
     <value>PRIMARY</value>
@@ -128,25 +128,25 @@
     <value>Default</value>
   </data>
   <data name="GalleryViewsControlsButtonPage031.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage032.Text" xml:space="preserve">
     <value>Hover</value>
   </data>
   <data name="GalleryViewsControlsButtonPage033.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage034.Text" xml:space="preserve">
     <value>Pressed</value>
   </data>
   <data name="GalleryViewsControlsButtonPage035.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage036.Text" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="GalleryViewsControlsButtonPage037.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage038.Text" xml:space="preserve">
     <value>SMALL</value>
@@ -155,25 +155,25 @@
     <value>Default</value>
   </data>
   <data name="GalleryViewsControlsButtonPage040.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage041.Text" xml:space="preserve">
     <value>Hover</value>
   </data>
   <data name="GalleryViewsControlsButtonPage042.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage043.Text" xml:space="preserve">
     <value>Pressed</value>
   </data>
   <data name="GalleryViewsControlsButtonPage044.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage045.Text" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="GalleryViewsControlsButtonPage046.Content" xml:space="preserve">
-    <value>Primary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage047.Text" xml:space="preserve">
     <value>SECONDARY</value>
@@ -185,25 +185,25 @@
     <value>Default</value>
   </data>
   <data name="GalleryViewsControlsButtonPage050.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage051.Text" xml:space="preserve">
     <value>Hover</value>
   </data>
   <data name="GalleryViewsControlsButtonPage052.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage053.Text" xml:space="preserve">
     <value>Pressed</value>
   </data>
   <data name="GalleryViewsControlsButtonPage054.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage055.Text" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="GalleryViewsControlsButtonPage056.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage057.Text" xml:space="preserve">
     <value>SMALL</value>
@@ -212,25 +212,25 @@
     <value>Default</value>
   </data>
   <data name="GalleryViewsControlsButtonPage059.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage060.Text" xml:space="preserve">
     <value>Hover</value>
   </data>
   <data name="GalleryViewsControlsButtonPage061.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage062.Text" xml:space="preserve">
     <value>Pressed</value>
   </data>
   <data name="GalleryViewsControlsButtonPage063.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage064.Text" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="GalleryViewsControlsButtonPage065.Content" xml:space="preserve">
-    <value>Secondary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage066.Text" xml:space="preserve">
     <value>TERTIARY</value>
@@ -242,25 +242,25 @@
     <value>Default</value>
   </data>
   <data name="GalleryViewsControlsButtonPage069.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage070.Text" xml:space="preserve">
     <value>Hover</value>
   </data>
   <data name="GalleryViewsControlsButtonPage071.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage072.Text" xml:space="preserve">
     <value>Pressed</value>
   </data>
   <data name="GalleryViewsControlsButtonPage073.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage074.Text" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="GalleryViewsControlsButtonPage075.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage076.Text" xml:space="preserve">
     <value>SMALL</value>
@@ -269,25 +269,25 @@
     <value>Default</value>
   </data>
   <data name="GalleryViewsControlsButtonPage078.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage079.Text" xml:space="preserve">
     <value>Hover</value>
   </data>
   <data name="GalleryViewsControlsButtonPage080.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage081.Text" xml:space="preserve">
     <value>Pressed</value>
   </data>
   <data name="GalleryViewsControlsButtonPage082.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsButtonPage083.Text" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="GalleryViewsControlsButtonPage084.Content" xml:space="preserve">
-    <value>Tertiary Action</value>
+    <value>Button</value>
   </data>
   <data name="GalleryViewsControlsCheckboxPage085.Title" xml:space="preserve">
     <value>Checkbox</value>

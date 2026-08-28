@@ -1,0 +1,18 @@
+---
+description: After UI-affecting changes, rebuild and launch the Gallery so the user can inspect the visuals
+globs: src/Ether.DesignSystem.Controls/**, src/Ether.DesignSystem.Foundation/**, samples/Ether.DesignSystem.Gallery/**
+alwaysApply: false
+---
+
+# Relaunch Gallery after UI changes
+
+The user reviews all visual work in the running Gallery app. After any change that
+affects control visuals (templates, styles, tokens, Gallery pages):
+
+1. Rebuild: `dotnet build samples\Ether.DesignSystem.Gallery\Ether.DesignSystem.Gallery.csproj -p:Platform=x64`
+2. Close any previously agent-launched Gallery instance, then start the new build:
+   `samples\Ether.DesignSystem.Gallery\bin\x64\Debug\net8.0-windows10.0.19041.0\Ether.DesignSystem.Gallery.exe`
+3. Leave the app running for the user — do not kill it after verification screenshots.
+
+Take a screenshot for before/after evidence when useful, but the running app is the
+primary review surface.

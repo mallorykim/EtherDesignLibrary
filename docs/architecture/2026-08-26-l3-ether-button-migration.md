@@ -10,8 +10,13 @@ indeterminate mode or animation APIs.
 
 **Default visual:** Figma "Default" mapped to the existing public Primary large API
 (`EtherButtonVariant.Primary` + `EtherButtonSize.Large`), matching `EtherButtonPrimary`
-(minimum width `82EPX`, height `46EPX`, padding `12EPX`, font size `14EPX`, 4EPX radius). Existing call sites that set an
-explicit named `Style` are unchanged.
+(minimum width `108EPX`, height `46EPX`, padding `20EPX` horizontal / `12EPX` vertical,
+font size `14EPX`, 4EPX radius; Small keeps minimum width `94EPX` at `32EPX` height with
+`16EPX`/`8EPX` padding). Existing call sites that set an
+explicit named `Style` are unchanged. Horizontal padding (`20`/`16EPX`) is a deliberate
+deviation from Figma's uniform `12`/`8EPX` (2026-08-27): Figma's Default button is fixed at
+108EPX wide so short labels get extra visual inset there, while content-sized WinUI buttons
+were limited to exactly 12EPX and read too tight.
 
 ## Implemented contract
 
@@ -20,10 +25,12 @@ explicit named `Style` are unchanged.
 - The six named styles (`EtherButtonPrimary` / `PrimarySmall` / `Secondary` /
   `SecondarySmall` / `Tertiary` / `TertiarySmall`) remain public keys. `Variant`/`Size`
   selection still resolves those same keys.
-- The component declares `LeftIcon` and `RightIcon` template parts plus CommonStates,
-  FocusStates, and independent icon-state groups. Each icon slot is driven with
-  `VisualStateManager`; the previous `RightIconVisibility` dependency property is removed
-  (preview/unshipped API).
+- The component declares `Bg`, `Stroke` (Primary/Secondary overlay), `Cp`, `FocusRing`,
+  `LeftIcon`, and `RightIcon` template parts plus CommonStates, FocusStates, and independent
+  icon-state groups. Each icon slot is driven with `VisualStateManager`; the previous
+  `RightIconVisibility` dependency property is removed (preview/unshipped API).
+  `Cp` template-binds `Content` and `ContentTemplate`. `Variant`/`Size`
+  resolve named styles from the element's resource scope (local → parents → application).
   `PublicAPI.Unshipped.txt` is the current surface, not a removal ledger; the contract script
   rejects the identifier if it returns.
 - Light, Dark, and HighContrast expose the same 18 `EtherButton*` component resources. The
@@ -69,3 +76,31 @@ All three variants retain the Figma 46EPX Default / 32EPX Small hit targets. The
 `Large` enum name is therefore a compatibility name for Figma's "Default" size; no API rename
 is needed. Figma documents 20EPX Default and 16EPX Small icon instances, while the optional slots
 intentionally preserve each caller-supplied `IconElement` size and glyph.
+
+## Figma variable mapping (source: file ursRC201v8IiVeafliI45F, node 62075:5624)
+
+Variable names as published in Figma, captured 2026-08-27 for future token linking.
+
+| Figma variable | Figma value | WinUI component resource | Token chain | Status |
+| --- | --- | --- | --- | --- |
+| `Buttons/Primary/Background/Default` | `#0D62FF` | `EtherButtonPrimaryBackgroundBrush` | `action/primary/bg` → `Blue600` | match |
+| `Buttons/Primary/Background/Hover` | `#0055FF` | `EtherButtonPrimaryBackgroundHoverBrush` | `Blue700` | match |
+| `Buttons/Primary/Background/Pressed` | `#0054E5` | `EtherButtonPrimaryBackgroundPressedBrush` | `Blue800` | match |
+| `Buttons/Primary/Background/Disabled` | `#0D62FF` | `EtherButtonPrimaryBackgroundDisabledBrush` | `Blue600`, rendered at 40% opacity | match |
+| `Buttons/Primary/border/Default` | `#FFFFFF` @ 25% | `EtherButtonPrimaryBorderBrush` | `#40FFFFFF` | match |
+| `text/on-brand` | `#FFFFFF` | `EtherButtonPrimaryForegroundBrush` | `action/primary/fg` → `Gray0` | match |
+| `Buttons/Secondary/Background/Default` | transparent | `EtherButtonSecondaryBackgroundBrush` | `Transparent` | match |
+| `Buttons/Secondary/Background/Hover` | `#F5F7F8` | `EtherButtonSecondaryBackgroundHoverBrush` | `ActionSecondaryBgHover` → `Gray25` | match |
+| `Buttons/Secondary/Background/Pressed` | `#EFF3F6` | `EtherButtonSecondaryBackgroundPressedBrush` | `ActionSecondaryBgPressed` → `Gray50` | match |
+| `Buttons/Secondary/Background/Disabled` | transparent | — | 40% opacity fade | match |
+| `Borders/border-light` | `#011C4B` @ 20% | `EtherButtonSecondaryBorderBrush` | `#33011C4B` (= `AlphaNavy20`) | match |
+| `text/primary` | `#000000` | `EtherButtonSecondaryForegroundBrush` | `action/secondary/fg` → `Gray1000` | match |
+| `Buttons/Tertiary/Text/Default` | `#0D62FF` | `EtherButtonTertiaryForegroundBrush` | `Blue600` | match (fixed 2026-08-27; was `Blue800`) |
+| `Buttons/Tertiary/Text/Hover` | `#0055FF` | `EtherButtonTertiaryForegroundHoverBrush` | `Blue700` | match |
+| `Buttons/Tertiary/Text/Pressed` | `#0054E5` | `EtherButtonTertiaryForegroundPressedBrush` | `Blue800` | match |
+| `Buttons/Tertiary/Text/Disabled` | `#0D62FF` | — | 40% opacity fade | match |
+
+Rendering note: Figma strokes composite over the component's own fill, so the Primary 25%-white
+border is visible on the blue background. WinUI `Border.BorderBrush` composites against the page
+behind the control instead, which made the ring invisible on light pages. The Primary and
+Secondary templates therefore draw the stroke as a separate `Stroke` overlay `Border` above `Bg`.

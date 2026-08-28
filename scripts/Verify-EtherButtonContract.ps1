@@ -49,6 +49,7 @@ if ($control -match '(?m)^\s*(MinHeight|Padding|FontSize)\s*=') {
 Assert-Contains $control "TemplatePart\(Name = .*LeftIcon" 'EtherButton TemplatePart contract for LeftIcon'
 Assert-Contains $control "TemplatePart\(Name = .*RightIcon" 'EtherButton TemplatePart contract for RightIcon'
 Assert-Contains $control "TemplatePart\(Name = .*Cp" 'EtherButton TemplatePart contract for Cp'
+Assert-Contains $control "TemplatePart\(Name = .*Stroke" 'EtherButton TemplatePart contract for Stroke'
 foreach ($state in 'Normal', 'PointerOver', 'Pressed', 'Disabled') {
     Assert-Contains $control "TemplateVisualState\(GroupName = CommonStatesGroup, Name = ${state}State\)" "EtherButton TemplateVisualState contract for CommonStates/$state"
 }
@@ -104,9 +105,9 @@ if ($xamlText -match 'FontFamily="Inter"') {
     throw 'EtherButton templates must use the packaged InstrumentSans resource, not the system family name Inter.'
 }
 foreach ($measurement in @(
-    @{ Style = $keyedStyle; Property = 'MinWidth'; Value = '82' },
+    @{ Style = $keyedStyle; Property = 'MinWidth'; Value = '108' },
     @{ Style = $keyedStyle; Property = 'MinHeight'; Value = '46' },
-    @{ Style = $keyedStyle; Property = 'Padding'; Value = '12' },
+    @{ Style = $keyedStyle; Property = 'Padding'; Value = '20,12' },
     @{ Style = $keyedStyle; Property = 'FontSize'; Value = '{StaticResource Size14}' }
 )) {
     $setter = $measurement.Style.SelectSingleNode("./*[local-name()='Setter' and @Property='$($measurement.Property)']")
@@ -114,13 +115,30 @@ foreach ($measurement in @(
         throw "DefaultEtherButtonStyle must set $($measurement.Property) to Figma value '$($measurement.Value)'."
     }
 }
+foreach ($smallStyleName in 'EtherButtonPrimarySmall', 'EtherButtonSecondarySmall', 'EtherButtonTertiarySmall') {
+    $smallStyle = @($styles | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq $smallStyleName })[0]
+    $smallMinWidth = $smallStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='MinWidth']")
+    if ($null -eq $smallMinWidth -or $smallMinWidth.GetAttribute('Value') -ne '94') {
+        throw "$smallStyleName must set MinWidth to the Figma Small value '94'."
+    }
+    $smallMinHeight = $smallStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='MinHeight']")
+    if ($null -eq $smallMinHeight -or $smallMinHeight.GetAttribute('Value') -ne '32') {
+        throw "$smallStyleName must set MinHeight to the Figma Small value '32'."
+    }
+    $smallPadding = $smallStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='Padding']")
+    if ($null -eq $smallPadding -or $smallPadding.GetAttribute('Value') -ne '16,8') {
+        throw "$smallStyleName must set Padding to '16,8' (horizontal/vertical)."
+    }
+}
 Assert-Contains $xamlText 'FontFamily="\{StaticResource InstrumentSans\}"' 'EtherButton templates use packaged InstrumentSans'
 if ($xamlText -match 'Segoe MDL2|FontIcon') {
     throw 'EtherButton must not document or embed system glyph icons; use the DDS2 PathIcon library.'
 }
 Assert-Contains $xamlText 'Style="\{StaticResource IconChevronRight\}" Width="20" Height="20"' 'EtherButton library icon example uses 20EPX DDS2 PathIcon'
-Assert-Contains $xamlText 'CornerRadius="\{StaticResource RadiusSm\}"' 'EtherButton Primary and Secondary Figma 4px radius'
-Assert-Contains $xamlText 'CornerRadius="\{StaticResource radius/control-sm\}"' 'EtherButton Tertiary Figma 4px radius alias'
+Assert-Contains $xamlText 'CornerRadius="\{StaticResource RadiusSm\}"' 'EtherButton Figma 4px radius'
+if ($xamlText -match 'radius/control-sm') {
+    throw 'EtherButton templates must use RadiusSm for corner radius, not the radius/control-sm alias.'
+}
 if ($xamlText -match 'LabelNudge|RenderTransform') {
     throw 'EtherButton label must remain geometrically centered; optical RenderTransform nudges are not allowed.'
 }
@@ -169,6 +187,18 @@ foreach ($template in $templates) {
         })[0]
         if ($null -eq $part -or $part.GetAttribute('VerticalAlignment') -ne 'Center') {
             throw "EtherButton $partName must be vertically centered within the horizontal content group."
+        }
+        if ($partName -eq 'Cp' -and $part.GetAttribute('ContentTemplate') -ne '{TemplateBinding ContentTemplate}') {
+            throw 'EtherButton Cp must template-bind ContentTemplate like WinUI Button / EtherCheckbox.'
+        }
+    }
+    $templateKey = $template.GetAttribute('Key', $xamlNamespace)
+    if ($templateKey -ne 'EtherButtonTertiaryTemplate') {
+        $stroke = @($template.SelectNodes(".//*[local-name()='Border']") | Where-Object {
+            $_.GetAttribute('Name', $xamlNamespace) -eq 'Stroke'
+        })[0]
+        if ($null -eq $stroke) {
+            throw "$templateKey must keep the overlay Stroke border part."
         }
     }
     $disabled = @($template.SelectNodes(".//*[local-name()='VisualState']") | Where-Object {

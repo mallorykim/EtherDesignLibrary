@@ -24,14 +24,30 @@ internal static partial class RuntimeVerification
         button.UpdateLayout();
         secondaryButton.UpdateLayout();
 
-        if (defaultButton.MinWidth != 82d || defaultButton.MinHeight != 46d || defaultButton.FontSize != 14d || defaultButton.Template is null)
+        if (defaultButton.MinWidth != 108d || defaultButton.MinHeight != 46d || defaultButton.FontSize != 14d || defaultButton.Template is null)
         {
             throw new InvalidOperationException("The keyed EtherButton style did not apply its default Figma dimensions, typography, and template.");
+        }
+
+        // Same-size variants must render at the same height regardless of border thickness:
+        // MinHeight, vertical padding, and font size all contribute to the laid-out height.
+        if (secondaryButton.MinHeight != defaultButton.MinHeight ||
+            secondaryButton.Padding.Top != defaultButton.Padding.Top ||
+            secondaryButton.Padding.Bottom != defaultButton.Padding.Bottom ||
+            secondaryButton.FontSize != defaultButton.FontSize)
+        {
+            throw new InvalidOperationException("Same-size EtherButton variants diverged in height-affecting metrics (MinHeight/Padding/FontSize).");
+        }
+
+        if (secondaryButton.ActualHeight != defaultButton.ActualHeight)
+        {
+            throw new InvalidOperationException($"Same-size EtherButton variants rendered at different heights: Primary={defaultButton.ActualHeight}, Secondary={secondaryButton.ActualHeight}.");
         }
 
         var leftIcon = GetTemplatePart<ContentPresenter>(button, "LeftIcon", nameof(EtherButton));
         var rightIcon = GetTemplatePart<ContentPresenter>(button, "RightIcon", nameof(EtherButton));
         var secondaryBackground = GetTemplatePart<Border>(secondaryButton, "Bg", nameof(EtherButton));
+        var secondaryStroke = GetTemplatePart<Border>(secondaryButton, "Stroke", nameof(EtherButton));
         var templateParts = new[] { "LeftIcon", "RightIcon" };
         var leftIconStates = new List<string>();
         var rightIconStates = new List<string>();
@@ -80,9 +96,9 @@ internal static partial class RuntimeVerification
         }
 
         var lightTemplateBrushColors = await GetButtonTemplateBrushColorsAsync(
-            themeRoot, secondaryButton, secondaryBackground, ElementTheme.Light);
+            themeRoot, secondaryButton, secondaryBackground, secondaryStroke, ElementTheme.Light);
         var darkTemplateBrushColors = await GetButtonTemplateBrushColorsAsync(
-            themeRoot, secondaryButton, secondaryBackground, ElementTheme.Dark);
+            themeRoot, secondaryButton, secondaryBackground, secondaryStroke, ElementTheme.Dark);
         if (lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
         {
             throw new InvalidOperationException("EtherButton Light and Dark template brushes did not re-resolve to distinct values.");
@@ -132,6 +148,7 @@ internal static partial class RuntimeVerification
         FrameworkElement themeRoot,
         EtherButton button,
         Border background,
+        Border stroke,
         ElementTheme theme)
     {
         themeRoot.RequestedTheme = theme;
@@ -141,7 +158,7 @@ internal static partial class RuntimeVerification
         return new[]
         {
             GetSolidBrushColor(background.Background, "secondary background", theme, nameof(EtherButton)),
-            GetSolidBrushColor(background.BorderBrush, "secondary border", theme, nameof(EtherButton)),
+            GetSolidBrushColor(stroke.BorderBrush, "secondary border", theme, nameof(EtherButton)),
         };
     }
 }

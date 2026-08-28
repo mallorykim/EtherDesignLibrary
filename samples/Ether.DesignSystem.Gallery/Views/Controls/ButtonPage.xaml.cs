@@ -1,6 +1,4 @@
-using System.Linq;
 using EtherSandbox.Controls;
-using EtherSandbox.Views.Foundations;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
@@ -12,7 +10,7 @@ public sealed partial class ButtonPage : Page
 {
     public string SpecimenXaml { get; } =
         """
-        <controls:EtherButton Content="Primary Action"
+        <controls:EtherButton Content="Button"
                               Style="{StaticResource EtherButtonPrimary}" />
         """;
 
@@ -86,40 +84,37 @@ public sealed partial class ButtonPage : Page
 
         // Foreground stays unset so each template supplies the appropriate Primary,
         // Secondary, or Tertiary colour. Callers may supply any IconElement instead.
-        button.LeftIcon = showLeft ? CreateLibraryChevron("IconChevronLeft", size) : null;
-        button.RightIcon = showRight ? CreateLibraryChevron("IconChevronRight", size) : null;
+        button.LeftIcon = showLeft ? CreateChevron(ChevronLeftPathData, size) : null;
+        button.RightIcon = showRight ? CreateChevron(ChevronRightPathData, size) : null;
     }
 
-    private static PathIcon CreateLibraryChevron(string resourceKey, double size)
+    // Path markup matches the Figma button icon instances (node 62075:5625) exactly:
+    // the glyph sits inside a 20-unit box with built-in padding (glyph ≈ 13.4 tall),
+    // NOT the full-bleed 16-grid geometry in EtherIconGeometries.xaml (frozen tokens).
+    // ChevronRight is ChevronLeft mirrored about x=10. Each PathIcon needs its OWN
+    // Geometry instance: sharing one Geometry/Style across simultaneously-rendered
+    // PathIcon siblings renders only the first (see IconsPage). Geometry does not
+    // round-trip through ToString(), so raw path data + XamlReader.Load per slot.
+    private const string ChevronLeftPathData =
+        "M5.80837 9.55815L12.0584 3.30815L12.9423 4.19204L7.1342 10.0001L12.9423 15.8082L12.0584 16.692L5.80837 10.442C5.56429 10.198 5.56429 9.80223 5.80837 9.55815Z";
+
+    private const string ChevronRightPathData =
+        "M14.19163 9.55815L7.9416 3.30815L7.0577 4.19204L12.8658 10.0001L7.0577 15.8082L7.9416 16.692L14.19163 10.442C14.43571 10.198 14.43571 9.80223 14.19163 9.55815Z";
+
+    private static PathIcon CreateChevron(string pathData, double size)
     {
-        var iconResources = MergedResourceDictionaries.Find(
-            Application.Current.Resources, "EtherIconGeometries.xaml", resourceKey)
-            ?? throw new InvalidOperationException($"Ether icon dictionary for '{resourceKey}' was not found.");
-        if (iconResources[resourceKey] is not Style iconStyle)
-            throw new InvalidOperationException($"Ether icon resource '{resourceKey}' was not found.");
+        var geometry = (Geometry)XamlReader.Load(
+            $"<Geometry xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{pathData}</Geometry>");
 
-        // The icon dictionary owns the geometry.  Do not attach the same Style
-        // instance to several live PathIcons: WinUI can retain the Style's
-        // Freezable Data value on the first consumer, leaving later buttons blank.
-        // Clone the library geometry for each slot while keeping the source of
-        // truth in EtherIconGeometries.xaml.
-        var dataSetter = iconStyle.Setters
-            .OfType<Setter>()
-            .FirstOrDefault(setter => setter.Property == PathIcon.DataProperty);
-        if (dataSetter?.Value is not Geometry geometry)
-            throw new InvalidOperationException($"Ether icon resource '{resourceKey}' has no geometry data.");
+        // PathIcon renders path units 1:1 (it does not stretch to Width/Height), so scale
+        // the geometry itself from the 20-unit Figma box to the target size: 20EPX on
+        // Default (large), 16EPX on Small.
+        if (size != 20)
+        {
+            var scale = size / 20d;
+            geometry.Transform = new ScaleTransform { ScaleX = scale, ScaleY = scale };
+        }
 
-        try
-        {
-            var clonedGeometry = (Geometry)XamlReader.Load(
-                $"<Geometry xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{geometry}</Geometry>");
-            return new PathIcon { Data = clonedGeometry, Width = size, Height = size };
-        }
-        catch (Exception)
-        {
-            // Keep the Gallery usable if a platform build cannot round-trip the
-            // Geometry representation; the library style remains the fallback.
-            return new PathIcon { Style = iconStyle, Width = size, Height = size };
-        }
+        return new PathIcon { Data = geometry, Width = size, Height = size };
     }
 }
