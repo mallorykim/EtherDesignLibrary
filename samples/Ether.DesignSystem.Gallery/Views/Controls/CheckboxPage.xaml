@@ -105,6 +105,16 @@
                                                    IsHitTestVisible="False" IsTabStop="False"/>
                         </StackPanel>
                         <StackPanel Spacing="8">
+<TextBlock x:Uid="GalleryViewsControlsCheckboxPageCheckedPressed" Text="Pressed"
+                                       Style="{StaticResource micro/regular}"
+                                       Foreground="{ThemeResource TextTertiary}"
+                                       HorizontalAlignment="Center"/>
+<controls:EtherCheckbox x:Uid="GalleryViewsControlsCheckboxPageCheckedPressedOption" x:Name="CheckedPressed"
+                                                   Content="Option"
+                                                   IsChecked="True"
+                                                   IsHitTestVisible="False" IsTabStop="False"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsControlsCheckboxPage101" Text="Disabled"
                                        Style="{StaticResource micro/regular}"
                                        Foreground="{ThemeResource TextTertiary}"

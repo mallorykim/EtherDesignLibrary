@@ -10,8 +10,8 @@ $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs
 $fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
-$expectedComponentKeys = 'EtherCheckboxCheckedFillDefaultBrush,EtherCheckboxCheckedFillHoverBrush,EtherCheckboxCheckedStrokeBrush,EtherCheckboxDisabledCheckedFillBrush,EtherCheckboxDisabledGlyphBrush,EtherCheckboxDisabledUncheckedFillBrush,EtherCheckboxDisabledUncheckedStrokeBrush,EtherCheckboxFillDefaultBrush,EtherCheckboxFillHoverBrush,EtherCheckboxFillPressedBrush,EtherCheckboxGlyphBrush,EtherCheckboxLabelBrush,EtherCheckboxStrokeBrush'
-$templateParts = @('UncheckedFill', 'UncheckedFace', 'CheckedFace', 'Glyph', 'Label')
+$expectedComponentKeys = 'EtherCheckboxCheckedFillDefaultBrush,EtherCheckboxCheckedFillHoverBrush,EtherCheckboxCheckedFillPressedBrush,EtherCheckboxCheckedStrokeBrush,EtherCheckboxDisabledCheckedFillBrush,EtherCheckboxDisabledGlyphBrush,EtherCheckboxDisabledUncheckedFillBrush,EtherCheckboxDisabledUncheckedStrokeBrush,EtherCheckboxFillDefaultBrush,EtherCheckboxFillHoverBrush,EtherCheckboxFillPressedBrush,EtherCheckboxGlyphBrush,EtherCheckboxLabelBrush,EtherCheckboxStrokeBrush'
+$templateParts = @('LayoutRoot', 'UncheckedFill', 'UncheckedStroke', 'UncheckedFace', 'CheckedFace', 'CheckedFill', 'CheckedStroke', 'Glyph', 'Label')
 
 function Assert-Contains {
     param([string]$Text, [string]$Pattern, [string]$Description)
@@ -50,6 +50,7 @@ foreach ($state in 'Unchecked', 'Checked') {
 }
 
 [xml]$xaml = Get-Content -LiteralPath $xamlPath -Raw
+$xamlRaw = Get-Content -LiteralPath $xamlPath -Raw
 $styles = @($xaml.SelectNodes("//*[local-name()='Style']"))
 $keyedStyle = @($styles | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'DefaultEtherCheckboxStyle' })[0]
 if ($null -eq $keyedStyle) {
@@ -105,6 +106,15 @@ foreach ($template in $templates) {
         }
     }
 }
+
+Assert-Contains $xamlRaw 'EtherCheckboxCheckedFillPressedBrush' 'EtherCheckbox Checked Pressed fill'
+Assert-Contains $xamlRaw 'Target="LayoutRoot.Opacity" Value="0.4"' 'EtherCheckbox Disabled uses 40% layout opacity'
+Assert-Contains $xamlRaw 'CornerRadius="\{StaticResource RadiusSm\}"' 'EtherCheckbox Figma 4px radius uses RadiusSm'
+if ($xamlRaw -match 'radius/control-sm') {
+    throw 'EtherCheckbox templates must use RadiusSm for corner radius, not the radius/control-sm alias.'
+}
+Assert-Contains $xamlRaw 'ContentTemplateSelector="\{TemplateBinding ContentTemplateSelector\}"' 'EtherCheckbox Label template-binds ContentTemplateSelector like WinUI CheckBox'
+Assert-Contains $xamlRaw 'ContentTransitions="\{TemplateBinding ContentTransitions\}"' 'EtherCheckbox Label template-binds ContentTransitions like WinUI CheckBox'
 
 $themeDictionaries = @($xaml.SelectNodes("//*[local-name()='ResourceDictionary.ThemeDictionaries']/*[local-name()='ResourceDictionary']"))
 $keysByTheme = @{}

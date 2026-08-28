@@ -24,6 +24,8 @@ public sealed partial class CheckboxPage : Page
                     VisualStateManager.GoToState(UncheckedPressed, "Pressed", false);
                 if (CheckedHover is not null)
                     VisualStateManager.GoToState(CheckedHover, "PointerOver", false);
+                if (CheckedPressed is not null)
+                    VisualStateManager.GoToState(CheckedPressed, "Pressed", false);
             });
         };
     }

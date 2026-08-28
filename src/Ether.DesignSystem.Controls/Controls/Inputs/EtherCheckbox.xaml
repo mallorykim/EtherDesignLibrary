@@ -1,24 +1,30 @@
 <!--
     Ether Design System Checkbox
 
-    Figma source: ursRC201v8IiVeafliI45F, node 60598:1105 (spec-sheet-checkbox)
+    Figma source: ursRC201v8IiVeafliI45F
+      Light component set 62085:7907 · Dark spec tables 62093:60 / 62093:163
     Box 18 x 18, corner radius 4, 1.5 px stroke. Label is Inter SemiBold 12 with
-    an 8 px gap. Checkmark is a near-white (#F5F6F7) tick, shown only when checked.
-    No indeterminate state (IsThreeState = False via DefaultEtherCheckboxStyle).
+    an 8 px gap. Checkmark is Gray25 (#F5F7F8), the same primitive as the
+    RadioButton inner dot. Figma still exports Unity Checkbox/default/icon-checked
+    (#F5F6F7); no Ether primitive has that hex. No indeterminate state
+    (IsThreeState = False via DefaultEtherCheckboxStyle).
 
     STATES
       Unchecked: Default / Hover / Pressed / Disabled
-      Checked:   Default / Hover / Disabled        (no distinct pressed in the spec)
-      Disabled reads as the control at 40 % (see the disabled-brush note below).
+      Checked:   Default / Hover / Pressed / Disabled
+      Disabled is the Default colours at 40 % opacity (Figma Opacity row).
+      *DisabledBrush keys stay in the dictionaries for High Contrast symmetry
+      and are not consumed — swapping to those brushes would change the visual.
 
-    Colours live in EtherCheckbox* component theme dictionaries (Light/Dark keep the
-    previous literal hex; High Contrast uses Windows SystemColor*). Fill depends on
-    BOTH check-ness and pointer state, which live in two separate visual-state groups
-    (CommonStates, CheckStates). To avoid those groups fighting over one property,
-    each owns a different one:
-      - CommonStates writes Background on TWO different borders (UncheckedBox and
-        CheckedFace) — the four pointer fills for each.
-      - CheckStates writes only Visibility (which of the two borders shows).
+    Light/Dark component brushes bind Color to primitive StaticResources.
+    Semantic form-control/* keys are not referenced here. High Contrast uses
+    Windows SystemColor*. Fill depends on BOTH check-ness and pointer state,
+    which live in two separate visual-state groups (CommonStates, CheckStates).
+    To avoid those groups fighting over one property, each owns a different one:
+      - CommonStates writes Background on TWO different borders (UncheckedFill
+        and CheckedFill) — the four pointer fills for each — plus checked stroke
+        on Pressed (Blue700) vs Default/Hover (Blue500).
+      - CheckStates writes only Visibility (which of the two faces shows).
     No property is written by both groups, so there is no ordering race.
 
     LOCATION
@@ -33,49 +39,52 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="EtherCheckboxFillDefaultBrush"  Color="#66F5F7F8"/>
-            <SolidColorBrush x:Key="EtherCheckboxFillHoverBrush"    Color="#E6F5F7F8"/>
-            <SolidColorBrush x:Key="EtherCheckboxFillPressedBrush"  Color="#338B96A1"/>
-            <SolidColorBrush x:Key="EtherCheckboxStrokeBrush"       Color="#FF8B96A1"/>
-            <SolidColorBrush x:Key="EtherCheckboxCheckedFillDefaultBrush" Color="#FF196FFF"/>
-            <SolidColorBrush x:Key="EtherCheckboxCheckedFillHoverBrush"   Color="#FF0D62FF"/>
-            <SolidColorBrush x:Key="EtherCheckboxCheckedStrokeBrush"      Color="#FF196FFF"/>
-            <SolidColorBrush x:Key="EtherCheckboxGlyphBrush"              Color="#FFF5F6F7"/>
-            <SolidColorBrush x:Key="EtherCheckboxLabelBrush"              Color="#B3000000"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedFillBrush"   Color="#FDFEFE"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedStrokeBrush" Color="#D0D5D9"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledCheckedFillBrush"     Color="#A3C5FF"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledGlyphBrush"           Color="#FBFBFC"/>
+            <SolidColorBrush x:Key="EtherCheckboxFillDefaultBrush" Color="{StaticResource AlphaGray40}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFillHoverBrush" Color="{StaticResource AlphaGray90}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFillPressedBrush" Color="{StaticResource AlphaGray20}"/>
+            <SolidColorBrush x:Key="EtherCheckboxStrokeBrush" Color="{StaticResource Gray400}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedFillDefaultBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedFillHoverBrush" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedFillPressedBrush" Color="{StaticResource Blue700}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedStrokeBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherCheckboxGlyphBrush" Color="{StaticResource Gray25}"/>
+            <SolidColorBrush x:Key="EtherCheckboxLabelBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedFillBrush" Color="{StaticResource AlphaGray40}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedStrokeBrush" Color="{StaticResource Gray400}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledCheckedFillBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledGlyphBrush" Color="{StaticResource Gray25}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="EtherCheckboxFillDefaultBrush"  Color="#1AFFFFFF"/>
-            <SolidColorBrush x:Key="EtherCheckboxFillHoverBrush"    Color="#33FFFFFF"/>
-            <SolidColorBrush x:Key="EtherCheckboxFillPressedBrush"  Color="#29FFFFFF"/>
-            <SolidColorBrush x:Key="EtherCheckboxStrokeBrush"       Color="#FF8B96A1"/>
-            <SolidColorBrush x:Key="EtherCheckboxCheckedFillDefaultBrush" Color="#FF196FFF"/>
-            <SolidColorBrush x:Key="EtherCheckboxCheckedFillHoverBrush"   Color="#FF0D62FF"/>
-            <SolidColorBrush x:Key="EtherCheckboxCheckedStrokeBrush"      Color="#FF196FFF"/>
-            <SolidColorBrush x:Key="EtherCheckboxGlyphBrush"              Color="#FFF5F6F7"/>
-            <SolidColorBrush x:Key="EtherCheckboxLabelBrush"              Color="#B3FFFFFF"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedFillBrush"   Color="#FF1E2025"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedStrokeBrush" Color="#FF525B66"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledCheckedFillBrush"     Color="#FF355CA8"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledGlyphBrush"           Color="#FFF5F6F7"/>
+            <SolidColorBrush x:Key="EtherCheckboxFillDefaultBrush" Color="{StaticResource AlphaGray5}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFillHoverBrush" Color="{StaticResource AlphaGray15}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFillPressedBrush" Color="{StaticResource AlphaGray25}"/>
+            <SolidColorBrush x:Key="EtherCheckboxStrokeBrush" Color="{StaticResource Gray500}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedFillDefaultBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedFillHoverBrush" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedFillPressedBrush" Color="{StaticResource Blue700}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedStrokeBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherCheckboxGlyphBrush" Color="{StaticResource Gray25}"/>
+            <SolidColorBrush x:Key="EtherCheckboxLabelBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedFillBrush" Color="{StaticResource AlphaGray5}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedStrokeBrush" Color="{StaticResource Gray500}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledCheckedFillBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledGlyphBrush" Color="{StaticResource Gray25}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
-            <SolidColorBrush x:Key="EtherCheckboxFillDefaultBrush"  Color="{ThemeResource SystemColorButtonFaceColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxFillHoverBrush"    Color="{ThemeResource SystemColorButtonFaceColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxFillPressedBrush"  Color="{ThemeResource SystemColorButtonFaceColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxStrokeBrush"       Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFillDefaultBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFillHoverBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFillPressedBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillDefaultBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxCheckedFillHoverBrush"   Color="{ThemeResource SystemColorHighlightColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxCheckedStrokeBrush"      Color="{ThemeResource SystemColorHighlightColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxGlyphBrush"              Color="{ThemeResource SystemColorHighlightTextColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxLabelBrush"              Color="{ThemeResource SystemColorWindowTextColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedFillBrush"   Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedFillHoverBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedFillPressedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxCheckedStrokeBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxGlyphBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxLabelBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedFillBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
             <SolidColorBrush x:Key="EtherCheckboxDisabledUncheckedStrokeBrush" Color="{ThemeResource SystemColorGrayTextColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledCheckedFillBrush"     Color="{ThemeResource SystemColorGrayTextColor}"/>
-            <SolidColorBrush x:Key="EtherCheckboxDisabledGlyphBrush"           Color="{ThemeResource SystemColorButtonFaceColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledCheckedFillBrush" Color="{ThemeResource SystemColorGrayTextColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxDisabledGlyphBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -109,34 +118,32 @@
                         <VisualState.Setters>
                             <Setter Target="UncheckedFill.Background" Value="{ThemeResource EtherCheckboxFillDefaultBrush}"/>
                             <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherCheckboxCheckedFillDefaultBrush}"/>
+                            <Setter Target="CheckedStroke.BorderBrush" Value="{ThemeResource EtherCheckboxCheckedStrokeBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
                             <Setter Target="UncheckedFill.Background" Value="{ThemeResource EtherCheckboxFillHoverBrush}"/>
                             <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherCheckboxCheckedFillHoverBrush}"/>
+                            <Setter Target="CheckedStroke.BorderBrush" Value="{ThemeResource EtherCheckboxCheckedStrokeBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
                             <Setter Target="UncheckedFill.Background" Value="{ThemeResource EtherCheckboxFillPressedBrush}"/>
-                            <!-- The spec has no distinct checked-pressed; keep the default blue. -->
-                            <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherCheckboxCheckedFillDefaultBrush}"/>
+                            <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherCheckboxCheckedFillPressedBrush}"/>
+                            <Setter Target="CheckedStroke.BorderBrush" Value="{ThemeResource EtherCheckboxCheckedFillPressedBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
-                            <!-- Solid pre-composited colours instead of a group opacity (see the
-                                 disabled-brush note above). CheckStates still picks which face
-                                 shows; both faces' disabled colours are set here so either is ready.
-                                 Checked stroke is set to the disabled fill so the rim stays uniform.
-                                 Only the label fades by opacity — it has nothing overlapping it. -->
-                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource EtherCheckboxDisabledUncheckedFillBrush}"/>
-                            <Setter Target="UncheckedStroke.BorderBrush" Value="{ThemeResource EtherCheckboxDisabledUncheckedStrokeBrush}"/>
-                            <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherCheckboxDisabledCheckedFillBrush}"/>
-                            <Setter Target="CheckedStroke.BorderBrush" Value="{ThemeResource EtherCheckboxDisabledCheckedFillBrush}"/>
-                            <Setter Target="Glyph.Stroke" Value="{ThemeResource EtherCheckboxDisabledGlyphBrush}"/>
-                            <Setter Target="Label.Opacity" Value="0.4"/>
+                            <!-- Figma disabled is Default colours at 40 % opacity. *DisabledBrush
+                                 keys stay in the theme dictionaries for key symmetry (High Contrast)
+                                 and are not consumed here. -->
+                            <Setter Target="LayoutRoot.Opacity" Value="0.4"/>
+                            <Setter Target="UncheckedFill.Background" Value="{ThemeResource EtherCheckboxFillDefaultBrush}"/>
+                            <Setter Target="CheckedFill.Background" Value="{ThemeResource EtherCheckboxCheckedFillDefaultBrush}"/>
+                            <Setter Target="CheckedStroke.BorderBrush" Value="{ThemeResource EtherCheckboxCheckedStrokeBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -183,12 +190,12 @@
                     <Grid x:Name="UncheckedFace">
                         <Border x:Name="UncheckedFill"
                                 Background="{ThemeResource EtherCheckboxFillDefaultBrush}"
-                                CornerRadius="{StaticResource radius/control-sm}"/>
+                                CornerRadius="{StaticResource RadiusSm}"/>
                         <Border x:Name="UncheckedStroke"
                                 Background="{StaticResource EtherCheckboxTransparentBrush}"
                                 BorderBrush="{ThemeResource EtherCheckboxStrokeBrush}"
                                 BorderThickness="1.5"
-                                CornerRadius="{StaticResource radius/control-sm}"
+                                CornerRadius="{StaticResource RadiusSm}"
                                 IsHitTestVisible="False"/>
                     </Grid>
 
@@ -196,12 +203,12 @@
                     <Grid x:Name="CheckedFace" Visibility="Collapsed">
                         <Border x:Name="CheckedFill"
                                 Background="{ThemeResource EtherCheckboxCheckedFillDefaultBrush}"
-                                CornerRadius="{StaticResource radius/control-sm}"/>
+                                CornerRadius="{StaticResource RadiusSm}"/>
                         <Border x:Name="CheckedStroke"
                                 Background="{StaticResource EtherCheckboxTransparentBrush}"
                                 BorderBrush="{ThemeResource EtherCheckboxCheckedStrokeBrush}"
                                 BorderThickness="1.5"
-                                CornerRadius="{StaticResource radius/control-sm}"
+                                CornerRadius="{StaticResource RadiusSm}"
                                 IsHitTestVisible="False"/>
                         <Viewbox Width="11" Height="11"
                                  HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -219,6 +226,8 @@
                 <ContentPresenter x:Name="Label"
                                   Content="{TemplateBinding Content}"
                                   ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                  ContentTransitions="{TemplateBinding ContentTransitions}"
                                   Foreground="{ThemeResource EtherCheckboxLabelBrush}"
                                   FontFamily="{StaticResource InterFont}"
                                   FontSize="{StaticResource Size12}"

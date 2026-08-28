@@ -26,12 +26,16 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("The keyed EtherCheckbox style did not apply its default IsThreeState=False setter and template.");
         }
 
+        GetTemplatePart<Grid>(checkbox, "LayoutRoot", nameof(EtherCheckbox));
         GetTemplatePart<Border>(checkbox, "UncheckedFill", nameof(EtherCheckbox));
+        GetTemplatePart<Border>(checkbox, "UncheckedStroke", nameof(EtherCheckbox));
         var uncheckedFace = GetTemplatePart<Grid>(checkbox, "UncheckedFace", nameof(EtherCheckbox));
         var checkedFace = GetTemplatePart<Grid>(checkbox, "CheckedFace", nameof(EtherCheckbox));
+        GetTemplatePart<Border>(checkbox, "CheckedFill", nameof(EtherCheckbox));
+        GetTemplatePart<Border>(checkbox, "CheckedStroke", nameof(EtherCheckbox));
         GetTemplatePart<Microsoft.UI.Xaml.Shapes.Path>(checkbox, "Glyph", nameof(EtherCheckbox));
         var label = GetTemplatePart<ContentPresenter>(checkbox, "Label", nameof(EtherCheckbox));
-        var templateParts = new[] { "UncheckedFill", "UncheckedFace", "CheckedFace", "Glyph", "Label" };
+        var templateParts = new[] { "LayoutRoot", "UncheckedFill", "UncheckedStroke", "UncheckedFace", "CheckedFace", "CheckedFill", "CheckedStroke", "Glyph", "Label" };
         var checkStates = new List<string>();
 
         checkbox.IsChecked = false;

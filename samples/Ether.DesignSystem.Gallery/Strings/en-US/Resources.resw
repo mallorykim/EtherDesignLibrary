@@ -340,6 +340,12 @@
   <data name="GalleryViewsControlsCheckboxPage100.Content" xml:space="preserve">
     <value>Option</value>
   </data>
+  <data name="GalleryViewsControlsCheckboxPageCheckedPressed.Text" xml:space="preserve">
+    <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsCheckboxPageCheckedPressedOption.Content" xml:space="preserve">
+    <value>Option</value>
+  </data>
   <data name="GalleryViewsControlsCheckboxPage101.Text" xml:space="preserve">
     <value>Disabled</value>
   </data>

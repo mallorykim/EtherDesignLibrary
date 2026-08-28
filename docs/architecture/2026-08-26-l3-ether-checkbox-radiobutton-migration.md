@@ -18,13 +18,20 @@ an explicit named `Style` are unchanged (these controls have no extra named styl
   `DefaultEtherRadioButtonStyle` own the default setters and templates, and each
   implicit style is `BasedOn` that keyed style.
 - Each component declares the template parts the templates actually use
-  (`UncheckedFill`, `UncheckedFace`, `CheckedFace`, `Label`, plus `Glyph` or `Dot`)
+  (`LayoutRoot`, fill/stroke faces, `Label`, plus `Glyph` or `Dot`)
   and CommonStates / CheckStates. Native toggle visuals still drive those states.
-- Light, Dark, and HighContrast expose the same 13 `EtherCheckbox*` /
+  Checkbox additionally names `UncheckedStroke`, `CheckedFill`, and `CheckedStroke`
+  (VSM targets) and binds `ContentTemplate` / `ContentTemplateSelector` /
+  `ContentTransitions` on `Label`, matching WinUI `CheckBox` ContentPresenter.
+- Light, Dark, and HighContrast expose the same `EtherCheckbox*` /
   `EtherRadioButton*` component resources. Templates consume those component keys
-  only for color-bearing ThemeResources. Light and Dark retain the previous literal
-  hex values. High Contrast uses Windows `SystemColor*` dynamic resources rather
-  than changing frozen Foundation tokens.
+  only for color-bearing ThemeResources. Checkbox Light/Dark bind `Color` to
+  primitive tokens (Figma Light set `62085:7907`, Dark spec tables `62093:60` /
+  `62093:163`); RadioButton Light/Dark still retain literal hex. High Contrast
+  uses Windows `SystemColor*` dynamic resources rather than changing frozen
+  Foundation tokens. Checkbox Disabled is Default colours at 40% opacity; unused
+  `*DisabledBrush` keys remain for High Contrast key symmetry. Checked Pressed
+  uses `Blue700` fill and stroke.
 - Structural overlay fills (`LayoutRoot` and stroke-ring backgrounds) use unthemed
   `EtherCheckboxTransparentBrush` / `EtherRadioButtonTransparentBrush` so the ring
   still reveals the face beneath it without putting a non-SystemColor brush in High
@@ -51,7 +58,7 @@ The unpackaged NuGet consumer fixture mounts default and interactive
 `EtherCheckbox` / `EtherRadioButton` instances on a UI thread. Its `checkbox` and
 `radioButton` markers record keyed default-style resolution (`IsThreeState=False`
 plus template), template parts, both CheckStates, automation names, and Light/Dark
-label-foreground rebind (`#B3000000` vs `#B3FFFFFF`). Unchecked-fill brushes also
+label-foreground rebind (`AlphaBlack70` vs `AlphaWhite70`). Unchecked-fill brushes also
 differ by theme in the dictionaries, but CommonStates VisualState setters apply a
 local `Background` that does not re-evaluate `ThemeResource` on theme change; the
 fixture therefore samples the live label pair, the same way Button samples Secondary
