@@ -11,7 +11,7 @@ the items panel is a `StackPanel` rather than `CarouselPanel`, open versus
 hover fills are split so menu pointer events cannot tint the trigger, and
 content-hugging width continues to come from `MeasureOverride`.
 
-**Default visual:** Inter Medium 11, `Padding8`, MinHeight 32, MinWidth 130,
+**Default visual:** Inter SemiBold 11, `Padding8`, MinHeight 32, MinWidth 130,
 `MaxVisibleItems` 6, `MenuGap` 4, `UseSystemFocusVisuals=False`, keyed
 `EtherDropdownItem` containers. Call sites that already used the implicit
 style are unchanged. `EtherDropdown` remains a keyed alias of
@@ -23,18 +23,23 @@ style are unchanged. `EtherDropdown` remains a keyed alias of
   default setters and template, and the implicit style is `BasedOn` that keyed
   style. `MaxVisibleItems` and `MenuGap` metadata defaults are unset (0) so
   the keyed style supplies the product values.
-- The component declares the five existing template parts (`TriggerText`,
-  `Arrow`, `Popup`, `PopupBorder`, `ScrollViewer`) plus CommonStates
-  (Normal / PointerOver / Pressed / Disabled), FocusStates (Focused /
-  Unfocused), and DropDownStates (Opened / Closed). Native `ComboBox` still
-  drives those states.
+- The component declares template parts for VSM-named chrome (`LayoutRoot`,
+  `StateFill`, `OpenFill`, `ActiveStroke`, `FocusRing`) plus the ComboBox
+  contract parts (`ContentPresenter`, `TriggerText`, `Arrow`, `Popup`,
+  `PopupBorder`, `ScrollViewer`), CommonStates (Normal / PointerOver /
+  Pressed / Disabled), FocusStates (Focused / Unfocused), and DropDownStates
+  (Opened / Closed). Native `ComboBox` still drives those states. Corner
+  radius uses `RadiusSm`. Item `ContentPresenter` binds `ContentTemplateSelector`
+  and `ContentTransitions`.
 - Light, Dark, and HighContrast expose the same ten `EtherDropdown*`
   component resources. The control and item templates consume those component
-  keys only for color-bearing ThemeResources. Light and Dark retain the
-  previous token aliases (`BackgroundDropdown*`, `TextSecondary`,
-  `BorderDropdownActive`, `border/focus`). High Contrast uses Windows
+  keys only for color-bearing ThemeResources. Light and Dark bind `Color` to
+  primitive tokens (Figma Light trigger `60752:11307`, Dark trigger
+  `62102:10010`, menus `62005:1225` / `62102:10038`). Open stroke still
+  references `BorderDropdownActive` (Gradient-100). High Contrast uses Windows
   `SystemColor*` dynamic resources rather than changing frozen Foundation
-  tokens.
+  tokens. Trigger MinHeight is 32 and item Height is 26, both literals
+  matching the Figma frames (not spacing tokens).
 - Gallery specimens keep the existing state matrix and add identifiable
   automation names on the interactive, default, hover, pressed, open, and
   disabled specimens.
@@ -62,7 +67,7 @@ item container style, and template), TriggerText / Arrow / Popup in the closed
 visual tree, TriggerText selection proof with collapsed ContentPresenter,
 Opened/Closed DropDownStates via `GoToState` (no live popup open, to avoid
 flaky timing), automation name, and Light/Dark trigger foreground rebind
-(`TextSecondary` / `Gray1000` vs `Gray0`). `PopupBorder` and `ScrollViewer`
+(`AlphaBlack70` vs `AlphaWhite70`). `PopupBorder` and `ScrollViewer`
 remain `[TemplatePart]`s. ComboBox does not parent those parts into the closed
 visual tree; the fixture walks `Popup.Child` while `popup.IsOpen` is false so
 the closed menu parts are still proven. `Verify-EtherDropdownContract.ps1`

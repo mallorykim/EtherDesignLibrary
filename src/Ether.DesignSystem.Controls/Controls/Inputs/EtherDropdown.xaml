@@ -14,30 +14,36 @@
     StaticResource call sites. EtherDropdownItem stays the ComboBoxItem style.
 
     VISUAL STATES
-      Default:     EtherDropdownFillDefaultBrush · EtherDropdownForegroundBrush · arrow
+      Default:     EtherDropdownFillDefaultBrush · EtherDropdownForegroundBrush
       PointerOver: EtherDropdownFillHoverBrush
       Pressed:     EtherDropdownFillPressedBrush
-      Opened:      EtherDropdownActiveStrokeBrush 1 px outline
+      Opened:      EtherDropdownActiveStrokeBrush 1 px outline · default fill
       Focused:     EtherDropdownFocusBrush 2 px
       Disabled:    entire control at 40% opacity
 
-    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F · node 58074:2134)
+    KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F
+      Light trigger 60752:11307 · Dark trigger 62102:10010
+      Light menu 62005:1225 · Dark menu 62102:10038)
       Width       max(130 px, longest option + icon + padding)
       Height      32 px (MinHeight)
       Padding     8 all sides
-      CornerRadius 4 (radius/control-sm)
-      Font        Inter Medium 11 px · letter=spacing 0.22 px
-      Arrow icon  16×16
+      CornerRadius 4 (RadiusSm)
+      Font        Inter SemiBold 11 px · letter-spacing 0.22 px
+      Arrow icon  16×16 slot · filled triangle Path
 
     MENU MEASUREMENTS
-      Item height 26 px (fixed)
+      Item height 26 px (literal; Figma item frames)
       Item gap    4 px (StackPanel Spacing)
       Menu padding 4 px all sides
       Visible     6 items, then scrolls (MaxVisibleItems)
 
-    Colours live in EtherDropdown* component theme dictionaries (Light/Dark keep
-    the previous token aliases; High Contrast uses Windows SystemColor*).
-    Non-color keys such as radius/control-sm stay as frozen token references.
+    Light/Dark component brushes bind Color to primitive StaticResources.
+    Trigger fills: Gray75/100/150 Light, Gray950/900/850 Dark.
+    Label: AlphaBlack70 / AlphaWhite70. Arrow uses the same brush as the label.
+    Menu panel matches Default fill. Light item hover/pressed are the unbound
+    Figma overlays AlphaWhite40 / AlphaWhite60; Dark items are Gray850 / Gray800.
+    Selected uses the hover fill (Figma has no Selected variant). High Contrast
+    uses Windows SystemColor*. Corner radius uses RadiusSm.
 
     LOCATION
       This dictionary lives beside its class (Controls/EtherDropdown.cs) and is merged
@@ -52,27 +58,27 @@
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
             <StaticResource x:Key="EtherDropdownActiveStrokeBrush" ResourceKey="BorderDropdownActive"/>
-            <StaticResource x:Key="EtherDropdownFillDefaultBrush" ResourceKey="BackgroundDropdown"/>
-            <StaticResource x:Key="EtherDropdownFillHoverBrush" ResourceKey="BackgroundDropdownHover"/>
-            <StaticResource x:Key="EtherDropdownFillPressedBrush" ResourceKey="BackgroundDropdownPressed"/>
-            <StaticResource x:Key="EtherDropdownFocusBrush" ResourceKey="border/focus"/>
-            <StaticResource x:Key="EtherDropdownForegroundBrush" ResourceKey="TextSecondary"/>
-            <StaticResource x:Key="EtherDropdownItemSelectedBrush" ResourceKey="BackgroundDropdownItemSelected"/>
-            <StaticResource x:Key="EtherDropdownItemSelectedHoverBrush" ResourceKey="BackgroundDropdownItemSelectedHover"/>
-            <StaticResource x:Key="EtherDropdownItemSelectedPressedBrush" ResourceKey="BackgroundDropdownItemSelectedPressed"/>
-            <StaticResource x:Key="EtherDropdownMenuBackgroundBrush" ResourceKey="BackgroundDropdownMenu"/>
+            <SolidColorBrush x:Key="EtherDropdownFillDefaultBrush" Color="{StaticResource Gray75}"/>
+            <SolidColorBrush x:Key="EtherDropdownFillHoverBrush" Color="{StaticResource Gray100}"/>
+            <SolidColorBrush x:Key="EtherDropdownFillPressedBrush" Color="{StaticResource Gray150}"/>
+            <SolidColorBrush x:Key="EtherDropdownFocusBrush" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="EtherDropdownForegroundBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherDropdownItemSelectedBrush" Color="{StaticResource AlphaWhite40}"/>
+            <SolidColorBrush x:Key="EtherDropdownItemSelectedHoverBrush" Color="{StaticResource AlphaWhite40}"/>
+            <SolidColorBrush x:Key="EtherDropdownItemSelectedPressedBrush" Color="{StaticResource AlphaWhite60}"/>
+            <SolidColorBrush x:Key="EtherDropdownMenuBackgroundBrush" Color="{StaticResource Gray75}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <StaticResource x:Key="EtherDropdownActiveStrokeBrush" ResourceKey="BorderDropdownActive"/>
-            <StaticResource x:Key="EtherDropdownFillDefaultBrush" ResourceKey="BackgroundDropdown"/>
-            <StaticResource x:Key="EtherDropdownFillHoverBrush" ResourceKey="BackgroundDropdownHover"/>
-            <StaticResource x:Key="EtherDropdownFillPressedBrush" ResourceKey="BackgroundDropdownPressed"/>
-            <StaticResource x:Key="EtherDropdownFocusBrush" ResourceKey="border/focus"/>
-            <StaticResource x:Key="EtherDropdownForegroundBrush" ResourceKey="TextSecondary"/>
-            <StaticResource x:Key="EtherDropdownItemSelectedBrush" ResourceKey="BackgroundDropdownItemSelected"/>
-            <StaticResource x:Key="EtherDropdownItemSelectedHoverBrush" ResourceKey="BackgroundDropdownItemSelectedHover"/>
-            <StaticResource x:Key="EtherDropdownItemSelectedPressedBrush" ResourceKey="BackgroundDropdownItemSelectedPressed"/>
-            <StaticResource x:Key="EtherDropdownMenuBackgroundBrush" ResourceKey="BackgroundDropdownMenu"/>
+            <SolidColorBrush x:Key="EtherDropdownFillDefaultBrush" Color="{StaticResource Gray950}"/>
+            <SolidColorBrush x:Key="EtherDropdownFillHoverBrush" Color="{StaticResource Gray900}"/>
+            <SolidColorBrush x:Key="EtherDropdownFillPressedBrush" Color="{StaticResource Gray850}"/>
+            <SolidColorBrush x:Key="EtherDropdownFocusBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherDropdownForegroundBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherDropdownItemSelectedBrush" Color="{StaticResource Gray850}"/>
+            <SolidColorBrush x:Key="EtherDropdownItemSelectedHoverBrush" Color="{StaticResource Gray850}"/>
+            <SolidColorBrush x:Key="EtherDropdownItemSelectedPressedBrush" Color="{StaticResource Gray800}"/>
+            <SolidColorBrush x:Key="EtherDropdownMenuBackgroundBrush" Color="{StaticResource Gray950}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <LinearGradientBrush x:Key="EtherDropdownActiveStrokeBrush"
@@ -182,7 +188,7 @@
             <!-- Fill while the menu is closed; CommonStates repaints this one. -->
             <Border x:Name="StateFill"
                     Background="{ThemeResource EtherDropdownFillDefaultBrush}"
-                    CornerRadius="{StaticResource radius/control-sm}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     IsHitTestVisible="False"/>
 
             <!-- Fill while the menu is open. Always the default colour, and out of reach of
@@ -190,13 +196,13 @@
                  two fills is ever visible, so the translucent tokens never stack. -->
             <Border x:Name="OpenFill"
                     Background="{ThemeResource EtherDropdownFillDefaultBrush}"
-                    CornerRadius="{StaticResource radius/control-sm}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     IsHitTestVisible="False"
                     Visibility="Collapsed"/>
 
             <Border x:Name="Bg"
                     Background="{StaticResource EtherDropdownTransparentBrush}"
-                    CornerRadius="{StaticResource radius/control-sm}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     Padding="{TemplateBinding Padding}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -222,7 +228,7 @@
                                Foreground="{ThemeResource EtherDropdownForegroundBrush}"
                                FontFamily="{TemplateBinding FontFamily}"
                                FontSize="{TemplateBinding FontSize}"
-                               FontWeight="Medium"
+                               FontWeight="{StaticResource WeightSemibold}"
                                CharacterSpacing="20"
                                TextWrapping="NoWrap"/>
                     <Path x:Name="Arrow"
@@ -247,7 +253,7 @@
             <Border x:Name="ActiveStroke"
                     BorderBrush="{ThemeResource EtherDropdownActiveStrokeBrush}"
                     BorderThickness="1"
-                    CornerRadius="{StaticResource radius/control-sm}"
+                    CornerRadius="{StaticResource RadiusSm}"
                     IsHitTestVisible="False"
                     Visibility="Collapsed"/>
 
@@ -272,7 +278,7 @@
                 </Popup.ChildTransitions>
                 <Border x:Name="PopupBorder"
                         Background="{ThemeResource EtherDropdownMenuBackgroundBrush}"
-                        CornerRadius="{StaticResource radius/control-sm}"
+                        CornerRadius="{StaticResource RadiusSm}"
                         MinWidth="{StaticResource DropdownMinWidth}"
                         Padding="{StaticResource Padding4}">
                     <ScrollViewer x:Name="ScrollViewer"
@@ -289,7 +295,7 @@
     </ControlTemplate>
 
     <Style x:Key="EtherDropdownItem" TargetType="ComboBoxItem">
-        <Setter Property="Height" Value="{StaticResource Spacing24}"/>
+        <Setter Property="Height" Value="26"/>
         <Setter Property="Padding" Value="6,0"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -300,7 +306,7 @@
                 <ControlTemplate TargetType="ComboBoxItem">
                     <Grid x:Name="ItemBackground"
                           Background="{StaticResource EtherDropdownTransparentBrush}"
-                          CornerRadius="{StaticResource radius/control-sm}"
+                          CornerRadius="{StaticResource RadiusSm}"
                           Padding="{TemplateBinding Padding}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
@@ -350,12 +356,14 @@
                         </VisualStateManager.VisualStateGroups>
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                          ContentTransitions="{TemplateBinding ContentTransitions}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                           Foreground="{ThemeResource EtherDropdownForegroundBrush}"
                                           FontFamily="{TemplateBinding FontFamily}"
                                           FontSize="{TemplateBinding FontSize}"
-                                          FontWeight="Medium"
+                                          FontWeight="{StaticResource WeightSemibold}"
                                           CharacterSpacing="20"/>
                     </Grid>
                 </ControlTemplate>
@@ -367,7 +375,7 @@
         <Setter Property="Padding"                    Value="{StaticResource Padding8}"/>
         <Setter Property="HorizontalAlignment"       Value="Left"/>
         <Setter Property="MinWidth"                   Value="{StaticResource DropdownMinWidth}"/>
-        <Setter Property="MinHeight"                  Value="{StaticResource Spacing32}"/>
+        <Setter Property="MinHeight"                  Value="32"/>
         <Setter Property="FontFamily"                 Value="{StaticResource InterFont}"/>
         <Setter Property="FontSize"                   Value="{StaticResource Size11}"/>
         <Setter Property="MaxVisibleItems"            Value="6"/>

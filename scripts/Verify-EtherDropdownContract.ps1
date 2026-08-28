@@ -11,7 +11,7 @@ $fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtur
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherDropdownActiveStrokeBrush,EtherDropdownFillDefaultBrush,EtherDropdownFillHoverBrush,EtherDropdownFillPressedBrush,EtherDropdownFocusBrush,EtherDropdownForegroundBrush,EtherDropdownItemSelectedBrush,EtherDropdownItemSelectedHoverBrush,EtherDropdownItemSelectedPressedBrush,EtherDropdownMenuBackgroundBrush'
-$templateParts = @('TriggerText', 'Arrow', 'Popup', 'PopupBorder', 'ScrollViewer')
+$templateParts = @('LayoutRoot', 'StateFill', 'OpenFill', 'TriggerText', 'Arrow', 'ActiveStroke', 'FocusRing', 'Popup', 'PopupBorder', 'ScrollViewer', 'ContentPresenter')
 
 function Assert-Contains {
     param([string]$Text, [string]$Pattern, [string]$Description)
@@ -102,6 +102,14 @@ foreach ($template in $templates) {
         }
     }
 }
+
+$xamlRaw = Get-Content -LiteralPath $xamlPath -Raw
+Assert-Contains $xamlRaw 'CornerRadius="\{StaticResource RadiusSm\}"' 'EtherDropdown Figma 4px radius uses RadiusSm'
+if ($xamlRaw -match 'radius/control-sm') {
+    throw 'EtherDropdown templates must use RadiusSm for corner radius, not the radius/control-sm alias.'
+}
+Assert-Contains $xamlRaw 'ContentTemplateSelector="\{TemplateBinding ContentTemplateSelector\}"' 'EtherDropdown item template-binds ContentTemplateSelector like WinUI ComboBoxItem'
+Assert-Contains $xamlRaw 'ContentTransitions="\{TemplateBinding ContentTransitions\}"' 'EtherDropdown item template-binds ContentTransitions like WinUI ComboBoxItem'
 
 foreach ($state in 'Normal', 'PointerOver', 'Pressed', 'Disabled') {
     if (@($dropdownTemplate.SelectNodes(".//*[local-name()='VisualState']") | Where-Object {

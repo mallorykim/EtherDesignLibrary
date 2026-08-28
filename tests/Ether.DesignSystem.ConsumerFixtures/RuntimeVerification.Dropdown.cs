@@ -29,12 +29,14 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("The keyed EtherDropdown style did not apply its default MaxVisibleItems, UseSystemFocusVisuals=False setter, item style, and template.");
         }
 
+        GetTemplatePart<Grid>(dropdown, "LayoutRoot", nameof(EtherDropdown));
         var triggerText = GetTemplatePart<TextBlock>(dropdown, "TriggerText", nameof(EtherDropdown));
         GetTemplatePart<FrameworkElement>(dropdown, "Arrow", nameof(EtherDropdown));
         var contentPresenter = GetTemplatePart<ContentPresenter>(dropdown, "ContentPresenter", nameof(EtherDropdown));
         var activeStroke = GetTemplatePart<Border>(dropdown, "ActiveStroke", nameof(EtherDropdown));
         var stateFill = GetTemplatePart<Border>(dropdown, "StateFill", nameof(EtherDropdown));
         var openFill = GetTemplatePart<Border>(dropdown, "OpenFill", nameof(EtherDropdown));
+        GetTemplatePart<Border>(dropdown, "FocusRing", nameof(EtherDropdown));
         // PopupBorder and ScrollViewer live inside ComboBox's popup host, which is not
         // parented into the closed visual tree. Walk Popup.Child so the closed menu
         // parts are still reachable without opening the live popup.
@@ -46,7 +48,7 @@ internal static partial class RuntimeVerification
 
         GetTemplatePart<Border>(dropdown, "PopupBorder", nameof(EtherDropdown));
         GetTemplatePart<ScrollViewer>(dropdown, "ScrollViewer", nameof(EtherDropdown));
-        var templateParts = new[] { "TriggerText", "Arrow", "Popup", "PopupBorder", "ScrollViewer" };
+        var templateParts = new[] { "LayoutRoot", "StateFill", "OpenFill", "TriggerText", "Arrow", "ActiveStroke", "FocusRing", "Popup", "PopupBorder", "ScrollViewer", "ContentPresenter" };
 
         if (contentPresenter.Visibility != Visibility.Collapsed)
         {

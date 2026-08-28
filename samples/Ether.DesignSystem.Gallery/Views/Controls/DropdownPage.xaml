@@ -10,7 +10,7 @@
             <Setter Property="Width" Value="130"/>
             <Setter Property="Padding" Value="4"/>
             <Setter Property="CornerRadius" Value="4"/>
-            <Setter Property="Background" Value="{ThemeResource BackgroundDropdownMenu}"/>
+            <Setter Property="Background" Value="{ThemeResource EtherDropdownMenuBackgroundBrush}"/>
         </Style>
         <!-- Mirrors EtherDropdownItem: 26 px tall, 6 px side padding. -->
         <Style x:Key="DropdownMenuPreviewItem" TargetType="Border">
@@ -22,9 +22,9 @@
         <Style x:Key="DropdownMenuPreviewText" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
             <Setter Property="FontSize" Value="11"/>
-            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontWeight" Value="{StaticResource WeightSemibold}"/>
             <Setter Property="CharacterSpacing" Value="20"/>
-            <Setter Property="Foreground" Value="{ThemeResource TextSecondary}"/>
+            <Setter Property="Foreground" Value="{ThemeResource EtherDropdownForegroundBrush}"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextAlignment" Value="Left"/>
@@ -121,7 +121,7 @@
                     <Border Style="{StaticResource DropdownMenuPreviewContainer}">
                         <StackPanel Spacing="4">
                             <Border Style="{StaticResource DropdownMenuPreviewItem}"
-                                    Background="{ThemeResource BackgroundDropdownItemSelectedHover}">
+                                    Background="{ThemeResource EtherDropdownItemSelectedHoverBrush}">
 <TextBlock x:Uid="GalleryViewsControlsDropdownPage122" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/>
                             </Border>
                             <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage123" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>
@@ -138,7 +138,7 @@
                     <Border Style="{StaticResource DropdownMenuPreviewContainer}">
                         <StackPanel Spacing="4">
                             <Border Style="{StaticResource DropdownMenuPreviewItem}"
-                                    Background="{ThemeResource BackgroundDropdownItemSelectedPressed}">
+                                    Background="{ThemeResource EtherDropdownItemSelectedPressedBrush}">
 <TextBlock x:Uid="GalleryViewsControlsDropdownPage123" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/>
                             </Border>
                             <Border Style="{StaticResource DropdownMenuPreviewItem}"><TextBlock x:Uid="GalleryViewsControlsDropdownPage128" Text="Item menu" Style="{StaticResource DropdownMenuPreviewText}"/></Border>

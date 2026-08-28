@@ -32,11 +32,17 @@ namespace EtherSandbox.Controls;
 /// Native ComboBox drives CommonStates, FocusStates, and DropDownStates. Default visual
 /// setters live on <c>DefaultEtherDropdownStyle</c>.
 /// </remarks>
+[TemplatePart(Name = LayoutRootPart, Type = typeof(Grid))]
+[TemplatePart(Name = StateFillPart, Type = typeof(Border))]
+[TemplatePart(Name = OpenFillPart, Type = typeof(Border))]
 [TemplatePart(Name = TriggerTextPart, Type = typeof(TextBlock))]
 [TemplatePart(Name = ArrowPart, Type = typeof(FrameworkElement))]
+[TemplatePart(Name = ActiveStrokePart, Type = typeof(Border))]
+[TemplatePart(Name = FocusRingPart, Type = typeof(Border))]
 [TemplatePart(Name = PopupPart, Type = typeof(Popup))]
 [TemplatePart(Name = PopupBorderPart, Type = typeof(Border))]
 [TemplatePart(Name = MenuScrollViewerPart, Type = typeof(ScrollViewer))]
+[TemplatePart(Name = ContentPresenterPart, Type = typeof(ContentPresenter))]
 [TemplateVisualState(GroupName = CommonStatesGroup, Name = NormalState)]
 [TemplateVisualState(GroupName = CommonStatesGroup, Name = PointerOverState)]
 [TemplateVisualState(GroupName = CommonStatesGroup, Name = PressedState)]
@@ -47,11 +53,17 @@ namespace EtherSandbox.Controls;
 [TemplateVisualState(GroupName = DropDownStatesGroup, Name = ClosedState)]
 public sealed class EtherDropdown : ComboBox
 {
+    private const string LayoutRootPart = "LayoutRoot";
+    private const string StateFillPart = "StateFill";
+    private const string OpenFillPart = "OpenFill";
     private const string TriggerTextPart = "TriggerText";
     private const string ArrowPart = "Arrow";
+    private const string ActiveStrokePart = "ActiveStroke";
+    private const string FocusRingPart = "FocusRing";
     private const string PopupPart = "Popup";
     private const string PopupBorderPart = "PopupBorder";
     private const string MenuScrollViewerPart = "ScrollViewer";
+    private const string ContentPresenterPart = "ContentPresenter";
     private const string CommonStatesGroup = "CommonStates";
     private const string NormalState = "Normal";
     private const string PointerOverState = "PointerOver";
@@ -194,7 +206,7 @@ public sealed class EtherDropdown : ComboBox
         Text = text,
         FontFamily = _triggerText?.FontFamily ?? FontFamily,
         FontSize = _triggerText?.FontSize ?? FontSize,
-        FontWeight = _triggerText?.FontWeight ?? FontWeights.Medium,
+        FontWeight = _triggerText?.FontWeight ?? FontWeights.SemiBold,
         CharacterSpacing = _triggerText?.CharacterSpacing ?? CharacterSpacing,
         TextWrapping = TextWrapping.NoWrap
     };
