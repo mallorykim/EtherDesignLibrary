@@ -34,15 +34,16 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("The keyed EtherSteeringBar style did not apply its default range, labels, UseSystemFocusVisuals=False, IsTabStop, and template.");
         }
 
+        GetTemplatePart<Grid>(steeringBar, "LayoutRoot", nameof(EtherSteeringBar));
         var interactionSurface = GetTemplatePart<Grid>(steeringBar, "InteractionSurface", nameof(EtherSteeringBar));
         var fillBorder = GetTemplatePart<Border>(steeringBar, "FillBorder", nameof(EtherSteeringBar));
-        GetTemplatePart<Grid>(steeringBar, "ThumbHost", nameof(EtherSteeringBar));
+        var thumbHost = GetTemplatePart<Grid>(steeringBar, "ThumbHost", nameof(EtherSteeringBar));
         var labelRow = GetTemplatePart<Grid>(steeringBar, "LabelRow", nameof(EtherSteeringBar));
         var titleText = GetTemplatePart<ContentPresenter>(steeringBar, "TitleText", nameof(EtherSteeringBar));
         var valueLabel = GetTemplatePart<ContentPresenter>(steeringBar, "ValueLabel", nameof(EtherSteeringBar));
         var trackBackground = GetTemplatePart<Border>(steeringBar, "TrackBackground", nameof(EtherSteeringBar));
 
-        var templateParts = new[] { "InteractionSurface", "FillBorder", "ThumbHost", "LabelRow", "TitleText", "ValueLabel" };
+        var templateParts = new[] { "LayoutRoot", "InteractionSurface", "FillBorder", "ThumbHost", "LabelRow", "TitleText", "ValueLabel" };
         var labelStates = new List<string>();
         AssertSteeringBarLabelState(steeringBar, labelRow, titleText, valueLabel, true, true, "BothLabelsVisible", labelStates);
         AssertSteeringBarLabelState(steeringBar, labelRow, titleText, valueLabel, true, false, "TitleOnly", labelStates);
@@ -51,11 +52,24 @@ internal static partial class RuntimeVerification
         steeringBar.ShowTitle = true;
         steeringBar.ShowValue = true;
 
+        steeringBar.Value = 0d;
+        steeringBar.UpdateLayout();
+        if (interactionSurface.ActualWidth <= 0d)
+        {
+            throw new InvalidOperationException("The steering-bar template did not receive a measurable track layout.");
+        }
+
+        var thumbWidth = thumbHost.ActualWidth > 0d ? thumbHost.ActualWidth : thumbHost.Width;
+        if (fillBorder.ActualWidth + 0.5d < thumbWidth / 2d)
+        {
+            throw new InvalidOperationException("EtherSteeringBar must keep a half-thumb color seat under the glass at minimum.");
+        }
+
         steeringBar.Value = 65d;
         steeringBar.UpdateLayout();
-        if (interactionSurface.ActualWidth <= 0d || fillBorder.ActualWidth <= 0d)
+        if (fillBorder.ActualWidth <= 0d)
         {
-            throw new InvalidOperationException("The steering-bar template did not receive a measurable track and fill layout.");
+            throw new InvalidOperationException("The steering-bar template did not receive a measurable fill layout.");
         }
 
         var fillRatio = fillBorder.ActualWidth / interactionSurface.ActualWidth;

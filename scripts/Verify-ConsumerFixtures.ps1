@@ -764,7 +764,7 @@ try {
             $expectedSegmentCheckStates = @('Unchecked', 'Checked')
             $expectedIntelligenceButtonTemplateParts = @('Bg', 'BorderIntelligenceBlue', 'BorderIntelligenceGradient', 'BlueGlowOuter', 'BlueGlowMiddle', 'BlueGlowCore', 'PurpleGlow', 'Cp', 'FocusRing')
             $expectedIntelligenceButtonCommonStates = @('Normal', 'PointerOver', 'Pressed', 'Disabled')
-            $expectedSteeringBarTemplateParts = @('InteractionSurface', 'FillBorder', 'ThumbHost', 'LabelRow', 'TitleText', 'ValueLabel')
+            $expectedSteeringBarTemplateParts = @('LayoutRoot', 'InteractionSurface', 'FillBorder', 'ThumbHost', 'LabelRow', 'TitleText', 'ValueLabel')
             $expectedSteeringBarLabelStates = @('BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden')
             $expectedSteeringBarGradient = @('#FF0021F3', '#FF0015FF', '#FF0EB2FF', '#FF40E1FD')
             $expectedSliderTemplateParts = @('ValueText', 'BarCanvas', 'Knob', 'LabelRow')

@@ -12,7 +12,7 @@ $fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtur
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 $expectedComponentKeys = 'EtherSteeringBarFillBrush,EtherSteeringBarStopMarkerActiveBrush,EtherSteeringBarStopMarkerDisabledActiveBrush,EtherSteeringBarStopMarkerDisabledInactiveBrush,EtherSteeringBarStopMarkerInactiveBrush,EtherSteeringBarThumbBorderBrush,EtherSteeringBarThumbDisabledFillBrush,EtherSteeringBarThumbFillBrush,EtherSteeringBarThumbHighlightBrush,EtherSteeringBarThumbShadowFarBrush,EtherSteeringBarThumbShadowNearBrush,EtherSteeringBarThumbSheenBrush,EtherSteeringBarThumbTopHighlightBrush,EtherSteeringBarTitleForegroundBrush,EtherSteeringBarTrackBrush,EtherSteeringBarValueForegroundBrush'
-$templateParts = @('InteractionSurface', 'TrackBackground', 'FillBorder', 'StopMarkersHost', 'ThumbHost', 'ThumbBorder', 'ThumbFill', 'ThumbDisabledShell', 'ShadowFar', 'ShadowNear', 'LabelRow', 'TitleText', 'ValueLabel')
+$templateParts = @('LayoutRoot', 'InteractionSurface', 'TrackBackground', 'FillBorder', 'StopMarkersHost', 'ThumbHost', 'ThumbBorder', 'ThumbFill', 'ThumbDisabledShell', 'ShadowFar', 'ShadowNear', 'LabelRow', 'TitleText', 'ValueLabel')
 
 function Assert-Contains {
     param([string]$Text, [string]$Pattern, [string]$Description)
@@ -70,7 +70,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherSteeringBar is missing its implicit style BasedOn DefaultEtherSteeringBarStyle.'
 }
-foreach ($setter in 'IsTabStop', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Minimum', 'Maximum', 'Value', 'ShowTitle', 'ShowValue', 'Template') {
+foreach ($setter in 'IsTabStop', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'HorizontalAlignment', 'Minimum', 'Maximum', 'Value', 'SmallChange', 'LargeChange', 'ShowTitle', 'ShowValue', 'Padding', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherSteeringBarStyle is missing its $setter setter."
     }
@@ -80,8 +80,62 @@ $template = $keyedStyle.SelectSingleNode(".//*[local-name()='ControlTemplate']")
 if ($null -eq $template) {
     throw 'DefaultEtherSteeringBarStyle is missing its ControlTemplate.'
 }
+if ($template.OuterXml -notmatch 'x:Name="LayoutRoot"') {
+    throw 'EtherSteeringBar template is missing named part LayoutRoot.'
+}
+if ($template.OuterXml -notmatch 'Padding="\{TemplateBinding Padding\}"') {
+    throw 'EtherSteeringBar LayoutRoot must template-bind Padding so the style owns the 0,0,0,6 shadow bleed.'
+}
+if ($template.OuterXml -notmatch 'InteractionSurface[\s\S]*AccessibilityView="Raw"') {
+    throw 'EtherSteeringBar track chrome must be AccessibilityView=Raw so RangeValue stays on the control.'
+}
+if ($template.OuterXml -notmatch 'EtherSteeringBarTransparentBrush') {
+    throw 'EtherSteeringBar InteractionSurface must use the unthemed transparent brush like EtherSlider.'
+}
+if ($template.OuterXml -notmatch 'x:Name="TrackBackground"' -or $template.OuterXml -notmatch 'Height="6"') {
+    throw 'EtherSteeringBar track must be 6 epx tall.'
+}
+if ($control -notmatch 'TrackHeight = 6') {
+    throw 'EtherSteeringBar code must keep fill height at 6 epx with the painted track.'
+}
+$trackBackground = @($template.SelectNodes(".//*[local-name()='Border']") | Where-Object {
+    $_.GetAttribute('Name', $xamlNamespace) -eq 'TrackBackground'
+})[0]
+$fillBorder = @($template.SelectNodes(".//*[local-name()='Border']") | Where-Object {
+    $_.GetAttribute('Name', $xamlNamespace) -eq 'FillBorder'
+})[0]
+if ($null -eq $trackBackground -or $trackBackground.GetAttribute('CornerRadius') -ne '3') {
+    throw 'EtherSteeringBar track CornerRadius must be 3 (half of the 6 epx height).'
+}
+if ($null -eq $fillBorder -or $fillBorder.GetAttribute('CornerRadius') -ne '3') {
+    throw 'EtherSteeringBar fill CornerRadius must be 3 (half of the 6 epx height).'
+}
 if ($template.OuterXml -match '#[0-9A-Fa-f]{3,8}') {
     throw 'EtherSteeringBar ControlTemplate contains a literal hex color; only component resources may carry color values.'
+}
+if ($template.OuterXml -match 'Translation=') {
+    throw 'EtherSteeringBar must not fake thumb shadows with translated solid Borders.'
+}
+if ($control -notmatch 'AttachedCardShadow') {
+    throw 'EtherSteeringBar must attach a visible card shadow to the thumb.'
+}
+$thumbBorder = @($template.SelectNodes(".//*[local-name()='Border']") | Where-Object {
+    $_.GetAttribute('Name', $xamlNamespace) -eq 'ThumbBorder'
+})[0]
+if ($null -eq $thumbBorder -or $thumbBorder.GetAttribute('BorderThickness') -ne '0.8') {
+    throw 'EtherSteeringBar knob stroke must be 0.8 epx.'
+}
+if ($control -notmatch 'IsPointerOverThumb') {
+    throw 'EtherSteeringBar hover chrome must track the thumb, not the whole interaction strip.'
+}
+if ($control -notmatch 'thumbTop = \(surfaceHeight - thumbHeight\) / 2d') {
+    throw 'EtherSteeringBar must vertically center the thumb on the painted track.'
+}
+if ($control -notmatch 'MeasureFillWidth') {
+    throw 'EtherSteeringBar must keep a color seat under the acrylic thumb at minimum.'
+}
+if ($control -notmatch 'thumbWidth / 2d') {
+    throw 'EtherSteeringBar minimum color seat must be half the thumb width.'
 }
 foreach ($state in 'BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden') {
     if (@($template.SelectNodes(".//*[local-name()='VisualState']") | Where-Object {
@@ -121,6 +175,63 @@ foreach ($theme in 'Light', 'Dark', 'HighContrast') {
 }
 if (($keysByTheme.Light -join ',') -cne $expectedComponentKeys) {
     throw 'EtherSteeringBar component resource keys differ from the expected lightweight key set.'
+}
+
+$xamlText = Get-Content -LiteralPath $xamlPath -Raw
+if ($xamlText -notmatch '62128:25881' -or $xamlText -notmatch '62134:28164') {
+    throw 'EtherSteeringBar must cite Figma Light 62128:25881 and Dark 62134:28164.'
+}
+
+$lightDictionary = @($themeDictionaries | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'Light' })[0]
+$darkDictionary = @($themeDictionaries | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'Dark' })[0]
+if ($lightDictionary.OuterXml -match 'background/track|text/primary|TextSecondary' -or
+    $darkDictionary.OuterXml -match 'background/track|text/primary|TextSecondary') {
+    throw 'EtherSteeringBar Light/Dark must bind primitives, not semantic track/text aliases.'
+}
+
+function Get-KeyedResourceXml {
+    param([System.Xml.XmlElement]$Dictionary, [string]$Key)
+
+    return @($Dictionary.ChildNodes | Where-Object {
+        $_ -is [System.Xml.XmlElement] -and $_.GetAttribute('Key', $xamlNamespace) -eq $Key
+    })[0]
+}
+
+$lightTrack = Get-KeyedResourceXml $lightDictionary 'EtherSteeringBarTrackBrush'
+$darkTrack = Get-KeyedResourceXml $darkDictionary 'EtherSteeringBarTrackBrush'
+$lightTitle = Get-KeyedResourceXml $lightDictionary 'EtherSteeringBarTitleForegroundBrush'
+$darkTitle = Get-KeyedResourceXml $darkDictionary 'EtherSteeringBarTitleForegroundBrush'
+$lightKnob = Get-KeyedResourceXml $lightDictionary 'EtherSteeringBarThumbBorderBrush'
+$darkKnob = Get-KeyedResourceXml $darkDictionary 'EtherSteeringBarThumbBorderBrush'
+if ($null -eq $lightTrack -or $lightTrack.OuterXml -notmatch 'Gray200') {
+    throw 'EtherSteeringBar Light track must bind primitive Gray200.'
+}
+if ($null -eq $darkTrack -or $darkTrack.OuterXml -notmatch 'Gray600') {
+    throw 'EtherSteeringBar Dark track must bind primitive Gray600.'
+}
+if ($null -eq $lightTitle -or $lightTitle.OuterXml -notmatch 'Gray1000') {
+    throw 'EtherSteeringBar Light title must bind primitive Gray1000.'
+}
+if ($null -eq $darkTitle -or $darkTitle.OuterXml -notmatch 'Gray0') {
+    throw 'EtherSteeringBar Dark title must bind primitive Gray0.'
+}
+if ($null -eq $lightKnob -or $lightKnob.OuterXml -notmatch 'Gray0') {
+    throw 'EtherSteeringBar Light knob stroke must bind primitive Gray0.'
+}
+if ($null -eq $darkKnob -or $darkKnob.OuterXml -notmatch 'Gray600') {
+    throw 'EtherSteeringBar Dark knob stroke must bind primitive Gray600.'
+}
+$lightDisabledFill = Get-KeyedResourceXml $lightDictionary 'EtherSteeringBarThumbDisabledFillBrush'
+if ($null -eq $lightDisabledFill -or $lightDisabledFill.OuterXml -notmatch 'Gray200') {
+    throw 'EtherSteeringBar Light disabled knob fill must bind primitive Gray200 so it remains visible on a white surface.'
+}
+$lightFill = Get-KeyedResourceXml $lightDictionary 'EtherSteeringBarThumbFillBrush'
+$darkFill = Get-KeyedResourceXml $darkDictionary 'EtherSteeringBarThumbFillBrush'
+if ($null -eq $lightFill -or $lightFill.LocalName -ne 'AcrylicBrush' -or $lightFill.OuterXml -notmatch 'BlurAmount="6"') {
+    throw 'EtherSteeringBar Light knob fill must be an AcrylicBrush with Figma blur 6.'
+}
+if ($null -eq $darkFill -or $darkFill.LocalName -ne 'AcrylicBrush' -or $darkFill.OuterXml -notmatch 'BlurAmount="6"') {
+    throw 'EtherSteeringBar Dark knob fill must be an AcrylicBrush with Figma blur 6.'
 }
 
 $highContrast = @($themeDictionaries | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'HighContrast' })[0]

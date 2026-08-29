@@ -1,91 +1,99 @@
 <!--
     Ether Design System Steering Bar
 
-    A draggable slider-like control with a rounded track, gradient progress fill,
-    glass thumb, and optional title/value labels. Supports continuous dragging or
-    custom stops with snapping.
+    Figma source: ursRC201v8IiVeafliI45F
+      Light Default 62128:25881 · Dark Default 62134:28164
+    Draggable slider-like control with a rounded track, cyan-to-navy fill,
+    glass thumb, and optional title/value labels. Supports continuous dragging
+    or custom stops with snapping.
 
     DefaultEtherSteeringBarStyle owns the default setters; the implicit style is
-    BasedOn that key. Colour-bearing values live in EtherSteeringBar* Light/Dark/
-    HighContrast dictionaries. The template does not use literal hex. Thumb size,
-    fill width, stop markers, and PreviewStatus opacity stay code-driven so
-    pointer/keyboard interaction is not rewritten onto VisualStateManager.
+    BasedOn that key. Light/Dark bind Color to primitives for track, title,
+    value, and knob stroke (Gray200 / Gray600, Gray1000 / Gray0, AlphaBlack70 /
+    AlphaWhite70, Gray0 / Gray600). Fill gradient hex matches Figma Gradient-100.
+    High Contrast uses Windows SystemColor*. Thumb size, fill width, stop
+    markers, and PreviewStatus opacity stay code-driven so pointer/keyboard
+    interaction is not rewritten onto VisualStateManager. The glass thumb is
+    vertically centered on the 6 epx track. Knob fill is CommunityToolkit
+    AcrylicBrush with BlurAmount 6 (Figma backdrop-blur). Knob stroke is 0.8 epx.
+    Thumb drop shadow is AttachedCardShadow (0 2 8). Padding lives on the style
+    and template-binds onto LayoutRoot (0,0,0,6 shadow bleed). Track, fill, and
+    thumb chrome are AccessibilityView=Raw so RangeValue stays on the control.
 
     LOCATION
-      This dictionary lives beside its class (Controls/EtherSteeringBar.xaml.cs)
+      This dictionary lives beside its class (Controls/Inputs/EtherSteeringBar.xaml.cs)
       and is merged from Controls Generic.xaml.
 -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:EtherSandbox.Controls">
+    xmlns:controls="using:EtherSandbox.Controls"
+    xmlns:media="using:CommunityToolkit.WinUI.Media">
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="EtherSteeringBarTrackBrush" ResourceKey="background/track" />
-            <StaticResource x:Key="EtherSteeringBarTitleForegroundBrush" ResourceKey="text/primary" />
-            <StaticResource x:Key="EtherSteeringBarValueForegroundBrush" ResourceKey="TextSecondary" />
+            <SolidColorBrush x:Key="EtherSteeringBarTrackBrush" Color="{StaticResource Gray200}" />
+            <SolidColorBrush x:Key="EtherSteeringBarTitleForegroundBrush" Color="{StaticResource Gray1000}" />
+            <SolidColorBrush x:Key="EtherSteeringBarValueForegroundBrush" Color="{StaticResource AlphaBlack70}" />
             <LinearGradientBrush x:Key="EtherSteeringBarFillBrush" StartPoint="0,0.5" EndPoint="1,0.5">
                 <GradientStop Color="#0021F3" Offset="0.00" />
-                <GradientStop Color="#0015FF" Offset="0.33" />
-                <GradientStop Color="#0EB2FF" Offset="0.67" />
+                <GradientStop Color="#0015FF" Offset="0.20" />
+                <GradientStop Color="#0EB2FF" Offset="0.902" />
                 <GradientStop Color="#40E1FD" Offset="1.00" />
             </LinearGradientBrush>
-            <SolidColorBrush x:Key="EtherSteeringBarThumbShadowFarBrush" Color="#06000000" />
-            <SolidColorBrush x:Key="EtherSteeringBarThumbShadowNearBrush" Color="#0D000000" />
-            <SolidColorBrush x:Key="EtherSteeringBarThumbBorderBrush" Color="#BFC7D0D8" />
-            <LinearGradientBrush x:Key="EtherSteeringBarThumbFillBrush" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#FFFDFEFF" Offset="0.00" />
-                <GradientStop Color="#FFF8FDFF" Offset="0.42" />
-                <GradientStop Color="#FFF2F7F9" Offset="1.00" />
-            </LinearGradientBrush>
+            <SolidColorBrush x:Key="EtherSteeringBarThumbShadowFarBrush" Color="#36183361" />
+            <SolidColorBrush x:Key="EtherSteeringBarThumbShadowNearBrush" Color="#1A183361" />
+            <SolidColorBrush x:Key="EtherSteeringBarThumbBorderBrush" Color="{StaticResource Gray0}" />
+            <media:AcrylicBrush x:Key="EtherSteeringBarThumbFillBrush"
+                                BlurAmount="6"
+                                TintColor="#F4FEFF"
+                                TintOpacity="0.15" />
             <RadialGradientBrush x:Key="EtherSteeringBarThumbHighlightBrush" Center="0.32,0.14" RadiusX="1.0" RadiusY="0.85">
                 <GradientStop Color="#7AFFFFFF" Offset="0.00" />
-                <GradientStop Color="#24E7F8FF" Offset="0.58" />
+                <GradientStop Color="#247CEBFE" Offset="0.58" />
                 <GradientStop Color="#00FFFFFF" Offset="1.00" />
             </RadialGradientBrush>
             <LinearGradientBrush x:Key="EtherSteeringBarThumbSheenBrush" StartPoint="0,0.5" EndPoint="1,0.5">
-                <GradientStop Color="#00BFEFFF" Offset="0.00" />
-                <GradientStop Color="#AA82ECFF" Offset="0.52" />
-                <GradientStop Color="#00BFEFFF" Offset="1.00" />
+                <GradientStop Color="#00F4FEFF" Offset="0.00" />
+                <GradientStop Color="#AAFFFFFF" Offset="0.52" />
+                <GradientStop Color="#00F4FEFF" Offset="1.00" />
             </LinearGradientBrush>
             <SolidColorBrush x:Key="EtherSteeringBarThumbTopHighlightBrush" Color="#5AFFFFFF" />
-            <SolidColorBrush x:Key="EtherSteeringBarThumbDisabledFillBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="EtherSteeringBarThumbDisabledFillBrush" Color="{StaticResource Gray200}" />
             <SolidColorBrush x:Key="EtherSteeringBarStopMarkerActiveBrush" Color="#D9FFFFFF" />
             <SolidColorBrush x:Key="EtherSteeringBarStopMarkerInactiveBrush" Color="#66FFFFFF" />
             <SolidColorBrush x:Key="EtherSteeringBarStopMarkerDisabledActiveBrush" Color="#99FFFFFF" />
             <SolidColorBrush x:Key="EtherSteeringBarStopMarkerDisabledInactiveBrush" Color="#33FFFFFF" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <StaticResource x:Key="EtherSteeringBarTrackBrush" ResourceKey="background/track" />
-            <StaticResource x:Key="EtherSteeringBarTitleForegroundBrush" ResourceKey="text/primary" />
-            <StaticResource x:Key="EtherSteeringBarValueForegroundBrush" ResourceKey="TextSecondary" />
+            <SolidColorBrush x:Key="EtherSteeringBarTrackBrush" Color="{StaticResource Gray600}" />
+            <SolidColorBrush x:Key="EtherSteeringBarTitleForegroundBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherSteeringBarValueForegroundBrush" Color="{StaticResource AlphaWhite70}" />
             <LinearGradientBrush x:Key="EtherSteeringBarFillBrush" StartPoint="0,0.5" EndPoint="1,0.5">
                 <GradientStop Color="#0021F3" Offset="0.00" />
-                <GradientStop Color="#0015FF" Offset="0.33" />
-                <GradientStop Color="#0EB2FF" Offset="0.67" />
+                <GradientStop Color="#0015FF" Offset="0.20" />
+                <GradientStop Color="#0EB2FF" Offset="0.902" />
                 <GradientStop Color="#40E1FD" Offset="1.00" />
             </LinearGradientBrush>
-            <SolidColorBrush x:Key="EtherSteeringBarThumbShadowFarBrush" Color="#06000000" />
-            <SolidColorBrush x:Key="EtherSteeringBarThumbShadowNearBrush" Color="#0D000000" />
-            <SolidColorBrush x:Key="EtherSteeringBarThumbBorderBrush" Color="#BFC7D0D8" />
-            <LinearGradientBrush x:Key="EtherSteeringBarThumbFillBrush" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#FFFDFEFF" Offset="0.00" />
-                <GradientStop Color="#FFF8FDFF" Offset="0.42" />
-                <GradientStop Color="#FFF2F7F9" Offset="1.00" />
-            </LinearGradientBrush>
+            <SolidColorBrush x:Key="EtherSteeringBarThumbShadowFarBrush" Color="#1AFFFFFF" />
+            <SolidColorBrush x:Key="EtherSteeringBarThumbShadowNearBrush" Color="#99FFFFFF" />
+            <SolidColorBrush x:Key="EtherSteeringBarThumbBorderBrush" Color="{StaticResource Gray600}" />
+            <media:AcrylicBrush x:Key="EtherSteeringBarThumbFillBrush"
+                                BlurAmount="6"
+                                TintColor="{StaticResource Gray700}"
+                                TintOpacity="0.15" />
             <RadialGradientBrush x:Key="EtherSteeringBarThumbHighlightBrush" Center="0.32,0.14" RadiusX="1.0" RadiusY="0.85">
-                <GradientStop Color="#7AFFFFFF" Offset="0.00" />
-                <GradientStop Color="#24E7F8FF" Offset="0.58" />
-                <GradientStop Color="#00FFFFFF" Offset="1.00" />
+                <GradientStop Color="#667CEBFE" Offset="0.00" />
+                <GradientStop Color="#242A323D" Offset="0.58" />
+                <GradientStop Color="#002A323D" Offset="1.00" />
             </RadialGradientBrush>
             <LinearGradientBrush x:Key="EtherSteeringBarThumbSheenBrush" StartPoint="0,0.5" EndPoint="1,0.5">
-                <GradientStop Color="#00BFEFFF" Offset="0.00" />
-                <GradientStop Color="#AA82ECFF" Offset="0.52" />
-                <GradientStop Color="#00BFEFFF" Offset="1.00" />
+                <GradientStop Color="#007CEBFE" Offset="0.00" />
+                <GradientStop Color="#667CEBFE" Offset="0.52" />
+                <GradientStop Color="#007CEBFE" Offset="1.00" />
             </LinearGradientBrush>
-            <SolidColorBrush x:Key="EtherSteeringBarThumbTopHighlightBrush" Color="#5AFFFFFF" />
-            <SolidColorBrush x:Key="EtherSteeringBarThumbDisabledFillBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="EtherSteeringBarThumbTopHighlightBrush" Color="{StaticResource Gray750}" />
+            <SolidColorBrush x:Key="EtherSteeringBarThumbDisabledFillBrush" Color="{StaticResource Gray700}" />
             <SolidColorBrush x:Key="EtherSteeringBarStopMarkerActiveBrush" Color="#D9FFFFFF" />
             <SolidColorBrush x:Key="EtherSteeringBarStopMarkerInactiveBrush" Color="#66FFFFFF" />
             <SolidColorBrush x:Key="EtherSteeringBarStopMarkerDisabledActiveBrush" Color="#99FFFFFF" />
@@ -104,11 +112,7 @@
             <SolidColorBrush x:Key="EtherSteeringBarThumbShadowFarBrush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="EtherSteeringBarThumbShadowNearBrush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="EtherSteeringBarThumbBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
-            <LinearGradientBrush x:Key="EtherSteeringBarThumbFillBrush" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="{ThemeResource SystemColorButtonFaceColor}" Offset="0.00" />
-                <GradientStop Color="{ThemeResource SystemColorButtonFaceColor}" Offset="0.42" />
-                <GradientStop Color="{ThemeResource SystemColorButtonFaceColor}" Offset="1.00" />
-            </LinearGradientBrush>
+            <SolidColorBrush x:Key="EtherSteeringBarThumbFillBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
             <RadialGradientBrush x:Key="EtherSteeringBarThumbHighlightBrush" Center="0.32,0.14" RadiusX="1.0" RadiusY="0.85">
                 <GradientStop Color="{ThemeResource SystemColorHighlightColor}" Offset="0.00" />
                 <GradientStop Color="{ThemeResource SystemColorHighlightColor}" Offset="0.58" />
@@ -128,19 +132,27 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
+    <!-- Hit-test fill for InteractionSurface and empty shadow wells: not themed,
+         so High Contrast can keep SystemColor-only theme keys. -->
+    <SolidColorBrush x:Key="EtherSteeringBarTransparentBrush" Color="Transparent"/>
+
     <Style x:Key="DefaultEtherSteeringBarStyle" TargetType="controls:EtherSteeringBar">
         <Setter Property="IsTabStop" Value="True" />
         <Setter Property="UseSystemFocusVisuals" Value="False" />
         <Setter Property="HighContrastAdjustment" Value="None" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Minimum" Value="0" />
         <Setter Property="Maximum" Value="100" />
         <Setter Property="Value" Value="0" />
+        <Setter Property="SmallChange" Value="1" />
+        <Setter Property="LargeChange" Value="10" />
         <Setter Property="ShowTitle" Value="True" />
         <Setter Property="ShowValue" Value="True" />
+        <Setter Property="Padding" Value="0,0,0,6" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:EtherSteeringBar">
-                    <Grid x:Name="LayoutRoot">
+                    <Grid x:Name="LayoutRoot" Padding="{TemplateBinding Padding}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -179,7 +191,9 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
-                        <Grid x:Name="LabelRow" Margin="0,0,0,8">
+                        <!-- InteractionSurface is 16 epx with a 6 epx centered track (5 epx
+                             above the painted bar). 3 + 5 = 8 from labels to the bar. -->
+                        <Grid x:Name="LabelRow" Grid.Row="0" Margin="0,0,0,3">
                             <ContentPresenter x:Name="TitleText"
                                               Content="{TemplateBinding Title}"
                                               HorizontalAlignment="Left"
@@ -198,75 +212,68 @@
                         <Grid x:Name="InteractionSurface"
                               Grid.Row="1"
                               Height="{StaticResource Spacing16}"
-                              Background="Transparent">
+                              Background="{StaticResource EtherSteeringBarTransparentBrush}"
+                              AutomationProperties.AccessibilityView="Raw">
                             <Border x:Name="TrackBackground"
-                                    Height="{StaticResource Spacing4}"
+                                    Height="6"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
                                     Background="{ThemeResource EtherSteeringBarTrackBrush}"
-                                    CornerRadius="{StaticResource RadiusXs}" />
+                                    CornerRadius="3"
+                                    AutomationProperties.AccessibilityView="Raw" />
 
                             <Border x:Name="FillBorder"
                                     Width="{StaticResource Spacing0}"
-                                    Height="{StaticResource Spacing4}"
+                                    Height="6"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Background="{ThemeResource EtherSteeringBarFillBrush}"
-                                    CornerRadius="{StaticResource RadiusXs}"
-                                    IsHitTestVisible="False" />
+                                    CornerRadius="3"
+                                    IsHitTestVisible="False"
+                                    AutomationProperties.AccessibilityView="Raw" />
 
                             <Canvas x:Name="StopMarkersHost"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
-                                    IsHitTestVisible="False" />
+                                    IsHitTestVisible="False"
+                                    AutomationProperties.AccessibilityView="Raw" />
+
+                            <Border x:Name="ShadowFar"
+                                    Width="{StaticResource Spacing0}"
+                                    Height="{StaticResource Spacing0}"
+                                    BorderBrush="{ThemeResource EtherSteeringBarThumbShadowFarBrush}"
+                                    BorderThickness="0"
+                                    Background="{StaticResource EtherSteeringBarTransparentBrush}"
+                                    IsHitTestVisible="False"
+                                    AutomationProperties.AccessibilityView="Raw" />
+                            <Border x:Name="ShadowNear"
+                                    Width="{StaticResource Spacing0}"
+                                    Height="{StaticResource Spacing0}"
+                                    BorderBrush="{ThemeResource EtherSteeringBarThumbShadowNearBrush}"
+                                    BorderThickness="0"
+                                    Background="{StaticResource EtherSteeringBarTransparentBrush}"
+                                    IsHitTestVisible="False"
+                                    AutomationProperties.AccessibilityView="Raw" />
 
                             <Grid x:Name="ThumbHost"
                                   Width="{StaticResource Spacing20}"
                                   Height="{StaticResource Spacing12}"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Top"
-                                  Margin="0,1,0,0"
-                                  IsHitTestVisible="False">
-                                <Border x:Name="ShadowFar"
-                                        Margin="-2,0,-2,-2"
-                                        CornerRadius="{StaticResource RadiusSm}"
-                                        Background="{ThemeResource EtherSteeringBarThumbShadowFarBrush}"
-                                        Translation="0,2,0" />
-                                <Border x:Name="ShadowNear"
-                                        Margin="0,0,0,-1"
-                                        CornerRadius="{StaticResource RadiusSm}"
-                                        Background="{ThemeResource EtherSteeringBarThumbShadowNearBrush}"
-                                        Translation="0,0.8,0" />
-
+                                  IsHitTestVisible="False"
+                                  AutomationProperties.AccessibilityView="Raw">
                                 <Border x:Name="ThumbBorder"
                                         BorderBrush="{ThemeResource EtherSteeringBarThumbBorderBrush}"
-                                        BorderThickness="0.5"
+                                        BorderThickness="0.8"
                                         CornerRadius="3">
                                     <Border x:Name="ThumbFill"
-                                            CornerRadius="3">
-                                        <Grid>
-                                            <Border CornerRadius="3"
-                                                    Background="{ThemeResource EtherSteeringBarThumbFillBrush}" />
-                                            <Border Margin="0.5"
-                                                    CornerRadius="{StaticResource RadiusXs}"
-                                                    Background="{ThemeResource EtherSteeringBarThumbHighlightBrush}" />
-                                            <Border Margin="1.8,1.6,1.8,4.6"
-                                                    CornerRadius="{StaticResource RadiusSm}"
-                                                    Opacity="0.9"
-                                                    Background="{ThemeResource EtherSteeringBarThumbSheenBrush}" />
-                                            <Border Margin="0.7,0.7,0.7,0"
-                                                    VerticalAlignment="Top"
-                                                    Height="{StaticResource Spacing2}"
-                                                    CornerRadius="1"
-                                                    Background="{ThemeResource EtherSteeringBarThumbTopHighlightBrush}"
-                                                    IsHitTestVisible="False" />
-                                        </Grid>
-                                    </Border>
+                                            CornerRadius="3"
+                                            Background="{ThemeResource EtherSteeringBarThumbFillBrush}" />
                                 </Border>
 
                                 <Border x:Name="ThumbDisabledShell"
                                         BorderBrush="{ThemeResource EtherSteeringBarThumbBorderBrush}"
-                                        BorderThickness="0.5"
+                                        BorderThickness="0.8"
                                         CornerRadius="3"
                                         Opacity="0"
                                         IsHitTestVisible="False">
