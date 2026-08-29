@@ -50,10 +50,19 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("A bare ToggleSwitch received EtherSwitch chrome; the style must stay keyed, not implicit.");
         }
 
-        var trackOff = GetTemplatePart<Border>(toggleSwitch, "TrackOff", "EtherSwitch");
+        GetTemplatePart<Border>(toggleSwitch, "TrackOff", "EtherSwitch");
         GetTemplatePart<Border>(toggleSwitch, "TrackOn", "EtherSwitch");
         GetTemplatePart<Border>(toggleSwitch, "KnobFill", "EtherSwitch");
         GetTemplatePart<Border>(defaultToggleSwitch, "TrackOff", "EtherSwitch");
+        var switchContent = GetTemplatePart<StackPanel>(toggleSwitch, "SwitchContent", "EtherSwitch");
+        if (switchContent.Children.Count < 3 ||
+            (switchContent.Children[0] as FrameworkElement)?.Name != "OffLabel" ||
+            (switchContent.Children[1] as FrameworkElement)?.Name != "OnLabel" ||
+            (switchContent.Children[2] as FrameworkElement)?.Name != "SwitchArea")
+        {
+            throw new InvalidOperationException("EtherSwitch labels must sit to the left of SwitchArea.");
+        }
+
         var templateParts = new[] { "TrackOff", "TrackOn", "KnobFill" };
 
         var toggleStates = new List<string>();
@@ -81,10 +90,11 @@ internal static partial class RuntimeVerification
         toggleSwitch.IsEnabled = false;
         toggleSwitch.UpdateLayout();
         VisualStateManager.GoToState(toggleSwitch, "Disabled", false);
-        var disabledTrackOpacityApplied = Math.Abs(onTrackOff.Opacity - 0.4d) < 0.01d;
+        var disabledTrack = GetTemplatePart<Border>(toggleSwitch, "TrackOn", "EtherSwitch");
+        var disabledTrackOpacityApplied = Math.Abs(disabledTrack.Opacity - 0.4d) < 0.01d;
         if (!disabledTrackOpacityApplied)
         {
-            throw new InvalidOperationException("Disabled EtherSwitch did not fade TrackOff to 0.4 opacity while keeping the knob opaque.");
+            throw new InvalidOperationException("Disabled EtherSwitch did not fade TrackOn to 0.4 opacity.");
         }
 
         toggleSwitch.IsEnabled = true;
@@ -100,8 +110,8 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("EtherSwitch fixture automation names were not applied.");
         }
 
-        var lightTemplateBrushColors = await GetToggleSwitchTemplateBrushColorsAsync(themeRoot, toggleSwitch, trackOff, ElementTheme.Light);
-        var darkTemplateBrushColors = await GetToggleSwitchTemplateBrushColorsAsync(themeRoot, toggleSwitch, trackOff, ElementTheme.Dark);
+        var lightTemplateBrushColors = await GetToggleSwitchTemplateBrushColorsAsync(themeRoot, toggleSwitch, onTrackOff, ElementTheme.Light);
+        var darkTemplateBrushColors = await GetToggleSwitchTemplateBrushColorsAsync(themeRoot, toggleSwitch, onTrackOff, ElementTheme.Dark);
         if (lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
         {
             throw new InvalidOperationException("EtherSwitch Light and Dark template brushes did not re-resolve to distinct values.");

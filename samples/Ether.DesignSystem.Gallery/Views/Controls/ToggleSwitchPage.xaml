@@ -7,7 +7,7 @@
 <views:ComponentPage x:Uid="GalleryViewsControlsToggleSwitchPage222"
         Title="Toggle Switch"
         HasDisabledToggle="True"
-        Description="Updated toggle switch with refined ON and OFF styling across Light and Dark themes. Both values show default, hover, pressed, and disabled treatments.">
+        Description="Toggle switch with Figma ON and OFF styling across Light and Dark. The caption stays on the left of the track. Both values show default, hover, pressed, and disabled treatments.">
 
         <views:ComponentPage.InteractiveContent>
             <views:ControlExample x:Name="LiveExample"

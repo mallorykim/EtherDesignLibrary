@@ -737,7 +737,7 @@
     <value>Toggle Switch</value>
   </data>
   <data name="GalleryViewsControlsToggleSwitchPage222.Description" xml:space="preserve">
-    <value>Updated toggle switch with refined ON and OFF styling across Light and Dark themes. Both values show default, hover, pressed, and disabled treatments.</value>
+    <value>Toggle switch with Figma ON and OFF styling across Light and Dark. The caption stays on the left of the track. Both values show default, hover, pressed, and disabled treatments.</value>
   </data>
   <data name="GalleryViewsControlsToggleSwitchPage223.OffContent" xml:space="preserve">
     <value>Off</value>
@@ -1199,7 +1199,7 @@
     <value>Toggle Switch</value>
   </data>
   <data name="GalleryViewsControlsToggleSwitchPage247.Description" xml:space="preserve">
-    <value>Updated toggle switch with refined ON and OFF styling across Light and Dark themes. Both values show default, hover, pressed, and disabled treatments.</value>
+    <value>Toggle switch with Figma ON and OFF styling across Light and Dark. The caption stays on the left of the track. Both values show default, hover, pressed, and disabled treatments.</value>
   </data>
   <data name="GalleryViewsControlsToggleSwitchPage248.OffContent" xml:space="preserve">
     <value>Off</value>
