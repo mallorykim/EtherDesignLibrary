@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
 
 namespace Ether.DesignSystem.ConsumerFixtures;
 
@@ -22,6 +21,7 @@ internal static partial class RuntimeVerification
 
         if (defaultProgressBar.Minimum != 0d || defaultProgressBar.Maximum != 100d ||
             defaultProgressBar.Value != 0d || !defaultProgressBar.ShowTitle || !defaultProgressBar.ShowValue ||
+            defaultProgressBar.IsTabStop || defaultProgressBar.UseSystemFocusVisuals ||
             defaultProgressBar.Template is null)
         {
             throw new InvalidOperationException("The keyed EtherProgressBar style did not apply its default range, labels, and template.");
@@ -40,7 +40,7 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("EtherProgressBar did not create FillColumn and RestColumn template columns.");
         }
 
-        var templateParts = new[] { "FillColumn", "RestColumn", "LabelRow", "TitleText", "ValueLabel" };
+        var templateParts = new[] { "LayoutRoot", "FillColumn", "RestColumn", "LabelRow", "TitleText", "ValueLabel" };
         var labelStates = new List<string>();
         AssertLabelState(progressBar, labelRow, titleText, valueLabel, true, true, "BothLabelsVisible", labelStates);
         AssertLabelState(progressBar, labelRow, titleText, valueLabel, true, false, "TitleOnly", labelStates);
@@ -131,14 +131,14 @@ internal static partial class RuntimeVerification
             progressBar.AutomationRangeValueChanged -= OnAutomationRangeValueChanged;
         }
 
-        var lightGradient = await GetProgressGradientAsync(themeRoot, progressBar, fill, ElementTheme.Light);
-        var darkGradient = await GetProgressGradientAsync(themeRoot, progressBar, fill, ElementTheme.Dark);
+        var lightFillColors = await GetProgressFillColorsAsync(themeRoot, progressBar, fill, ElementTheme.Light);
+        var darkFillColors = await GetProgressFillColorsAsync(themeRoot, progressBar, fill, ElementTheme.Dark);
         var lightTemplateBrushColors = await GetProgressTemplateBrushColorsAsync(
             themeRoot, progressBar, trackBackground, titleText, valueLabel, ElementTheme.Light);
         var darkTemplateBrushColors = await GetProgressTemplateBrushColorsAsync(
             themeRoot, progressBar, trackBackground, titleText, valueLabel, ElementTheme.Dark);
-        AssertGradient(lightGradient, "Light");
-        AssertGradient(darkGradient, "Dark");
+        AssertFill(lightFillColors, ExpectedProgressBarLightFill, "Light");
+        AssertFill(darkFillColors, ExpectedProgressBarDarkFill, "Dark");
         if (lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
         {
             throw new InvalidOperationException("EtherProgressBar Light and Dark template brushes did not re-resolve to distinct values.");
@@ -161,8 +161,8 @@ internal static partial class RuntimeVerification
             setValueRejected,
             valueChangeExercised,
             valuePropertyChangedSubscribed,
-            lightGradient,
-            darkGradient,
+            lightFillColors,
+            darkFillColors,
             lightTemplateBrushColors,
             darkTemplateBrushColors);
     }
@@ -190,7 +190,7 @@ internal static partial class RuntimeVerification
         observedStates.Add(expectedState);
     }
 
-    private static async Task<string[]> GetProgressGradientAsync(
+    private static async Task<string[]> GetProgressFillColorsAsync(
         FrameworkElement themeRoot,
         EtherProgressBar progressBar,
         Border fill,
@@ -200,20 +200,15 @@ internal static partial class RuntimeVerification
         await WaitForAppliedThemeAsync(themeRoot, theme);
         progressBar.UpdateLayout();
 
-        if (fill.Background is not LinearGradientBrush brush)
-        {
-            throw new InvalidOperationException($"EtherProgressBar fill did not resolve a LinearGradientBrush in {theme} theme.");
-        }
-
-        return brush.GradientStops.Select(stop => FormatColor(stop.Color)).ToArray();
+        return new[] { GetSolidBrushColor(fill.Background, "fill", theme) };
     }
 
-    private static void AssertGradient(IReadOnlyList<string> colors, string theme)
+    private static void AssertFill(IReadOnlyList<string> colors, string expected, string theme)
     {
-        if (!colors.SequenceEqual(ExpectedProgressGradient, StringComparer.Ordinal))
+        if (colors.Count != 1 || !string.Equals(colors[0], expected, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
-                $"EtherProgressBar {theme} gradient did not re-resolve to the expected component resources: {string.Join(", ", colors)}.");
+                $"EtherProgressBar {theme} fill did not re-resolve to {expected}: {string.Join(", ", colors)}.");
         }
     }
 

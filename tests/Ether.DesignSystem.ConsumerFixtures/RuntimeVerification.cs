@@ -27,6 +27,10 @@ internal static partial class RuntimeVerification
         "#FF40E1FD",
     };
 
+    private const string ExpectedProgressBarLightFill = "#FF0055FF";
+
+    private const string ExpectedProgressBarDarkFill = "#FF2576FF";
+
     internal sealed record AssetVerification(string Uri, ulong Size, bool StorageFileResolved, string? StorageFileError);
 
     internal sealed record ProgressBarVerification(
@@ -46,8 +50,8 @@ internal static partial class RuntimeVerification
         bool SetValueRejected,
         bool ValueChangeExercised,
         bool ValuePropertyChangedSubscribed,
-        string[] LightGradientColors,
-        string[] DarkGradientColors,
+        string[] LightFillColors,
+        string[] DarkFillColors,
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors);
 

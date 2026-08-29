@@ -37,7 +37,7 @@ if ($control -match '(?m)^\s*(Minimum|Maximum|Value)\s*=') {
     throw 'EtherProgressBar constructor must not assign its range defaults; the keyed style owns them.'
 }
 
-foreach ($part in 'FillColumn', 'RestColumn', 'LabelRow', 'TitleText', 'ValueLabel') {
+foreach ($part in 'LayoutRoot', 'FillColumn', 'RestColumn', 'LabelRow', 'TitleText', 'ValueLabel') {
     Assert-Contains $control "TemplatePart\(Name = .*${part}" "EtherProgressBar TemplatePart contract for $part"
 }
 foreach ($state in 'BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden') {
@@ -68,7 +68,7 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherProgressBar is missing its implicit style BasedOn DefaultEtherProgressBarStyle.'
 }
-foreach ($setter in 'Minimum', 'Maximum', 'Value', 'ShowTitle', 'ShowValue', 'HighContrastAdjustment') {
+foreach ($setter in 'Minimum', 'Maximum', 'Value', 'ShowTitle', 'ShowValue', 'IsTabStop', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Padding') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherProgressBarStyle is missing its $setter setter."
     }
@@ -77,6 +77,18 @@ foreach ($setter in 'Minimum', 'Maximum', 'Value', 'ShowTitle', 'ShowValue', 'Hi
 $template = $keyedStyle.SelectSingleNode(".//*[local-name()='ControlTemplate']")
 if ($null -eq $template) {
     throw 'DefaultEtherProgressBarStyle is missing its ControlTemplate.'
+}
+if ($template.OuterXml -notmatch 'x:Name="LayoutRoot"') {
+    throw 'EtherProgressBar template is missing named part LayoutRoot.'
+}
+if ($template.OuterXml -notmatch 'Padding="\{TemplateBinding Padding\}"') {
+    throw 'EtherProgressBar LayoutRoot must template-bind Padding so the style owns the 4/12 epx inset.'
+}
+if ($template.OuterXml -notmatch 'CornerRadius="\{StaticResource RadiusXs\}"') {
+    throw 'EtherProgressBar track and fill must use primitive RadiusXs (2) instead of a literal corner radius.'
+}
+if ($template.OuterXml -notmatch 'ProgressTrack[\s\S]*AccessibilityView="Raw"') {
+    throw 'EtherProgressBar track chrome must be AccessibilityView=Raw so RangeValue stays on the control.'
 }
 if ($template.OuterXml -match '#[0-9A-Fa-f]{3,8}') {
     throw 'EtherProgressBar ControlTemplate contains a literal hex color; only component resources may carry color values.'
@@ -121,6 +133,58 @@ if (($keysByTheme.Light -join ',') -cne 'EtherProgressBarFillBrush,EtherProgress
     throw 'EtherProgressBar component resource keys differ from the expected lightweight key set.'
 }
 
+$xamlText = Get-Content -LiteralPath $xamlPath -Raw
+if ($xamlText -notmatch '62110:22813' -or $xamlText -notmatch '62120:1374') {
+    throw 'EtherProgressBar must cite Figma Light 62110:22813 and Dark 62120:1374.'
+}
+
+$lightDictionary = @($themeDictionaries | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'Light' })[0]
+$darkDictionary = @($themeDictionaries | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'Dark' })[0]
+if ($lightDictionary.OuterXml -match 'background/track|background/progress-fill|background/Progress-fill|text/primary|text/secondary' -or
+    $darkDictionary.OuterXml -match 'background/track|background/progress-fill|background/Progress-fill|text/primary|text/secondary') {
+    throw 'EtherProgressBar Light/Dark must bind primitives, not semantic track/fill/text aliases.'
+}
+function Get-KeyedResourceXml {
+    param([System.Xml.XmlElement]$Dictionary, [string]$Key)
+
+    return @($Dictionary.ChildNodes | Where-Object {
+        $_ -is [System.Xml.XmlElement] -and $_.GetAttribute('Key', $xamlNamespace) -eq $Key
+    })[0]
+}
+
+$lightFill = Get-KeyedResourceXml $lightDictionary 'EtherProgressBarFillBrush'
+$darkFill = Get-KeyedResourceXml $darkDictionary 'EtherProgressBarFillBrush'
+$lightTrack = Get-KeyedResourceXml $lightDictionary 'EtherProgressBarTrackBrush'
+$darkTrack = Get-KeyedResourceXml $darkDictionary 'EtherProgressBarTrackBrush'
+$lightTitle = Get-KeyedResourceXml $lightDictionary 'EtherProgressBarTitleForegroundBrush'
+$darkTitle = Get-KeyedResourceXml $darkDictionary 'EtherProgressBarTitleForegroundBrush'
+$lightValue = Get-KeyedResourceXml $lightDictionary 'EtherProgressBarValueForegroundBrush'
+$darkValue = Get-KeyedResourceXml $darkDictionary 'EtherProgressBarValueForegroundBrush'
+if ($null -eq $lightFill -or $lightFill.LocalName -ne 'SolidColorBrush' -or $lightFill.OuterXml -notmatch 'Blue700') {
+    throw 'EtherProgressBar Light fill must be a solid Blue700 primitive, not a navy-to-cyan gradient.'
+}
+if ($null -eq $darkFill -or $darkFill.LocalName -ne 'SolidColorBrush' -or $darkFill.OuterXml -notmatch 'Blue400') {
+    throw 'EtherProgressBar Dark fill must be a solid Blue400 primitive, not a navy-to-cyan gradient.'
+}
+if ($null -eq $lightTrack -or $lightTrack.OuterXml -notmatch 'Gray75') {
+    throw 'EtherProgressBar Light track must bind primitive Gray75.'
+}
+if ($null -eq $darkTrack -or $darkTrack.OuterXml -notmatch 'Gray700') {
+    throw 'EtherProgressBar Dark track must bind primitive Gray700.'
+}
+if ($null -eq $lightTitle -or $lightTitle.OuterXml -notmatch 'Gray1000') {
+    throw 'EtherProgressBar Light title must bind primitive Gray1000.'
+}
+if ($null -eq $darkTitle -or $darkTitle.OuterXml -notmatch 'Gray0') {
+    throw 'EtherProgressBar Dark title must bind primitive Gray0.'
+}
+if ($null -eq $lightValue -or $lightValue.OuterXml -notmatch 'AlphaBlack70') {
+    throw 'EtherProgressBar Light value must bind primitive AlphaBlack70.'
+}
+if ($null -eq $darkValue -or $darkValue.OuterXml -notmatch 'Gray0') {
+    throw 'EtherProgressBar Dark value must bind primitive Gray0.'
+}
+
 $highContrast = @($themeDictionaries | Where-Object { $_.GetAttribute('Key', $xamlNamespace) -eq 'HighContrast' })[0]
 foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System.Xml.XmlElement] })) {
     if ($resource.OuterXml -notmatch 'SystemColor') {
@@ -129,7 +193,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
 }
 
 $fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
-foreach ($evidence in 'BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden', 'SetValueRejected', 'LightGradientColors', 'DarkGradientColors', 'LightTemplateBrushColors', 'DarkTemplateBrushColors', 'GetPattern\(PatternInterface\.RangeValue\)', 'valuePropertyChangedSubscribed', 'RangeValuePatternIdentifiers\.ValueProperty') {
+foreach ($evidence in 'BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden', 'SetValueRejected', 'LightFillColors', 'DarkFillColors', 'LightTemplateBrushColors', 'DarkTemplateBrushColors', 'GetPattern\(PatternInterface\.RangeValue\)', 'valuePropertyChangedSubscribed', 'RangeValuePatternIdentifiers\.ValueProperty') {
     Assert-Contains $fixture $evidence "EtherProgressBar consumer runtime evidence for $evidence"
 }
 

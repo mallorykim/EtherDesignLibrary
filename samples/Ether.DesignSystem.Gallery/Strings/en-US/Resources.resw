@@ -827,7 +827,7 @@
     <value>Progress Bar</value>
   </data>
   <data name="GalleryViewsDataDisplayProgressBarPage242.Description" xml:space="preserve">
-    <value>Updated progress bar with a rounded track, gradient fill, and independently toggled title and value labels. The four content combinations below show the supported variants.</value>
+    <value>Determinate progress bar with a 4 epx rounded track, solid Light Blue700 / Dark Blue400 fill, and independently toggled title and value labels. The four content combinations below show the supported variants.</value>
   </data>
   <data name="GalleryViewsDataDisplayProgressBarPage242.StatesTitle" xml:space="preserve">
     <value>TYPES</value>
@@ -1289,7 +1289,7 @@
     <value>Progress Bar</value>
   </data>
   <data name="GalleryViewsDataDisplayProgressBarPage267.Description" xml:space="preserve">
-    <value>Updated progress bar with a rounded track, gradient fill, and independently toggled title and value labels. The four content combinations below show the supported variants.</value>
+    <value>Determinate progress bar with a 4 epx rounded track, solid Light Blue700 / Dark Blue400 fill, and independently toggled title and value labels. The four content combinations below show the supported variants.</value>
   </data>
   <data name="GalleryViewsDataDisplayProgressBarPage267.StatesTitle" xml:space="preserve">
     <value>TYPES</value>

@@ -16,6 +16,7 @@ namespace EtherSandbox.Controls;
 /// but its automation contract is read-only. Value changes update layout directly; the control
 /// deliberately has no animation, so reduced-motion handling is not applicable.
 /// </remarks>
+[TemplatePart(Name = LayoutRootPart, Type = typeof(Grid))]
 [TemplatePart(Name = FillColumnPart, Type = typeof(ColumnDefinition))]
 [TemplatePart(Name = RestColumnPart, Type = typeof(ColumnDefinition))]
 [TemplatePart(Name = LabelRowPart, Type = typeof(Grid))]
@@ -27,6 +28,7 @@ namespace EtherSandbox.Controls;
 [TemplateVisualState(GroupName = LabelStatesGroup, Name = LabelsHiddenState)]
 public sealed class EtherProgressBar : RangeBase
 {
+    private const string LayoutRootPart = "LayoutRoot";
     private const string FillColumnPart = "FillColumn";
     private const string RestColumnPart = "RestColumn";
     private const string LabelRowPart = "LabelRow";

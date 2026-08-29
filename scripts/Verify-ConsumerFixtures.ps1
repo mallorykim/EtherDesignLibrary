@@ -747,9 +747,10 @@ try {
             $masthead = $runtimeResult.masthead
             $toggleSwitch = $runtimeResult.toggleSwitch
             $scrollBar = $runtimeResult.scrollBar
-            $expectedProgressTemplateParts = @('FillColumn', 'RestColumn', 'LabelRow', 'TitleText', 'ValueLabel')
+            $expectedProgressTemplateParts = @('LayoutRoot', 'FillColumn', 'RestColumn', 'LabelRow', 'TitleText', 'ValueLabel')
             $expectedLabelStates = @('BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden')
-            $expectedProgressGradient = @('#FF0021F3', '#FF0015FF', '#FF0EB2FF', '#FF40E1FD')
+            $expectedProgressFillLight = @('#FF0055FF')
+            $expectedProgressFillDark = @('#FF2576FF')
             $expectedButtonTemplateParts = @('RightIcon')
             $expectedRightIconStates = @('RightIconVisible', 'RightIconCollapsed')
             $expectedCheckboxTemplateParts = @('UncheckedFill', 'UncheckedFace', 'CheckedFace', 'Glyph', 'Label')
@@ -806,8 +807,8 @@ try {
                 $progressBar.setValueRejected -ne $true -or
                 $progressBar.valueChangeExercised -ne $true -or
                 $progressBar.valuePropertyChangedSubscribed -ne $true -or
-                (@($progressBar.lightGradientColors) -join ',') -cne ($expectedProgressGradient -join ',') -or
-                (@($progressBar.darkGradientColors) -join ',') -cne ($expectedProgressGradient -join ',') -or
+                (@($progressBar.lightFillColors) -join ',') -cne ($expectedProgressFillLight -join ',') -or
+                (@($progressBar.darkFillColors) -join ',') -cne ($expectedProgressFillDark -join ',') -or
                 (@($progressBar.lightTemplateBrushColors) -join ',') -ceq (@($progressBar.darkTemplateBrushColors) -join ',') -or
                 $null -eq $button -or
                 $button.defaultStyleResolved -ne $true -or

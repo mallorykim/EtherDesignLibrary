@@ -7,7 +7,7 @@
 
 <views:ComponentPage x:Uid="GalleryViewsDataDisplayProgressBarPage242"
         Title="Progress Bar"
-        Description="Updated progress bar with a rounded track, gradient fill, and independently toggled title and value labels. The four content combinations below show the supported variants."
+        Description="Determinate progress bar with a 4 epx rounded track, solid Light Blue700 / Dark Blue400 fill, and independently toggled title and value labels. The four content combinations below show the supported variants."
         StatesTitle="TYPES">
 
         <!-- INTERACTIVE is a little simulator: it plays once on open (Replay re-runs it) and
