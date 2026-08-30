@@ -16,6 +16,15 @@ namespace Ether.DesignSystem.ConsumerFixtures;
 
 internal static partial class RuntimeVerification
 {
+    private const string UpdateVisualBaselinesEnvironmentVariable = "ETHER_CONSUMER_UPDATE_VISUAL_BASELINES";
+
+    private sealed record CapturedPng(VisualSnapshot Snapshot)
+    {
+        internal int Width => Snapshot.Width;
+
+        internal int Height => Snapshot.Height;
+    }
+
     private static string GetSolidBrushColor(Brush? brush, string role, ElementTheme theme, string ownerName = "EtherProgressBar")
     {
         if (brush is not SolidColorBrush solidColorBrush)
@@ -286,6 +295,7 @@ internal static partial class RuntimeVerification
         {
             var path = Path.Combine(controlDirectory, $"{id}-light.png");
             var size = await CaptureCurrentPngAsync(control, path, $"{id}-Light");
+            await AssertControlVisualBaselineAsync(id, ElementTheme.Light, size, path);
             captures.Add(new ControlScreenshotVerification(id, path, string.Empty, size.Width, size.Height, 0, 0));
         }
 
@@ -297,6 +307,7 @@ internal static partial class RuntimeVerification
             var (id, control, _) = controls[index];
             var path = Path.Combine(controlDirectory, $"{id}-dark.png");
             var size = await CaptureCurrentPngAsync(control, path, $"{id}-Dark");
+            await AssertControlVisualBaselineAsync(id, ElementTheme.Dark, size, path);
             captures[index] = captures[index] with
             {
                 DarkPath = path,
@@ -321,28 +332,157 @@ internal static partial class RuntimeVerification
     {
         themeRoot.RequestedTheme = theme;
         await WaitForAppliedThemeAsync(themeRoot, theme);
-        return await CaptureCurrentPngAsync(themeRoot, path, theme.ToString());
+        var capture = await CaptureCurrentPngAsync(themeRoot, path, theme.ToString());
+        return (capture.Width, capture.Height);
     }
 
-    private static async Task<(int Width, int Height)> CaptureCurrentPngAsync(
+    private static async Task<CapturedPng> CaptureCurrentPngAsync(
         FrameworkElement themeRoot,
         string path,
         string label)
     {
-        themeRoot.UpdateLayout();
-        var bitmap = new RenderTargetBitmap();
-        await bitmap.RenderAsync(themeRoot);
-        if (bitmap.PixelWidth <= 0 || bitmap.PixelHeight <= 0)
+        var snapshot = await CaptureSettledScreenshotSnapshotAsync(themeRoot, label);
+        await WritePngAsync(path, snapshot);
+        return new CapturedPng(snapshot);
+    }
+
+    // Screenshot baselines require the same settle contract as the attached visual-property
+    // audit. A single RenderTargetBitmap capture is known to vary across runs in text pixels;
+    // keep sampling a composition frame apart until the already-calibrated tolerant comparison
+    // sees RequiredStableFingerprintReadings consecutive matches.
+    private static async Task<VisualSnapshot> CaptureSettledScreenshotSnapshotAsync(FrameworkElement element, string label)
+    {
+        var snapshot = await CaptureVisualSnapshotAsync(element, label);
+        var stableReadings = 1;
+        var samples = 1;
+        while (stableReadings < RequiredStableFingerprintReadings)
         {
-            throw new InvalidOperationException($"RenderTargetBitmap for {label} was {bitmap.PixelWidth}x{bitmap.PixelHeight}.");
+            if (samples >= MaxFingerprintSettleAttempts)
+            {
+                throw new InvalidOperationException(
+                    $"Screenshot capture for {label} did not converge after {samples} samples " +
+                    $"(reached {stableReadings}/{RequiredStableFingerprintReadings} required consecutive matches).");
+            }
+
+            await WaitForCompositionFrameAsync();
+            element.UpdateLayout();
+            var next = await CaptureVisualSnapshotAsync(element, label);
+            samples++;
+            if (AreVisuallyEquivalent(snapshot, next))
+            {
+                stableReadings++;
+            }
+            else
+            {
+                stableReadings = 1;
+                snapshot = next;
+            }
         }
 
-        var pixels = (await bitmap.GetPixelsAsync()).ToArray();
+        return snapshot;
+    }
+
+    private static async Task AssertControlVisualBaselineAsync(
+        string controlId,
+        ElementTheme theme,
+        CapturedPng actual,
+        string actualPath)
+    {
+        if (string.Equals(
+                Environment.GetEnvironmentVariable(UpdateVisualBaselinesEnvironmentVariable),
+                "1",
+                StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        var baselinePath = Path.Combine(
+            AppContext.BaseDirectory,
+            "VisualBaselines",
+            "controls",
+            $"{controlId}-{theme.ToString().ToLowerInvariant()}.png");
+        if (!File.Exists(baselinePath))
+        {
+            throw new InvalidOperationException(
+                $"Visual baseline is missing for {controlId}/{theme}: '{baselinePath}'. " +
+                "Generate it explicitly with Verify-ConsumerFixtures.ps1 -UpdateVisualBaselines; normal verification never creates or overwrites baselines.");
+        }
+
+        var baseline = await ReadPngAsync(baselinePath);
+        if (baseline.Width != actual.Width || baseline.Height != actual.Height)
+        {
+            throw new InvalidOperationException(
+                $"Visual baseline size mismatch for {controlId}/{theme}: baseline={baseline.Width}x{baseline.Height}, " +
+                $"actual={actual.Width}x{actual.Height}. Check DPI scaling and fixture/window dimensions before accepting a new baseline. " +
+                $"baseline='{baselinePath}', actual='{actualPath}'.");
+        }
+
+        if (AreVisuallyEquivalent(baseline, actual.Snapshot, out var changedPixelCount))
+        {
+            return;
+        }
+
+        var differenceBounds = DescribeVisualDifferenceBounds(baseline, actual.Snapshot);
+        var differencePath = Path.Combine(
+            Path.GetDirectoryName(actualPath)!,
+            "baseline-diffs",
+            $"{controlId}-{theme.ToString().ToLowerInvariant()}-difference.png");
+        await WriteDifferencePngAsync(differencePath, baseline, actual.Snapshot);
+        var significanceThreshold = Math.Max(
+            MinimumSignificantPixelCount,
+            (int)(baseline.Width * baseline.Height * SignificantPixelFraction));
+        throw new InvalidOperationException(
+            $"Visual baseline mismatch for {controlId}/{theme}: {changedPixelCount} pixel(s) exceeded the " +
+            $"{ChannelToleranceLevels}-level channel tolerance (significance threshold {significanceThreshold}); " +
+            $"bounds {differenceBounds}. baseline='{baselinePath}', actual='{actualPath}', difference='{differencePath}'.");
+    }
+
+    private static async Task<VisualSnapshot> ReadPngAsync(string path)
+    {
+        var file = await StorageFile.GetFileFromPathAsync(path);
+        using var stream = await file.OpenAsync(FileAccessMode.Read);
+        var decoder = await BitmapDecoder.CreateAsync(stream);
+        var pixels = await decoder.GetPixelDataAsync(
+            BitmapPixelFormat.Bgra8,
+            BitmapAlphaMode.Premultiplied,
+            new BitmapTransform(),
+            ExifOrientationMode.IgnoreExifOrientation,
+            ColorManagementMode.DoNotColorManage);
+        return new VisualSnapshot(pixels.DetachPixelData(), (int)decoder.PixelWidth, (int)decoder.PixelHeight);
+    }
+
+    private static async Task WriteDifferencePngAsync(string path, VisualSnapshot baseline, VisualSnapshot actual)
+    {
+        var pixels = new byte[baseline.Pixels.Length];
+        for (var offset = 0; offset + 3 < pixels.Length; offset += 4)
+        {
+            var changed = Math.Abs(baseline.Pixels[offset] - actual.Pixels[offset]) > ChannelToleranceLevels ||
+                Math.Abs(baseline.Pixels[offset + 1] - actual.Pixels[offset + 1]) > ChannelToleranceLevels ||
+                Math.Abs(baseline.Pixels[offset + 2] - actual.Pixels[offset + 2]) > ChannelToleranceLevels ||
+                Math.Abs(baseline.Pixels[offset + 3] - actual.Pixels[offset + 3]) > ChannelToleranceLevels;
+            pixels[offset] = 0;
+            pixels[offset + 1] = 0;
+            pixels[offset + 2] = changed ? (byte)255 : (byte)0;
+            pixels[offset + 3] = 255;
+        }
+
+        await WritePngAsync(path, new VisualSnapshot(pixels, baseline.Width, baseline.Height));
+    }
+
+    private static async Task WritePngAsync(string path, VisualSnapshot snapshot)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         using var stream = File.Open(path, FileMode.Create, FileAccess.Write);
         var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream.AsRandomAccessStream());
-        encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, (uint)bitmap.PixelWidth, (uint)bitmap.PixelHeight, 96, 96, pixels);
+        encoder.SetPixelData(
+            BitmapPixelFormat.Bgra8,
+            BitmapAlphaMode.Premultiplied,
+            (uint)snapshot.Width,
+            (uint)snapshot.Height,
+            96,
+            96,
+            snapshot.Pixels);
         await encoder.FlushAsync();
-        return (bitmap.PixelWidth, bitmap.PixelHeight);
     }
 
     private static async Task<HighContrastVerification> VerifyOsSelectedHighContrastAsync(

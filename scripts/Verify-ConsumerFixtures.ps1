@@ -1,7 +1,11 @@
 [CmdletBinding()]
 param(
     [switch]$SkipRuntimeSmoke,
-    [switch]$SkipSolutionBuild
+    [switch]$SkipSolutionBuild,
+    # Default verification compares against committed PNGs. This explicit switch is the only
+    # path that copies newly captured images into the tracked baseline directory, so UI changes
+    # remain visible in git diff and code review rather than being silently accepted at runtime.
+    [switch]$UpdateVisualBaselines
 )
 
 Set-StrictMode -Version Latest
@@ -10,6 +14,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $artifactsRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot 'artifacts'))
 $workRoot = [System.IO.Path]::GetFullPath((Join-Path $artifactsRoot 'consumer-fixtures'))
+$visualBaselinesRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\VisualBaselines'))
 $localFeed = Join-Path $workRoot 'local-feed'
 $packageCache = Join-Path $workRoot 'packages'
 $extractRoot = Join-Path $workRoot 'extracted'
@@ -35,6 +40,10 @@ function Stop-LeftoverUnpackagedFixture {
 
 if (-not $workRoot.StartsWith($artifactsRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
     throw "Refusing to clear an output path outside artifacts: $workRoot"
+}
+
+if (-not $visualBaselinesRoot.StartsWith($repoRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "Refusing to update a visual baseline path outside the repository: $visualBaselinesRoot"
 }
 
 Stop-LeftoverUnpackagedFixture
@@ -578,6 +587,25 @@ function Assert-ScreenshotMarker {
     }
 }
 
+function Update-VisualBaselines {
+    param($RuntimeResult)
+
+    # Assert-ScreenshotMarker has already verified the complete Light/Dark matrix. Copy exactly
+    # those accepted captures; never clear this source-controlled directory as part of a normal
+    # gate run. The resulting PNG changes are intentionally left in git diff for review.
+    $controlsDirectory = Join-Path $visualBaselinesRoot 'controls'
+    New-Item -ItemType Directory -Path $controlsDirectory -Force | Out-Null
+    foreach ($capture in @($RuntimeResult.screenshots.controls)) {
+        foreach ($theme in @('light', 'dark')) {
+            $sourcePath = [string]$capture.($theme + 'Path')
+            $destinationPath = Join-Path $controlsDirectory ("{0}-{1}.png" -f $capture.id, $theme)
+            Copy-Item -LiteralPath $sourcePath -Destination $destinationPath -Force
+        }
+    }
+
+    Write-Warning "Updated 26 visual baselines under $visualBaselinesRoot. Review the PNG changes in git diff before committing; ordinary runs only compare and never overwrite them."
+}
+
 function Assert-HighContrastMarker {
     param($RuntimeResult)
 
@@ -760,12 +788,15 @@ try {
         $previousSmokeValue = [Environment]::GetEnvironmentVariable('ETHER_CONSUMER_SMOKE', 'Process')
         $previousMarkerPath = [Environment]::GetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', 'Process')
         $previousScreenshotDir = [Environment]::GetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', 'Process')
+        $previousUpdateVisualBaselines = [Environment]::GetEnvironmentVariable('ETHER_CONSUMER_UPDATE_VISUAL_BASELINES', 'Process')
         $smokeProcess = $null
         $osHighContrastSnapshot = Get-OsHighContrastSnapshot
         try {
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE', '1', 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $markerPath, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', (Join-Path $workRoot 'screenshots'), 'Process')
+            $updateVisualBaselinesValue = if ($UpdateVisualBaselines) { '1' } else { $null }
+            [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_UPDATE_VISUAL_BASELINES', $updateVisualBaselinesValue, 'Process')
             $smokeProcess = Start-Process -FilePath $unpackagedExe -WorkingDirectory $unpackagedOutput -PassThru -WindowStyle Hidden
             # The attached visual-property audit (482 properties) now waits deterministically
             # for compositor settle after each mutation: it samples the rendered bitmap
@@ -1064,6 +1095,9 @@ try {
             Assert-TextScaleMarker $runtimeResult
             Assert-LocalizationMarker $runtimeResult
             Assert-ScreenshotMarker $runtimeResult
+            if ($UpdateVisualBaselines) {
+                Update-VisualBaselines $runtimeResult
+            }
             Assert-HighContrastMarker $runtimeResult
             Assert-PerformanceMarker $runtimeResult
             # $workRoot is intentionally cleared on the next run. Publish the accepted marker
@@ -1085,6 +1119,7 @@ try {
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE', $previousSmokeValue, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $previousMarkerPath, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', $previousScreenshotDir, 'Process')
+            [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_UPDATE_VISUAL_BASELINES', $previousUpdateVisualBaselines, 'Process')
         }
     }
 

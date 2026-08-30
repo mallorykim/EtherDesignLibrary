@@ -21,5 +21,10 @@
     <Compile Include="..\RuntimeVerification*.cs">
       <Link>%(Filename)%(Extension)</Link>
     </Compile>
+    <!-- Golden PNGs are source-controlled test assets. They are copied beside the
+         unpackaged consumer so the fixture compares decoded pixels in-process. -->
+    <Content Include="..\VisualBaselines\**\*.png"
+             Link="VisualBaselines\%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
