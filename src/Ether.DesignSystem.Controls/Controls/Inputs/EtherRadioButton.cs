@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>
 /// A templated <see cref="RadioButton"/>. The default visual is two-state

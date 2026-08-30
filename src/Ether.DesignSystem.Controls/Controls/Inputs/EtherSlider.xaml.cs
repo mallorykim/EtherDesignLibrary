@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Windows.System;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>
 /// Ether bar-chart slider: even-count ticks, a 4px knob, and click/drag range

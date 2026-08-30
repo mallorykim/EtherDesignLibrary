@@ -227,7 +227,7 @@ public enum EtherButtonSize { Large, Small }
 ```
 
 Note the closing `}` in the snippet above closes the `EtherButton` class — the two enums are
-declared as siblings of the class, inside the same `EtherSandbox.Controls` namespace block, not
+declared as siblings of the class, inside the same `Ether.DesignSystem.Controls` namespace block, not
 nested inside it. Add `using Microsoft.UI.Xaml.Controls;` if `Style` (the type, from
 `Microsoft.UI.Xaml`) or `Application` isn't already resolvable — check the existing `using`
 list at the top of the file first, since `Microsoft.UI.Xaml` is already imported there.

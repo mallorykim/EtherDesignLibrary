@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>Ether.DesignSystem.Controls</AssemblyName>
-    <RootNamespace>EtherSandbox.Controls</RootNamespace>
+    <RootNamespace>Ether.DesignSystem.Controls</RootNamespace>
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
     <PackageId>Ether.DesignSystem.Controls</PackageId>

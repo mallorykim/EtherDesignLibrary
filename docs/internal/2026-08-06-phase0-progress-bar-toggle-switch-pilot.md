@@ -66,7 +66,7 @@ alone is enough for a custom type to resolve automatically once merged):
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:EtherSandbox.Controls">
+    xmlns:controls="using:Ether.DesignSystem.Controls">
 
     <Style TargetType="controls:EtherProgressBar">
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -250,7 +250,7 @@ Identical content to the current `Resources/EtherSwitch.xaml`, relocated verbati
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:EtherSandbox.Controls"
+    xmlns:controls="using:Ether.DesignSystem.Controls"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives">
 
     <!-- On track: left=dark navy, right=mint-cyan. Matched from design screenshot. -->

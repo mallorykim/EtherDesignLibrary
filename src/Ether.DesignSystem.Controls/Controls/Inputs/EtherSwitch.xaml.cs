@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 public sealed partial class EtherSwitch : ResourceDictionary
 {

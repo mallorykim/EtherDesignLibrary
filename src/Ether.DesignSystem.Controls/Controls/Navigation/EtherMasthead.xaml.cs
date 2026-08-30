@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>
 /// Right-aligned masthead caption bar with optional icon slots. Caption

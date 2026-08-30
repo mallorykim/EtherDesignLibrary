@@ -177,8 +177,8 @@ public sealed partial class MainWindow : Window
             VerticalAlignment = VerticalAlignment.Center,
         };
         panel.Children.Add(new TextBlock { Text = entry.DisplayName, VerticalAlignment = VerticalAlignment.Center });
-        if (entry.IsUpdated) panel.Children.Add(new EtherSandbox.Controls.UpdatedBadge());
-        if (entry.IsPrimitive) panel.Children.Add(new EtherSandbox.Controls.PrimitiveBadge());
+        if (entry.IsUpdated) panel.Children.Add(new Ether.DesignSystem.Controls.UpdatedBadge());
+        if (entry.IsPrimitive) panel.Children.Add(new Ether.DesignSystem.Controls.PrimitiveBadge());
         return panel;
     }
 

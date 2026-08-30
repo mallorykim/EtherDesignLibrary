@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>
 /// A templated <see cref="ComboBox"/>. The default visual is the compact Ether

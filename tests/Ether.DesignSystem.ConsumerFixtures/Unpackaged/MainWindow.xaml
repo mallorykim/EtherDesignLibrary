@@ -2,7 +2,7 @@
     x:Class="Ether.DesignSystem.ConsumerFixtures.Unpackaged.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:EtherSandbox.Controls"
+    xmlns:controls="using:Ether.DesignSystem.Controls"
     Title="Ether package consumer smoke">
 
     <!-- The fixture is a canonical LTR specimen. Runtime verification explicitly

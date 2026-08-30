@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using Microsoft.UI.Xaml.Data;
 
-namespace EtherSandbox.Converters;
+namespace Ether.DesignSystem.Controls.Converters;
 
 /// <summary>Multiplies a double by the ConverterParameter (a double). Used to derive the
 /// button label's optical-centering nudge from its FontSize, so the nudge scales with size

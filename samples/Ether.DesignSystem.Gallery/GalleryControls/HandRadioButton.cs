@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>
 /// The segment button for <see cref="EtherSegmentedControl"/>. It drives the hover / pressed /

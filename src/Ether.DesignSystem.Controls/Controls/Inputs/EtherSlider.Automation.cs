@@ -2,7 +2,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 public sealed partial class EtherSlider
 {

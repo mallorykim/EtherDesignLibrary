@@ -30,7 +30,7 @@ The **original execution plan** is reproduced in [Appendix A](#appendix-a--origi
 | Dependency | `Foundation ← Controls ← Gallery`. Consumer fixtures use **PackageReference** from a local nupkg feed, never library ProjectReference. |
 | TFM | `net8.0-windows10.0.19041.0`, min OS `10.0.17763.0`. No framework upgrade on this branch. |
 | Public API | Preview. Baselines: `PublicAPI.Shipped.txt` / `PublicAPI.Unshipped.txt`. `Unshipped` is the current surface, not a removal ledger. |
-| Namespace | Still `EtherSandbox` / `EtherSandbox.Controls` (preview public API). Do not rename as a drive-by. |
+| Namespace | Still `EtherSandbox` / `Ether.DesignSystem.Controls` (preview public API). Do not rename as a drive-by. |
 | Fonts / Assets | Stay at **repo root**. Frozen typography uses `ms-appx:///Fonts/...` and `ms-appx:///Assets/...`. |
 
 Frozen token hashes (after the byte-for-byte Git move):

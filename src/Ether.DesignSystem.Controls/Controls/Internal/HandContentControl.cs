@@ -1,7 +1,7 @@
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>
 /// Public only because WinUI XAML resource dictionaries resolve <c>using:</c> types through

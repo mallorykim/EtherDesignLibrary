@@ -1,6 +1,6 @@
 using System.Reflection;
 using Ether.DesignSystem.Interactions;
-using EtherSandbox.Controls;
+using Ether.DesignSystem.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;

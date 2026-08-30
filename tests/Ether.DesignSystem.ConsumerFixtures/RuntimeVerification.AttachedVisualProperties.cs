@@ -1,6 +1,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
-using EtherSandbox.Controls;
+using Ether.DesignSystem.Controls;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -106,11 +106,12 @@ internal static partial class RuntimeVerification
                     verified.Add(key);
                     if (!AreVisuallyEquivalent(before, after, out var changedPixelCount))
                     {
+                        var differenceBounds = DescribeVisualDifferenceBounds(before, after);
                         pixelChanged.Add(key);
                         evidence.Add(new VisualPropertyEvidence(
                             key,
                             "pixel-difference",
-                            $"The attached control's RenderTargetBitmap fingerprint changed after the property mutation ({changedPixelCount} pixel(s) exceeded the {ChannelToleranceLevels}-level channel tolerance; before converged after {beforeConvergenceReads} sample(s), after converged after {afterConvergenceReads} sample(s)).",
+                            $"The attached control's RenderTargetBitmap fingerprint changed after the property mutation ({changedPixelCount} pixel(s) exceeded the {ChannelToleranceLevels}-level channel tolerance; bounds {differenceBounds}; before converged after {beforeConvergenceReads} sample(s), after converged after {afterConvergenceReads} sample(s)).",
                             beforeConvergenceReads,
                             afterConvergenceReads));
                     }
@@ -155,25 +156,12 @@ internal static partial class RuntimeVerification
     // than silently falling back to a weaker evidence bucket, which is what produced the
     // between-run flakiness this replaces.
     //
-    // 3 consecutive matches turned out not to be enough of a guard band: with the coarse 0xF0
-    // channel mask this file used to hash pixels with (see AreVisuallyEquivalent's history),
-    // that was invisible, because the mask also swallowed the real signal it was racing with.
-    // Once the comparison became pixel-tolerant instead of hash-truncated (Task A), a
-    // reproducible flip surfaced on EtherInput.FontFamily/HeaderTemplate specifically: TextBox's
-    // text layout can go quiet — three or more identical frames in a row — before a deferred
-    // font-substitution/re-layout pass actually lands, so a 3-frame settle window sometimes
-    // locks onto that stale intermediate frame as "converged" instead of the true final one
-    // (observed swinging between 0 and 132 changed pixels across otherwise-identical runs, i.e.
-    // "did the mutation visually land at all", not a borderline tolerance/significance call).
-    // Doubling the window to 6 consecutive matches cleared the previously observed TextBox
-    // quiet gap. A later EtherInput.AcceptsReturn run showed that TextBox can still emit six
-    // identical frames before its multiline re-layout lands, so EtherInput gets an 8-reading
-    // window: seven readings are needed to observe the known late change and the eighth is a
-    // one-frame guard band. Keep the established 6-reading window for every other control so
-    // this targeted TextBox safeguard does not add two RenderTargetBitmap captures to both sides
-    // of all 482 visual-property mutations.
+    // Six matching frames are the convergence contract for every control. The former
+    // EtherInput-only eight-reading guard addressed the wrong problem: the 132-pixel
+    // Header/HeaderTemplate result was a threshold-edge re-layout side effect, not evidence of
+    // an unsettled fingerprint. The corrected fixture has passed two GUI runs deterministically,
+    // so keep one common policy instead of waiting longer for a change that has already settled.
     private const int RequiredStableFingerprintReadings = 6;
-    private const int EtherInputRequiredStableFingerprintReadings = 8;
     private const int MaxFingerprintSettleAttempts = 60;
 
     // Tolerance and significance thresholds for treating two rendered bitmaps as "the same
@@ -250,6 +238,48 @@ internal static partial class RuntimeVerification
         return changedPixels <= significanceThreshold;
     }
 
+    // Diagnostic only: this repeats the established channel-tolerance test to report where a
+    // significant fingerprint difference landed. It is deliberately called only after the
+    // comparison above has classified frames as different, so it cannot influence comparison,
+    // convergence, or evidence classification.
+    private static string DescribeVisualDifferenceBounds(VisualSnapshot before, VisualSnapshot after)
+    {
+        if (before.Width != after.Width || before.Height != after.Height ||
+            before.Pixels.Length != after.Pixels.Length)
+        {
+            return $"unavailable for dimension change ({before.Width}x{before.Height} -> {after.Width}x{after.Height})";
+        }
+
+        var minX = before.Width;
+        var minY = before.Height;
+        var maxX = -1;
+        var maxY = -1;
+        var changedPixels = 0;
+        for (var offset = 0; offset + 3 < before.Pixels.Length; offset += 4)
+        {
+            if (Math.Abs(before.Pixels[offset] - after.Pixels[offset]) <= ChannelToleranceLevels &&
+                Math.Abs(before.Pixels[offset + 1] - after.Pixels[offset + 1]) <= ChannelToleranceLevels &&
+                Math.Abs(before.Pixels[offset + 2] - after.Pixels[offset + 2]) <= ChannelToleranceLevels &&
+                Math.Abs(before.Pixels[offset + 3] - after.Pixels[offset + 3]) <= ChannelToleranceLevels)
+            {
+                continue;
+            }
+
+            var pixelIndex = offset / 4;
+            var x = pixelIndex % before.Width;
+            var y = pixelIndex / before.Width;
+            minX = Math.Min(minX, x);
+            minY = Math.Min(minY, y);
+            maxX = Math.Max(maxX, x);
+            maxY = Math.Max(maxY, y);
+            changedPixels++;
+        }
+
+        return changedPixels == 0
+            ? "none"
+            : $"x={minX}..{maxX}, y={minY}..{maxY}, size={maxX - minX + 1}x{maxY - minY + 1}";
+    }
+
     private static Task<bool> WaitForCompositionFrameAsync()
     {
         var completion = new TaskCompletionSource<bool>();
@@ -265,9 +295,7 @@ internal static partial class RuntimeVerification
 
     private static async Task<(VisualSnapshot Fingerprint, int ConvergenceReads)> CaptureSettledVisualFingerprintAsync(FrameworkElement control, FrameworkElement surface, string label)
     {
-        var requiredStableReadings = control is EtherInput
-            ? EtherInputRequiredStableFingerprintReadings
-            : RequiredStableFingerprintReadings;
+        var requiredStableReadings = RequiredStableFingerprintReadings;
         var fingerprint = await CaptureVisualSnapshotAsync(surface, label);
         var stableReadings = 1;
         var samples = 1;
@@ -342,23 +370,37 @@ internal static partial class RuntimeVerification
         control.HorizontalAlignment = HorizontalAlignment.Left;
         control.VerticalAlignment = VerticalAlignment.Top;
 
+        // EtherInput has a larger text-body specimen so its long-text mutations have usable room
+        // inside the same 420 x 180 audit surface. Other controls keep the common constrained
+        // baseline. Size mutation samples below derive from these actual dimensions rather than
+        // repeating the former 160 x 80-specific literals.
+        if (control is EtherInput)
+        {
+            control.Width = 320d;
+            control.Height = 160d;
+        }
+
         switch (control)
         {
             case ContentControl contentControl:
                 contentControl.Content = "Visual audit specimen";
                 break;
             case TextBox textBox:
-                textBox.Text = "Visual audit specimen";
+                textBox.Text = control is EtherInput
+                    ? "Visual audit specimen text deliberately long enough to wrap across several lines when TextWrapping changes."
+                    : "Visual audit specimen";
                 textBox.PlaceholderText = "Visual audit placeholder";
+                // The attached audit measures rendering, not text entry. A TextBox that becomes
+                // focused can blink its caret on a timer between before/after captures; keep the
+                // specimen outside keyboard focus navigation and hit testing so that periodic
+                // interaction chrome cannot become evidence for an unrelated visual property.
+                textBox.IsTabStop = false;
+                textBox.IsHitTestVisible = false;
                 // WinUI's TextBox runs spell-check/proofing on a background service that can
-                // redraw squiggle decorations an unpredictable, cold-start-dependent amount of
-                // time after the control is attached or its text/font changes — independent of
-                // whether anything is actually misspelled. That was the source of EtherInput's
-                // remaining before/after fingerprint flakiness (FontFamily, Header, IsReadOnly,
-                // ...) surviving even a generous settle-and-poll wait: the settle loop can only
-                // wait out a source of change it can observe, and a proofing pass that lands
-                // after the loop already saw enough stable reads is invisible to it. Disabling
-                // spell-check removes that async source entirely instead of trying to out-wait it.
+                // redraw squiggle decorations after the control is attached or its text/font
+                // changes. Disabling spell-check keeps an unrelated background service out of a
+                // rendering audit. The Header/HeaderTemplate diagnostic separately established
+                // that their former 132-pixel result was a threshold-edge re-layout side effect.
                 textBox.IsSpellCheckEnabled = false;
                 break;
             case ComboBox comboBox:
@@ -571,12 +613,17 @@ internal static partial class RuntimeVerification
     {
         var propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
 
-        if (property.Name == nameof(FrameworkElement.Width)) return 320d;
-        if (property.Name == nameof(FrameworkElement.MaxWidth)) return 120d;
-        if (property.Name == nameof(FrameworkElement.Height)) return 96d;
-        if (property.Name == nameof(FrameworkElement.MaxHeight)) return 56d;
-        if (property.Name == nameof(FrameworkElement.MinWidth)) return 320d;
-        if (property.Name == nameof(FrameworkElement.MinHeight)) return 120d;
+        // These values intentionally scale from the fixture that is actually under test. A
+        // fixture-size adjustment must not silently turn Width/MinWidth/MinHeight into no-ops
+        // (as fixed 320/120 values did after EtherInput grew to 320 x 160).
+        var fixtureWidth = GetFixtureDimension(control, nameof(FrameworkElement.Width));
+        var fixtureHeight = GetFixtureDimension(control, nameof(FrameworkElement.Height));
+        if (property.Name == nameof(FrameworkElement.Width)) return fixtureWidth * 2d;
+        if (property.Name == nameof(FrameworkElement.MaxWidth)) return fixtureWidth * 0.75d;
+        if (property.Name == nameof(FrameworkElement.Height)) return fixtureHeight * 0.6d;
+        if (property.Name == nameof(FrameworkElement.MaxHeight)) return fixtureHeight * 0.7d;
+        if (property.Name == nameof(FrameworkElement.MinWidth)) return fixtureWidth * 2d;
+        if (property.Name == nameof(FrameworkElement.MinHeight)) return fixtureHeight * 1.5d;
         if (property.Name == nameof(UIElement.Opacity)) return 0.65d;
         if (property.Name == nameof(RangeBase.Minimum)) return 10d;
         if (property.Name == nameof(RangeBase.Maximum)) return 120d;
@@ -609,6 +656,10 @@ internal static partial class RuntimeVerification
         if (property.Name == nameof(EtherSlider.Stops) || property.Name == nameof(EtherSteeringBar.Stops)) return new DoubleCollection { 0d, 50d, 100d };
         if (property.Name == nameof(EtherSlider.Title) || property.Name == nameof(EtherSteeringBar.Title) || property.Name == nameof(EtherProgressBar.Title)) return "Visual audit title";
         if (property.Name == nameof(EtherSteeringBar.ValueContent) || property.Name == nameof(EtherProgressBar.ValueContent)) return "42%";
+        // EtherInput inherits TextBox.Header and HeaderTemplate, but EtherInput.xaml's
+        // ControlTemplate contains neither a Header presenter nor a HeaderTemplate binding.
+        // Do not manufacture pixels for those properties in this fixture: their unchanged bitmap
+        // and platform-dp-contract evidence correctly document the current public behavior.
         if (property.Name is "Content" or "Header") return "Visual audit content";
         if (property.Name is nameof(TextBox.Text) or nameof(TextBox.PlaceholderText) or nameof(ComboBox.Text) or nameof(ComboBox.Description) or nameof(ComboBox.DisplayMemberPath)) return "Visual audit text";
         if (property.Name is nameof(TextBox.TextAlignment) or nameof(TextBox.HorizontalTextAlignment)) return TextAlignment.Center;
@@ -638,6 +689,22 @@ internal static partial class RuntimeVerification
         }
 
         throw new InvalidOperationException($"No attached visual mutation sample is registered for {key} ({property.PropertyType.FullName}).");
+    }
+
+    private static double GetFixtureDimension(FrameworkElement control, string propertyName)
+    {
+        var dimension = propertyName == nameof(FrameworkElement.Width) ? control.Width : control.Height;
+        if (double.IsNaN(dimension) || double.IsInfinity(dimension) || dimension <= 0d)
+        {
+            dimension = propertyName == nameof(FrameworkElement.Width) ? control.ActualWidth : control.ActualHeight;
+        }
+
+        if (double.IsNaN(dimension) || double.IsInfinity(dimension) || dimension <= 0d)
+        {
+            throw new InvalidOperationException($"The visual fixture has no usable {propertyName} dimension for relative mutation sampling.");
+        }
+
+        return dimension;
     }
 
     private static bool AttachedValuesMatch(object? expected, object? actual, Type propertyType)

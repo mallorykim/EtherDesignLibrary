@@ -1,4 +1,4 @@
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>
 /// Compatibility subclass of <see cref="EtherSegmentedControl"/>. Existing call sites

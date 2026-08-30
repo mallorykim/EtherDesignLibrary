@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.System;
 using Windows.UI;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>
 /// Gallery-oriented preview chrome for <see cref="EtherSteeringBar"/>. Product

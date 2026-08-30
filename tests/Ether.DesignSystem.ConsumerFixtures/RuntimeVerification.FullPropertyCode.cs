@@ -1,5 +1,5 @@
 using System.Reflection;
-using EtherSandbox.Controls;
+using Ether.DesignSystem.Controls;
 using Microsoft.UI.Xaml;
 
 namespace Ether.DesignSystem.ConsumerFixtures;

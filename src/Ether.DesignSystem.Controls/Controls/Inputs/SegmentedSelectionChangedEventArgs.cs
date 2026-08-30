@@ -1,4 +1,4 @@
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>Provides the old and new values for <see cref="EtherSegmentedControl.SelectionChanged"/>.</summary>
 public sealed class SegmentedSelectionChangedEventArgs : EventArgs

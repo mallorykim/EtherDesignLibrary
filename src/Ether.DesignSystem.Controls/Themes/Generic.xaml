@@ -1,7 +1,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:EtherSandbox.Controls">
+    xmlns:controls="using:Ether.DesignSystem.Controls">
 
     <ResourceDictionary.MergedDictionaries>
         <!-- Foundation resources must be available before control templates are loaded. -->

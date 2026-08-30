@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 public enum ColorSwatchDisplayMode
 {

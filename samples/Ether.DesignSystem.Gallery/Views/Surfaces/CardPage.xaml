@@ -2,7 +2,7 @@
     x:Class="EtherSandbox.Views.Surfaces.CardPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:EtherSandbox.Controls"
+    xmlns:controls="using:Ether.DesignSystem.Controls"
     xmlns:views="using:EtherSandbox.Views">
 
 <views:ComponentPage x:Uid="GalleryViewsSurfacesCardPage285"

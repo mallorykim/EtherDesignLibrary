@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
-using EtherSandbox.Controls;
+using Ether.DesignSystem.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;

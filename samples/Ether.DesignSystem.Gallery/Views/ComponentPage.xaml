@@ -2,7 +2,7 @@
     x:Class="EtherSandbox.Views.ComponentPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:EtherSandbox.Controls"
+    xmlns:controls="using:Ether.DesignSystem.Controls"
     x:Name="Root">
 
     <!--

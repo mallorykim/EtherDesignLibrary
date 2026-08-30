@@ -1,198 +1,198 @@
 #nullable enable
-EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider
-EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.XamlMetaDataProvider() -> void
-~EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXamlType(System.Type type) -> Microsoft.UI.Xaml.Markup.IXamlType
-~EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXamlType(string fullName) -> Microsoft.UI.Xaml.Markup.IXamlType
-~EtherSandbox.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXmlnsDefinitions() -> Microsoft.UI.Xaml.Markup.XmlnsDefinition[]
-~EtherSandbox.Controls.EtherScrollBar.Connect(int connectionId, object target) -> void
-~EtherSandbox.Controls.EtherScrollBar.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
-~EtherSandbox.Controls.EtherSwitch.Connect(int connectionId, object target) -> void
-~EtherSandbox.Controls.EtherSwitch.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
-EtherSandbox.Controls.EtherButton
-EtherSandbox.Controls.EtherButton.EtherButton() -> void
-EtherSandbox.Controls.EtherButton.LeftIcon.get -> Microsoft.UI.Xaml.Controls.IconElement?
-EtherSandbox.Controls.EtherButton.LeftIcon.set -> void
-EtherSandbox.Controls.EtherButton.RightIcon.get -> Microsoft.UI.Xaml.Controls.IconElement?
-EtherSandbox.Controls.EtherButton.RightIcon.set -> void
-EtherSandbox.Controls.EtherButton.Size.get -> EtherSandbox.Controls.EtherButtonSize?
-EtherSandbox.Controls.EtherButton.Size.set -> void
-EtherSandbox.Controls.EtherButton.Variant.get -> EtherSandbox.Controls.EtherButtonVariant?
-EtherSandbox.Controls.EtherButton.Variant.set -> void
-EtherSandbox.Controls.EtherButtonSize
-EtherSandbox.Controls.EtherButtonSize.Large = 0 -> EtherSandbox.Controls.EtherButtonSize
-EtherSandbox.Controls.EtherButtonSize.Small = 1 -> EtherSandbox.Controls.EtherButtonSize
-EtherSandbox.Controls.EtherButtonVariant
-EtherSandbox.Controls.EtherButtonVariant.Primary = 0 -> EtherSandbox.Controls.EtherButtonVariant
-EtherSandbox.Controls.EtherButtonVariant.Secondary = 1 -> EtherSandbox.Controls.EtherButtonVariant
-EtherSandbox.Controls.EtherButtonVariant.Tertiary = 2 -> EtherSandbox.Controls.EtherButtonVariant
-EtherSandbox.Controls.EtherCheckbox
-EtherSandbox.Controls.EtherCheckbox.EtherCheckbox() -> void
-EtherSandbox.Controls.EtherDropdown
-EtherSandbox.Controls.EtherDropdown.EtherDropdown() -> void
-EtherSandbox.Controls.EtherDropdown.MaxVisibleItems.get -> int
-EtherSandbox.Controls.EtherDropdown.MaxVisibleItems.set -> void
-EtherSandbox.Controls.EtherDropdown.MenuGap.get -> double
-EtherSandbox.Controls.EtherDropdown.MenuGap.set -> void
-EtherSandbox.Controls.EtherInput
-EtherSandbox.Controls.EtherInput.EtherInput() -> void
-EtherSandbox.Controls.EtherIntelligenceButton
-EtherSandbox.Controls.EtherIntelligenceButton.EtherIntelligenceButton() -> void
-EtherSandbox.Controls.EtherMasthead
-EtherSandbox.Controls.EtherMasthead.EnableWindowCommands.get -> bool
-EtherSandbox.Controls.EtherMasthead.EnableWindowCommands.set -> void
-EtherSandbox.Controls.EtherMasthead.EtherMasthead() -> void
-EtherSandbox.Controls.EtherMasthead.PreviewIsMaximized.get -> bool?
-EtherSandbox.Controls.EtherMasthead.PreviewIsMaximized.set -> void
-EtherSandbox.Controls.EtherMasthead.ShowChevron.get -> bool
-EtherSandbox.Controls.EtherMasthead.ShowChevron.set -> void
-EtherSandbox.Controls.EtherMasthead.ShowMenuIcon.get -> bool
-EtherSandbox.Controls.EtherMasthead.ShowMenuIcon.set -> void
-EtherSandbox.Controls.EtherMasthead.ShowSearch.get -> bool
-EtherSandbox.Controls.EtherMasthead.ShowSearch.set -> void
-EtherSandbox.Controls.EtherMasthead.ShowSettings.get -> bool
-EtherSandbox.Controls.EtherMasthead.ShowSettings.set -> void
-EtherSandbox.Controls.EtherProgressBar
-EtherSandbox.Controls.EtherProgressBar.EtherProgressBar() -> void
-EtherSandbox.Controls.EtherProgressBar.ShowTitle.get -> bool
-EtherSandbox.Controls.EtherProgressBar.ShowTitle.set -> void
-EtherSandbox.Controls.EtherProgressBar.ShowValue.get -> bool
-EtherSandbox.Controls.EtherProgressBar.ShowValue.set -> void
-EtherSandbox.Controls.EtherProgressBar.Title.get -> object!
-EtherSandbox.Controls.EtherProgressBar.Title.set -> void
-EtherSandbox.Controls.EtherProgressBar.ValueContent.get -> object!
-EtherSandbox.Controls.EtherProgressBar.ValueContent.set -> void
-EtherSandbox.Controls.EtherRadioButton
-EtherSandbox.Controls.EtherRadioButton.EtherRadioButton() -> void
-EtherSandbox.Controls.EtherScrollBar
-EtherSandbox.Controls.EtherScrollBar.EtherScrollBar() -> void
-EtherSandbox.Controls.EtherScrollBar.InitializeComponent() -> void
-EtherSandbox.Controls.EtherSegmentPanel
-EtherSandbox.Controls.EtherSegmentPanel.EtherSegmentPanel() -> void
-EtherSandbox.Controls.EtherSegmentPanel.Spacing.get -> double
-EtherSandbox.Controls.EtherSegmentPanel.Spacing.set -> void
-EtherSandbox.Controls.EtherSegmentedControl
-EtherSandbox.Controls.EtherSegmentedControl.EtherSegmentedControl() -> void
-EtherSandbox.Controls.EtherSegmentedControl.SelectedValue.get -> object?
-EtherSandbox.Controls.EtherSegmentedControl.SelectedValue.set -> void
-EtherSandbox.Controls.EtherSegmentedControl.SelectionChanged -> System.EventHandler<EtherSandbox.Controls.SegmentedSelectionChangedEventArgs!>?
-EtherSandbox.Controls.EtherSegmentedTrack
-EtherSandbox.Controls.EtherSegmentedTrack.EtherSegmentedTrack() -> void
-EtherSandbox.Controls.SegmentedSelectionChangedEventArgs
-EtherSandbox.Controls.SegmentedSelectionChangedEventArgs.NewValue.get -> object?
-EtherSandbox.Controls.SegmentedSelectionChangedEventArgs.OldValue.get -> object?
-EtherSandbox.Controls.SegmentedSelectionChangedEventArgs.SegmentedSelectionChangedEventArgs(object? oldValue, object? newValue) -> void
-EtherSandbox.Controls.EtherSlider
-EtherSandbox.Controls.EtherSlider.EtherSlider() -> void
-EtherSandbox.Controls.EtherSlider.FormatValue(double value) -> string!
-EtherSandbox.Controls.EtherSlider.Labels.get -> EtherSandbox.Controls.EtherSliderLabelCollection?
-EtherSandbox.Controls.EtherSlider.Labels.set -> void
-EtherSandbox.Controls.EtherSlider.MoveToNextStop() -> bool
-EtherSandbox.Controls.EtherSlider.MoveToPreviousStop() -> bool
-EtherSandbox.Controls.EtherSlider.ShowLabels.get -> bool
-EtherSandbox.Controls.EtherSlider.ShowLabels.set -> void
-EtherSandbox.Controls.EtherSlider.ShowTitle.get -> bool
-EtherSandbox.Controls.EtherSlider.ShowTitle.set -> void
-EtherSandbox.Controls.EtherSlider.SnapToStops.get -> bool
-EtherSandbox.Controls.EtherSlider.SnapToStops.set -> void
-EtherSandbox.Controls.EtherSlider.Stops.get -> Microsoft.UI.Xaml.Media.DoubleCollection?
-EtherSandbox.Controls.EtherSlider.Stops.set -> void
-EtherSandbox.Controls.EtherSlider.Title.get -> string?
-EtherSandbox.Controls.EtherSlider.Title.set -> void
-const EtherSandbox.Controls.EtherSlider.MaxBarCount = 512 -> int
-const EtherSandbox.Controls.EtherSlider.MaxLabelCount = 11 -> int
-const EtherSandbox.Controls.EtherSlider.MinBarCount = 8 -> int
-EtherSandbox.Controls.EtherSliderLabelCollection
-EtherSandbox.Controls.EtherSliderLabelCollection.EtherSliderLabelCollection() -> void
-EtherSandbox.Controls.EtherSteeringBar
-EtherSandbox.Controls.EtherSteeringBar.EtherSteeringBar() -> void
-EtherSandbox.Controls.EtherSteeringBar.LargeChange.get -> double
-EtherSandbox.Controls.EtherSteeringBar.LargeChange.set -> void
-EtherSandbox.Controls.EtherSteeringBar.Maximum.get -> double
-EtherSandbox.Controls.EtherSteeringBar.Maximum.set -> void
-EtherSandbox.Controls.EtherSteeringBar.Minimum.get -> double
-EtherSandbox.Controls.EtherSteeringBar.Minimum.set -> void
-EtherSandbox.Controls.EtherSteeringBar.MoveToNextStop() -> bool
-EtherSandbox.Controls.EtherSteeringBar.MoveToPreviousStop() -> bool
-EtherSandbox.Controls.EtherSteeringBar.PreviewStatus.get -> EtherSandbox.Controls.SteeringBarPreviewStatus
-EtherSandbox.Controls.EtherSteeringBar.PreviewStatus.set -> void
-EtherSandbox.Controls.EtherSteeringBar.ShowStops.get -> bool
-EtherSandbox.Controls.EtherSteeringBar.ShowStops.set -> void
-EtherSandbox.Controls.EtherSteeringBar.ShowTitle.get -> bool
-EtherSandbox.Controls.EtherSteeringBar.ShowTitle.set -> void
-EtherSandbox.Controls.EtherSteeringBar.ShowValue.get -> bool
-EtherSandbox.Controls.EtherSteeringBar.ShowValue.set -> void
-EtherSandbox.Controls.EtherSteeringBar.SmallChange.get -> double
-EtherSandbox.Controls.EtherSteeringBar.SmallChange.set -> void
-EtherSandbox.Controls.EtherSteeringBar.SnapToStops.get -> bool
-EtherSandbox.Controls.EtherSteeringBar.SnapToStops.set -> void
-EtherSandbox.Controls.EtherSteeringBar.Stops.get -> Microsoft.UI.Xaml.Media.DoubleCollection?
-EtherSandbox.Controls.EtherSteeringBar.Stops.set -> void
-EtherSandbox.Controls.EtherSteeringBar.Title.get -> object?
-EtherSandbox.Controls.EtherSteeringBar.Title.set -> void
-EtherSandbox.Controls.EtherSteeringBar.Value.get -> double
-EtherSandbox.Controls.EtherSteeringBar.Value.set -> void
-EtherSandbox.Controls.EtherSteeringBar.ValueChanged -> System.EventHandler<EtherSandbox.Controls.SteeringBarValueChangedEventArgs!>?
-EtherSandbox.Controls.EtherSteeringBar.ValueContent.get -> object?
-EtherSandbox.Controls.EtherSteeringBar.ValueContent.set -> void
-EtherSandbox.Controls.EtherStringContentVisibilityConverter
-EtherSandbox.Controls.EtherStringContentVisibilityConverter.Convert(object! value, System.Type! targetType, object! parameter, string! language) -> object!
-EtherSandbox.Controls.EtherStringContentVisibilityConverter.ConvertBack(object! value, System.Type! targetType, object! parameter, string! language) -> object!
-EtherSandbox.Controls.EtherStringContentVisibilityConverter.EtherStringContentVisibilityConverter() -> void
-EtherSandbox.Controls.EtherSwitch
-EtherSandbox.Controls.EtherSwitch.EtherSwitch() -> void
-EtherSandbox.Controls.EtherSwitch.InitializeComponent() -> void
-EtherSandbox.Controls.HandContentControl
-EtherSandbox.Controls.HandContentControl.HandContentControl() -> void
-EtherSandbox.Controls.SteeringBarPreviewStatus
-EtherSandbox.Controls.SteeringBarPreviewStatus.Default = 1 -> EtherSandbox.Controls.SteeringBarPreviewStatus
-EtherSandbox.Controls.SteeringBarPreviewStatus.Disabled = 4 -> EtherSandbox.Controls.SteeringBarPreviewStatus
-EtherSandbox.Controls.SteeringBarPreviewStatus.Hover = 2 -> EtherSandbox.Controls.SteeringBarPreviewStatus
-EtherSandbox.Controls.SteeringBarPreviewStatus.None = 0 -> EtherSandbox.Controls.SteeringBarPreviewStatus
-EtherSandbox.Controls.SteeringBarPreviewStatus.Pressed = 3 -> EtherSandbox.Controls.SteeringBarPreviewStatus
-EtherSandbox.Controls.SteeringBarValueChangedEventArgs
-EtherSandbox.Controls.SteeringBarValueChangedEventArgs.NewValue.get -> double
-EtherSandbox.Controls.SteeringBarValueChangedEventArgs.OldValue.get -> double
-EtherSandbox.Controls.SteeringBarValueChangedEventArgs.SteeringBarValueChangedEventArgs(double oldValue, double newValue) -> void
-EtherSandbox.Converters.MultiplyConverter
-EtherSandbox.Converters.MultiplyConverter.Convert(object! value, System.Type! targetType, object! parameter, string! language) -> object!
-EtherSandbox.Converters.MultiplyConverter.ConvertBack(object! value, System.Type! targetType, object! parameter, string! language) -> object!
-EtherSandbox.Converters.MultiplyConverter.MultiplyConverter() -> void
-override EtherSandbox.Controls.EtherButton.OnApplyTemplate() -> void
-override EtherSandbox.Controls.EtherSegmentedControl.OnApplyTemplate() -> void
-static readonly EtherSandbox.Controls.EtherButton.RightIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherButton.LeftIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherButton.SizeProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherButton.VariantProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherDropdown.MaxVisibleItemsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherDropdown.MenuGapProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherMasthead.EnableWindowCommandsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherMasthead.PreviewIsMaximizedProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherMasthead.ShowChevronProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherMasthead.ShowMenuIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherMasthead.ShowSearchProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherMasthead.ShowSettingsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSegmentPanel.SpacingProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSegmentedControl.SelectedValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSlider.LabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSlider.ShowLabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSlider.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSlider.SnapToStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSlider.StopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSlider.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherProgressBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherProgressBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherProgressBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherProgressBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.LargeChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.MaximumProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.MinimumProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.PreviewStatusProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.ShowStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.SmallChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.SnapToStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.StopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly EtherSandbox.Controls.EtherSteeringBar.ValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
+Ether.DesignSystem.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider
+Ether.DesignSystem.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.XamlMetaDataProvider() -> void
+~Ether.DesignSystem.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXamlType(System.Type type) -> Microsoft.UI.Xaml.Markup.IXamlType
+~Ether.DesignSystem.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXamlType(string fullName) -> Microsoft.UI.Xaml.Markup.IXamlType
+~Ether.DesignSystem.Controls.Ether_DesignSystem_Controls_XamlTypeInfo.XamlMetaDataProvider.GetXmlnsDefinitions() -> Microsoft.UI.Xaml.Markup.XmlnsDefinition[]
+~Ether.DesignSystem.Controls.EtherScrollBar.Connect(int connectionId, object target) -> void
+~Ether.DesignSystem.Controls.EtherScrollBar.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
+~Ether.DesignSystem.Controls.EtherSwitch.Connect(int connectionId, object target) -> void
+~Ether.DesignSystem.Controls.EtherSwitch.GetBindingConnector(int connectionId, object target) -> Microsoft.UI.Xaml.Markup.IComponentConnector
+Ether.DesignSystem.Controls.EtherButton
+Ether.DesignSystem.Controls.EtherButton.EtherButton() -> void
+Ether.DesignSystem.Controls.EtherButton.LeftIcon.get -> Microsoft.UI.Xaml.Controls.IconElement?
+Ether.DesignSystem.Controls.EtherButton.LeftIcon.set -> void
+Ether.DesignSystem.Controls.EtherButton.RightIcon.get -> Microsoft.UI.Xaml.Controls.IconElement?
+Ether.DesignSystem.Controls.EtherButton.RightIcon.set -> void
+Ether.DesignSystem.Controls.EtherButton.Size.get -> Ether.DesignSystem.Controls.EtherButtonSize?
+Ether.DesignSystem.Controls.EtherButton.Size.set -> void
+Ether.DesignSystem.Controls.EtherButton.Variant.get -> Ether.DesignSystem.Controls.EtherButtonVariant?
+Ether.DesignSystem.Controls.EtherButton.Variant.set -> void
+Ether.DesignSystem.Controls.EtherButtonSize
+Ether.DesignSystem.Controls.EtherButtonSize.Large = 0 -> Ether.DesignSystem.Controls.EtherButtonSize
+Ether.DesignSystem.Controls.EtherButtonSize.Small = 1 -> Ether.DesignSystem.Controls.EtherButtonSize
+Ether.DesignSystem.Controls.EtherButtonVariant
+Ether.DesignSystem.Controls.EtherButtonVariant.Primary = 0 -> Ether.DesignSystem.Controls.EtherButtonVariant
+Ether.DesignSystem.Controls.EtherButtonVariant.Secondary = 1 -> Ether.DesignSystem.Controls.EtherButtonVariant
+Ether.DesignSystem.Controls.EtherButtonVariant.Tertiary = 2 -> Ether.DesignSystem.Controls.EtherButtonVariant
+Ether.DesignSystem.Controls.EtherCheckbox
+Ether.DesignSystem.Controls.EtherCheckbox.EtherCheckbox() -> void
+Ether.DesignSystem.Controls.EtherDropdown
+Ether.DesignSystem.Controls.EtherDropdown.EtherDropdown() -> void
+Ether.DesignSystem.Controls.EtherDropdown.MaxVisibleItems.get -> int
+Ether.DesignSystem.Controls.EtherDropdown.MaxVisibleItems.set -> void
+Ether.DesignSystem.Controls.EtherDropdown.MenuGap.get -> double
+Ether.DesignSystem.Controls.EtherDropdown.MenuGap.set -> void
+Ether.DesignSystem.Controls.EtherInput
+Ether.DesignSystem.Controls.EtherInput.EtherInput() -> void
+Ether.DesignSystem.Controls.EtherIntelligenceButton
+Ether.DesignSystem.Controls.EtherIntelligenceButton.EtherIntelligenceButton() -> void
+Ether.DesignSystem.Controls.EtherMasthead
+Ether.DesignSystem.Controls.EtherMasthead.EnableWindowCommands.get -> bool
+Ether.DesignSystem.Controls.EtherMasthead.EnableWindowCommands.set -> void
+Ether.DesignSystem.Controls.EtherMasthead.EtherMasthead() -> void
+Ether.DesignSystem.Controls.EtherMasthead.PreviewIsMaximized.get -> bool?
+Ether.DesignSystem.Controls.EtherMasthead.PreviewIsMaximized.set -> void
+Ether.DesignSystem.Controls.EtherMasthead.ShowChevron.get -> bool
+Ether.DesignSystem.Controls.EtherMasthead.ShowChevron.set -> void
+Ether.DesignSystem.Controls.EtherMasthead.ShowMenuIcon.get -> bool
+Ether.DesignSystem.Controls.EtherMasthead.ShowMenuIcon.set -> void
+Ether.DesignSystem.Controls.EtherMasthead.ShowSearch.get -> bool
+Ether.DesignSystem.Controls.EtherMasthead.ShowSearch.set -> void
+Ether.DesignSystem.Controls.EtherMasthead.ShowSettings.get -> bool
+Ether.DesignSystem.Controls.EtherMasthead.ShowSettings.set -> void
+Ether.DesignSystem.Controls.EtherProgressBar
+Ether.DesignSystem.Controls.EtherProgressBar.EtherProgressBar() -> void
+Ether.DesignSystem.Controls.EtherProgressBar.ShowTitle.get -> bool
+Ether.DesignSystem.Controls.EtherProgressBar.ShowTitle.set -> void
+Ether.DesignSystem.Controls.EtherProgressBar.ShowValue.get -> bool
+Ether.DesignSystem.Controls.EtherProgressBar.ShowValue.set -> void
+Ether.DesignSystem.Controls.EtherProgressBar.Title.get -> object!
+Ether.DesignSystem.Controls.EtherProgressBar.Title.set -> void
+Ether.DesignSystem.Controls.EtherProgressBar.ValueContent.get -> object!
+Ether.DesignSystem.Controls.EtherProgressBar.ValueContent.set -> void
+Ether.DesignSystem.Controls.EtherRadioButton
+Ether.DesignSystem.Controls.EtherRadioButton.EtherRadioButton() -> void
+Ether.DesignSystem.Controls.EtherScrollBar
+Ether.DesignSystem.Controls.EtherScrollBar.EtherScrollBar() -> void
+Ether.DesignSystem.Controls.EtherScrollBar.InitializeComponent() -> void
+Ether.DesignSystem.Controls.EtherSegmentPanel
+Ether.DesignSystem.Controls.EtherSegmentPanel.EtherSegmentPanel() -> void
+Ether.DesignSystem.Controls.EtherSegmentPanel.Spacing.get -> double
+Ether.DesignSystem.Controls.EtherSegmentPanel.Spacing.set -> void
+Ether.DesignSystem.Controls.EtherSegmentedControl
+Ether.DesignSystem.Controls.EtherSegmentedControl.EtherSegmentedControl() -> void
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedValue.get -> object?
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedValue.set -> void
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectionChanged -> System.EventHandler<Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs!>?
+Ether.DesignSystem.Controls.EtherSegmentedTrack
+Ether.DesignSystem.Controls.EtherSegmentedTrack.EtherSegmentedTrack() -> void
+Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs
+Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs.NewValue.get -> object?
+Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs.OldValue.get -> object?
+Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs.SegmentedSelectionChangedEventArgs(object? oldValue, object? newValue) -> void
+Ether.DesignSystem.Controls.EtherSlider
+Ether.DesignSystem.Controls.EtherSlider.EtherSlider() -> void
+Ether.DesignSystem.Controls.EtherSlider.FormatValue(double value) -> string!
+Ether.DesignSystem.Controls.EtherSlider.Labels.get -> Ether.DesignSystem.Controls.EtherSliderLabelCollection?
+Ether.DesignSystem.Controls.EtherSlider.Labels.set -> void
+Ether.DesignSystem.Controls.EtherSlider.MoveToNextStop() -> bool
+Ether.DesignSystem.Controls.EtherSlider.MoveToPreviousStop() -> bool
+Ether.DesignSystem.Controls.EtherSlider.ShowLabels.get -> bool
+Ether.DesignSystem.Controls.EtherSlider.ShowLabels.set -> void
+Ether.DesignSystem.Controls.EtherSlider.ShowTitle.get -> bool
+Ether.DesignSystem.Controls.EtherSlider.ShowTitle.set -> void
+Ether.DesignSystem.Controls.EtherSlider.SnapToStops.get -> bool
+Ether.DesignSystem.Controls.EtherSlider.SnapToStops.set -> void
+Ether.DesignSystem.Controls.EtherSlider.Stops.get -> Microsoft.UI.Xaml.Media.DoubleCollection?
+Ether.DesignSystem.Controls.EtherSlider.Stops.set -> void
+Ether.DesignSystem.Controls.EtherSlider.Title.get -> string?
+Ether.DesignSystem.Controls.EtherSlider.Title.set -> void
+const Ether.DesignSystem.Controls.EtherSlider.MaxBarCount = 512 -> int
+const Ether.DesignSystem.Controls.EtherSlider.MaxLabelCount = 11 -> int
+const Ether.DesignSystem.Controls.EtherSlider.MinBarCount = 8 -> int
+Ether.DesignSystem.Controls.EtherSliderLabelCollection
+Ether.DesignSystem.Controls.EtherSliderLabelCollection.EtherSliderLabelCollection() -> void
+Ether.DesignSystem.Controls.EtherSteeringBar
+Ether.DesignSystem.Controls.EtherSteeringBar.EtherSteeringBar() -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.LargeChange.get -> double
+Ether.DesignSystem.Controls.EtherSteeringBar.LargeChange.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.Maximum.get -> double
+Ether.DesignSystem.Controls.EtherSteeringBar.Maximum.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.Minimum.get -> double
+Ether.DesignSystem.Controls.EtherSteeringBar.Minimum.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.MoveToNextStop() -> bool
+Ether.DesignSystem.Controls.EtherSteeringBar.MoveToPreviousStop() -> bool
+Ether.DesignSystem.Controls.EtherSteeringBar.PreviewStatus.get -> Ether.DesignSystem.Controls.SteeringBarPreviewStatus
+Ether.DesignSystem.Controls.EtherSteeringBar.PreviewStatus.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.ShowStops.get -> bool
+Ether.DesignSystem.Controls.EtherSteeringBar.ShowStops.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.ShowTitle.get -> bool
+Ether.DesignSystem.Controls.EtherSteeringBar.ShowTitle.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.ShowValue.get -> bool
+Ether.DesignSystem.Controls.EtherSteeringBar.ShowValue.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.SmallChange.get -> double
+Ether.DesignSystem.Controls.EtherSteeringBar.SmallChange.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.SnapToStops.get -> bool
+Ether.DesignSystem.Controls.EtherSteeringBar.SnapToStops.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.Stops.get -> Microsoft.UI.Xaml.Media.DoubleCollection?
+Ether.DesignSystem.Controls.EtherSteeringBar.Stops.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.Title.get -> object?
+Ether.DesignSystem.Controls.EtherSteeringBar.Title.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.Value.get -> double
+Ether.DesignSystem.Controls.EtherSteeringBar.Value.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.ValueChanged -> System.EventHandler<Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs!>?
+Ether.DesignSystem.Controls.EtherSteeringBar.ValueContent.get -> object?
+Ether.DesignSystem.Controls.EtherSteeringBar.ValueContent.set -> void
+Ether.DesignSystem.Controls.EtherStringContentVisibilityConverter
+Ether.DesignSystem.Controls.EtherStringContentVisibilityConverter.Convert(object! value, System.Type! targetType, object! parameter, string! language) -> object!
+Ether.DesignSystem.Controls.EtherStringContentVisibilityConverter.ConvertBack(object! value, System.Type! targetType, object! parameter, string! language) -> object!
+Ether.DesignSystem.Controls.EtherStringContentVisibilityConverter.EtherStringContentVisibilityConverter() -> void
+Ether.DesignSystem.Controls.EtherSwitch
+Ether.DesignSystem.Controls.EtherSwitch.EtherSwitch() -> void
+Ether.DesignSystem.Controls.EtherSwitch.InitializeComponent() -> void
+Ether.DesignSystem.Controls.HandContentControl
+Ether.DesignSystem.Controls.HandContentControl.HandContentControl() -> void
+Ether.DesignSystem.Controls.SteeringBarPreviewStatus
+Ether.DesignSystem.Controls.SteeringBarPreviewStatus.Default = 1 -> Ether.DesignSystem.Controls.SteeringBarPreviewStatus
+Ether.DesignSystem.Controls.SteeringBarPreviewStatus.Disabled = 4 -> Ether.DesignSystem.Controls.SteeringBarPreviewStatus
+Ether.DesignSystem.Controls.SteeringBarPreviewStatus.Hover = 2 -> Ether.DesignSystem.Controls.SteeringBarPreviewStatus
+Ether.DesignSystem.Controls.SteeringBarPreviewStatus.None = 0 -> Ether.DesignSystem.Controls.SteeringBarPreviewStatus
+Ether.DesignSystem.Controls.SteeringBarPreviewStatus.Pressed = 3 -> Ether.DesignSystem.Controls.SteeringBarPreviewStatus
+Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs
+Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs.NewValue.get -> double
+Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs.OldValue.get -> double
+Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs.SteeringBarValueChangedEventArgs(double oldValue, double newValue) -> void
+Ether.DesignSystem.Controls.Converters.MultiplyConverter
+Ether.DesignSystem.Controls.Converters.MultiplyConverter.Convert(object! value, System.Type! targetType, object! parameter, string! language) -> object!
+Ether.DesignSystem.Controls.Converters.MultiplyConverter.ConvertBack(object! value, System.Type! targetType, object! parameter, string! language) -> object!
+Ether.DesignSystem.Controls.Converters.MultiplyConverter.MultiplyConverter() -> void
+override Ether.DesignSystem.Controls.EtherButton.OnApplyTemplate() -> void
+override Ether.DesignSystem.Controls.EtherSegmentedControl.OnApplyTemplate() -> void
+static readonly Ether.DesignSystem.Controls.EtherButton.RightIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherButton.LeftIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherButton.SizeProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherButton.VariantProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherDropdown.MaxVisibleItemsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherDropdown.MenuGapProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherMasthead.EnableWindowCommandsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherMasthead.PreviewIsMaximizedProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherMasthead.ShowChevronProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherMasthead.ShowMenuIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherMasthead.ShowSearchProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherMasthead.ShowSettingsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSegmentPanel.SpacingProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSlider.LabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSlider.ShowLabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSlider.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSlider.SnapToStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSlider.StopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSlider.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherProgressBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherProgressBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherProgressBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherProgressBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.LargeChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.MaximumProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.MinimumProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.PreviewStatusProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ShowStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.SmallChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.SnapToStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.StopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ValueProperty -> Microsoft.UI.Xaml.DependencyProperty!

@@ -104,7 +104,7 @@ occurrence counting + `GoToState` `x:Name` cross-check. No GUI verification avai
 ```csharp
 using Microsoft.UI.Xaml.Controls;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>The Ether checkbox — a templated CheckBox. No behavior changes beyond the visual
 /// template; see Controls/EtherCheckbox.xaml. IsThreeState is set to False by the style.</summary>
@@ -128,7 +128,7 @@ brush, `VisualState`, and named element stays exactly as-is.
 
 - [ ] **Step 3: Update `Views/Controls/CheckboxPage.xaml`**
 
-Add `xmlns:controls="using:EtherSandbox.Controls"` to the `<Page>` root element (alongside the
+Add `xmlns:controls="using:Ether.DesignSystem.Controls"` to the `<Page>` root element (alongside the
 existing `xmlns:views`). Then, for all 8 `<CheckBox ... Style="{StaticResource EtherCheckbox}" .../>`
 elements in this file (1 in `InteractiveContent`, 4 in the UNCHECKED states block — including
 the ones named `UncheckedHover` and `UncheckedPressed` — 3 in the CHECKED states block —
@@ -213,7 +213,7 @@ EOF
 ```csharp
 using Microsoft.UI.Xaml.Controls;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>The Ether radio button — a templated RadioButton. No behavior changes beyond the
 /// visual template; see Controls/EtherRadioButton.xaml. GroupName-based mutual exclusion works
@@ -236,7 +236,7 @@ circle).
 
 - [ ] **Step 3: Update `Views/Controls/RadioButtonPage.xaml`**
 
-Add `xmlns:controls="using:EtherSandbox.Controls"` to the `<Page>` root. For all 10
+Add `xmlns:controls="using:Ether.DesignSystem.Controls"` to the `<Page>` root. For all 10
 `<RadioButton ... Style="{StaticResource EtherRadioButton}" .../>` elements — 3 in
 `InteractiveContent` sharing `GroupName="Interactive"` (Option A/B/C); 4 in UNCHECKED states
 each with its own unique `GroupName` (`u-default`, `u-hover`, `u-pressed`, `u-disabled`,
@@ -301,7 +301,7 @@ specifies does not compile and never will while `ToggleSwitch` stays sealed.
 ```csharp
 using Microsoft.UI.Xaml.Controls;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>The Ether toggle switch — a templated ToggleSwitch. No behavior changes beyond the
 /// visual template; see Controls/EtherSwitch.xaml.</summary>
@@ -325,7 +325,7 @@ files' convention, referencing `Controls/EtherSwitch.cs`.
 
 - [ ] **Step 3: Update `Views/Controls/ToggleSwitchPage.xaml`**
 
-Add `xmlns:controls="using:EtherSandbox.Controls"` to the `<Page>` root. For all 9
+Add `xmlns:controls="using:Ether.DesignSystem.Controls"` to the `<Page>` root. For all 9
 `<ToggleSwitch ... Style="{StaticResource EtherSwitch}" .../>` elements (1 in
 `InteractiveContent`, 4 in OFF states — including `OffHoverState`/`OffPressedState` — 4 in ON
 states — including `OnHoverState`/`OnPressedState`): remove the `Style=` line from each, rename
@@ -385,7 +385,7 @@ like every other 2-file component in this codebase.
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>The Ether intelligence button — a templated Button with a hand cursor, matching
 /// EtherButton's convention (see Controls/EtherButton.cs). No behavior changes beyond the
@@ -401,7 +401,7 @@ public sealed class EtherIntelligenceButton : Button
 
 - [ ] **Step 2: Retarget `Controls/EtherIntelligenceButton.xaml`**
 
-Add `xmlns:controls="using:EtherSandbox.Controls"` to the root `<ResourceDictionary>` element
+Add `xmlns:controls="using:Ether.DesignSystem.Controls"` to the root `<ResourceDictionary>` element
 (this file currently only declares `xmlns:ui` and `xmlns:media` for CommunityToolkit — those
 stay, just add the new namespace alongside them). Change
 `<ControlTemplate x:Key="EtherIntelligenceButtonTemplate" TargetType="Button">` to
@@ -477,7 +477,7 @@ EOF
 ```csharp
 using Microsoft.UI.Xaml.Controls;
 
-namespace EtherSandbox.Controls;
+namespace Ether.DesignSystem.Controls;
 
 /// <summary>The Ether input field — a templated TextBox. No behavior changes beyond the
 /// visual template; see Controls/EtherInput.xaml.</summary>
@@ -488,7 +488,7 @@ public sealed class EtherInput : TextBox
 
 - [ ] **Step 2: Retarget `Controls/EtherInput.xaml`**
 
-Add `xmlns:controls="using:EtherSandbox.Controls"` to the root `<ResourceDictionary>` element
+Add `xmlns:controls="using:Ether.DesignSystem.Controls"` to the root `<ResourceDictionary>` element
 (this file currently has no `xmlns:controls` at all). Change
 `<ControlTemplate x:Key="EtherInputTemplate" TargetType="TextBox">` to
 `TargetType="controls:EtherInput"`. Change `<Style x:Key="EtherInput" TargetType="TextBox">` to
@@ -501,7 +501,7 @@ framework-required `Control.IsTemplateFocusTarget="True"` attached property and 
 
 - [ ] **Step 3: Update `Views/Controls/InputPage.xaml`**
 
-Add `xmlns:controls="using:EtherSandbox.Controls"` to the `<Page>` root. For all 6
+Add `xmlns:controls="using:Ether.DesignSystem.Controls"` to the `<Page>` root. For all 6
 `<TextBox ... Style="{StaticResource EtherInput}" .../>` elements (1 in `InteractiveContent`,
 5 in `StatesContent`: Default, `HoverInput`, `ActiveInput`, Filled, Disabled): remove the
 `Style=` line from each, rename tag to `controls:EtherInput`. Every other attribute
