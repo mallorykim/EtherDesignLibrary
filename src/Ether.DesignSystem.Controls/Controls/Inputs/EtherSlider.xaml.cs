@@ -106,7 +106,7 @@ public sealed partial class EtherSlider : RangeBase
 
         Loaded += (_, _) => UpdateBarLayout();
         SizeChanged += (_, _) => UpdateBarLayout();
-        IsEnabledChanged += (_, _) => UpdateInteractionState();
+        RegisterPropertyChangedCallback(IsEnabledProperty, (_, _) => UpdateInteractionState());
         ActualThemeChanged += (_, _) => UpdateBarLayout();
         KeyDown += OnKeyDown;
         GotFocus += OnGotFocus;

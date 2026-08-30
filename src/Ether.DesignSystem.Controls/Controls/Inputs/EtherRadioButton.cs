@@ -47,11 +47,34 @@ public sealed class EtherRadioButton : RadioButton
     private const string UncheckedState = "Unchecked";
     private const string CheckedState = "Checked";
 
+    // Internal template state: explicit consumer templates/selectors always take precedence
+    // over the built-in single-line string rendering path.
+    internal static readonly DependencyProperty UsesTextContentPathProperty =
+        DependencyProperty.Register(
+            nameof(UsesTextContentPath),
+            typeof(bool),
+            typeof(EtherRadioButton),
+            new PropertyMetadata(false));
+
+    internal bool UsesTextContentPath => (bool)GetValue(UsesTextContentPathProperty);
+
     /// <summary>
     /// Initializes a new instance of the <see cref="EtherRadioButton"/> class.
     /// </summary>
     public EtherRadioButton()
     {
         DefaultStyleKey = typeof(EtherRadioButton);
+        RegisterPropertyChangedCallback(ContentProperty, OnContentPresentationPropertyChanged);
+        RegisterPropertyChangedCallback(ContentTemplateProperty, OnContentPresentationPropertyChanged);
+        RegisterPropertyChangedCallback(ContentTemplateSelectorProperty, OnContentPresentationPropertyChanged);
+        UpdateUsesTextContentPath();
     }
+
+    private void OnContentPresentationPropertyChanged(DependencyObject sender, DependencyProperty property)
+        => UpdateUsesTextContentPath();
+
+    private void UpdateUsesTextContentPath()
+        => SetValue(
+            UsesTextContentPathProperty,
+            Content is string && ContentTemplate is null && ContentTemplateSelector is null);
 }

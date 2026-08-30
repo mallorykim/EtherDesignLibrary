@@ -89,6 +89,7 @@ internal static partial class RuntimeVerification
 
     internal sealed record InputVerification(
         bool DefaultStyleResolved,
+        double DefaultMinWidth,
         double DefaultFontSize,
         bool DefaultUseSystemFocusVisuals,
         string[] TemplateParts,
@@ -100,6 +101,7 @@ internal static partial class RuntimeVerification
 
     internal sealed record DropdownVerification(
         bool DefaultStyleResolved,
+        double DefaultMinWidth,
         int DefaultMaxVisibleItems,
         bool DefaultUseSystemFocusVisuals,
         string[] TemplateParts,
@@ -196,7 +198,9 @@ internal static partial class RuntimeVerification
         string AutomationName,
         string DefaultAutomationName,
         string[] LightTemplateBrushColors,
-        string[] DarkTemplateBrushColors);
+        string[] DarkTemplateBrushColors,
+        string HoverThemeTrackingLightColor,
+        string HoverThemeTrackingDarkColor);
 
     internal sealed record ToggleSwitchVerification(
         bool KeyedStyleResolved,
@@ -244,7 +248,9 @@ internal static partial class RuntimeVerification
         string Id,
         string AutomationName,
         double ActualWidth,
-        double ActualHeight);
+        double ActualHeight,
+        double DesiredWidth,
+        double DesiredHeight);
 
     internal sealed record TextScaleVerification(
         double Scale,
@@ -263,7 +269,17 @@ internal static partial class RuntimeVerification
         int DarkPixelWidth,
         int DarkPixelHeight,
         int HighContrastPixelWidth,
-        int HighContrastPixelHeight);
+        int HighContrastPixelHeight,
+        ControlScreenshotVerification[] Controls);
+
+    internal sealed record ControlScreenshotVerification(
+        string Id,
+        string LightPath,
+        string DarkPath,
+        int LightPixelWidth,
+        int LightPixelHeight,
+        int DarkPixelWidth,
+        int DarkPixelHeight);
 
     internal sealed record HighContrastVerification(
         bool OsHighContrast,
@@ -297,6 +313,11 @@ internal static partial class RuntimeVerification
         MastheadVerification Masthead,
         ToggleSwitchVerification ToggleSwitch,
         ScrollBarVerification ScrollBar,
+        PropertyConsumptionVerification PropertyConsumption,
+        PublicPropertyInventoryVerification PublicPropertyInventory,
+        PublicPropertyCodeVerification PublicPropertyCode,
+        PublicPropertyClassificationVerification PublicPropertyClassification,
+        AttachedVisualPropertyVerification AttachedVisualProperties,
         RtlVerification Rtl,
         UiaVerification Uia,
         TextScaleVerification TextScale,
@@ -384,6 +405,27 @@ internal static partial class RuntimeVerification
         var mastheadResult = await VerifyMastheadAsync(themeRoot, defaultMasthead, masthead);
         var toggleSwitchResult = await VerifyToggleSwitchAsync(themeRoot, bareToggleSwitch, defaultToggleSwitch, toggleSwitch);
         var scrollBarResult = await VerifyScrollBarAsync(themeRoot, scrollBar, scrollViewer);
+        var propertyConsumption = VerifyPropertyConsumption(
+            button,
+            checkbox,
+            radioButton,
+            input,
+            dropdown,
+            segmentedControl,
+            intelligenceButton,
+            progressBar,
+            steeringBar,
+            slider,
+            masthead,
+            toggleSwitch,
+            scrollBar);
+        var publicPropertyInventory = CapturePublicPropertyInventory();
+        var publicPropertyCode = VerifyAllPublicPropertyCode(
+            button, checkbox, dropdown, input, intelligenceButton, progressBar, radioButton,
+            segmentedControl, (EtherSegmentPanel)((ContentControl)segmentedControl).Content,
+            slider, steeringBar, masthead);
+        var publicPropertyClassification = ClassifyAllPublicProperties();
+        var attachedVisualProperties = await VerifyAttachedVisualPropertiesAsync(themeRoot);
 
         var light = await GetBackgroundColorAsync(themeRoot, ElementTheme.Light);
         var dark = await GetBackgroundColorAsync(themeRoot, ElementTheme.Dark);
@@ -410,7 +452,7 @@ internal static partial class RuntimeVerification
             ("scrollBar", scrollBar, "Package scroll bar"),
         };
 
-        var screenshots = await CaptureThemeScreenshotsAsync(themeRoot);
+        var screenshots = await CaptureThemeScreenshotsAsync(themeRoot, controlsTuple);
         var uia = await CaptureUia(controlsTuple);
         var textScale = await VerifyTextScaleAsync(themeRoot, controlsTuple);
         var localization = VerifyLocalization(statusText);
@@ -448,13 +490,18 @@ internal static partial class RuntimeVerification
             mastheadResult,
             toggleSwitchResult,
             scrollBarResult,
+            propertyConsumption,
+            publicPropertyInventory,
+            publicPropertyCode,
+            publicPropertyClassification,
+            attachedVisualProperties,
             rtlResult,
             uia,
             textScale,
             localization,
             screenshots,
             highContrast,
-            new PerformanceVerification(stopwatch.Elapsed.TotalMilliseconds));
+            new PerformanceVerification(stopwatch.Elapsed.TotalMilliseconds - attachedVisualProperties.ElapsedMilliseconds));
     }
 
     internal static void WriteMarker(bool succeeded, VerificationResult? result = null, Exception? exception = null)
@@ -489,6 +536,11 @@ internal static partial class RuntimeVerification
             masthead = result?.Masthead,
             toggleSwitch = result?.ToggleSwitch,
             scrollBar = result?.ScrollBar,
+            propertyConsumption = result?.PropertyConsumption,
+            publicPropertyInventory = result?.PublicPropertyInventory,
+            publicPropertyCode = result?.PublicPropertyCode,
+            publicPropertyClassification = result?.PublicPropertyClassification,
+            attachedVisualProperties = result?.AttachedVisualProperties,
             rtl = result?.Rtl,
             uia = result?.Uia,
             textScale = result?.TextScale,

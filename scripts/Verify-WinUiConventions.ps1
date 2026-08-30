@@ -7,6 +7,13 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlsRoot = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls'
 
+function Assert-Match {
+    param([string]$Text, [string]$Pattern, [string]$Description)
+    if ($Text -notmatch $Pattern) {
+        throw "$Description is missing required pattern '$Pattern'."
+    }
+}
+
 $expectedStyleFiles = @{
     'Inputs\EtherButton.xaml'              = 'DefaultEtherButtonStyle'
     'Inputs\EtherCheckbox.xaml'            = 'DefaultEtherCheckboxStyle'
@@ -52,4 +59,57 @@ foreach ($file in $xamlFiles) {
     }
 }
 
-Write-Host 'WinUI 3 convention audit passed: HighContrastAdjustment=None on default styles, and non-instant VisualTransitions declare CubicEase.'
+# WinUI dependency-property convention: a public static identifier and a public CLR
+# wrapper with the same name. This is intentionally source-level as well as runtime
+# coverage so a new property cannot be accidentally omitted from binding/style support.
+$codeFiles = Get-ChildItem -LiteralPath $controlsRoot -Filter *.cs -Recurse
+foreach ($file in $codeFiles) {
+    $text = Get-Content -LiteralPath $file.FullName -Raw
+    $classMatch = [regex]::Match($text, 'public\s+(?:sealed\s+)?(?:partial\s+)?class\s+(?<name>Ether\w+)')
+    if (-not $classMatch.Success) {
+        continue
+    }
+
+    $className = $classMatch.Groups['name'].Value
+    $properties = [regex]::Matches($text, 'public\s+static\s+readonly\s+DependencyProperty\s+(?<name>\w+)Property\s*=')
+    foreach ($property in $properties) {
+        $propertyName = $property.Groups['name'].Value
+        Assert-Match $text ("DependencyProperty\.Register\(\s*nameof\(" + [regex]::Escape($propertyName) + '\)') "$className.$propertyName registration"
+        $wrapper = [regex]::Match($text, "public\s+[^\r\n]+\s+" + [regex]::Escape($propertyName) + '\s*\{')
+        if (-not $wrapper.Success) {
+            throw "$className.$propertyName is missing a public CLR dependency-property wrapper."
+        }
+        $wrapperText = $text.Substring($wrapper.Index)
+        Assert-Match $wrapperText ('get\s*=>\s*.*GetValue\(' + [regex]::Escape($propertyName) + 'Property\)') "$className.$propertyName CLR wrapper getter"
+        Assert-Match $wrapperText ('set\s*=>\s*SetValue\(' + [regex]::Escape($propertyName) + 'Property') "$className.$propertyName CLR wrapper setter"
+    }
+}
+
+$templatedControls = @{
+    'Inputs\EtherButton.cs' = 'EtherButton'
+    'Inputs\EtherCheckbox.cs' = 'EtherCheckbox'
+    'Inputs\EtherRadioButton.cs' = 'EtherRadioButton'
+    'Inputs\EtherInput.cs' = 'EtherInput'
+    'Inputs\EtherDropdown.cs' = 'EtherDropdown'
+    'Inputs\EtherSegmentedControl.cs' = 'EtherSegmentedControl'
+    'Inputs\EtherIntelligenceButton.cs' = 'EtherIntelligenceButton'
+    'Inputs\EtherProgressBar.cs' = 'EtherProgressBar'
+    'Inputs\EtherSteeringBar.xaml.cs' = 'EtherSteeringBar'
+    'Inputs\EtherSlider.xaml.cs' = 'EtherSlider'
+    'Navigation\EtherMasthead.xaml.cs' = 'EtherMasthead'
+}
+foreach ($entry in $templatedControls.GetEnumerator()) {
+    $path = Join-Path $controlsRoot $entry.Key
+    $text = Get-Content -LiteralPath $path -Raw
+    Assert-Match $text ("DefaultStyleKey\s*=\s*typeof\(" + [regex]::Escape($entry.Value) + '\)') "$($entry.Value) DefaultStyleKey"
+    if ($text -match 'OnApplyTemplate\s*\(') {
+        Assert-Match $text 'protected\s+override\s+void\s+OnApplyTemplate\s*\(\s*\)\s*\{\s*base\.OnApplyTemplate\(\)' "$($entry.Value) OnApplyTemplate base call"
+    }
+}
+
+$internalSupport = Join-Path $controlsRoot 'Internal\HandContentControl.cs'
+$internalSupportText = Get-Content -LiteralPath $internalSupport -Raw
+Assert-Match $internalSupportText 'Public only because WinUI XAML resource dictionaries resolve' 'HandContentControl XAML visibility rationale'
+Assert-Match $internalSupportText 'not a supported design-system\s+/// control contract' 'HandContentControl support-only contract'
+
+Write-Host 'WinUI 3 convention audit passed: dependency-property identifiers/wrappers follow the WinUI pattern; templated controls set DefaultStyleKey and call base.OnApplyTemplate; XAML-required support visibility is documented; HighContrastAdjustment=None is present; and non-instant VisualTransitions declare CubicEase.'

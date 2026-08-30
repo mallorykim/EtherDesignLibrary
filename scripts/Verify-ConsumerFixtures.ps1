@@ -20,9 +20,24 @@ $packageTfm = 'net8.0-windows10.0.19041'
 $packageVersion = '0.1.0-preview.1'
 $platformProperty = '-p:Platform=' + $platform
 
+function Stop-LeftoverUnpackagedFixture {
+    $fixtures = @(Get-Process -Name 'Ether.DesignSystem.ConsumerFixtures.Unpackaged' -ErrorAction SilentlyContinue)
+    foreach ($fixture in $fixtures) {
+        $null = $fixture.CloseMainWindow()
+    }
+
+    if ($fixtures.Count -gt 0) {
+        $fixtures | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
+        Get-Process -Name 'Ether.DesignSystem.ConsumerFixtures.Unpackaged' -ErrorAction SilentlyContinue |
+            Stop-Process -Force
+    }
+}
+
 if (-not $workRoot.StartsWith($artifactsRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
     throw "Refusing to clear an output path outside artifacts: $workRoot"
 }
+
+Stop-LeftoverUnpackagedFixture
 
 if (Test-Path -LiteralPath $workRoot) {
     Remove-Item -LiteralPath $workRoot -Recurse -Force
@@ -277,15 +292,15 @@ function Assert-NoProjectReference {
     }
 }
 
-function Assert-ControlsOnlyPackageReference {
+function Assert-EtherPackageReferences {
     param([Parameter(Mandatory)][string]$ProjectPath)
 
     [xml]$project = Get-Content -LiteralPath $ProjectPath -Raw
     $etherReferences = @($project.SelectNodes('//PackageReference') | Where-Object { $_.Include -like 'Ether.DesignSystem.*' })
-    if ($etherReferences.Count -ne 1 -or
-        $etherReferences[0].Include -ne 'Ether.DesignSystem.Controls' -or
-        $etherReferences[0].VersionOverride -ne $packageVersion) {
-        throw "Consumer fixture '$ProjectPath' must reference only Ether.DesignSystem.Controls $packageVersion."
+    $expected = @('Ether.DesignSystem.Controls', 'Ether.DesignSystem.Interactions')
+    if ($etherReferences.Count -ne $expected.Count -or
+        @($etherReferences | Where-Object { $_.Include -notin $expected -or $_.VersionOverride -ne $packageVersion }).Count -ne 0) {
+        throw "Consumer fixture '$ProjectPath' must reference Ether.DesignSystem.Controls and Ether.DesignSystem.Interactions $packageVersion."
     }
 }
 
@@ -481,6 +496,10 @@ function Assert-TextScaleMarker {
         if ([double]$row.actualWidth -le 0 -or [double]$row.actualHeight -le 0) {
             throw "textScale '$id' ActualWidth/Height was $($row.actualWidth)x$($row.actualHeight)."
         }
+        if ([double]$row.desiredWidth -gt ([double]$row.actualWidth + 0.5) -or
+            [double]$row.desiredHeight -gt ([double]$row.actualHeight + 0.5)) {
+            throw "textScale '$id' content was clipped: DesiredSize=$($row.desiredWidth)x$($row.desiredHeight), ActualSize=$($row.actualWidth)x$($row.actualHeight)."
+        }
     }
 }
 
@@ -521,6 +540,41 @@ function Assert-ScreenshotMarker {
     $darkHash = (Get-FileHash -LiteralPath $screenshots.darkPath -Algorithm SHA256).Hash
     if ($lightHash -eq $darkHash) {
         throw 'Light and Dark screenshots are identical; theme capture did not differ.'
+    }
+
+    $expectedControlIds = @(
+        'progressBar', 'button', 'checkbox', 'radioButton', 'input', 'dropdown',
+        'segmentedControl', 'intelligenceButton', 'steeringBar', 'slider', 'masthead',
+        'toggleSwitch', 'scrollBar')
+    $controlCaptures = @($screenshots.controls)
+    if ($controlCaptures.Count -ne $expectedControlIds.Count -or
+        @($expectedControlIds | Where-Object { $_ -cnotin @($controlCaptures | ForEach-Object { $_.id }) }).Count -ne 0) {
+        throw "Control screenshot matrix did not contain the expected $($expectedControlIds.Count) component ids."
+    }
+    foreach ($capture in $controlCaptures) {
+        foreach ($name in @('lightPath', 'darkPath')) {
+            $path = [string]$capture.$name
+            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+                throw "Control screenshot '$($capture.id)/$name' is missing: $path"
+            }
+            # A 15 x 150 ScrollBar image is legitimately highly compressible (451 bytes
+            # in the current fixture), so only reject truly empty/truncated PNG outputs.
+            if ((Get-Item -LiteralPath $path).Length -lt 128) {
+                throw "Control screenshot '$($capture.id)/$name' is too small."
+            }
+        }
+        if ([int]$capture.lightPixelWidth -le 0 -or [int]$capture.lightPixelHeight -le 0 -or
+            [int]$capture.darkPixelWidth -le 0 -or [int]$capture.darkPixelHeight -le 0) {
+            throw "Control screenshot '$($capture.id)' has non-positive dimensions."
+        }
+        # Byte-identical Light/Dark captures mean a control silently failed to react to
+        # theme change (a hardcoded brush, or a theme dictionary duplicated across Light
+        # and Dark). Catch that regression here instead of only at the whole-page level.
+        $controlLightHash = (Get-FileHash -LiteralPath $capture.lightPath -Algorithm SHA256).Hash
+        $controlDarkHash = (Get-FileHash -LiteralPath $capture.darkPath -Algorithm SHA256).Hash
+        if ($controlLightHash -eq $controlDarkHash) {
+            throw "Control screenshot '$($capture.id)' Light and Dark captures are byte-identical; the control did not react to theme change."
+        }
     }
 }
 
@@ -620,13 +674,17 @@ try {
 
     $foundationProject = 'src/Ether.DesignSystem.Foundation/Ether.DesignSystem.Foundation.csproj'
     $controlsProject = 'src/Ether.DesignSystem.Controls/Ether.DesignSystem.Controls.csproj'
+    $interactionsProject = 'src/Ether.DesignSystem.Interactions/Ether.DesignSystem.Interactions.csproj'
     Invoke-DotNet @('pack', $foundationProject, '-c', $configuration, $platformProperty, '-o', $localFeed)
     Invoke-DotNet @('pack', $controlsProject, '-c', $configuration, $platformProperty, '-o', $localFeed)
+    Invoke-DotNet @('pack', $interactionsProject, '-c', $configuration, $platformProperty, '-o', $localFeed)
 
     $foundationPackage = Join-Path $localFeed "Ether.DesignSystem.Foundation.$packageVersion.nupkg"
     $controlsPackage = Join-Path $localFeed "Ether.DesignSystem.Controls.$packageVersion.nupkg"
+    $interactionsPackage = Join-Path $localFeed "Ether.DesignSystem.Interactions.$packageVersion.nupkg"
     $foundationEntries = Get-PackageEntries $foundationPackage
     $controlsEntries = Get-PackageEntries $controlsPackage
+    $interactionsEntries = Get-PackageEntries $interactionsPackage
 
     $foundationLib = "lib/$packageTfm/Ether.DesignSystem.Foundation.dll"
     $foundationPri = "lib/$packageTfm/Ether.DesignSystem.Foundation.pri"
@@ -649,6 +707,7 @@ try {
     Assert-PackageEntry $controlsEntries "lib/$packageTfm/Ether.DesignSystem.Controls/Themes/Generic.xaml" 'Ether.DesignSystem.Controls'
     Assert-PackageEntry $controlsEntries "lib/$packageTfm/Ether.DesignSystem.Controls/Themes/DesignSystem.xbf" 'Ether.DesignSystem.Controls'
     Assert-NoPackageEntriesMatching $controlsEntries '^buildTransitive/' 'Ether.DesignSystem.Controls'
+    Assert-PackageEntry $interactionsEntries "lib/$packageTfm/Ether.DesignSystem.Interactions.dll" 'Ether.DesignSystem.Interactions'
 
     Expand-Package $foundationPackage (Join-Path $extractRoot 'Foundation')
     Expand-Package $controlsPackage (Join-Path $extractRoot 'Controls')
@@ -671,7 +730,7 @@ try {
     $fixtureNuGetConfig = 'tests/Ether.DesignSystem.ConsumerFixtures/NuGet.Config'
     foreach ($fixtureProject in $fixtureProjects) {
         Assert-NoProjectReference $fixtureProject
-        Assert-ControlsOnlyPackageReference $fixtureProject
+        Assert-EtherPackageReferences $fixtureProject
         Invoke-DotNet @('restore', $fixtureProject, '--configfile', $fixtureNuGetConfig, '--packages', $packageCache)
         Assert-FoundationFlowsTransitively (Join-Path (Split-Path -Parent $fixtureProject) 'obj/project.assets.json')
         Invoke-DotNet @('build', $fixtureProject, '-c', $configuration, $platformProperty, '--no-restore')
@@ -683,10 +742,12 @@ try {
     Assert-OutputFile (Join-Path $unpackagedOutput 'Assets/Icons/dds2/dds2_add-cir.svg')
     Assert-OutputFile (Join-Path $unpackagedOutput 'Ether.DesignSystem.Foundation.dll')
     Assert-OutputFile (Join-Path $unpackagedOutput 'Ether.DesignSystem.Controls.dll')
+    Assert-OutputFile (Join-Path $unpackagedOutput 'Ether.DesignSystem.Interactions.dll')
 
     $packagedOutput = Join-Path $repoRoot "tests/Ether.DesignSystem.ConsumerFixtures/Packaged/bin/$platform/$configuration/$tfm"
     Assert-OutputFile (Join-Path $packagedOutput 'Ether.DesignSystem.Foundation.dll')
     Assert-OutputFile (Join-Path $packagedOutput 'Ether.DesignSystem.Controls.dll')
+    Assert-OutputFile (Join-Path $packagedOutput 'Ether.DesignSystem.Interactions.dll')
     Assert-OutputFile (Join-Path $packagedOutput 'Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xbf')
     Assert-OutputFile (Join-Path $packagedOutput 'Ether.DesignSystem.Controls/Themes/DesignSystem.xbf')
 
@@ -706,7 +767,15 @@ try {
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_RESULT_PATH', $markerPath, 'Process')
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR', (Join-Path $workRoot 'screenshots'), 'Process')
             $smokeProcess = Start-Process -FilePath $unpackagedExe -WorkingDirectory $unpackagedOutput -PassThru -WindowStyle Hidden
-            if (-not $smokeProcess.WaitForExit(90000)) {
+            # The attached visual-property audit (482 properties) now waits deterministically
+            # for compositor settle after each mutation: it samples the rendered bitmap
+            # fingerprint a composition frame apart until 3 consecutive samples match (throwing
+            # if that never happens within 60 samples) instead of a single Task.Yield(), so the
+            # fixture legitimately takes longer than the 90 s this budget originally assumed.
+            # Observed full runs land around 220-230 s; 560 s keeps generous headroom above that
+            # plus the rest of the runtime marker, without being so tight that routine machine
+            # jitter trips a false timeout.
+            if (-not $smokeProcess.WaitForExit(560000)) {
                 Stop-Process -Id $smokeProcess.Id -Force
                 $null = $smokeProcess.WaitForExit(10000)
                 Restore-OsHighContrastSnapshot $osHighContrastSnapshot
@@ -772,6 +841,20 @@ try {
             $expectedMastheadOptionalIconStates = @('SearchCollapsed', 'SearchVisible')
             $expectedToggleSwitchTemplateParts = @('TrackOff', 'TrackOn', 'KnobFill')
             $expectedToggleSwitchStates = @('Off', 'On')
+            $expectedConsumedProperties = @(
+                'EtherButton.LeftIcon', 'EtherButton.RightIcon', 'EtherButton.Size', 'EtherButton.Variant',
+                'EtherDropdown.MaxVisibleItems', 'EtherDropdown.MenuGap',
+                'EtherProgressBar.ShowTitle', 'EtherProgressBar.ShowValue', 'EtherProgressBar.Title', 'EtherProgressBar.ValueContent',
+                'EtherSegmentPanel.Spacing', 'EtherSegmentedControl.SelectedValue',
+                'EtherSlider.Labels', 'EtherSlider.ShowLabels', 'EtherSlider.ShowTitle', 'EtherSlider.SnapToStops', 'EtherSlider.Stops', 'EtherSlider.Title',
+                'EtherSteeringBar.LargeChange', 'EtherSteeringBar.Maximum', 'EtherSteeringBar.Minimum', 'EtherSteeringBar.PreviewStatus', 'EtherSteeringBar.ShowStops', 'EtherSteeringBar.ShowTitle', 'EtherSteeringBar.ShowValue', 'EtherSteeringBar.SmallChange', 'EtherSteeringBar.SnapToStops', 'EtherSteeringBar.Stops', 'EtherSteeringBar.Title', 'EtherSteeringBar.Value', 'EtherSteeringBar.ValueContent',
+                'EtherMasthead.EnableWindowCommands', 'EtherMasthead.PreviewIsMaximized', 'EtherMasthead.ShowChevron', 'EtherMasthead.ShowMenuIcon', 'EtherMasthead.ShowSearch', 'EtherMasthead.ShowSettings'
+            )
+            $expectedWritablePublicProperties = 1501
+            $expectedVisualPublicProperties = 482
+            $expectedSemanticPublicProperties = 73
+            $expectedPlatformPublicProperties = 946
+            $allowedVisualEvidenceMethods = @('pixel-difference', 'layout-difference', 'visibility-transition', 'platform-dp-contract', 'ether-component-dp-contract', 'platform-clr-visual-contract')
             $missingResources = @($expectedResourceKeys | Where-Object { $_ -cnotin $reportedResourceKeys })
             $missingAssets = @($expectedAssetUris | Where-Object { $_ -cnotin $reportedAssetUris })
             $emptyAssets = @($reportedAssets | Where-Object { [uint64]$_.size -eq 0 })
@@ -836,6 +919,7 @@ try {
                 (@($radioButton.lightTemplateBrushColors) -join ',') -ceq (@($radioButton.darkTemplateBrushColors) -join ',') -or
                 $null -eq $etherInput -or
                 $etherInput.defaultStyleResolved -ne $true -or
+                [double]$etherInput.defaultMinWidth -ne 130 -or
                 [double]$etherInput.defaultFontSize -ne 14 -or
                 $etherInput.defaultUseSystemFocusVisuals -ne $false -or
                 @($expectedInputTemplateParts | Where-Object { $_ -cnotin @($etherInput.templateParts) }).Count -ne 0 -or
@@ -845,6 +929,7 @@ try {
                 (@($etherInput.lightTemplateBrushColors) -join ',') -ceq (@($etherInput.darkTemplateBrushColors) -join ',') -or
                 $null -eq $dropdown -or
                 $dropdown.defaultStyleResolved -ne $true -or
+                [double]$dropdown.defaultMinWidth -ne 130 -or
                 [int]$dropdown.defaultMaxVisibleItems -ne 6 -or
                 $dropdown.defaultUseSystemFocusVisuals -ne $false -or
                 @($expectedDropdownTemplateParts | Where-Object { $_ -cnotin @($dropdown.templateParts) }).Count -ne 0 -or
@@ -944,7 +1029,34 @@ try {
                 [double]$scrollBar.thumbMinLength -ne 60 -or
                 $scrollBar.arrowsCollapsed -ne $true -or
                 $scrollBar.automationName -ne 'Package scroll bar' -or
-                (@($scrollBar.lightTemplateBrushColors) -join ',') -cne (@($scrollBar.darkTemplateBrushColors) -join ',')) {
+                (@($scrollBar.lightTemplateBrushColors) -join ',') -ceq (@($scrollBar.darkTemplateBrushColors) -join ',') -or
+                $null -eq $runtimeResult.propertyConsumption -or
+                [int]$runtimeResult.propertyConsumption.componentOwnedPropertyCount -ne $expectedConsumedProperties.Count -or
+                [int]$runtimeResult.propertyConsumption.propertyChangedCallbackCount -ne $expectedConsumedProperties.Count -or
+                [int]$runtimeResult.propertyConsumption.backendPropertyEventCount -ne $expectedConsumedProperties.Count -or
+                [int]$runtimeResult.propertyConsumption.standardInteractionEventCount -ne 12 -or
+                @($expectedConsumedProperties | Where-Object { $_ -cnotin @($runtimeResult.propertyConsumption.verifiedProperties) }).Count -ne 0 -or
+                $null -eq $runtimeResult.publicPropertyInventory -or
+                [int]$runtimeResult.publicPropertyInventory.writablePropertyCount -ne $expectedWritablePublicProperties -or
+                @($runtimeResult.publicPropertyInventory.propertyKeys).Count -ne $expectedWritablePublicProperties -or
+                $null -eq $runtimeResult.publicPropertyCode -or
+                [int]$runtimeResult.publicPropertyCode.getterReadCount -ne $expectedWritablePublicProperties -or
+                [int]$runtimeResult.publicPropertyCode.setterInvocationCount -ne $expectedWritablePublicProperties -or
+                $null -eq $runtimeResult.publicPropertyClassification -or
+                [int]$runtimeResult.publicPropertyClassification.visualPropertyCount -ne $expectedVisualPublicProperties -or
+                [int]$runtimeResult.publicPropertyClassification.semanticPropertyCount -ne $expectedSemanticPublicProperties -or
+                [int]$runtimeResult.publicPropertyClassification.platformPropertyCount -ne $expectedPlatformPublicProperties -or
+                $null -eq $runtimeResult.attachedVisualProperties -or
+                [int]$runtimeResult.attachedVisualProperties.visualPropertyCount -ne $expectedVisualPublicProperties -or
+                [int]$runtimeResult.attachedVisualProperties.attachedMutationCount -ne $expectedVisualPublicProperties -or
+                [int]$runtimeResult.attachedVisualProperties.renderedControlCount -ne $expectedVisualPublicProperties -or
+                [int]$runtimeResult.attachedVisualProperties.stateObservedPropertyCount -ne $expectedVisualPublicProperties -or
+                @($runtimeResult.attachedVisualProperties.verifiedProperties).Count -ne $expectedVisualPublicProperties -or
+                @($runtimeResult.attachedVisualProperties.evidence).Count -ne $expectedVisualPublicProperties -or
+                @($runtimeResult.attachedVisualProperties.evidence | Where-Object { [string]::IsNullOrWhiteSpace($_.property) -or [string]::IsNullOrWhiteSpace($_.method) -or [string]::IsNullOrWhiteSpace($_.observation) -or $_.method -cnotin $allowedVisualEvidenceMethods }).Count -ne 0 -or
+                @($runtimeResult.publicPropertyClassification.visualProperties | Where-Object { $_ -cnotin @($runtimeResult.attachedVisualProperties.verifiedProperties) }).Count -ne 0 -or
+                @($runtimeResult.publicPropertyClassification.visualProperties | Where-Object { $_ -cnotin @($runtimeResult.attachedVisualProperties.evidence | ForEach-Object { $_.property }) }).Count -ne 0 -or
+                @($runtimeResult.attachedVisualProperties.evidence | ForEach-Object { $_.property } | Select-Object -Unique).Count -ne $expectedVisualPublicProperties) {
                 throw "The unpackaged runtime smoke fixture did not verify Foundation resources, assets, and theme re-resolution: $(Get-Content -LiteralPath $markerPath -Raw)"
             }
             Assert-RtlMarker $runtimeResult
@@ -954,8 +1066,15 @@ try {
             Assert-ScreenshotMarker $runtimeResult
             Assert-HighContrastMarker $runtimeResult
             Assert-PerformanceMarker $runtimeResult
+            # $workRoot is intentionally cleared on the next run. Publish the accepted marker
+            # and exact Light/Dark/High Contrast bitmaps before leaving this scope so a visual
+            # audit can inspect the same artifacts the gate just verified.
+            $evidenceDirectory = Join-Path $artifactsRoot (Join-Path 'audit-runs' ("consumer-runtime-evidence-{0}" -f (Get-Date -Format 'yyyyMMdd-HHmmssfff')))
+            New-Item -ItemType Directory -Path $evidenceDirectory -Force | Out-Null
+            Copy-Item -LiteralPath $markerPath -Destination (Join-Path $evidenceDirectory 'runtime-result.json') -Force
+            Copy-Item -LiteralPath (Join-Path $workRoot 'screenshots') -Destination (Join-Path $evidenceDirectory 'screenshots') -Recurse -Force
             $storageFileResolvedCount = @($reportedAssets | Where-Object { $_.storageFileResolved -eq $true }).Count
-            Write-Host "Unpackaged consumer runtime smoke passed: resources $($reportedResourceKeys -join ', '); EtherProgressBar LabelStates and read-only RangeValue verified; EtherButton default style, RightIconStates, and Light/Dark brushes verified; EtherCheckbox and EtherRadioButton default style, CheckStates, and Light/Dark brushes verified; EtherInput default style, CommonStates, and Light/Dark brushes verified; EtherDropdown default style, DropDownStates, TriggerText, and Light/Dark brushes verified; EtherSegmentedControl default style, ShadowHost/TrackSurface, segment CheckStates, and Light/Dark brushes verified; EtherIntelligenceButton default style, CommonStates, and Light/Dark brushes verified; EtherSteeringBar default style, LabelStates, interactive RangeValue GetPattern, and Light/Dark brushes verified; EtherSlider default style, bar-canvas RangeValue GetPattern, and Light/Dark brushes verified; EtherMasthead default style, SearchIconStates, and Light/Dark brushes verified; EtherSwitch keyed style, Off/On states, and Light/Dark brushes verified; implicit ScrollBar 6 px templates and Light/Dark thumb brushes verified; RTL RightToLeft inherited on 13 package controls with automation names intact; UIA automation names, control types, and bounding rects for 13 package controls; 2.25 scale ActualWidth/Height with automation names intact; localization statusText and resourceLoaderText; Light/Dark screenshots; performance elapsedMilliseconds; SVG ImageSource loaded; StorageFile $storageFileResolvedCount/$($reportedAssets.Count) (unpackaged host-root limitation is recorded in marker); BackgroundCanvas $($runtimeResult.lightBackgroundCanvasColor) -> $($runtimeResult.darkBackgroundCanvasColor); HighContrast OS-selected runtime (osHighContrast=true); marker: $markerPath"
+            Write-Host "Unpackaged consumer runtime smoke passed: all $expectedWritablePublicProperties public writable properties were read and invoked on detached component instances; all $expectedVisualPublicProperties visual properties were mutated, laid out, rendered, and emitted a per-property observation on attached WinUI controls; all $($expectedConsumedProperties.Count) declared Ether dependency properties wrote/read/raised callbacks and emitted JSON backend envelopes; 12 standard interaction adapters emitted business envelopes; resources $($reportedResourceKeys -join ', '); templates, states, Light/Dark, RTL, UIA, 2.25 scale, localization, screenshots, SVG loading, and OS-selected High Contrast verified; marker: $markerPath; retained audit evidence: $evidenceDirectory"
         }
         finally {
             if ($null -ne $smokeProcess -and -not $smokeProcess.HasExited) {

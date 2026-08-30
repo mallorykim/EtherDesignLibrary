@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using EtherSandbox.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
@@ -190,6 +191,13 @@ internal static partial class RuntimeVerification
                     throw new InvalidOperationException($"{id} collapsed under 2.25 scale. Actual {control.ActualWidth}x{control.ActualHeight}.");
                 }
 
+                var desired = control.DesiredSize;
+                if (desired.Width > control.ActualWidth + 0.5 || desired.Height > control.ActualHeight + 0.5)
+                {
+                    throw new InvalidOperationException(
+                        $"{id} content was clipped under 2.25 scale: Desired {desired.Width}x{desired.Height}, Actual {control.ActualWidth}x{control.ActualHeight}.");
+                }
+
                 var peer = FrameworkElementAutomationPeer.CreatePeerForElement(control)
                     ?? throw new InvalidOperationException($"{id} lost its automation peer under 2.25 scale.");
                 var name = peer.GetName();
@@ -198,7 +206,13 @@ internal static partial class RuntimeVerification
                     throw new InvalidOperationException($"{id} 2.25-scale automation name was '{name}', expected '{expectedName}'.");
                 }
 
-                results.Add(new TextScaleControlVerification(id, name, control.ActualWidth, control.ActualHeight));
+                results.Add(new TextScaleControlVerification(
+                    id,
+                    name,
+                    control.ActualWidth,
+                    control.ActualHeight,
+                    desired.Width,
+                    desired.Height));
             }
 
             return new TextScaleVerification(scale, results.ToArray());
@@ -249,7 +263,9 @@ internal static partial class RuntimeVerification
         File.Copy(modulePri, resourcesPri);
     }
 
-    private static async Task<ScreenshotVerification> CaptureThemeScreenshotsAsync(FrameworkElement themeRoot)
+    private static async Task<ScreenshotVerification> CaptureThemeScreenshotsAsync(
+        FrameworkElement themeRoot,
+        (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls)
     {
         var directory = Environment.GetEnvironmentVariable("ETHER_CONSUMER_SMOKE_SCREENSHOT_DIR");
         if (string.IsNullOrWhiteSpace(directory))
@@ -260,8 +276,34 @@ internal static partial class RuntimeVerification
         Directory.CreateDirectory(directory);
         var lightPath = Path.Combine(directory, "consumer-light.png");
         var darkPath = Path.Combine(directory, "consumer-dark.png");
-        var lightSize = await CapturePngAsync(themeRoot, ElementTheme.Light, lightPath);
-        var darkSize = await CapturePngAsync(themeRoot, ElementTheme.Dark, darkPath);
+        var controlDirectory = Path.Combine(directory, "controls");
+        Directory.CreateDirectory(controlDirectory);
+        themeRoot.RequestedTheme = ElementTheme.Light;
+        await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Light);
+        var lightSize = await CaptureCurrentPngAsync(themeRoot, lightPath, "Light");
+        var captures = new List<ControlScreenshotVerification>();
+        foreach (var (id, control, _) in controls)
+        {
+            var path = Path.Combine(controlDirectory, $"{id}-light.png");
+            var size = await CaptureCurrentPngAsync(control, path, $"{id}-Light");
+            captures.Add(new ControlScreenshotVerification(id, path, string.Empty, size.Width, size.Height, 0, 0));
+        }
+
+        themeRoot.RequestedTheme = ElementTheme.Dark;
+        await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Dark);
+        var darkSize = await CaptureCurrentPngAsync(themeRoot, darkPath, "Dark");
+        for (var index = 0; index < controls.Length; index++)
+        {
+            var (id, control, _) = controls[index];
+            var path = Path.Combine(controlDirectory, $"{id}-dark.png");
+            var size = await CaptureCurrentPngAsync(control, path, $"{id}-Dark");
+            captures[index] = captures[index] with
+            {
+                DarkPath = path,
+                DarkPixelWidth = size.Width,
+                DarkPixelHeight = size.Height,
+            };
+        }
         return new ScreenshotVerification(
             lightPath,
             darkPath,
@@ -271,7 +313,8 @@ internal static partial class RuntimeVerification
             darkSize.Width,
             darkSize.Height,
             HighContrastPixelWidth: 0,
-            HighContrastPixelHeight: 0);
+            HighContrastPixelHeight: 0,
+            Controls: captures.ToArray());
     }
 
     private static async Task<(int Width, int Height)> CapturePngAsync(FrameworkElement themeRoot, ElementTheme theme, string path)
@@ -715,6 +758,11 @@ internal static partial class RuntimeVerification
             {
                 throw new InvalidOperationException($"{id} did not inherit RightToLeft. Actual '{control.FlowDirection}'.");
             }
+
+            if (control is EtherSegmentedControl segmentedControl)
+            {
+                AssertSegmentVisualOrder(segmentedControl, FlowDirection.RightToLeft);
+            }
             var peer = FrameworkElementAutomationPeer.CreatePeerForElement(control) ?? throw new InvalidOperationException($"{id} did not create an automation peer under RTL.");
             var automationName = peer.GetName();
             if (!string.Equals(automationName, expectedAutomationName, StringComparison.Ordinal))
@@ -727,7 +775,33 @@ internal static partial class RuntimeVerification
         themeRoot.FlowDirection = FlowDirection.LeftToRight;
         themeRoot.UpdateLayout();
         await WaitForFlowDirectionAsync(themeRoot, FlowDirection.LeftToRight);
+        foreach (var (_, control, _) in controls)
+        {
+            if (control is EtherSegmentedControl segmentedControl)
+            {
+                AssertSegmentVisualOrder(segmentedControl, FlowDirection.LeftToRight);
+            }
+        }
         return new RtlVerification(FlowDirection.RightToLeft.ToString(), results.ToArray());
+    }
+
+    private static void AssertSegmentVisualOrder(EtherSegmentedControl control, FlowDirection direction)
+    {
+        control.UpdateLayout();
+        var segments = GetSegmentRadioButtons(control);
+        if (segments.Length < 2)
+        {
+            throw new InvalidOperationException("EtherSegmentedControl needs at least two segments to verify visual order.");
+        }
+
+        var firstX = segments[0].TransformToVisual(control).TransformPoint(new Windows.Foundation.Point()).X;
+        var secondX = segments[1].TransformToVisual(control).TransformPoint(new Windows.Foundation.Point()).X;
+        var expected = direction == FlowDirection.LeftToRight ? firstX < secondX : firstX > secondX;
+        if (!expected)
+        {
+            throw new InvalidOperationException(
+                $"EtherSegmentedControl did not preserve logical segment order in {direction}: first X={firstX}, second X={secondX}.");
+        }
     }
 
     private static async Task WaitForFlowDirectionAsync(FrameworkElement themeRoot, FlowDirection requestedDirection)

@@ -62,6 +62,12 @@
             <SolidColorBrush x:Key="EtherSwitchKnobShadow2Brush" Color="#1A183361" />
             <SolidColorBrush x:Key="EtherSwitchKnobShadow3Brush" Color="#0D183361" />
             <SolidColorBrush x:Key="EtherSwitchKnobStrokeBrush" Color="{StaticResource Gray0}" />
+            <!-- Same color as the resting stroke in Light/Dark: Hover/Pressed only tint the knob
+                 fill a shade darker, so the resting stroke color stays visible against it. High
+                 Contrast repaints Hover/Pressed fills as an opaque SystemColorHighlightColor, so
+                 the stroke needs to repaint as SystemColorHighlightTextColor there instead. -->
+            <SolidColorBrush x:Key="EtherSwitchKnobStrokeHoverBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobStrokePressedBrush" Color="{StaticResource Gray0}" />
             <SolidColorBrush x:Key="EtherSwitchLabelForegroundBrush" Color="{StaticResource AlphaBlack70}" />
             <SolidColorBrush x:Key="EtherSwitchOffTrackBrush" Color="{StaticResource AlphaBlack10}" />
             <LinearGradientBrush x:Key="EtherSwitchOnTrackBrush" StartPoint="1,0.5" EndPoint="0,0.5">
@@ -88,6 +94,8 @@
             <SolidColorBrush x:Key="EtherSwitchKnobShadow2Brush" Color="#1A183361" />
             <SolidColorBrush x:Key="EtherSwitchKnobShadow3Brush" Color="#0D183361" />
             <SolidColorBrush x:Key="EtherSwitchKnobStrokeBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobStrokeHoverBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobStrokePressedBrush" Color="{StaticResource Gray0}" />
             <SolidColorBrush x:Key="EtherSwitchLabelForegroundBrush" Color="{StaticResource AlphaWhite70}" />
             <SolidColorBrush x:Key="EtherSwitchOffTrackBrush" Color="{StaticResource AlphaWhite10}" />
             <LinearGradientBrush x:Key="EtherSwitchOnTrackBrush" StartPoint="1,0.5" EndPoint="0,0.5">
@@ -114,6 +122,12 @@
             <SolidColorBrush x:Key="EtherSwitchKnobShadow2Brush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="EtherSwitchKnobShadow3Brush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="EtherSwitchKnobStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <!-- Paired with KnobFillHoverBrush/PressedBrush/OnHoverBrush/OnPressedBrush above,
+                 which repaint as an opaque SystemColorHighlightColor in High Contrast: the stroke
+                 delineating the knob against that fill must be SystemColorHighlightTextColor, not
+                 the WindowText color used against the resting WindowColor fill. -->
+            <SolidColorBrush x:Key="EtherSwitchKnobStrokeHoverBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="EtherSwitchKnobStrokePressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
             <SolidColorBrush x:Key="EtherSwitchLabelForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
             <SolidColorBrush x:Key="EtherSwitchOffTrackBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
             <SolidColorBrush x:Key="EtherSwitchOnTrackBrush" Color="{ThemeResource SystemColorHighlightColor}" />
@@ -157,12 +171,14 @@
                         <VisualState.Setters>
                             <Setter Target="KnobFill.Background" Value="{ThemeResource EtherSwitchKnobFillHoverBrush}"/>
                             <Setter Target="KnobFillOn.Background" Value="{ThemeResource EtherSwitchKnobFillOnHoverBrush}"/>
+                            <Setter Target="Knob.BorderBrush" Value="{ThemeResource EtherSwitchKnobStrokeHoverBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
                             <Setter Target="KnobFill.Background" Value="{ThemeResource EtherSwitchKnobFillPressedBrush}"/>
                             <Setter Target="KnobFillOn.Background" Value="{ThemeResource EtherSwitchKnobFillOnPressedBrush}"/>
+                            <Setter Target="Knob.BorderBrush" Value="{ThemeResource EtherSwitchKnobStrokePressedBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
@@ -248,6 +264,7 @@
                         VerticalAlignment="Center">
                 <ContentPresenter x:Name="OffLabel"
                                   Content="{TemplateBinding OffContent}"
+                                  ContentTemplate="{TemplateBinding OffContentTemplate}"
                                   Foreground="{ThemeResource EtherSwitchLabelForegroundBrush}"
                                   FontFamily="{StaticResource InterFont}"
                                   FontSize="{StaticResource Size12}"
@@ -256,12 +273,16 @@
                                   Visibility="Visible"/>
                 <ContentPresenter x:Name="OnLabel"
                                   Content="{TemplateBinding OnContent}"
+                                  ContentTemplate="{TemplateBinding OnContentTemplate}"
                                   Foreground="{ThemeResource EtherSwitchLabelForegroundBrush}"
                                   FontFamily="{StaticResource InterFont}"
                                   FontSize="{StaticResource Size12}"
                                   FontWeight="{StaticResource WeightSemibold}"
                                   VerticalAlignment="Center"
                                   Visibility="Collapsed"/>
+                <!-- Figma nodes 62138:28454/28495 specify a fixed 40x20 track and
+                     fixed 22x14 knob host; keep these dimensions fixed as an explicit
+                     design decision (option b), rather than scaling them with FontSize. -->
                 <controls:HandContentControl x:Name="SwitchArea"
                                              Width="40"
                                              Height="20"
@@ -372,6 +393,8 @@
     </ControlTemplate>
 
     <Style x:Key="EtherSwitch" TargetType="ToggleSwitch">
+        <Setter Property="OffContentTemplate" Value="{StaticResource EtherSingleLineTextContentTemplate}"/>
+        <Setter Property="OnContentTemplate" Value="{StaticResource EtherSingleLineTextContentTemplate}"/>
         <Setter Property="UseSystemFocusVisuals" Value="False"/>
         <Setter Property="HighContrastAdjustment" Value="None"/>
         <Setter Property="MinWidth" Value="{StaticResource Spacing0}"/>

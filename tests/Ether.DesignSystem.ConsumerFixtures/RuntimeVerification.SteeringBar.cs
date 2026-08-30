@@ -121,6 +121,17 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("The RangeValue provider from GetPattern did not track owner Value assignments.");
         }
 
+        var emittedValues = new List<SteeringBarValueChangedEventArgs>();
+        steeringBar.ValueChanged += (_, args) => emittedValues.Add(args);
+        steeringBar.SetValue(EtherSteeringBar.ValueProperty, 125d);
+        var emittedValue = emittedValues.LastOrDefault();
+        if (steeringBar.Value != 100d || rangeValue.Value != 100d ||
+            emittedValue is null || emittedValue.OldValue != 65d || emittedValue.NewValue != 100d)
+        {
+            throw new InvalidOperationException("A dependency-property Value write must clamp before the steering bar renders, raises ValueChanged, or exposes RangeValue.");
+        }
+        steeringBar.Value = 65d;
+
         steeringBar.PreviewStatus = SteeringBarPreviewStatus.Default;
         var previewStatusLocksAutomation = false;
         try

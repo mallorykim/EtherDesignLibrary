@@ -61,6 +61,12 @@
             <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundPressedBrush" Color="{StaticResource Gray50}" />
             <SolidColorBrush x:Key="EtherButtonSecondaryBorderBrush" Color="{StaticResource AlphaNavy20}" />
             <SolidColorBrush x:Key="EtherButtonSecondaryForegroundBrush" Color="{StaticResource Gray1000}" />
+            <!-- Same color as the default label in Light/Dark: Hover/Pressed only tint the fill a
+                 shade darker, so the default label color stays legible on top of it. High Contrast
+                 repaints Hover/Pressed as an opaque SystemColorHighlightColor fill, so these need
+                 to repaint as SystemColorHighlightTextColor there instead. -->
+            <SolidColorBrush x:Key="EtherButtonSecondaryForegroundHoverBrush" Color="{StaticResource Gray1000}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryForegroundPressedBrush" Color="{StaticResource Gray1000}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="{StaticResource AlphaWhite0}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue600}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundHoverBrush" Color="{StaticResource Blue700}" />
@@ -81,6 +87,8 @@
             <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundPressedBrush" Color="{StaticResource Gray850}" />
             <SolidColorBrush x:Key="EtherButtonSecondaryBorderBrush" Color="{StaticResource AlphaWhite12}" />
             <SolidColorBrush x:Key="EtherButtonSecondaryForegroundBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryForegroundHoverBrush" Color="{StaticResource Gray0}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryForegroundPressedBrush" Color="{StaticResource Gray0}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="{StaticResource AlphaWhite0}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{StaticResource Blue300}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundHoverBrush" Color="{StaticResource Blue200}" />
@@ -101,6 +109,12 @@
             <SolidColorBrush x:Key="EtherButtonSecondaryBackgroundPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="EtherButtonSecondaryBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
             <SolidColorBrush x:Key="EtherButtonSecondaryForegroundBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <!-- Paired with SecondaryBackgroundHoverBrush/SecondaryBackgroundPressedBrush above,
+                 which repaint as an opaque SystemColorHighlightColor fill in High Contrast: the
+                 label/icons sitting on that fill must be SystemColorHighlightTextColor, not the
+                 ButtonText color used against the ButtonFace default fill. -->
+            <SolidColorBrush x:Key="EtherButtonSecondaryForegroundHoverBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="EtherButtonSecondaryForegroundPressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundBrush" Color="{ThemeResource SystemColorHotlightColor}" />
             <SolidColorBrush x:Key="EtherButtonTertiaryForegroundHoverBrush" Color="{ThemeResource SystemColorHotlightColor}" />
@@ -108,6 +122,23 @@
             <SolidColorBrush x:Key="EtherButtonFocusStrokeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
+
+    <!--
+        Shared text policy for component labels. ContentPresenter has TextWrapping but no
+        TextTrimming, so each label has an explicit TextBlock for string content and a separate
+        ContentPresenter for non-string content. EtherButton.xaml is the first component
+        dictionary in Generic.xaml, so later input dictionaries can reuse this converter.
+    -->
+    <Style x:Key="EtherSingleLineTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+    </Style>
+    <!-- Used only by component-owned textual label slots. Do not apply this template to
+         EtherButton/Checkbox/RadioButton Content, which can be arbitrary UIElement content. -->
+    <DataTemplate x:Key="EtherSingleLineTextContentTemplate">
+        <TextBlock Text="{Binding}" Style="{StaticResource EtherSingleLineTextBlockStyle}"/>
+    </DataTemplate>
+    <controls:EtherStringContentVisibilityConverter x:Key="EtherStringContentVisibilityConverter"/>
 
     <!-- ===========================================================
          CONTROL TEMPLATES  (shared by large + small style pairs)
@@ -176,8 +207,8 @@
             </VisualStateManager.VisualStateGroups>
 
             <Border x:Name="Bg"
-                    Background="{ThemeResource EtherButtonPrimaryBackgroundBrush}"
-                    CornerRadius="{StaticResource RadiusSm}"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
                     Padding="{TemplateBinding Padding}">
                 <StackPanel Orientation="Horizontal"
                             Spacing="{StaticResource Spacing6}"
@@ -186,25 +217,41 @@
                     <ContentPresenter x:Name="LeftIcon"
                                       Content="{TemplateBinding LeftIcon}"
                                       Visibility="Collapsed"
-                                      Foreground="{ThemeResource EtherButtonPrimaryForegroundBrush}"
+                                      Foreground="{TemplateBinding Foreground}"
                                       HorizontalAlignment="Center"
                                       HorizontalContentAlignment="Center"
                                       VerticalAlignment="Center"/>
                     <ContentPresenter x:Name="Cp"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      Foreground="{ThemeResource EtherButtonPrimaryForegroundBrush}"
-                                      FontFamily="{StaticResource InstrumentSans}"
+                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                      Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=False}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      FontFamily="{TemplateBinding FontFamily}"
                                       FontSize="{TemplateBinding FontSize}"
-                                      FontWeight="{StaticResource WeightSemibold}"
+                                      FontWeight="{TemplateBinding FontWeight}"
+                                      MaxWidth="{TemplateBinding MaxWidth}"
                                       HorizontalAlignment="Center"
                                       HorizontalContentAlignment="Center"
                                       VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TextContent"
+                               Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                               Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
+                               Foreground="{Binding Foreground, ElementName=Cp}"
+                               FontFamily="{TemplateBinding FontFamily}"
+                               FontSize="{TemplateBinding FontSize}"
+                               FontWeight="{TemplateBinding FontWeight}"
+                               MaxWidth="{TemplateBinding MaxWidth}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"/>
                     <!-- Optional trailing icon slot (collapses when RightIcon is unset). -->
                     <ContentPresenter x:Name="RightIcon"
                                       Content="{TemplateBinding RightIcon}"
                                       Visibility="Collapsed"
-                                      Foreground="{ThemeResource EtherButtonPrimaryForegroundBrush}"
+                                      Foreground="{TemplateBinding Foreground}"
                                       HorizontalAlignment="Center"
                                       HorizontalContentAlignment="Center"
                                       VerticalAlignment="Center"/>
@@ -217,9 +264,9 @@
                  ring is invisible. As an overlay it composites over Bg, matching Figma's
                  inside stroke (visible light ring on the filled background). -->
             <Border x:Name="Stroke"
-                    BorderBrush="{ThemeResource EtherButtonPrimaryBorderBrush}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{StaticResource RadiusSm}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
                     IsHitTestVisible="False"/>
 
             <Border x:Name="FocusRing"
@@ -241,11 +288,17 @@
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
                             <Setter Target="Bg.Background" Value="{ThemeResource EtherButtonSecondaryBackgroundHoverBrush}"/>
+                            <Setter Target="LeftIcon.Foreground" Value="{ThemeResource EtherButtonSecondaryForegroundHoverBrush}"/>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherButtonSecondaryForegroundHoverBrush}"/>
+                            <Setter Target="RightIcon.Foreground" Value="{ThemeResource EtherButtonSecondaryForegroundHoverBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
                             <Setter Target="Bg.Background" Value="{ThemeResource EtherButtonSecondaryBackgroundPressedBrush}"/>
+                            <Setter Target="LeftIcon.Foreground" Value="{ThemeResource EtherButtonSecondaryForegroundPressedBrush}"/>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherButtonSecondaryForegroundPressedBrush}"/>
+                            <Setter Target="RightIcon.Foreground" Value="{ThemeResource EtherButtonSecondaryForegroundPressedBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
@@ -309,6 +362,9 @@
                     <ContentPresenter x:Name="Cp"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                      Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=False}"
+                                      MaxWidth="{TemplateBinding MaxWidth}"
                                       Foreground="{ThemeResource EtherButtonSecondaryForegroundBrush}"
                                       FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
@@ -316,6 +372,19 @@
                                       HorizontalAlignment="Center"
                                       HorizontalContentAlignment="Center"
                                       VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TextContent"
+                               Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                               Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
+                               Foreground="{Binding Foreground, ElementName=Cp}"
+                               FontFamily="{StaticResource InstrumentSans}"
+                               FontSize="{TemplateBinding FontSize}"
+                               FontWeight="{StaticResource WeightSemibold}"
+                               MaxWidth="{TemplateBinding MaxWidth}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"/>
                     <ContentPresenter x:Name="RightIcon"
                                       Content="{TemplateBinding RightIcon}"
                                       Visibility="Collapsed"
@@ -424,13 +493,29 @@
                     <ContentPresenter x:Name="Cp"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      MaxWidth="{TemplateBinding MaxWidth}"
                                       Foreground="{ThemeResource EtherButtonTertiaryForegroundBrush}"
+                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                      Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=False}"
                                       FontFamily="{StaticResource InstrumentSans}"
                                       FontSize="{TemplateBinding FontSize}"
                                       FontWeight="{StaticResource WeightSemibold}"
                                       HorizontalAlignment="Center"
                                       HorizontalContentAlignment="Center"
                                       VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TextContent"
+                               Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                               Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
+                               Foreground="{Binding Foreground, ElementName=Cp}"
+                               FontFamily="{StaticResource InstrumentSans}"
+                               FontSize="{TemplateBinding FontSize}"
+                               FontWeight="{StaticResource WeightSemibold}"
+                               MaxWidth="{TemplateBinding MaxWidth}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"/>
                     <ContentPresenter x:Name="RightIcon"
                                       Content="{TemplateBinding RightIcon}"
                                       Visibility="Collapsed"
@@ -456,6 +541,12 @@
     =============================================================== -->
 
     <Style x:Key="DefaultEtherButtonStyle" TargetType="controls:EtherButton">
+        <Setter Property="Background"                 Value="{ThemeResource EtherButtonPrimaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush"                 Value="{ThemeResource EtherButtonPrimaryBorderBrush}"/>
+        <Setter Property="Foreground"                 Value="{ThemeResource EtherButtonPrimaryForegroundBrush}"/>
+        <Setter Property="CornerRadius"               Value="{StaticResource RadiusSm}"/>
+        <Setter Property="FontFamily"                 Value="{StaticResource InstrumentSans}"/>
+        <Setter Property="FontWeight"                 Value="{StaticResource WeightSemibold}"/>
         <Setter Property="MinWidth"                   Value="108"/>
         <Setter Property="MinHeight"                  Value="46"/>
         <Setter Property="Padding"                    Value="20,12"/>
@@ -483,6 +574,9 @@
 
     <Style x:Key="EtherButtonSecondary" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
+        <Setter Property="Background" Value="{ThemeResource EtherButtonSecondaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{ThemeResource EtherButtonSecondaryBorderBrush}"/>
+        <Setter Property="Foreground" Value="{ThemeResource EtherButtonSecondaryForegroundBrush}"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="Template" Value="{StaticResource EtherButtonSecondaryTemplate}"/>
     </Style>
@@ -499,6 +593,8 @@
 
     <Style x:Key="EtherButtonTertiary" TargetType="controls:EtherButton"
            BasedOn="{StaticResource DefaultEtherButtonStyle}">
+        <Setter Property="Background" Value="{ThemeResource EtherButtonTertiaryBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{ThemeResource EtherButtonTertiaryForegroundBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template"  Value="{StaticResource EtherButtonTertiaryTemplate}"/>
     </Style>

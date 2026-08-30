@@ -203,9 +203,9 @@ internal static partial class RuntimeVerification
         return new[] { GetSolidBrushColor(fill.Background, "fill", theme) };
     }
 
-    private static void AssertFill(IReadOnlyList<string> colors, string expected, string theme)
+    private static void AssertFill(string[] colors, string expected, string theme)
     {
-        if (colors.Count != 1 || !string.Equals(colors[0], expected, StringComparison.Ordinal))
+        if (colors.Length != 1 || !string.Equals(colors[0], expected, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
                 $"EtherProgressBar {theme} fill did not re-resolve to {expected}: {string.Join(", ", colors)}.");

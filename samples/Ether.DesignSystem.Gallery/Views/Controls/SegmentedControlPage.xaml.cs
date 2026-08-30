@@ -8,12 +8,12 @@ public sealed partial class SegmentedControlPage : Page
 {
     public string SpecimenXaml { get; } =
         """
-        <controls:EtherSegmentedControl>
+        <controls:EtherSegmentedControl SelectedValue="list">
             <controls:EtherSegmentPanel>
-                <controls:HandRadioButton GroupName="SegmentedTwo" Content="List"
+                <controls:HandRadioButton GroupName="SegmentedTwo" Content="List" Tag="list"
                                          Style="{StaticResource EtherSegment}"
                                          IsChecked="True"/>
-                <controls:HandRadioButton GroupName="SegmentedTwo" Content="Grid"
+                <controls:HandRadioButton GroupName="SegmentedTwo" Content="Grid" Tag="grid"
                                          Style="{StaticResource EtherSegment}"/>
             </controls:EtherSegmentPanel>
         </controls:EtherSegmentedControl>
@@ -26,9 +26,9 @@ public sealed partial class SegmentedControlPage : Page
         this.InitializeComponent();
     }
 
-    private void InteractiveSegment_Checked(object sender, RoutedEventArgs e)
+    private void InteractiveSegmentedControl_SelectionChanged(object sender, SegmentedSelectionChangedEventArgs e)
     {
-        if (LiveExample is not null && sender is HandRadioButton segment)
-            LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Selected", "Selected: {0}", segment.Content);
+        if (LiveExample is not null)
+            LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Selected", "Selected: {0}", e.NewValue ?? "(none)");
     }
 }

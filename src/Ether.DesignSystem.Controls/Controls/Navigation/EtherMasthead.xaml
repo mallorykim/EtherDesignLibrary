@@ -30,18 +30,33 @@
             <StaticResource x:Key="EtherMastheadCaptionPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
             <StaticResource x:Key="EtherMastheadFocusBrush" ResourceKey="border/focus" />
             <StaticResource x:Key="EtherMastheadIconForegroundBrush" ResourceKey="text/primary" />
+            <!-- Same color as the default icon in Light/Dark: the caption button's Hover/Pressed
+                 fill (EtherMastheadCaptionHoverBrush/PressedBrush above) is a faint tint, so the
+                 default icon color stays legible on top of it. High Contrast repaints that fill as
+                 an opaque SystemColorHighlightColor, so these need to repaint as
+                 SystemColorHighlightTextColor there instead (see the HighContrast dictionary). -->
+            <StaticResource x:Key="EtherMastheadIconForegroundHoverBrush" ResourceKey="text/primary" />
+            <StaticResource x:Key="EtherMastheadIconForegroundPressedBrush" ResourceKey="text/primary" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <StaticResource x:Key="EtherMastheadCaptionHoverBrush" ResourceKey="ActionSecondaryBgHover" />
             <StaticResource x:Key="EtherMastheadCaptionPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
             <StaticResource x:Key="EtherMastheadFocusBrush" ResourceKey="border/focus" />
             <StaticResource x:Key="EtherMastheadIconForegroundBrush" ResourceKey="text/primary" />
+            <StaticResource x:Key="EtherMastheadIconForegroundHoverBrush" ResourceKey="text/primary" />
+            <StaticResource x:Key="EtherMastheadIconForegroundPressedBrush" ResourceKey="text/primary" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherMastheadCaptionHoverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="EtherMastheadCaptionPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="EtherMastheadFocusBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="EtherMastheadIconForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <!-- Paired with CaptionHoverBrush/CaptionPressedBrush above, which repaint as an opaque
+                 SystemColorHighlightColor fill in High Contrast: the caption icon sitting on that
+                 fill must be SystemColorHighlightTextColor, not the WindowText color used against
+                 the transparent default fill. -->
+            <SolidColorBrush x:Key="EtherMastheadIconForegroundHoverBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="EtherMastheadIconForegroundPressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -247,7 +262,8 @@
                                                   Style="{StaticResource EtherMastheadCaptionButtonStyle}"
                                                   AutomationProperties.Name="Minimize window">
                                 <Grid>
-                                    <Rectangle Width="{StaticResource Spacing12}"
+                                    <Rectangle x:Name="MinimizeIcon"
+                                               Width="{StaticResource Spacing12}"
                                                Height="1"
                                                Fill="{ThemeResource EtherMastheadIconForegroundBrush}"
                                                RadiusX="0.5"
@@ -273,13 +289,15 @@
                                           Width="{StaticResource Spacing10}"
                                           Height="{StaticResource Spacing10}"
                                           Visibility="Collapsed">
-                                        <Rectangle Width="7"
+                                        <Rectangle x:Name="RestoreIconBack"
+                                                   Width="7"
                                                    Height="7"
                                                    Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
                                                    StrokeThickness="1"
                                                    HorizontalAlignment="Left"
                                                    VerticalAlignment="Top"/>
-                                        <Rectangle Width="7"
+                                        <Rectangle x:Name="RestoreIconFront"
+                                                   Width="7"
                                                    Height="7"
                                                    Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
                                                    StrokeThickness="1"
@@ -296,12 +314,14 @@
                                       Height="{StaticResource Spacing10}"
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center">
-                                    <Path Data="M 0 0 L 10 10"
+                                    <Path x:Name="CloseIconStroke1"
+                                          Data="M 0 0 L 10 10"
                                           Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
                                           StrokeThickness="1"
                                           StrokeStartLineCap="Square"
                                           StrokeEndLineCap="Square"/>
-                                    <Path Data="M 10 0 L 0 10"
+                                    <Path x:Name="CloseIconStroke2"
+                                          Data="M 10 0 L 0 10"
                                           Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
                                           StrokeThickness="1"
                                           StrokeStartLineCap="Square"
@@ -310,6 +330,34 @@
                             </controls:EtherButton>
 
                         </StackPanel>
+
+                        <!-- Theme-resolved color swatches, read from code-behind to recolor the
+                             caption icons above on pointer state. They exist because the icons are
+                             plain Shape content hosted through EtherMastheadCaptionButtonStyle's
+                             ContentPresenter: Shape.Fill/Stroke does not participate in WinUI's
+                             Foreground property-value-inheritance the way TextElement/Control
+                             Foreground does, and a VisualState.Setter can only reach named parts
+                             within the SAME ControlTemplate that declares the state — not into a
+                             sibling control's own template (EtherMastheadCaptionButtonStyle) or
+                             into that control's Content. Reading an already-resolved {ThemeResource}
+                             brush off a live element is the standard, theme-correct way to fetch a
+                             themed brush from code (see EtherMasthead.xaml.cs pointer handlers).
+                             NOTE: an earlier attempt replaced this with a pure-XAML
+                             Setter Target="Foreground" (no ElementName, intended to target the
+                             templated Button's own Foreground property) + an ElementName Binding
+                             on the icon Shapes. That compiled but threw a runtime
+                             COMException (0x800F1000) out of VisualStateManager.GoToState the
+                             moment the PointerOver state actually needed to apply, so it does not
+                             work in this WinUI 3 version — back to swatches + code-behind. -->
+                        <Rectangle x:Name="IconForegroundDefaultSwatch"
+                                   Width="0" Height="0" Opacity="0" IsHitTestVisible="False"
+                                   Fill="{ThemeResource EtherMastheadIconForegroundBrush}"/>
+                        <Rectangle x:Name="IconForegroundHoverSwatch"
+                                   Width="0" Height="0" Opacity="0" IsHitTestVisible="False"
+                                   Fill="{ThemeResource EtherMastheadIconForegroundHoverBrush}"/>
+                        <Rectangle x:Name="IconForegroundPressedSwatch"
+                                   Width="0" Height="0" Opacity="0" IsHitTestVisible="False"
+                                   Fill="{ThemeResource EtherMastheadIconForegroundPressedBrush}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

@@ -186,26 +186,61 @@ public sealed partial class EtherSlider
         if (trackWidth <= 1)
             return;
 
-        var count = 0;
+        // Restore the source visibility on every pass so a wider layout can bring
+        // previously thinned labels back before recomputing the density.
+        var candidates = new List<int>();
         for (var i = 0; i < MaxLabelCount; i++)
         {
-            if (_labels[i].Visibility == Visibility.Visible)
-                count++;
+            var label = _labels[i];
+            if (string.IsNullOrEmpty(label.Text))
+            {
+                label.Visibility = Visibility.Collapsed;
+                label.RenderTransform = null;
+                continue;
+            }
+
+            label.Visibility = Visibility.Visible;
+            label.MaxWidth = double.PositiveInfinity;
+            label.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
+            candidates.Add(i);
         }
 
-        if (count == 0)
+        if (candidates.Count == 0)
             return;
 
         _positioningLabels = true;
         try
         {
+            var visible = candidates;
+            while (visible.Count > 2 && HasTickLabelOverlap(visible, trackWidth))
+            {
+                var thinned = visible
+                    .Where((_, position) => position == 0 || position == visible.Count - 1 || position % 2 == 0)
+                    .ToList();
+                if (thinned.Count == visible.Count)
+                    break;
+
+                visible = thinned;
+            }
+
+            for (var i = 0; i < candidates.Count; i++)
+            {
+                if (!visible.Contains(candidates[i]))
+                {
+                    _labels[candidates[i]].Visibility = Visibility.Collapsed;
+                    _labels[candidates[i]].RenderTransform = null;
+                }
+            }
+
+            var count = visible.Count;
+            var slot = count == 1 ? trackWidth : trackWidth / (count - 1);
+            var maxLabelWidth = count == 1 ? trackWidth : Math.Max(1d, slot / 2d);
             for (var i = 0; i < count; i++)
             {
-                var label = _labels[i];
-                var labelWidth = label.ActualWidth;
-                if (labelWidth <= 0)
-                    continue;
-
+                var label = _labels[visible[i]];
+                label.MaxWidth = maxLabelWidth;
+                var labelWidth = label.DesiredSize.Width > 0 ? label.DesiredSize.Width : label.ActualWidth;
+                labelWidth = Math.Min(labelWidth, maxLabelWidth);
                 var t = count == 1 ? 0d : i / (double)(count - 1);
                 var anchor = t * trackWidth;
                 var left = i == 0
@@ -221,6 +256,30 @@ public sealed partial class EtherSlider
         {
             _positioningLabels = false;
         }
+    }
+
+    private bool HasTickLabelOverlap(List<int> labels, double trackWidth)
+    {
+        var previousRight = double.NegativeInfinity;
+        for (var i = 0; i < labels.Count; i++)
+        {
+            var label = _labels[labels[i]];
+            var width = label.DesiredSize.Width > 0 ? label.DesiredSize.Width : label.ActualWidth;
+            var t = labels.Count == 1 ? 0d : i / (double)(labels.Count - 1);
+            var anchor = t * trackWidth;
+            var left = i == 0
+                ? 0d
+                : i == labels.Count - 1
+                    ? trackWidth - width
+                    : anchor - width / 2.0;
+            left = Math.Clamp(left, 0d, Math.Max(0d, trackWidth - width));
+            if (left < previousRight - 0.5)
+                return true;
+
+            previousRight = left + width;
+        }
+
+        return false;
     }
 }
 

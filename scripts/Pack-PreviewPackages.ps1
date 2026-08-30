@@ -7,7 +7,7 @@ param(
     [string]$ApiKey
 )
 
-# Packs the coordinated preview pair into artifacts/packages (or -OutputDirectory).
+# Packs the coordinated Foundation, Controls, and Interactions preview packages.
 # Push is opt-in: pass -Source (and -ApiKey when the feed requires it).
 # Hosted CI must not call this with a public source.
 
@@ -34,11 +34,13 @@ function Invoke-DotNet {
 $platformProperty = '-p:Platform=x64'
 $foundationProject = Join-Path $repoRoot 'src\Ether.DesignSystem.Foundation\Ether.DesignSystem.Foundation.csproj'
 $controlsProject = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Ether.DesignSystem.Controls.csproj'
+$interactionsProject = Join-Path $repoRoot 'src\Ether.DesignSystem.Interactions\Ether.DesignSystem.Interactions.csproj'
 
 Push-Location $repoRoot
 try {
     Invoke-DotNet @('pack', $foundationProject, '-c', $Configuration, $platformProperty, '-o', $OutputDirectory)
     Invoke-DotNet @('pack', $controlsProject, '-c', $Configuration, $platformProperty, '-o', $OutputDirectory)
+    Invoke-DotNet @('pack', $interactionsProject, '-c', $Configuration, $platformProperty, '-o', $OutputDirectory)
 }
 finally {
     Pop-Location
@@ -49,10 +51,12 @@ $packages = @(
         Where-Object { $_.Name -notlike '*.symbols.nupkg' }
     Get-ChildItem -LiteralPath $OutputDirectory -Filter 'Ether.DesignSystem.Controls.*.nupkg' |
         Where-Object { $_.Name -notlike '*.symbols.nupkg' }
+    Get-ChildItem -LiteralPath $OutputDirectory -Filter 'Ether.DesignSystem.Interactions.*.nupkg' |
+        Where-Object { $_.Name -notlike '*.symbols.nupkg' }
 )
 
-if ($packages.Count -lt 2) {
-    throw "Expected Foundation and Controls nupkg files under $OutputDirectory."
+if ($packages.Count -lt 3) {
+    throw "Expected Foundation, Controls, and Interactions nupkg files under $OutputDirectory."
 }
 
 foreach ($package in $packages) {

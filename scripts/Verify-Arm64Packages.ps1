@@ -1,8 +1,9 @@
 [CmdletBinding()]
 param()
 
-# Packs Foundation + Controls for arm64 and compiles the unpackaged package-consumer
-# fixture for arm64. Does not launch the arm64 exe (this machine is x64).
+# Packs Foundation, Controls, and Interactions for arm64 and compiles the
+# unpackaged package-consumer fixture for arm64. Does not launch the arm64 exe
+# (this machine is x64).
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -19,6 +20,7 @@ $fixtureNuGetConfig = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixt
 $unpackagedProject = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Unpackaged\Ether.DesignSystem.ConsumerFixtures.Unpackaged.csproj'
 $foundationProject = Join-Path $repoRoot 'src\Ether.DesignSystem.Foundation\Ether.DesignSystem.Foundation.csproj'
 $controlsProject = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Ether.DesignSystem.Controls.csproj'
+$interactionsProject = Join-Path $repoRoot 'src\Ether.DesignSystem.Interactions\Ether.DesignSystem.Interactions.csproj'
 
 if (-not $feed.StartsWith($artifactsRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
     throw "Refusing to clear an output path outside artifacts: $feed"
@@ -68,10 +70,12 @@ try {
 
     Invoke-DotNet @('pack', $foundationProject, '-c', $configuration, $platformProperty, '-o', $feed)
     Invoke-DotNet @('pack', $controlsProject, '-c', $configuration, $platformProperty, '-o', $feed)
+    Invoke-DotNet @('pack', $interactionsProject, '-c', $configuration, $platformProperty, '-o', $feed)
 
     $requiredPackages = @(
         (Join-Path $feed "Ether.DesignSystem.Foundation.$packageVersion.nupkg"),
-        (Join-Path $feed "Ether.DesignSystem.Controls.$packageVersion.nupkg")
+        (Join-Path $feed "Ether.DesignSystem.Controls.$packageVersion.nupkg"),
+        (Join-Path $feed "Ether.DesignSystem.Interactions.$packageVersion.nupkg")
     )
     foreach ($package in $requiredPackages) {
         if (-not (Test-Path -LiteralPath $package -PathType Leaf)) {

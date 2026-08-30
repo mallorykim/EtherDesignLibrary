@@ -260,19 +260,8 @@ public sealed class EtherDropdown : ComboBox
         if (!IsDropDownOpen)
             return;
 
-        ApplyMenuWidth();
         ApplyMaxVisibleHeight();
         PositionMenu();
-    }
-
-    /// <summary>Keeps the menu the same width as the trigger.</summary>
-    private void ApplyMenuWidth()
-    {
-        if (_popupBorder is null || ActualWidth <= 0)
-            return;
-
-        if (Math.Abs(_popupBorder.Width - ActualWidth) > 0.5)
-            _popupBorder.Width = ActualWidth;
     }
 
     private void ApplyMaxVisibleHeight()

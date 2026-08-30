@@ -58,6 +58,17 @@ public class EtherButton : Button
     private const string RightIconVisibleState = "RightIconVisible";
     private const string RightIconCollapsedState = "RightIconCollapsed";
 
+    // Internal template state: explicit consumer templates/selectors always take precedence
+    // over the built-in single-line string rendering path.
+    internal static readonly DependencyProperty UsesTextContentPathProperty =
+        DependencyProperty.Register(
+            nameof(UsesTextContentPath),
+            typeof(bool),
+            typeof(EtherButton),
+            new PropertyMetadata(false));
+
+    internal bool UsesTextContentPath => (bool)GetValue(UsesTextContentPathProperty);
+
     /// <summary>
     /// Initializes a new instance of the <see cref="EtherButton"/> class.
     /// </summary>
@@ -65,6 +76,10 @@ public class EtherButton : Button
     {
         DefaultStyleKey = typeof(EtherButton);
         ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
+        RegisterPropertyChangedCallback(ContentProperty, OnContentPresentationPropertyChanged);
+        RegisterPropertyChangedCallback(ContentTemplateProperty, OnContentPresentationPropertyChanged);
+        RegisterPropertyChangedCallback(ContentTemplateSelectorProperty, OnContentPresentationPropertyChanged);
+        UpdateUsesTextContentPath();
     }
 
     /// <summary>Identifies the <see cref="LeftIcon"/> dependency property.</summary>
@@ -131,6 +146,7 @@ public class EtherButton : Button
     protected override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
+        UpdateUsesTextContentPath();
         UpdateIconStates();
     }
 
@@ -186,6 +202,14 @@ public class EtherButton : Button
 
     private static void OnIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         => ((EtherButton)d).UpdateIconStates();
+
+    private void OnContentPresentationPropertyChanged(DependencyObject sender, DependencyProperty property)
+        => UpdateUsesTextContentPath();
+
+    private void UpdateUsesTextContentPath()
+        => SetValue(
+            UsesTextContentPathProperty,
+            Content is string && ContentTemplate is null && ContentTemplateSelector is null);
 
     private void UpdateIconStates()
     {

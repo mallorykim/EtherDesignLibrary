@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Ether.DesignSystem.Controls" VersionOverride="0.1.0-preview.1" />
+    <PackageReference Include="Ether.DesignSystem.Interactions" VersionOverride="0.1.0-preview.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
     <Manifest Include="$(ApplicationManifest)" />

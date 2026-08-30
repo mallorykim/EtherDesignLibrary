@@ -57,6 +57,9 @@ Assert-Contains $control 'PreviewStatus' 'EtherSteeringBar Gallery-oriented Prev
 Assert-Contains $control 'AutomationControlType\.Slider' 'EtherSteeringBar automation control type'
 Assert-Contains $control 'PatternInterface\.RangeValue' 'EtherSteeringBar RangeValue pattern'
 Assert-Contains $control 'RangeValuePatternIdentifiers\.ValueProperty' 'EtherSteeringBar RangeValue value-changed event'
+Assert-Contains $control 'Bindings and UI Automation write through the dependency-property system' 'EtherSteeringBar binding-path normalization rationale'
+Assert-Contains $control 'var candidate = e\.Property == ValueProperty' 'EtherSteeringBar Value dependency-property normalization'
+Assert-Contains $control '_normalizingValue' 'EtherSteeringBar Value normalization reentrancy guard'
 
 [xml]$xaml = Get-Content -LiteralPath $xamlPath -Raw
 $styles = @($xaml.SelectNodes("//*[local-name()='Style']"))

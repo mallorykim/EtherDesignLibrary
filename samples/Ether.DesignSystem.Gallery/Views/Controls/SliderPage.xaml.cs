@@ -69,9 +69,14 @@ public sealed partial class SliderPage : Page
         var continuous = FormatNumber(ContinuousLevel);
         var named = FormatNumber(NamedLevel);
         var caption = CaptionFor(InteractiveNamedSlider, NamedLevel);
+        var valueSummary = GalleryStrings.Format(
+            "GalleryOutput.ValuePercent",
+            "Value: {0}%",
+            FormatNumber(NamedLevel));
+        var payload = $"{{\"continuous\": {continuous}, \"named\": {named}}}";
         LiveExample.OutputText = caption is null
-            ? $"{{\"continuous\": {continuous}, \"named\": {named}}}"
-            : $"{{\"continuous\": {continuous}, \"named\": {named}}}  (caption “{caption}” is not sent)";
+            ? $"{valueSummary} — {payload}"
+            : $"{valueSummary} — {payload}  (caption “{caption}” is not sent)";
     }
 
     private static string FormatNumber(double value)

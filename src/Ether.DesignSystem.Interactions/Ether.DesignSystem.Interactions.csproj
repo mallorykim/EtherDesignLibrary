@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Ether.DesignSystem.Interactions</AssemblyName>
+    <RootNamespace>Ether.DesignSystem.Interactions</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+    <PackageId>Ether.DesignSystem.Interactions</PackageId>
+    <Version>$(EtherDesignSystemPreviewVersion)</Version>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Authors>Ether Design System</Authors>
+    <Description>Application-layer interaction adapters for Ether WinUI 3 controls.</Description>
+    <PackageTags>winui;winui3;design-system;interaction;events;preview</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ether.DesignSystem.Controls\Ether.DesignSystem.Controls.csproj" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+</Project>

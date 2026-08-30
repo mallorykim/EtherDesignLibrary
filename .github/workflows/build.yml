@@ -83,9 +83,15 @@ jobs:
       - name: Verify EtherScrollBar L3 contract
         shell: pwsh
         run: ./scripts/Verify-EtherScrollBarContract.ps1
+      - name: Verify backend-consumable interaction contracts
+        shell: pwsh
+        run: ./scripts/Verify-InteractionContracts.ps1
       - name: Verify WinUI 3 control conventions
         shell: pwsh
         run: ./scripts/Verify-WinUiConventions.ps1
+      - name: Verify High Contrast foreground/background pairing
+        shell: pwsh
+        run: ./scripts/Verify-HighContrastPairing.ps1
       - name: Verify Gallery ControlExample contract
         shell: pwsh
         run: ./scripts/Verify-GalleryControlExample.ps1

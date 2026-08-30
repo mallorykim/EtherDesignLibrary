@@ -5,7 +5,12 @@
     xmlns:controls="using:EtherSandbox.Controls"
     Title="Ether package consumer smoke">
 
-    <Grid x:Name="RootGrid" Background="{ThemeResource BackgroundCanvas}">
+    <!-- The fixture is a canonical LTR specimen. Runtime verification explicitly
+         switches this root to RTL and restores it, so the final visible window
+         must not inherit an ambient OS RTL setting. -->
+    <Grid x:Name="RootGrid"
+          Background="{ThemeResource BackgroundCanvas}"
+          FlowDirection="LeftToRight">
         <!-- Kept in the visual tree so SvgImageSource performs an actual ms-appx URI load. -->
         <Image x:Name="SvgProof"
                Width="1"
@@ -161,7 +166,7 @@
                             <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing16}">
                                 <controls:EtherSegmentedControl x:Name="DefaultSegmentedControlProof"
                                                                 AutomationProperties.Name="Default package segmented control">
-                                    <StackPanel Orientation="Horizontal">
+                                    <controls:EtherSegmentPanel>
                                         <RadioButton Style="{StaticResource EtherSegment}"
                                                      GroupName="default-package-segment"
                                                      Content="A"
@@ -169,11 +174,11 @@
                                         <RadioButton Style="{StaticResource EtherSegment}"
                                                      GroupName="default-package-segment"
                                                      Content="B"/>
-                                    </StackPanel>
+                                    </controls:EtherSegmentPanel>
                                 </controls:EtherSegmentedControl>
                                 <controls:EtherSegmentedControl x:Name="SegmentedControlProof"
                                                                 AutomationProperties.Name="Package segmented control">
-                                    <StackPanel Orientation="Horizontal">
+                                    <controls:EtherSegmentPanel>
                                         <RadioButton Style="{StaticResource EtherSegment}"
                                                      GroupName="package-segment"
                                                      Content="A"
@@ -181,7 +186,7 @@
                                         <RadioButton Style="{StaticResource EtherSegment}"
                                                      GroupName="package-segment"
                                                      Content="B"/>
-                                    </StackPanel>
+                                    </controls:EtherSegmentPanel>
                                 </controls:EtherSegmentedControl>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing12}">

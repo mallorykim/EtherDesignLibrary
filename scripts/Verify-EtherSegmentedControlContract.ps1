@@ -7,10 +7,11 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $controlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSegmentedControl.cs'
 $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs\EtherSegmentedControl.xaml'
+$galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Controls\SegmentedControlPage.xaml'
 $fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
-$expectedComponentKeys = 'EtherSegmentedControlCasterBrush,EtherSegmentedControlFocusStrokeBrush,EtherSegmentedControlSegmentCheckedBrush,EtherSegmentedControlSegmentForegroundBrush,EtherSegmentedControlSegmentForegroundCheckedBrush,EtherSegmentedControlSegmentHoverBrush,EtherSegmentedControlSegmentPressedBrush,EtherSegmentedControlShadowBrush,EtherSegmentedControlTrackBackgroundBrush'
+$expectedComponentKeys = 'EtherSegmentedControlCasterBrush,EtherSegmentedControlFocusStrokeBrush,EtherSegmentedControlSegmentCheckedBrush,EtherSegmentedControlSegmentForegroundBrush,EtherSegmentedControlSegmentForegroundCheckedBrush,EtherSegmentedControlSegmentForegroundHoverBrush,EtherSegmentedControlSegmentForegroundPressedBrush,EtherSegmentedControlSegmentHoverBrush,EtherSegmentedControlSegmentPressedBrush,EtherSegmentedControlShadowBrush,EtherSegmentedControlTrackBackgroundBrush'
 $templateParts = @('ShadowHost', 'TrackSurface', 'CasterBrushSource', 'ShadowBrushSource')
 $segmentCommonStates = @('Normal', 'PointerOver', 'Pressed', 'Disabled', 'Checked', 'CheckedPointerOver', 'CheckedPressed', 'Indeterminate')
 $segmentFocusStates = @('Focused', 'Unfocused', 'PointerFocused')
@@ -53,9 +54,16 @@ Assert-Contains $control 'GetTemplateChild\(CasterBrushSourcePartName\)' 'EtherS
 Assert-Contains $control 'GetTemplateChild\(ShadowBrushSourcePartName\)' 'EtherSegmentedControl shadow brush-source lookup'
 Assert-Contains $control 'CreateExpressionAnimation' 'EtherSegmentedControl binds composition shadow size to the track visual'
 Assert-Contains $control 'CreateDropShadow' 'EtherSegmentedControl composition drop-shadow layers'
+Assert-Contains $control 'SelectedValueProperty' 'EtherSegmentedControl selection dependency property'
+Assert-Contains $control 'SelectionChanged' 'EtherSegmentedControl selection event'
+Assert-Contains $control 'WireSegments' 'EtherSegmentedControl segment selection wiring'
 if ($control -match 'TemplateVisualState') {
     throw 'EtherSegmentedControl host template has no VisualState groups; do not declare TemplateVisualState metadata on the host.'
 }
+
+$gallery = Get-Content -LiteralPath $galleryPath -Raw
+Assert-Contains $gallery 'SelectedValue="list"' 'EtherSegmentedControl gallery binding example'
+Assert-Contains $gallery 'SelectionChanged="InteractiveSegmentedControl_SelectionChanged"' 'EtherSegmentedControl gallery selection event example'
 
 [xml]$xaml = Get-Content -LiteralPath $xamlPath -Raw
 $xamlRaw = Get-Content -LiteralPath $xamlPath -Raw

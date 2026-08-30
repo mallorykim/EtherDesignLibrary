@@ -74,14 +74,15 @@ public sealed class EtherSegmentPanel : Panel
         var spacing = Spacing;
         var gap = spacing * (count - 1);
         var slotWidth = Math.Max(0, (finalSize.Width - gap) / count);
-        double x = 0;
+        var rightToLeft = FlowDirection == FlowDirection.RightToLeft;
+        double x = rightToLeft ? finalSize.Width - slotWidth : 0;
         foreach (var child in Children)
         {
             if (child.Visibility == Visibility.Collapsed)
                 continue;
 
             child.Arrange(new Rect(x, 0, slotWidth, finalSize.Height));
-            x += slotWidth + spacing;
+            x += rightToLeft ? -(slotWidth + spacing) : slotWidth + spacing;
         }
 
         return finalSize;

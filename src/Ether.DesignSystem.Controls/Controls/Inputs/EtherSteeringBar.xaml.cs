@@ -114,6 +114,8 @@ public sealed class EtherSteeringBar : Control
 
     private bool _isPointerOver;
     private bool _isPressed;
+    private bool _normalizingValue;
+    private double _valueBeforeNormalization;
 
     private Grid? _interactionSurface;
     private Border? _trackBackground;
@@ -344,20 +346,37 @@ public sealed class EtherSteeringBar : Control
     private static void OnRangePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (EtherSteeringBar)d;
-        if (e.Property != ValueProperty)
+        // Bindings and UI Automation write through the dependency-property system, bypassing
+        // the Value CLR setter. Normalize that path as well so the value rendered by the track,
+        // emitted by ValueChanged, and consumed by an application adapter are always identical.
+        var candidate = e.Property == ValueProperty && e.NewValue is double proposedValue
+            ? proposedValue
+            : control.Value;
+        var normalizedValue = control.NormalizeValue(candidate);
+        if (!control._normalizingValue && !AreClose(candidate, normalizedValue))
         {
-            var normalizedValue = control.NormalizeValue(control.Value);
-            if (!AreClose(control.Value, normalizedValue))
+            control._normalizingValue = true;
+            control._valueBeforeNormalization = e.Property == ValueProperty && e.OldValue is double previousValue
+                ? previousValue
+                : control.Value;
+            try
             {
                 control.SetValue(ValueProperty, normalizedValue);
-                return;
             }
+            finally
+            {
+                control._normalizingValue = false;
+            }
+
+            return;
         }
 
         if (e.Property == ValueProperty && e.OldValue is double oldValue && e.NewValue is double newValue)
         {
             control.UpdateVisuals();
-            control.OnValueChanged(oldValue, newValue);
+            control.OnValueChanged(
+                control._normalizingValue ? control._valueBeforeNormalization : oldValue,
+                newValue);
         }
         else
         {
@@ -416,6 +435,9 @@ public sealed class EtherSteeringBar : Control
 
     private double NormalizeValue(double value)
     {
+        if (double.IsNaN(value))
+            return RangeMinimum;
+
         var clampedValue = Math.Clamp(value, RangeMinimum, RangeMaximum);
         return SnapToStops ? SnapToNearestStop(clampedValue) : clampedValue;
     }

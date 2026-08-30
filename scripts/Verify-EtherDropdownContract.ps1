@@ -10,7 +10,7 @@ $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs
 $fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
-$expectedComponentKeys = 'EtherDropdownActiveStrokeBrush,EtherDropdownFillDefaultBrush,EtherDropdownFillHoverBrush,EtherDropdownFillPressedBrush,EtherDropdownFocusBrush,EtherDropdownForegroundBrush,EtherDropdownItemSelectedBrush,EtherDropdownItemSelectedHoverBrush,EtherDropdownItemSelectedPressedBrush,EtherDropdownMenuBackgroundBrush'
+$expectedComponentKeys = 'EtherDropdownActiveStrokeBrush,EtherDropdownFillDefaultBrush,EtherDropdownFillHoverBrush,EtherDropdownFillPressedBrush,EtherDropdownFocusBrush,EtherDropdownForegroundBrush,EtherDropdownForegroundHoverBrush,EtherDropdownForegroundPressedBrush,EtherDropdownItemForegroundActiveBrush,EtherDropdownItemSelectedBrush,EtherDropdownItemSelectedHoverBrush,EtherDropdownItemSelectedPressedBrush,EtherDropdownMenuBackgroundBrush'
 $templateParts = @('LayoutRoot', 'StateFill', 'OpenFill', 'TriggerText', 'Arrow', 'ActiveStroke', 'FocusRing', 'Popup', 'PopupBorder', 'ScrollViewer', 'ContentPresenter')
 
 function Assert-Contains {

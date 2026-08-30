@@ -115,8 +115,8 @@
                  and placeholder sit in the same cell with Margin=BorderThickness
                  so padding is inside the stroke, not on top of it. -->
             <Border x:Name="BorderElement"
-                    Background="{ThemeResource EtherInputFillDefaultBrush}"
-                    BorderBrush="{ThemeResource EtherInputBorderBrush}"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     BackgroundSizing="InnerBorderEdge"
                     CornerRadius="{TemplateBinding CornerRadius}"
@@ -149,17 +149,24 @@
                            VerticalAlignment="Center"
                            Text="{TemplateBinding PlaceholderText}"
                            TextAlignment="{TemplateBinding TextAlignment}"
-                           Foreground="{ThemeResource EtherInputPlaceholderBrush}"
+                           Foreground="{TemplateBinding PlaceholderForeground}"
                            FontFamily="{TemplateBinding FontFamily}"
                            FontSize="{TemplateBinding FontSize}"
                            FontWeight="{TemplateBinding FontWeight}"
                            TextWrapping="{TemplateBinding TextWrapping}"
+                           Style="{StaticResource EtherSingleLineTextBlockStyle}"
                            IsHitTestVisible="False"/>
             </Grid>
         </Grid>
     </ControlTemplate>
 
+    <!-- Same-class precedent: EtherDropdown's Figma trigger floor is 130 px. -->
+    <x:Double x:Key="InputMinWidth">130</x:Double>
+
     <Style x:Key="DefaultEtherInputStyle" TargetType="controls:EtherInput">
+        <Setter Property="Background" Value="{ThemeResource EtherInputFillDefaultBrush}"/>
+        <Setter Property="BorderBrush" Value="{ThemeResource EtherInputBorderBrush}"/>
+        <Setter Property="PlaceholderForeground" Value="{ThemeResource EtherInputPlaceholderBrush}"/>
         <Setter Property="Foreground" Value="{ThemeResource EtherInputForegroundBrush}"/>
         <Setter Property="SelectionHighlightColor" Value="{ThemeResource EtherInputSelectionHighlightBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
@@ -169,9 +176,8 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{StaticResource RadiusMd}"/>
         <Setter Property="BackgroundSizing" Value="InnerBorderEdge"/>
-        <Setter Property="MinWidth" Value="{StaticResource Spacing0}"/>
+        <Setter Property="MinWidth" Value="{StaticResource InputMinWidth}"/>
         <Setter Property="MinHeight" Value="48"/>
-        <Setter Property="MaxHeight" Value="48"/>
         <Setter Property="TextWrapping" Value="NoWrap"/>
         <Setter Property="AcceptsReturn" Value="False"/>
         <Setter Property="UseSystemFocusVisuals" Value="False"/>

@@ -21,7 +21,7 @@ internal static partial class RuntimeVerification
         defaultInput.UpdateLayout();
         input.UpdateLayout();
 
-        if (defaultInput.FontSize != 14d || defaultInput.UseSystemFocusVisuals || defaultInput.Template is null)
+        if (defaultInput.MinWidth != 130d || defaultInput.FontSize != 14d || defaultInput.UseSystemFocusVisuals || defaultInput.Template is null)
         {
             throw new InvalidOperationException("The keyed EtherInput style did not apply its default FontSize, UseSystemFocusVisuals=False setter, and template.");
         }
@@ -90,6 +90,7 @@ internal static partial class RuntimeVerification
 
         return new InputVerification(
             true,
+            defaultInput.MinWidth,
             defaultInput.FontSize,
             defaultInput.UseSystemFocusVisuals,
             templateParts,

@@ -63,6 +63,14 @@
             <SolidColorBrush x:Key="EtherDropdownFillPressedBrush" Color="{StaticResource Gray150}"/>
             <SolidColorBrush x:Key="EtherDropdownFocusBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherDropdownForegroundBrush" Color="{StaticResource AlphaBlack70}"/>
+            <!-- Same color as the default label/item text in Light/Dark: the Hover/Pressed/
+                 Selected fills here are translucent overlays, so the default text color stays
+                 legible on top of them. High Contrast repaints those fills as an opaque
+                 SystemColorHighlightColor, so these need to repaint as
+                 SystemColorHighlightTextColor there instead (see the HighContrast dictionary). -->
+            <SolidColorBrush x:Key="EtherDropdownForegroundHoverBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherDropdownForegroundPressedBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherDropdownItemForegroundActiveBrush" Color="{StaticResource AlphaBlack70}"/>
             <SolidColorBrush x:Key="EtherDropdownItemSelectedBrush" Color="{StaticResource AlphaWhite40}"/>
             <SolidColorBrush x:Key="EtherDropdownItemSelectedHoverBrush" Color="{StaticResource AlphaWhite40}"/>
             <SolidColorBrush x:Key="EtherDropdownItemSelectedPressedBrush" Color="{StaticResource AlphaWhite60}"/>
@@ -75,6 +83,9 @@
             <SolidColorBrush x:Key="EtherDropdownFillPressedBrush" Color="{StaticResource Gray850}"/>
             <SolidColorBrush x:Key="EtherDropdownFocusBrush" Color="{StaticResource Blue500}"/>
             <SolidColorBrush x:Key="EtherDropdownForegroundBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherDropdownForegroundHoverBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherDropdownForegroundPressedBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherDropdownItemForegroundActiveBrush" Color="{StaticResource AlphaWhite70}"/>
             <SolidColorBrush x:Key="EtherDropdownItemSelectedBrush" Color="{StaticResource Gray850}"/>
             <SolidColorBrush x:Key="EtherDropdownItemSelectedHoverBrush" Color="{StaticResource Gray850}"/>
             <SolidColorBrush x:Key="EtherDropdownItemSelectedPressedBrush" Color="{StaticResource Gray800}"/>
@@ -94,6 +105,13 @@
             <SolidColorBrush x:Key="EtherDropdownFillPressedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherDropdownFocusBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherDropdownForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <!-- Paired with FillHoverBrush/FillPressedBrush and the Item*Brush fills below,
+                 which repaint as an opaque SystemColorHighlightColor in High Contrast: text sitting
+                 on that fill must be SystemColorHighlightTextColor, not the WindowText color used
+                 against the ButtonFace/transparent default fill. -->
+            <SolidColorBrush x:Key="EtherDropdownForegroundHoverBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="EtherDropdownForegroundPressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="EtherDropdownItemForegroundActiveBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
             <SolidColorBrush x:Key="EtherDropdownItemSelectedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherDropdownItemSelectedHoverBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherDropdownItemSelectedPressedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
@@ -128,11 +146,15 @@
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
                             <Setter Target="StateFill.Background" Value="{ThemeResource EtherDropdownFillHoverBrush}"/>
+                            <Setter Target="TriggerText.Foreground" Value="{ThemeResource EtherDropdownForegroundHoverBrush}"/>
+                            <Setter Target="Arrow.Fill" Value="{ThemeResource EtherDropdownForegroundHoverBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
                             <Setter Target="StateFill.Background" Value="{ThemeResource EtherDropdownFillPressedBrush}"/>
+                            <Setter Target="TriggerText.Foreground" Value="{ThemeResource EtherDropdownForegroundPressedBrush}"/>
+                            <Setter Target="Arrow.Fill" Value="{ThemeResource EtherDropdownForegroundPressedBrush}"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
@@ -187,16 +209,16 @@
 
             <!-- Fill while the menu is closed; CommonStates repaints this one. -->
             <Border x:Name="StateFill"
-                    Background="{ThemeResource EtherDropdownFillDefaultBrush}"
-                    CornerRadius="{StaticResource RadiusSm}"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
                     IsHitTestVisible="False"/>
 
             <!-- Fill while the menu is open. Always the default colour, and out of reach of
                  CommonStates, so pointer state cannot tint the trigger. Exactly one of the
                  two fills is ever visible, so the translucent tokens never stack. -->
             <Border x:Name="OpenFill"
-                    Background="{ThemeResource EtherDropdownFillDefaultBrush}"
-                    CornerRadius="{StaticResource RadiusSm}"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
                     IsHitTestVisible="False"
                     Visibility="Collapsed"/>
 
@@ -225,12 +247,12 @@
                                AutomationProperties.AccessibilityView="Raw"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
-                               Foreground="{ThemeResource EtherDropdownForegroundBrush}"
+                               Foreground="{TemplateBinding Foreground}"
                                FontFamily="{TemplateBinding FontFamily}"
                                FontSize="{TemplateBinding FontSize}"
-                               FontWeight="{StaticResource WeightSemibold}"
-                               CharacterSpacing="20"
-                               TextWrapping="NoWrap"/>
+                               FontWeight="{TemplateBinding FontWeight}"
+                                CharacterSpacing="20"
+                                Style="{StaticResource EtherSingleLineTextBlockStyle}"/>
                     <Path x:Name="Arrow"
                           Grid.Column="1"
                           Width="8"
@@ -239,7 +261,7 @@
                           Stretch="Fill"
                           HorizontalAlignment="Right"
                           VerticalAlignment="Center"
-                          Fill="{ThemeResource EtherDropdownForegroundBrush}"
+                          Fill="{TemplateBinding Foreground}"
                           RenderTransformOrigin="0.5,0.5"
                           AutomationProperties.AccessibilityView="Raw">
                         <Path.RenderTransform>
@@ -279,6 +301,7 @@
                 <Border x:Name="PopupBorder"
                         Background="{ThemeResource EtherDropdownMenuBackgroundBrush}"
                         CornerRadius="{StaticResource RadiusSm}"
+                        Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
                         MinWidth="{StaticResource DropdownMinWidth}"
                         Padding="{StaticResource Padding4}">
                     <ScrollViewer x:Name="ScrollViewer"
@@ -295,7 +318,7 @@
     </ControlTemplate>
 
     <Style x:Key="EtherDropdownItem" TargetType="ComboBoxItem">
-        <Setter Property="Height" Value="26"/>
+        <Setter Property="MinHeight" Value="26"/>
         <Setter Property="Padding" Value="6,0"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -314,11 +337,15 @@
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="ItemBackground.Background" Value="{ThemeResource EtherDropdownItemSelectedHoverBrush}"/>
+                                        <Setter Target="ItemContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
+                                        <Setter Target="ItemTextContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
                                         <Setter Target="ItemBackground.Background" Value="{ThemeResource EtherDropdownItemSelectedPressedBrush}"/>
+                                        <Setter Target="ItemContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
+                                        <Setter Target="ItemTextContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -329,42 +356,66 @@
                                 <VisualState x:Name="Selected">
                                     <VisualState.Setters>
                                         <Setter Target="ItemBackground.Background" Value="{ThemeResource EtherDropdownItemSelectedBrush}"/>
+                                        <Setter Target="ItemContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
+                                        <Setter Target="ItemTextContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="SelectedUnfocused">
                                     <VisualState.Setters>
                                         <Setter Target="ItemBackground.Background" Value="{ThemeResource EtherDropdownItemSelectedBrush}"/>
+                                        <Setter Target="ItemContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
+                                        <Setter Target="ItemTextContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="SelectedDisabled">
                                     <VisualState.Setters>
                                         <Setter Target="ItemBackground.Background" Value="{ThemeResource EtherDropdownItemSelectedBrush}"/>
                                         <Setter Target="ItemBackground.Opacity" Value="0.4"/>
+                                        <Setter Target="ItemContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
+                                        <Setter Target="ItemTextContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="ItemBackground.Background" Value="{ThemeResource EtherDropdownItemSelectedHoverBrush}"/>
+                                        <Setter Target="ItemContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
+                                        <Setter Target="ItemTextContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="SelectedPressed">
                                     <VisualState.Setters>
                                         <Setter Target="ItemBackground.Background" Value="{ThemeResource EtherDropdownItemSelectedPressedBrush}"/>
+                                        <Setter Target="ItemContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
+                                        <Setter Target="ItemTextContent.Foreground" Value="{ThemeResource EtherDropdownItemForegroundActiveBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <ContentPresenter Content="{TemplateBinding Content}"
+                        <ContentPresenter x:Name="ItemContent"
+                                          Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                          Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
                                           ContentTransitions="{TemplateBinding ContentTransitions}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                           Foreground="{ThemeResource EtherDropdownForegroundBrush}"
                                           FontFamily="{TemplateBinding FontFamily}"
                                           FontSize="{TemplateBinding FontSize}"
-                                          FontWeight="{StaticResource WeightSemibold}"
-                                          CharacterSpacing="20"/>
+                                           FontWeight="{StaticResource WeightSemibold}"
+                                           CharacterSpacing="20"/>
+                        <TextBlock x:Name="ItemTextContent"
+                                   Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=String}"
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                   Foreground="{ThemeResource EtherDropdownForegroundBrush}"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   FontWeight="{StaticResource WeightSemibold}"
+                                   CharacterSpacing="20"
+                                   TextWrapping="NoWrap"
+                                   TextTrimming="CharacterEllipsis"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -372,6 +423,10 @@
     </Style>
 
     <Style x:Key="DefaultEtherDropdownStyle" TargetType="controls:EtherDropdown">
+        <Setter Property="Background"                 Value="{ThemeResource EtherDropdownFillDefaultBrush}"/>
+        <Setter Property="Foreground"                 Value="{ThemeResource EtherDropdownForegroundBrush}"/>
+        <Setter Property="CornerRadius"               Value="{StaticResource RadiusSm}"/>
+        <Setter Property="FontWeight"                 Value="{StaticResource WeightSemibold}"/>
         <Setter Property="Padding"                    Value="{StaticResource Padding8}"/>
         <Setter Property="HorizontalAlignment"       Value="Left"/>
         <Setter Property="MinWidth"                   Value="{StaticResource DropdownMinWidth}"/>

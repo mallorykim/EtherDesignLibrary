@@ -11,8 +11,11 @@
       Thickness   6 px (kept over Figma Default 8 px)
       Min length  60 px (content-proportional floor; Figma specimens are 150 px)
       CornerRadius 3 (half the thickness — fully rounded ends)
-      Colour      Light/Dark Default Gray400, Hover Gray500 (spec sheets
-                  62110:22970 / 62124:312). Pressed reuses Hover. Track none.
+      Colour      Light Default Gray400, Hover Gray500; Dark Default Gray600,
+                  Hover Gray700 (spec sheets 62110:22970 / 62124:312), matching the
+                  scrollbar/background/default and scrollbar/background/hover Figma
+                  tokens already recorded in EtherColors.xaml. Pressed reuses Hover.
+                  Track none.
       Arrows      none (Figma Icon layer is hidden)
 
     Colour-bearing values live in EtherScrollBar* Light/Dark/HighContrast dictionaries.
@@ -39,8 +42,8 @@
             <SolidColorBrush x:Key="EtherScrollBarThumbHoverBrush" Color="{StaticResource Gray500}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="EtherScrollBarThumbBrush" Color="{StaticResource Gray400}"/>
-            <SolidColorBrush x:Key="EtherScrollBarThumbHoverBrush" Color="{StaticResource Gray500}"/>
+            <SolidColorBrush x:Key="EtherScrollBarThumbBrush" Color="{StaticResource Gray600}"/>
+            <SolidColorBrush x:Key="EtherScrollBarThumbHoverBrush" Color="{StaticResource Gray700}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherScrollBarThumbBrush" Color="{ThemeResource SystemColorWindowTextColor}" />

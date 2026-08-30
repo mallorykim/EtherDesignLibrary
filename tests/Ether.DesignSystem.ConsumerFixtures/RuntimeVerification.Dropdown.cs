@@ -21,7 +21,8 @@ internal static partial class RuntimeVerification
         defaultDropdown.UpdateLayout();
         dropdown.UpdateLayout();
 
-        if (defaultDropdown.MaxVisibleItems != 6 ||
+        if (defaultDropdown.MinWidth != 130d ||
+            defaultDropdown.MaxVisibleItems != 6 ||
             defaultDropdown.UseSystemFocusVisuals ||
             defaultDropdown.Template is null ||
             defaultDropdown.ItemContainerStyle is null)
@@ -104,6 +105,7 @@ internal static partial class RuntimeVerification
 
         return new DropdownVerification(
             true,
+            defaultDropdown.MinWidth,
             defaultDropdown.MaxVisibleItems,
             defaultDropdown.UseSystemFocusVisuals,
             templateParts,

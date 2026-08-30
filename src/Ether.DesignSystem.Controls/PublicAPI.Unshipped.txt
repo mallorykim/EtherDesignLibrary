@@ -72,8 +72,15 @@ EtherSandbox.Controls.EtherSegmentPanel.Spacing.get -> double
 EtherSandbox.Controls.EtherSegmentPanel.Spacing.set -> void
 EtherSandbox.Controls.EtherSegmentedControl
 EtherSandbox.Controls.EtherSegmentedControl.EtherSegmentedControl() -> void
+EtherSandbox.Controls.EtherSegmentedControl.SelectedValue.get -> object?
+EtherSandbox.Controls.EtherSegmentedControl.SelectedValue.set -> void
+EtherSandbox.Controls.EtherSegmentedControl.SelectionChanged -> System.EventHandler<EtherSandbox.Controls.SegmentedSelectionChangedEventArgs!>?
 EtherSandbox.Controls.EtherSegmentedTrack
 EtherSandbox.Controls.EtherSegmentedTrack.EtherSegmentedTrack() -> void
+EtherSandbox.Controls.SegmentedSelectionChangedEventArgs
+EtherSandbox.Controls.SegmentedSelectionChangedEventArgs.NewValue.get -> object?
+EtherSandbox.Controls.SegmentedSelectionChangedEventArgs.OldValue.get -> object?
+EtherSandbox.Controls.SegmentedSelectionChangedEventArgs.SegmentedSelectionChangedEventArgs(object? oldValue, object? newValue) -> void
 EtherSandbox.Controls.EtherSlider
 EtherSandbox.Controls.EtherSlider.EtherSlider() -> void
 EtherSandbox.Controls.EtherSlider.FormatValue(double value) -> string!
@@ -127,6 +134,10 @@ EtherSandbox.Controls.EtherSteeringBar.Value.set -> void
 EtherSandbox.Controls.EtherSteeringBar.ValueChanged -> System.EventHandler<EtherSandbox.Controls.SteeringBarValueChangedEventArgs!>?
 EtherSandbox.Controls.EtherSteeringBar.ValueContent.get -> object?
 EtherSandbox.Controls.EtherSteeringBar.ValueContent.set -> void
+EtherSandbox.Controls.EtherStringContentVisibilityConverter
+EtherSandbox.Controls.EtherStringContentVisibilityConverter.Convert(object! value, System.Type! targetType, object! parameter, string! language) -> object!
+EtherSandbox.Controls.EtherStringContentVisibilityConverter.ConvertBack(object! value, System.Type! targetType, object! parameter, string! language) -> object!
+EtherSandbox.Controls.EtherStringContentVisibilityConverter.EtherStringContentVisibilityConverter() -> void
 EtherSandbox.Controls.EtherSwitch
 EtherSandbox.Controls.EtherSwitch.EtherSwitch() -> void
 EtherSandbox.Controls.EtherSwitch.InitializeComponent() -> void
@@ -161,6 +172,7 @@ static readonly EtherSandbox.Controls.EtherMasthead.ShowMenuIconProperty -> Micr
 static readonly EtherSandbox.Controls.EtherMasthead.ShowSearchProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherMasthead.ShowSettingsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherSegmentPanel.SpacingProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly EtherSandbox.Controls.EtherSegmentedControl.SelectedValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherSlider.LabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherSlider.ShowLabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly EtherSandbox.Controls.EtherSlider.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!

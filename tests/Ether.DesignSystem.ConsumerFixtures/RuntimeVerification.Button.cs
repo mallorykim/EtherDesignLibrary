@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Ether.DesignSystem.ConsumerFixtures;
 
@@ -88,6 +89,67 @@ internal static partial class RuntimeVerification
 
         rightIconStates.Add("RightIconCollapsed");
 
+        // Regression guard: the default EtherButton style must not install a ContentTemplate.
+        // Shape content (icons and consumer-owned visuals) must remain raw ContentPresenter content.
+        var contentPresenter = GetTemplatePart<ContentPresenter>(button, "Cp", nameof(EtherButton));
+        var textContent = GetTemplatePart<TextBlock>(button, "TextContent", nameof(EtherButton));
+        var originalContent = button.Content;
+        var originalContentTemplate = button.ContentTemplate;
+        var shapeContent = new Rectangle { Width = 10, Height = 10 };
+        button.ContentTemplate = null;
+        button.Content = shapeContent;
+        button.UpdateLayout();
+        if (!ReferenceEquals(contentPresenter.Content, shapeContent) ||
+            contentPresenter.ContentTemplate is not null ||
+            contentPresenter.Visibility != Visibility.Visible ||
+            textContent.Visibility != Visibility.Collapsed)
+        {
+            throw new InvalidOperationException("EtherButton transformed non-string Shape content through a default ContentTemplate.");
+        }
+
+        button.Content = originalContent;
+        button.ContentTemplate = originalContentTemplate;
+        button.UpdateLayout();
+
+        button.ContentTemplate = null;
+        button.Content = "A deliberately long string used to verify the button text policy.";
+        button.UpdateLayout();
+        if (contentPresenter.Visibility != Visibility.Collapsed ||
+            textContent.Visibility != Visibility.Visible ||
+            textContent.TextTrimming != TextTrimming.CharacterEllipsis)
+        {
+            var diag = new System.Text.StringBuilder();
+            diag.Append("DIAG presenterTemplate=").Append(contentPresenter.ContentTemplate is null ? "null" : "set");
+            diag.Append(" presenterSelector=").Append(contentPresenter.ContentTemplateSelector is null ? "null" : contentPresenter.ContentTemplateSelector.GetType().Name);
+            diag.Append(" buttonSelector=").Append(button.ContentTemplateSelector is null ? "null" : button.ContentTemplateSelector.GetType().Name);
+            diag.Append(" presenterContent=").Append(contentPresenter.Content?.GetType().Name ?? "null");
+            diag.Append(" childCount=").Append(VisualTreeHelper.GetChildrenCount(contentPresenter));
+            diag.Append(" tree=[");
+            DescribeTree(contentPresenter, diag, 0);
+            diag.Append(']');
+            diag.Append(" explicitText visibility=").Append(textContent.Visibility)
+                .Append(" wrapping=").Append(textContent.TextWrapping)
+                .Append(" trimming=").Append(textContent.TextTrimming)
+                .Append(" text=").Append(textContent.Text is null ? "null" : "len" + textContent.Text.Length.ToString());
+            throw new InvalidOperationException("EtherButton string content did not receive CharacterEllipsis from the explicit single-line text path. " + diag);
+        }
+
+        // A consumer-supplied ContentTemplate must take precedence over the built-in string
+        // path, including when Content itself is a string.
+        var consumerContentTemplate = new DataTemplate();
+        button.ContentTemplate = consumerContentTemplate;
+        button.UpdateLayout();
+        if (contentPresenter.Visibility != Visibility.Visible ||
+            textContent.Visibility != Visibility.Collapsed ||
+            !ReferenceEquals(contentPresenter.ContentTemplate, consumerContentTemplate))
+        {
+            throw new InvalidOperationException("EtherButton ignored a consumer ContentTemplate for string content.");
+        }
+
+        button.Content = originalContent;
+        button.ContentTemplate = originalContentTemplate;
+        button.UpdateLayout();
+
         var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button)
             ?? throw new InvalidOperationException("EtherButton did not create an automation peer.");
         if (peer.GetName() != "Package button")
@@ -124,6 +186,36 @@ internal static partial class RuntimeVerification
         var iconStyle = FindResourceStyle(Application.Current.Resources, "EtherIconGeometries.xaml", resourceKey)
             ?? throw new InvalidOperationException($"Ether icon resource '{resourceKey}' was not found.");
         return new PathIcon { Style = iconStyle, Width = size, Height = size };
+    }
+
+    private static void DescribeTree(DependencyObject root, System.Text.StringBuilder sb, int depth)
+    {
+        if (depth > 4)
+            return;
+
+        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+        {
+            var child = VisualTreeHelper.GetChild(root, index);
+            sb.Append(' ').Append(new string('>', depth + 1)).Append(child.GetType().Name);
+            DescribeTree(child, sb, depth + 1);
+        }
+    }
+
+    private static T? FindVisualDescendant<T>(DependencyObject root)
+        where T : DependencyObject
+    {
+        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+        {
+            var child = VisualTreeHelper.GetChild(root, index);
+            if (child is T match)
+                return match;
+
+            var descendant = FindVisualDescendant<T>(child);
+            if (descendant is not null)
+                return descendant;
+        }
+
+        return null;
     }
 
     private static Style? FindResourceStyle(ResourceDictionary resources, string dictionaryName, string resourceKey)

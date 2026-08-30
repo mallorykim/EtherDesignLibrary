@@ -13,7 +13,7 @@ $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $controlsProjectPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Ether.DesignSystem.Controls.csproj'
 $galleryProjectPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Ether.DesignSystem.Gallery.csproj'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
-$expectedComponentKeys = 'EtherMastheadCaptionHoverBrush,EtherMastheadCaptionPressedBrush,EtherMastheadFocusBrush,EtherMastheadIconForegroundBrush'
+$expectedComponentKeys = 'EtherMastheadCaptionHoverBrush,EtherMastheadCaptionPressedBrush,EtherMastheadFocusBrush,EtherMastheadIconForegroundBrush,EtherMastheadIconForegroundHoverBrush,EtherMastheadIconForegroundPressedBrush'
 $templateParts = @('MenuIconSlot', 'SearchIconSlot', 'SettingsButton', 'ChevronSlot', 'MinimizeButton', 'MaximizeRestoreButton', 'CloseButton', 'MaximizeIcon', 'RestoreIcon')
 $visualStates = @('SettingsVisible', 'SettingsCollapsed', 'SearchVisible', 'SearchCollapsed', 'MenuVisible', 'MenuCollapsed', 'ChevronVisible', 'ChevronCollapsed', 'WindowRestored', 'WindowMaximized')
 

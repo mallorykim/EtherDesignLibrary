@@ -216,6 +216,9 @@
             <controls:HandContentControl HorizontalContentAlignment="Left"
                                          VerticalContentAlignment="Center">
             <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing8}" VerticalAlignment="Center">
+                <!-- Figma nodes 62102:8755/8800 specify a fixed 18x18 indicator;
+                     keep it fixed as an explicit design decision (option b), while
+                     the label itself follows the shared text-overflow policy. -->
                 <Grid Width="18" Height="18">
                     <!--
                         Each face is a solid fill circle with the stroke as a SEPARATE
@@ -251,6 +254,7 @@
                                 BorderThickness="1.5"
                                 CornerRadius="9"
                                 IsHitTestVisible="False"/>
+                        <!-- Figma's 8 px inner dot is part of the fixed indicator spec. -->
                         <Ellipse x:Name="Dot"
                                  Width="8" Height="8"
                                  Fill="{ThemeResource EtherRadioButtonInnerDotBrush}"
@@ -263,19 +267,34 @@
                                   Content="{TemplateBinding Content}"
                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                   ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                  Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=False}"
                                   ContentTransitions="{TemplateBinding ContentTransitions}"
-                                  Foreground="{ThemeResource EtherRadioButtonLabelBrush}"
-                                  FontFamily="{StaticResource InterFont}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   FontFamily="{TemplateBinding FontFamily}"
                                   FontSize="{StaticResource Size12}"
-                                  FontWeight="{StaticResource WeightSemibold}"
-                                  VerticalAlignment="Center"
-                                  AutomationProperties.AccessibilityView="Raw"/>
+                                   FontWeight="{TemplateBinding FontWeight}"
+                                   VerticalAlignment="Center"
+                                   AutomationProperties.AccessibilityView="Raw"/>
+                <TextBlock x:Name="TextContent"
+                           Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                           Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
+                           Foreground="{TemplateBinding Foreground}"
+                           FontFamily="{TemplateBinding FontFamily}"
+                           FontSize="{StaticResource Size12}"
+                           FontWeight="{TemplateBinding FontWeight}"
+                           VerticalAlignment="Center"
+                           TextWrapping="NoWrap"
+                           TextTrimming="CharacterEllipsis"
+                           AutomationProperties.AccessibilityView="Raw"/>
             </StackPanel>
             </controls:HandContentControl>
         </Grid>
     </ControlTemplate>
 
     <Style x:Key="DefaultEtherRadioButtonStyle" TargetType="controls:EtherRadioButton">
+        <Setter Property="Foreground" Value="{ThemeResource EtherRadioButtonLabelBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontWeight" Value="{StaticResource WeightSemibold}"/>
         <Setter Property="IsThreeState" Value="False"/>
         <Setter Property="UseSystemFocusVisuals" Value="False"/>
         <Setter Property="HighContrastAdjustment" Value="None"/>

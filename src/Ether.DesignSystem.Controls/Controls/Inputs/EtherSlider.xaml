@@ -61,7 +61,9 @@
          SystemColor-only theme keys while the canvas stays empty. -->
     <SolidColorBrush x:Key="EtherSliderTransparentBrush" Color="Transparent"/>
 
-    <Style x:Key="EtherSliderTickLabelStyle" TargetType="TextBlock">
+    <Style x:Key="EtherSliderTickLabelStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource EtherSingleLineTextBlockStyle}">
         <Setter Property="Foreground" Value="{ThemeResource EtherSliderLabelForegroundBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
         <Setter Property="FontSize" Value="{StaticResource Size11}"/>
@@ -125,12 +127,13 @@
                         <StackPanel>
                             <TextBlock x:Name="ValueText"
                                        HorizontalAlignment="Left"
-                                       Height="18"
+                                       MinHeight="18"
                                        Margin="0,0,0,4"
                                        Foreground="{ThemeResource EtherSliderValueForegroundBrush}"
                                        FontFamily="{StaticResource InstrumentSans}"
                                        FontSize="{StaticResource Size14}"
                                        FontWeight="{StaticResource WeightSemibold}"
+                                       Style="{StaticResource EtherSingleLineTextBlockStyle}"
                                        AutomationProperties.AccessibilityView="Raw"/>
                             <Canvas x:Name="BarCanvas"
                                     VerticalAlignment="Center"
@@ -138,7 +141,7 @@
                                     Background="{StaticResource EtherSliderTransparentBrush}">
                                 <Rectangle x:Name="Knob"
                                            Width="4"
-                                           Height="45"
+                                           MinHeight="45"
                                            RadiusX="2"
                                            RadiusY="2"
                                            Canvas.Top="0"

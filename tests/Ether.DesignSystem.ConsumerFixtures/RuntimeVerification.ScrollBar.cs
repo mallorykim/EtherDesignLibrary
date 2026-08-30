@@ -61,10 +61,15 @@ internal static partial class RuntimeVerification
 
         var lightTemplateBrushColors = await GetScrollBarTemplateBrushColorsAsync(themeRoot, scrollBar, verticalThumb, ElementTheme.Light);
         var darkTemplateBrushColors = await GetScrollBarTemplateBrushColorsAsync(themeRoot, scrollBar, verticalThumb, ElementTheme.Dark);
-        // Figma Light spec 62110:22970 and Dark spec 62124:312 use the same Gray400 Default fill.
-        if (!lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
+        // Figma Light spec 62110:22970 uses Gray400 Default; Dark spec 62124:312 uses Gray600,
+        // matching the scrollbar/background/default token already recorded in EtherColors.xaml.
+        // This must diverge like every other control's Light/Dark template-brush check below; a
+        // previous version of this assertion required them to match, which had been silently
+        // encoding EtherScrollBar's Dark dictionary duplicating the Light Gray400/Gray500 values
+        // instead of using Gray600/Gray700 as a passing "contract" rather than catching it.
+        if (lightTemplateBrushColors.SequenceEqual(darkTemplateBrushColors, StringComparer.Ordinal))
         {
-            throw new InvalidOperationException("EtherScrollBar Light and Dark Default thumb fills must both resolve to Gray400.");
+            throw new InvalidOperationException("EtherScrollBar Light and Dark template brushes did not re-resolve to distinct values.");
         }
 
         return new ScrollBarVerification(
@@ -85,8 +90,15 @@ internal static partial class RuntimeVerification
         Thumb verticalThumb,
         ElementTheme theme)
     {
+        // Unlike every other control's theme-color helper, this used to also pin
+        // scrollBar.RequestedTheme directly on the live element. That forces ActualTheme to
+        // update immediately for this probe, but an explicit RequestedTheme is sticky: it stops
+        // the element from inheriting themeRoot's theme afterward. Because this helper is called
+        // Light then Dark, the live ScrollBarProof instance was left permanently pinned to Dark,
+        // so the later screenshot capture (which only toggles themeRoot.RequestedTheme, like
+        // every other control) rendered it as Dark for both the "light" and "dark" control PNGs.
+        // Rely on inheritance plus the poll below, exactly like the other controls' helpers do.
         themeRoot.RequestedTheme = theme;
-        scrollBar.RequestedTheme = theme;
         await WaitForAppliedThemeAsync(themeRoot, theme);
         var deadline = DateTime.UtcNow.AddSeconds(5);
         while (scrollBar.ActualTheme != theme && DateTime.UtcNow < deadline)

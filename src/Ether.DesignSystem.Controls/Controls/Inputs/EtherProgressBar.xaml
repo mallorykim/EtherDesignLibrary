@@ -99,20 +99,16 @@
                         </VisualStateManager.VisualStateGroups>
 
                         <Grid x:Name="LabelRow" Grid.Row="0" Margin="0,0,0,8">
-                            <ContentPresenter x:Name="TitleText"
-                                              Content="{TemplateBinding Title}"
-                                              HorizontalAlignment="Left"
-                                              FontFamily="{StaticResource InstrumentSans}"
-                                              FontSize="{StaticResource Size14}"
-                                              FontWeight="{StaticResource WeightSemibold}"
-                                              Foreground="{ThemeResource EtherProgressBarTitleForegroundBrush}" />
-                            <ContentPresenter x:Name="ValueLabel"
-                                              Content="{TemplateBinding ValueContent}"
-                                              HorizontalAlignment="Right"
-                                              FontFamily="{StaticResource InstrumentSans}"
-                                              FontSize="{StaticResource Size14}"
-                                              FontWeight="{StaticResource WeightSemibold}"
-                                              Foreground="{ThemeResource EtherProgressBarValueForegroundBrush}" />
+                            <ContentPresenter x:Name="TitleText" Content="{TemplateBinding Title}"
+                                              ContentTemplate="{StaticResource EtherSingleLineTextContentTemplate}"
+                                              HorizontalAlignment="Left" FontFamily="{StaticResource InstrumentSans}"
+                                              FontSize="{StaticResource Size14}" FontWeight="{StaticResource WeightSemibold}"
+                                              Foreground="{ThemeResource EtherProgressBarTitleForegroundBrush}"/>
+                            <ContentPresenter x:Name="ValueLabel" Content="{TemplateBinding ValueContent}"
+                                              ContentTemplate="{StaticResource EtherSingleLineTextContentTemplate}"
+                                              HorizontalAlignment="Right" FontFamily="{StaticResource InstrumentSans}"
+                                              FontSize="{StaticResource Size14}" FontWeight="{StaticResource WeightSemibold}"
+                                              Foreground="{ThemeResource EtherProgressBarValueForegroundBrush}"/>
                         </Grid>
 
                         <Grid x:Name="ProgressTrack" Grid.Row="1" Height="{StaticResource Spacing4}"

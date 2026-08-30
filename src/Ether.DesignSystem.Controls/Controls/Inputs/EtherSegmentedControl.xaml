@@ -55,6 +55,12 @@
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentCheckedBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundBrush" Color="{StaticResource AlphaBlack70}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundCheckedBrush" Color="{StaticResource Gray0}"/>
+            <!-- Same color as the default label in Light/Dark: the Hover/Pressed fills here are a
+                 faint tint (AlphaBrand6/10), so the default label color stays legible on top of
+                 them. High Contrast repaints Hover/Pressed as an opaque SystemColorHighlightColor
+                 fill, so these need to repaint as SystemColorHighlightTextColor there instead. -->
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundHoverBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundPressedBrush" Color="{StaticResource AlphaBlack70}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{StaticResource AlphaBrand6}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{StaticResource AlphaBrand10}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="{StaticResource Blue800}"/>
@@ -66,6 +72,8 @@
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentCheckedBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundBrush" Color="{StaticResource AlphaWhite70}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundCheckedBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundHoverBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundPressedBrush" Color="{StaticResource AlphaWhite70}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{StaticResource AlphaBrand10}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{StaticResource AlphaBrand16}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="{StaticResource Blue800}"/>
@@ -77,6 +85,12 @@
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentCheckedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundCheckedBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <!-- Paired with SegmentHoverBrush/SegmentPressedBrush below, which repaint as an
+                 opaque SystemColorHighlightColor fill in High Contrast: the label sitting on top
+                 of that fill must be SystemColorHighlightTextColor, not the WindowText color used
+                 against the transparent/ButtonFace default background. -->
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundHoverBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundPressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
@@ -120,13 +134,23 @@
                     Background="{TemplateBinding Background}"
                     Padding="{TemplateBinding Padding}"
                     CornerRadius="{StaticResource RadiusMd}">
-                <ContentPresenter Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                                  ContentTransitions="{TemplateBinding ContentTransitions}"
-                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  AutomationProperties.AccessibilityView="Raw"/>
+                <Grid>
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                      Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
+                                      ContentTransitions="{TemplateBinding ContentTransitions}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      AutomationProperties.AccessibilityView="Raw"/>
+                    <TextBlock Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                               Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=String}"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               AutomationProperties.AccessibilityView="Raw"/>
+                </Grid>
             </Border>
         </Grid>
     </ControlTemplate>
@@ -148,8 +172,19 @@
                      checked TEXT colour and the disabled dim stay here (those revert fine). -->
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal"/>
-                    <VisualState x:Name="PointerOver"/>
-                    <VisualState x:Name="Pressed"/>
+                    <!-- Only the label color lives here (see EtherSegmentedControlSegmentForegroundHoverBrush
+                         above): it is a plain ThemeResource Setter on Foreground, which reverts
+                         cleanly on state exit, unlike the Background stickiness described below. -->
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherSegmentedControlSegmentForegroundHoverBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherSegmentedControlSegmentForegroundPressedBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Target="Bg.Opacity" Value="0.4"/>
@@ -201,18 +236,33 @@
                     Background="{StaticResource EtherSegmentedControlTransparentBrush}"
                     CornerRadius="{StaticResource RadiusSm}"
                     Padding="{TemplateBinding Padding}">
-                <ContentPresenter x:Name="Cp"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                                  ContentTransitions="{TemplateBinding ContentTransitions}"
-                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  Foreground="{ThemeResource EtherSegmentedControlSegmentForegroundBrush}"
-                                  FontFamily="{TemplateBinding FontFamily}"
-                                  FontSize="{TemplateBinding FontSize}"
-                                  FontWeight="{TemplateBinding FontWeight}"
-                                  AutomationProperties.AccessibilityView="Raw"/>
+                <Grid>
+                    <ContentPresenter x:Name="Cp"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                      ContentTransitions="{TemplateBinding ContentTransitions}"
+                                      Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Foreground="{ThemeResource EtherSegmentedControlSegmentForegroundBrush}"
+                                      FontFamily="{TemplateBinding FontFamily}"
+                                      FontSize="{TemplateBinding FontSize}"
+                                      FontWeight="{TemplateBinding FontWeight}"
+                                      AutomationProperties.AccessibilityView="Raw"/>
+                    <TextBlock x:Name="TextContent"
+                               Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                               Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=String}"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                               Foreground="{Binding Foreground, ElementName=Cp}"
+                               FontFamily="{TemplateBinding FontFamily}"
+                               FontSize="{TemplateBinding FontSize}"
+                               FontWeight="{TemplateBinding FontWeight}"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               AutomationProperties.AccessibilityView="Raw"/>
+                </Grid>
             </Border>
 
             <Border x:Name="FocusRing"

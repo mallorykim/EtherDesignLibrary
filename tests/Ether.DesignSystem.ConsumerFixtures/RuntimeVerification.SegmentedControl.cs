@@ -51,6 +51,20 @@ internal static partial class RuntimeVerification
             }
         }
 
+        var selectionChanges = new List<SegmentedSelectionChangedEventArgs>();
+        segmentedControl.SelectionChanged += (_, args) => selectionChanges.Add(args);
+        var expectedSelectedValue = segments[^1].Content;
+        // SetValue mirrors the dependency-property write path used by a TwoWay binding.
+        segmentedControl.SetValue(EtherSegmentedControl.SelectedValueProperty, expectedSelectedValue);
+        if (!Equals(segmentedControl.SelectedValue, expectedSelectedValue) ||
+            segments[^1].IsChecked != true ||
+            segments.Count(segment => segment.IsChecked == true) != 1 ||
+            selectionChanges.Count != 1 ||
+            !Equals(selectionChanges[0].NewValue, expectedSelectedValue))
+        {
+            throw new InvalidOperationException("EtherSegmentedControl did not expose a stable SelectedValue and SelectionChanged contract for a binding-driven selection.");
+        }
+
         var proofSegment = segments[0];
         var checkStates = new List<string>();
 

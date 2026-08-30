@@ -194,19 +194,16 @@
                         <!-- InteractionSurface is 16 epx with a 6 epx centered track (5 epx
                              above the painted bar). 3 + 5 = 8 from labels to the bar. -->
                         <Grid x:Name="LabelRow" Grid.Row="0" Margin="0,0,0,3">
-                            <ContentPresenter x:Name="TitleText"
-                                              Content="{TemplateBinding Title}"
-                                              HorizontalAlignment="Left"
-                                              FontFamily="{StaticResource InstrumentSans}"
-                                              FontSize="{StaticResource Size14}"
-                                              FontWeight="{StaticResource WeightSemibold}"
-                                              Foreground="{ThemeResource EtherSteeringBarTitleForegroundBrush}" />
-                            <ContentPresenter x:Name="ValueLabel"
-                                              HorizontalAlignment="Right"
-                                              FontFamily="{StaticResource InstrumentSans}"
-                                              FontSize="{StaticResource Size14}"
-                                              FontWeight="{StaticResource WeightSemibold}"
-                                              Foreground="{ThemeResource EtherSteeringBarValueForegroundBrush}" />
+                            <ContentPresenter x:Name="TitleText" Content="{TemplateBinding Title}"
+                                              ContentTemplate="{StaticResource EtherSingleLineTextContentTemplate}"
+                                              HorizontalAlignment="Left" FontFamily="{StaticResource InstrumentSans}"
+                                              FontSize="{StaticResource Size14}" FontWeight="{StaticResource WeightSemibold}"
+                                              Foreground="{ThemeResource EtherSteeringBarTitleForegroundBrush}"/>
+                            <ContentPresenter x:Name="ValueLabel" Content="{TemplateBinding ValueContent}"
+                                              ContentTemplate="{StaticResource EtherSingleLineTextContentTemplate}"
+                                              HorizontalAlignment="Right" FontFamily="{StaticResource InstrumentSans}"
+                                              FontSize="{StaticResource Size14}" FontWeight="{StaticResource WeightSemibold}"
+                                              Foreground="{ThemeResource EtherSteeringBarValueForegroundBrush}"/>
                         </Grid>
 
                         <Grid x:Name="InteractionSurface"
