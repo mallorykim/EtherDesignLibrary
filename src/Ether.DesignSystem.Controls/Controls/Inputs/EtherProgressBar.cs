@@ -44,13 +44,6 @@ public sealed class EtherProgressBar : RangeBase
     private ColumnDefinition? _restColumn;
 
     /// <summary>
-    /// Raised after the automation peer raises
-    /// <see cref="RangeValuePatternIdentifiers.ValueProperty"/>. WinUI
-    /// <see cref="AutomationPeer"/> has no public in-process add-handler API.
-    /// </summary>
-    internal event EventHandler<double>? AutomationRangeValueChanged;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="EtherProgressBar"/> class.
     /// </summary>
     public EtherProgressBar()
@@ -194,7 +187,6 @@ public sealed class EtherProgressBar : RangeBase
         internal void RaiseValueChanged(double oldValue, double newValue)
         {
             RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty, oldValue, newValue);
-            OwnerControl.AutomationRangeValueChanged?.Invoke(OwnerControl, newValue);
         }
 
         protected override string GetNameCore()

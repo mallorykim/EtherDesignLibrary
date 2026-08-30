@@ -462,13 +462,7 @@ public sealed class EtherMasthead : Control
         RefreshCaptionIconColorForCurrentState(_closeButton);
     }
 
-    // Internal (not private) so the ConsumerFixtures regression test
-    // (RuntimeVerification.Masthead.cs, VerifyMastheadHoverThemeTrackingAsync — see
-    // InternalsVisibleTo in this project's .csproj) can call it directly to prime a caption
-    // icon's Fill/Stroke into a given CommonStates color without synthesizing real pointer
-    // input, then reproduce the theme-switch-while-hovered regression scenario end to end
-    // using the exact same code path ActualThemeChanged uses in production.
-    internal void RefreshCaptionIconColorForCurrentState(EtherButton? button)
+    private void RefreshCaptionIconColorForCurrentState(EtherButton? button)
     {
         if (button is null ||
             VisualTreeHelper.GetChildrenCount(button) < 1 ||

@@ -52,7 +52,6 @@ Assert-Contains $control 'public bool IsReadOnly => true' 'EtherProgressBar read
 Assert-Contains $control 'public double SmallChange => double\.NaN' 'EtherProgressBar read-only small change'
 Assert-Contains $control 'public double LargeChange => double\.NaN' 'EtherProgressBar read-only large change'
 Assert-Contains $control 'RangeValuePatternIdentifiers\.ValueProperty' 'EtherProgressBar RangeValue value-changed event'
-Assert-Contains $control 'AutomationRangeValueChanged' 'EtherProgressBar in-process RangeValue Value subscription'
 Assert-Contains $control 'throw new InvalidOperationException\("EtherProgressBar is read-only\."\)' 'EtherProgressBar automation SetValue rejection'
 Assert-Contains $control 'OwnerControl\.Title is string title' 'EtherProgressBar automation-name title fallback'
 
@@ -193,7 +192,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
 }
 
 $fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
-foreach ($evidence in 'BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden', 'SetValueRejected', 'LightFillColors', 'DarkFillColors', 'LightTemplateBrushColors', 'DarkTemplateBrushColors', 'GetPattern\(PatternInterface\.RangeValue\)', 'valuePropertyChangedSubscribed', 'RangeValuePatternIdentifiers\.ValueProperty') {
+foreach ($evidence in 'BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden', 'SetValueRejected', 'LightFillColors', 'DarkFillColors', 'LightTemplateBrushColors', 'DarkTemplateBrushColors', 'GetPattern\(PatternInterface\.RangeValue\)', 'ValueChanged \+= onValueChanged', 'observedAutomationValues\.Add\(rangeValue\.Value\)', 'valuePropertyChangedSubscribed') {
     Assert-Contains $fixture $evidence "EtherProgressBar consumer runtime evidence for $evidence"
 }
 

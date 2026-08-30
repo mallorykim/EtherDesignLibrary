@@ -587,6 +587,16 @@ function Assert-ScreenshotMarker {
     }
 }
 
+function Assert-NoConsumerFixtureInternalsVisibleTo {
+    $violations = @(
+        Get-ChildItem -LiteralPath (Join-Path $repoRoot 'src') -Filter '*.csproj' -Recurse |
+            Select-String -Pattern '<InternalsVisibleTo\s+Include\s*=\s*["''].*ConsumerFixtures' |
+            ForEach-Object { "$($_.Path):$($_.LineNumber): $($_.Line.Trim())" })
+    if ($violations.Count -gt 0) {
+        throw "Published projects must not grant InternalsVisibleTo to ConsumerFixtures. Found: $($violations -join '; ')"
+    }
+}
+
 function Update-VisualBaselines {
     param($RuntimeResult)
 
@@ -690,6 +700,7 @@ function Assert-FixtureStatusUid {
 
 Push-Location $repoRoot
 try {
+    Assert-NoConsumerFixtureInternalsVisibleTo
     Assert-FixtureAutomationNames (Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Unpackaged\MainWindow.xaml')
     Assert-FixtureAutomationNames (Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Packaged\MainWindow.xaml')
     Assert-FixtureStatusUid (Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Unpackaged\MainWindow.xaml')

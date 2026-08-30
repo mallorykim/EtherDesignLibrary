@@ -99,11 +99,18 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("The read-only progress bar accepted a UI Automation SetValue request.");
         }
 
-        // Subscribe to the in-process RangeValue Value notification that the peer
-        // raises together with RangeValuePatternIdentifiers.ValueProperty.
-        var observedPropertyChanges = new List<double>();
-        void OnAutomationRangeValueChanged(object? sender, double value) => observedPropertyChanges.Add(value);
-        progressBar.AutomationRangeValueChanged += OnAutomationRangeValueChanged;
+        // WinUI exposes no public in-process subscription for AutomationPeer's protected
+        // RaisePropertyChangedEvent. Observe the strongest equivalent public contract instead:
+        // each public RangeBase.ValueChanged notification must expose that exact new value through
+        // the public IRangeValueProvider obtained from the control's automation peer.
+        var observedValueChangedValues = new List<double>();
+        var observedAutomationValues = new List<double>();
+        RangeBaseValueChangedEventHandler onValueChanged = (_, args) =>
+        {
+            observedValueChangedValues.Add(args.NewValue);
+            observedAutomationValues.Add(rangeValue.Value);
+        };
+        progressBar.ValueChanged += onValueChanged;
         bool valueChangeExercised;
         bool valuePropertyChangedSubscribed;
         try
@@ -113,9 +120,8 @@ internal static partial class RuntimeVerification
             progressBar.Value = 65d;
             var observedAfterSecondChange = rangeValue.Value;
             valueChangeExercised = observedAfterFirstChange == 64d && observedAfterSecondChange == 65d;
-            valuePropertyChangedSubscribed = observedPropertyChanges.Count == 2 &&
-                observedPropertyChanges[0] == 64d &&
-                observedPropertyChanges[1] == 65d;
+            valuePropertyChangedSubscribed = observedValueChangedValues.SequenceEqual(new[] { 64d, 65d }) &&
+                observedAutomationValues.SequenceEqual(new[] { 64d, 65d });
             if (!valueChangeExercised)
             {
                 throw new InvalidOperationException("The RangeValue provider from GetPattern did not track owner Value assignments.");
@@ -123,12 +129,12 @@ internal static partial class RuntimeVerification
 
             if (!valuePropertyChangedSubscribed)
             {
-                throw new InvalidOperationException("In-process RangeValuePatternIdentifiers.ValueProperty subscription did not observe the 64 then 65 value changes.");
+                throw new InvalidOperationException("Public RangeBase.ValueChanged notifications did not expose the matching 64 then 65 values through IRangeValueProvider.");
             }
         }
         finally
         {
-            progressBar.AutomationRangeValueChanged -= OnAutomationRangeValueChanged;
+            progressBar.ValueChanged -= onValueChanged;
         }
 
         var lightFillColors = await GetProgressFillColorsAsync(themeRoot, progressBar, fill, ElementTheme.Light);

@@ -107,19 +107,17 @@ internal static partial class RuntimeVerification
     // the OLD theme's hover color until the next real hover re-synced it. The fix adds an
     // ActualThemeChanged handler that re-pushes each caption button's CURRENT CommonStates state
     // (which WinUI already tracks) back onto its icon using the freshly re-resolved swatch for
-    // that state (see EtherMasthead_ActualThemeChanged/RefreshCaptionIconColorForCurrentState in
-    // EtherMasthead.xaml.cs).
+    // that state.
     //
-    // This test cannot synthesize real OS pointer input to trigger PointerEntered, so it uses two
-    // pieces of test-only internal surface (see InternalsVisibleTo in
-    // Ether.DesignSystem.Controls.csproj) that together reproduce hovering faithfully:
+    // This test cannot synthesize real OS pointer input to trigger PointerEntered. It uses only
+    // public WinUI APIs to reproduce the same externally observable precondition instead:
     //   - VisualStateManager.GoToState(minimizeButton, "PointerOver", false) puts the button in
-    //     the exact CommonStates state a real hover would (this alone is what ButtonBase does
-    //     internally off real pointer input; it does not, by itself, touch the icon color).
-    //   - masthead.RefreshCaptionIconColorForCurrentState(minimizeButton) is the SAME internal
-    //     method the fix's ActualThemeChanged handler calls in production; calling it once here
-    //     "primes" the icon Fill into the hover color, standing in for what the real
-    //     PointerEntered handler (SetCaptionIconColor) would have done.
+    //     the exact CommonStates state a real hover would establish.
+    //   - The documented template parts MinimizeIcon and IconForegroundHoverSwatch are found
+    //     through the public visual tree. Assigning the swatch's resolved Fill to the Shape's
+    //     public Fill property reproduces the local-value effect of a real PointerEntered event.
+    // This deliberately creates the stale-local-value condition the production
+    // ActualThemeChanged handler must repair, without calling a non-public Ether member.
     // After priming while Light, the theme is switched to Dark WITHOUT calling either of those
     // again — i.e. without ever re-touching the pointer state — so the only thing that can update
     // the icon's Fill is the production ActualThemeChanged subscription itself. On the pre-fix
@@ -131,15 +129,27 @@ internal static partial class RuntimeVerification
     {
         var minimizeButton = GetTemplatePart<EtherButton>(masthead, "MinimizeButton", nameof(EtherMasthead));
         var minimizeIcon = GetTemplatePart<Shape>(minimizeButton, "MinimizeIcon", nameof(EtherMasthead));
+        var hoverSwatch = GetTemplatePart<Shape>(masthead, "IconForegroundHoverSwatch", nameof(EtherMasthead));
 
         themeRoot.RequestedTheme = ElementTheme.Light;
         await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Light);
         await WaitForDescendantActualThemeAsync(masthead, ElementTheme.Light);
 
-        VisualStateManager.GoToState(minimizeButton, "PointerOver", false);
-        masthead.RefreshCaptionIconColorForCurrentState(minimizeButton);
+        if (!VisualStateManager.GoToState(minimizeButton, "PointerOver", false) ||
+            GetCurrentVisualStateName(minimizeButton, "CommonStates", nameof(EtherMasthead)) != "PointerOver")
+        {
+            throw new InvalidOperationException("EtherMasthead minimize caption button did not enter PointerOver through the public VisualStateManager API.");
+        }
+
+        minimizeIcon.Fill = hoverSwatch.Fill
+            ?? throw new InvalidOperationException("EtherMasthead hover swatch did not resolve to a brush in Light theme.");
         minimizeButton.UpdateLayout();
         var lightHoverColor = GetSolidBrushColor(minimizeIcon.Fill, "minimize icon (hovered, Light)", ElementTheme.Light, nameof(EtherMasthead));
+        var expectedLightHoverColor = GetSolidBrushColor(hoverSwatch.Fill, "hover swatch (Light)", ElementTheme.Light, nameof(EtherMasthead));
+        if (!string.Equals(lightHoverColor, expectedLightHoverColor, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"EtherMasthead public hover setup produced {lightHoverColor}, expected the Light hover swatch {expectedLightHoverColor}.");
+        }
 
         // Switch theme WITHOUT re-priming the hover color: only the production
         // ActualThemeChanged subscription can update Fill from here on. Propagation of the new
@@ -162,15 +172,11 @@ internal static partial class RuntimeVerification
 
         minimizeButton.UpdateLayout();
         var darkHoverColor = GetSolidBrushColor(minimizeIcon.Fill, "minimize icon (hovered, Dark, automatic)", ElementTheme.Dark, nameof(EtherMasthead));
+        var expectedDarkHoverColor = GetSolidBrushColor(hoverSwatch.Fill, "hover swatch (Dark)", ElementTheme.Dark, nameof(EtherMasthead));
 
-        if (string.Equals(lightHoverColor, darkHoverColor, StringComparison.Ordinal))
+        if (string.Equals(lightHoverColor, darkHoverColor, StringComparison.Ordinal) ||
+            !string.Equals(darkHoverColor, expectedDarkHoverColor, StringComparison.Ordinal))
         {
-            // Extra diagnostics to disambiguate "ActualThemeChanged never refreshed it" from "the
-            // swatch/state-selection logic itself is broken" if this ever regresses again: force
-            // the exact same refresh manually and re-read.
-            masthead.RefreshCaptionIconColorForCurrentState(minimizeButton);
-            minimizeButton.UpdateLayout();
-            var darkHoverColorAfterManualRefresh = GetSolidBrushColor(minimizeIcon.Fill, "minimize icon (hovered, Dark, manual refresh)", ElementTheme.Dark, nameof(EtherMasthead));
             var stateName = GetCurrentVisualStateName(minimizeButton, "CommonStates", nameof(EtherMasthead));
 
             throw new InvalidOperationException(
@@ -178,12 +184,14 @@ internal static partial class RuntimeVerification
                 "button stayed in PointerOver without being re-hovered. The icon color went stale on theme change " +
                 "(EtherMasthead_ActualThemeChanged did not refresh it). DIAGNOSTIC: " +
                 $"lightHoverColor={lightHoverColor}, darkHoverColor(automatic)={darkHoverColor}, " +
-                $"darkHoverColor(after manual RefreshCaptionIconColorForCurrentState)={darkHoverColorAfterManualRefresh}, " +
+                $"expectedDarkHoverColor={expectedDarkHoverColor}, " +
                 $"minimizeButton CommonStates.CurrentState={stateName}.");
         }
 
         VisualStateManager.GoToState(minimizeButton, "Normal", false);
-        masthead.RefreshCaptionIconColorForCurrentState(minimizeButton);
+        var defaultSwatch = GetTemplatePart<Shape>(masthead, "IconForegroundDefaultSwatch", nameof(EtherMasthead));
+        minimizeIcon.Fill = defaultSwatch.Fill
+            ?? throw new InvalidOperationException("EtherMasthead default swatch did not resolve to a brush during cleanup.");
         minimizeButton.UpdateLayout();
 
         return (lightHoverColor, darkHoverColor);

@@ -30,11 +30,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Ether.DesignSystem.ConsumerFixtures.Unpackaged" />
-    <InternalsVisibleTo Include="Ether.DesignSystem.ConsumerFixtures.Packaged" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Ether.DesignSystem.Foundation\Ether.DesignSystem.Foundation.csproj" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
