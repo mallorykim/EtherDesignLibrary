@@ -44,6 +44,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Ether.DesignSystem.Controls"
+    xmlns:etherPrimitives="using:Ether.DesignSystem.Controls.Primitives"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives">
 
     <ResourceDictionary.ThemeDictionaries>
@@ -283,7 +284,7 @@
                 <!-- Figma nodes 62138:28454/28495 specify a fixed 40x20 track and
                      fixed 22x14 knob host; keep these dimensions fixed as an explicit
                      design decision (option b), rather than scaling them with FontSize. -->
-                <controls:HandContentControl x:Name="SwitchArea"
+                <etherPrimitives:HandContentControl x:Name="SwitchArea"
                                              Width="40"
                                              Height="20"
                                              HorizontalContentAlignment="Stretch"
@@ -379,7 +380,7 @@
                                           IsHitTestVisible="True"
                                           AutomationProperties.AccessibilityView="Raw"/>
                     </Grid>
-                </controls:HandContentControl>
+                </etherPrimitives:HandContentControl>
             </StackPanel>
 
             <Border x:Name="FocusRing"

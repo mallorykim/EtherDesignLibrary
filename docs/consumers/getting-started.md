@@ -244,11 +244,9 @@ dotnet build -c Debug -p:Platform=x64
   运行时提示。请使用外部 `TextBlock`、表单标签或自己的表单容器提供标签与说明。
 - 当前版本是 preview，公开 API、样式和资源契约仍可能变化。升级前请阅读对应
   发布说明并在应用中回归关键页面。
-- `HandContentControl` 虽因 XAML 资源解析而公开，但它是模板实现支撑类型，不是
-  受支持的设计系统控件契约；请使用命名的 `Ether*` 控件。
-- `Ether.DesignSystem.Controls.Converters.MultiplyConverter` 的 `ConvertBack` 会
-  抛出 `NotSupportedException`。若显式使用该 converter，请使用单向绑定，不要
-  将它用于需要回写的双向转换。
+- `Ether.DesignSystem.Controls.Primitives.HandContentControl` 虽因 XAML 资源解析
+  而公开，但它是模板实现支撑类型，不是受支持的设计系统控件契约；请使用命名的
+  `Ether*` 控件。
 - Controls 与 Foundation 在当前 preview 发布线按同一版本使用；升级时应一起升级
   两者。Interaction 包也应与发布公告给出的版本组合保持一致。
 

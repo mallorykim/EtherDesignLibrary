@@ -107,7 +107,7 @@ foreach ($entry in $templatedControls.GetEnumerator()) {
     }
 }
 
-$internalSupport = Join-Path $controlsRoot 'Internal\HandContentControl.cs'
+$internalSupport = Join-Path $controlsRoot 'Primitives\HandContentControl.cs'
 $internalSupportText = Get-Content -LiteralPath $internalSupport -Raw
 Assert-Match $internalSupportText 'Public only because WinUI XAML resource dictionaries resolve' 'HandContentControl XAML visibility rationale'
 Assert-Match $internalSupportText 'not a supported design-system\s+/// control contract' 'HandContentControl support-only contract'

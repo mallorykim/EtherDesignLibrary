@@ -141,8 +141,8 @@ Ether.DesignSystem.Controls.EtherStringContentVisibilityConverter.EtherStringCon
 Ether.DesignSystem.Controls.EtherSwitch
 Ether.DesignSystem.Controls.EtherSwitch.EtherSwitch() -> void
 Ether.DesignSystem.Controls.EtherSwitch.InitializeComponent() -> void
-Ether.DesignSystem.Controls.HandContentControl
-Ether.DesignSystem.Controls.HandContentControl.HandContentControl() -> void
+Ether.DesignSystem.Controls.Primitives.HandContentControl
+Ether.DesignSystem.Controls.Primitives.HandContentControl.HandContentControl() -> void
 Ether.DesignSystem.Controls.SteeringBarPreviewStatus
 Ether.DesignSystem.Controls.SteeringBarPreviewStatus.Default = 1 -> Ether.DesignSystem.Controls.SteeringBarPreviewStatus
 Ether.DesignSystem.Controls.SteeringBarPreviewStatus.Disabled = 4 -> Ether.DesignSystem.Controls.SteeringBarPreviewStatus
@@ -153,10 +153,6 @@ Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs
 Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs.NewValue.get -> double
 Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs.OldValue.get -> double
 Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs.SteeringBarValueChangedEventArgs(double oldValue, double newValue) -> void
-Ether.DesignSystem.Controls.Converters.MultiplyConverter
-Ether.DesignSystem.Controls.Converters.MultiplyConverter.Convert(object! value, System.Type! targetType, object! parameter, string! language) -> object!
-Ether.DesignSystem.Controls.Converters.MultiplyConverter.ConvertBack(object! value, System.Type! targetType, object! parameter, string! language) -> object!
-Ether.DesignSystem.Controls.Converters.MultiplyConverter.MultiplyConverter() -> void
 override Ether.DesignSystem.Controls.EtherButton.OnApplyTemplate() -> void
 override Ether.DesignSystem.Controls.EtherSegmentedControl.OnApplyTemplate() -> void
 static readonly Ether.DesignSystem.Controls.EtherButton.RightIconProperty -> Microsoft.UI.Xaml.DependencyProperty!

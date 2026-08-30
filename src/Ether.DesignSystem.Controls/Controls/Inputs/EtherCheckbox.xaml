@@ -35,7 +35,8 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:Ether.DesignSystem.Controls">
+    xmlns:controls="using:Ether.DesignSystem.Controls"
+    xmlns:primitives="using:Ether.DesignSystem.Controls.Primitives">
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
@@ -173,7 +174,7 @@
             <!-- HandContentControl sets a hand cursor over the whole clickable area. It only
                  affects hit-testable instances: the showcase specimens (IsHitTestVisible=False)
                  never receive pointer input, so they keep the arrow. -->
-            <controls:HandContentControl HorizontalContentAlignment="Left"
+            <primitives:HandContentControl HorizontalContentAlignment="Left"
                                          VerticalContentAlignment="Center">
             <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing8}" VerticalAlignment="Center">
                 <!-- Figma nodes 62102:8755/8800 specify a fixed 18x18 indicator;
@@ -249,7 +250,7 @@
                            TextWrapping="NoWrap"
                            TextTrimming="CharacterEllipsis"/>
             </StackPanel>
-            </controls:HandContentControl>
+            </primitives:HandContentControl>
         </Grid>
     </ControlTemplate>
 

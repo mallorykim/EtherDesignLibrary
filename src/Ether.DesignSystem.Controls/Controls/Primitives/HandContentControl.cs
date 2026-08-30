@@ -1,7 +1,7 @@
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Ether.DesignSystem.Controls;
+namespace Ether.DesignSystem.Controls.Primitives;
 
 /// <summary>
 /// Public only because WinUI XAML resource dictionaries resolve <c>using:</c> types through
