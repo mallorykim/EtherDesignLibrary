@@ -89,7 +89,11 @@ Status: **F0–F6 全部完成，rehearsal 绿（REHEARSAL_EXIT=0 @ 7daf1dc，3 
 - 这解释了 agent 的全部证据:`Template=null` 也崩（查找先于模板）、`XamlReader.Load` 与编译 XAML 都崩、合并资源的 workaround 无效、fault `0xC000027B` 属 PRI/资源解析族
 - 唯一的应用层"绕法"是让消费者对每个控件实例显式设 `Style`——这会摧毁设计系统控件的全部意义,不可行
 
-即:我的独立分析与 agent 结论**收敛**,没有指向任何未试的应用层修复。匹配 WindowsAppSDK #7830 / #10970 的严重度。
+即:我的独立分析与 agent 结论**收敛**,没有指向任何未试的应用层修复。相关背景 issue（**均为 OPEN**，2026-08-31 WebFetch 核实）：[microsoft-ui-xaml #7830](https://github.com/microsoft/microsoft-ui-xaml/issues/7830)、[microsoft-ui-xaml #10970](https://github.com/microsoft/microsoft-ui-xaml/issues/10970)（姊妹 WindowsAppSDK #3546）。
+
+> **诚实分寸（2026-08-31 修正）**：早前误写成"WindowsAppSDK #7830/#10970"（错仓库，链接 404），正确是 `microsoft-ui-xaml`。且 #7830 报的是**打包**应用消费 NuGet 控件即崩，而本库框架依赖（打包+非打包）**是通过的**——所以这些 issue 是"NuGet 打包 WinUI 控件资源解析脆弱"的**佐证背景**，不是"自包含-非打包坏了"的精确出处；精确证据是本仓库自己的 bisect 实测。
+>
+> **消费端部署事实（[Microsoft Learn 部署总览](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/deploy-overview) 核实）**：end user 在正常路径下**不需手动装 SDK**——① MSIX 打包+框架依赖：装 MSIX 时运行库自动带上；② 非打包+框架依赖：开发者安装包/bootstrapper 带上；③ 自包含:塞进应用内。坏掉的"自包含-非打包"只对应"单文件 exe / 纯 xcopy、无安装器无 MSIX"这一冷门场景。**真实缺口**:本库仅验证到"能打进 MSIX"(R-08)，未在干净机器实测"装 MSIX→运行库自动装→跑起来"整条链，也未测"自包含+MSIX"后路——两者都是可选的后续验证项，非本轮阻断。
 
 ### 本轮对工作树的处置（保持干净）
 
@@ -120,7 +124,7 @@ Status: **F0–F6 全部完成，rehearsal 绿（REHEARSAL_EXIT=0 @ 7daf1dc，3 
 <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Foundation/Themes/Foundation.xaml" />
 ```
 
-跨包 `ms-appx:///` 引用。相关已核实的微软 issue：WindowsAppSDK #7830、#10970。
+跨包 `ms-appx:///` 引用。相关背景 issue（正确仓库是 `microsoft-ui-xaml`，非 WindowsAppSDK）：[#7830](https://github.com/microsoft/microsoft-ui-xaml/issues/7830)、[#10970](https://github.com/microsoft/microsoft-ui-xaml/issues/10970)。
 
 注意 `Generic.xaml` 另有多条**同包** `ms-appx:///Ether.DesignSystem.Controls/...` 引用，bisect 必须区分跨包与同包。
 
@@ -636,3 +640,4 @@ pushed            = [bool]$Push
 | 2026-08-31 | R-12 复验#2 | **F6b-redo 再失败于 ExternalConsumer（第二个、更窄的 bug）**：A/B 实质全通过、清理成功无残留，但 F6c 引入的 robocopy `/MIR` 退出码 2（"purged extra files"=成功位标志，非失败）泄漏进 `$LASTEXITCODE`，被 Publish-Internal 通用检查误判为门禁失败。假阴性 |
 | 2026-08-31 | R-12 前置 | **F6d 落地** `10ebbe3`：robocopy 后 `$global:LASTEXITCODE=0` 归一化 + 成功路径显式 `exit 0`。**这次真跑了实际门禁**确认 EXTERNALCONSUMER_EXIT=0（原泄漏 2），无残留 temp。我核对 diff 仅退出码逻辑、tree clean。注：ConsumerFixtures/SilentPropertyCoverage/MsixPackage/pack 迄今两次 rehearsal 都未跑到，下一轮首次全链穿透 |
 | 2026-08-31 | R-12 ✅ | **F6b-redo-2 全链 rehearsal 通过** `REHEARSAL_EXIT=0` @ 冻结提交 `7daf1dc`，wall-clock 18m21s：双 build + 22 静态门禁 + GallerySmoke 20/20 + ExternalConsumer(A/B) + git diff --check + ConsumerFixtures×2(1388/445=270+175/943/35/26，两轮确定性一致) + SilentPropertyCoverage(156 全账，3 needs-review warning) + MsixPackage(65MB .msix) + pack×3。证据 bundle gitCommit==7daf1dc、pushed=false、3 nupkg。我独立核对 tree clean/HEAD/证据绑定/包存在全部吻合。**13 项阻断全部完成** |
+| 2026-08-31 | R-00 修正 | WebFetch/WebSearch 核实:issue 编号对但**仓库写错**（应为 microsoft-ui-xaml #7830/#10970，非 WindowsAppSDK，故早前链接 404）；#7830 讲的是打包应用消费 NuGet 控件即崩、本库框架依赖仍通过，故 issue 是佐证背景非精确出处。核实消费端部署:正常 MSIX/安装器路径下 end user **不需手动装 SDK**；真实缺口=未在干净机实测 MSIX 装+跑、未测自包含+MSIX（可选后续，非阻断）。descope 决定不变 |
