@@ -143,4 +143,5 @@ if ($failures.Count -gt 0) {
     throw "Verify-UnsupportedProperties found $($failures.Count) issue(s). See above."
 }
 
-Write-Host "Verify-UnsupportedProperties passed: $($entries.Count) documented-unsupported properties across $(@($entries | Select-Object -ExpandProperty Control -Unique).Count) controls are all genuinely zero-consumption, and docs/consumers/getting-started.md matches UnsupportedProperties.psd1 exactly."
+$uniqueControlCount = @($entries | ForEach-Object { $_.Control } | Select-Object -Unique).Count
+Write-Host "Verify-UnsupportedProperties passed: $($entries.Count) documented-unsupported properties across $uniqueControlCount controls are all genuinely zero-consumption, and docs/consumers/getting-started.md matches UnsupportedProperties.psd1 exactly."

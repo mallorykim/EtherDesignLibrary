@@ -183,7 +183,7 @@ Write-Host "No local record (ledger or git tag) of '$version' having been publis
 # ---------------------------------------------------------------------------
 $auditRunsBefore = @()
 if (Test-Path -LiteralPath $auditRunsRoot) {
-    $auditRunsBefore = @(Get-ChildItem -LiteralPath $auditRunsRoot -Directory | Select-Object -ExpandProperty Name)
+    $auditRunsBefore = @(Get-ChildItem -LiteralPath $auditRunsRoot -Directory | ForEach-Object { $_.Name })
 }
 
 # ---------------------------------------------------------------------------

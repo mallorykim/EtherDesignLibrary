@@ -38,6 +38,13 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
+      - name: Audit scripts/*.ps1 for Windows PowerShell 5.1 incompatibilities
+        shell: pwsh
+        # CI runs every scripts/*.ps1 with shell: pwsh (PowerShell 7+), so a 5.1-only failure
+        # never shows up here - it only surfaces when a contributor runs a script locally with
+        # the Windows-default `powershell`. This is a pure AST static check (no script is
+        # executed), so it runs first and fails fast.
+        run: ./scripts/Verify-PowerShellCompatibility.ps1
       - name: Audit frozen tokens and theme resource keys
         shell: pwsh
         run: ./scripts/Verify-ResourceKeys.ps1 -RequireHighContrastParity

@@ -65,7 +65,7 @@ foreach ($dictionary in $themeDictionaries) {
         }
     }
 
-    $duplicateKeys = @($resourceKeyOccurrences | Group-Object | Where-Object Count -gt 1 | Select-Object -ExpandProperty Name)
+    $duplicateKeys = @($resourceKeyOccurrences | Group-Object | Where-Object Count -gt 1 | ForEach-Object { $_.Name })
     if ($duplicateKeys.Count -gt 0) {
         throw "ThemeDictionary '$themeName' contains duplicate x:Key values: $($duplicateKeys -join ', ')."
     }
