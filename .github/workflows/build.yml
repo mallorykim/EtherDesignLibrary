@@ -113,6 +113,9 @@ jobs:
       - name: Verify Gallery localization contract
         shell: pwsh
         run: ./scripts/Verify-GalleryLocalization.ps1
+      - name: Verify property-evidence wording (R-06)
+        shell: pwsh
+        run: ./scripts/Verify-PropertyEvidenceWording.ps1
       - name: Verify package consumers
         shell: pwsh
         # Hosted runners pack/restore fixtures only. GUI runtime markers stay on

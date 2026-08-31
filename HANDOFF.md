@@ -314,7 +314,7 @@ Expect hosted CI to skip the GUI lines.
 | `docs/architecture/2026-08-26-foundation-refactor-full-review-handoff.md` | Independent review at L4 deepen; **paths in §4/§5 are stale** (pre-`git mv`) |
 | `docs/consumers/getting-started.md` | **[2026-08-30 新增]** How an internal consuming team adds the packages; more current than this file for consumption steps |
 | `docs/plans/2026-08-30-third-party-consumability-plan.md` | **[2026-08-30 新增]** Third-party consumability plan with dated "执行进度更新" notes on top of the original plan text — same annotate-in-place convention used in this update |
-| `docs/handoff/2026-08-29-winui3-full-property-audit-handoff.md` | **[2026-08-30 新增]** Full-property backend-consumable audit handoff; current authoritative property-evidence numbers (1,388 / 445 / 69 / 943) live here, not in this file |
+| `docs/handoff/2026-08-29-winui3-full-property-audit-handoff.md` | **[2026-08-30 新增]** Full-property backend-consumable audit handoff; current authoritative property-evidence numbers live here, not in this file — 1,388 public writable properties total, 445 carry per-property evidence (270 proven to visibly take effect, 175 proven only as a DP round-trip), 943 verified only as callable (R-06) |
 
 Official references used for control-authoring decisions:
 

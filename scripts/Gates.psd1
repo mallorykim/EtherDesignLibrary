@@ -68,6 +68,7 @@
         @{ Name = 'HighContrastPairing';          Script = 'Verify-HighContrastPairing.ps1';          Environments = @('ci'); Args = @{} }
         @{ Name = 'GalleryControlExample';        Script = 'Verify-GalleryControlExample.ps1';        Environments = @('ci'); Args = @{} }
         @{ Name = 'GalleryLocalization';          Script = 'Verify-GalleryLocalization.ps1';          Environments = @('ci'); Args = @{} }
+        @{ Name = 'PropertyEvidenceWording';      Script = 'Verify-PropertyEvidenceWording.ps1';      Environments = @('ci'); Args = @{} }
         @{ Name = 'ConsumerFixtures-ci';          Script = 'Verify-ConsumerFixtures.ps1';             Environments = @('ci'); Args = @{ SkipSolutionBuild = $true; SkipRuntimeSmoke = $true } }
         @{ Name = 'MsixPackage-ci';               Script = 'Verify-MsixPackage.ps1';                  Environments = @('ci'); Args = @{ SkipSolutionBuild = $true } }
         @{ Name = 'GateManifest';                 Script = 'Verify-GateManifest.ps1';                 Environments = @('ci'); Args = @{} }

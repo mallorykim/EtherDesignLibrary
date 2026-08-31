@@ -995,12 +995,26 @@ try {
             $expectedSemanticPublicProperties = 69
             $expectedPlatformPublicProperties = 874
             $allowedVisualEvidenceMethods = @('pixel-difference', 'layout-difference', 'visibility-transition', 'platform-dp-contract', 'ether-component-dp-contract', 'platform-clr-visual-contract')
+            # R-06: the 445 visual properties are not uniformly "observable" - split by Evidence.Method
+            # into the subset that proved a visible effect (pixel/layout/visibility differences on a
+            # rendered, attached control) versus the subset that only proved a DP round-trip (getter/setter
+            # invoked without throwing; bitmap pixels unchanged). See docs/plans/2026-08-31-release-blockers-spec.md R-06.
+            $observableVisualEvidenceMethods = @('pixel-difference', 'layout-difference', 'visibility-transition')
+            $contractOnlyVisualEvidenceMethods = @('platform-dp-contract', 'ether-component-dp-contract')
+            $expectedObservableVisualProperties = 270
+            $expectedContractOnlyVisualProperties = 175
             $missingResources = @($expectedResourceKeys | Where-Object { $_ -cnotin $reportedResourceKeys })
             $missingAssets = @($expectedAssetUris | Where-Object { $_ -cnotin $reportedAssetUris })
             $emptyAssets = @($reportedAssets | Where-Object { [uint64]$_.size -eq 0 })
             $assetsWithoutStorageFileDiagnosis = @($reportedAssets | Where-Object {
                 $_.storageFileResolved -ne $true -and [string]::IsNullOrWhiteSpace($_.storageFileError)
             })
+            # R-06: derive the observable/contract-only split from the live evidence records
+            # themselves (never hand-authored) so the two counts cannot silently drift apart
+            # from what the locked classifier in RuntimeVerification.AttachedVisualProperties.cs
+            # actually produced.
+            $observedVisualEvidenceCount = @($runtimeResult.attachedVisualProperties.evidence | Where-Object { $_.method -cin $observableVisualEvidenceMethods }).Count
+            $contractOnlyVisualEvidenceCount = @($runtimeResult.attachedVisualProperties.evidence | Where-Object { $_.method -cin $contractOnlyVisualEvidenceMethods }).Count
             if ($runtimeResult.marker -ne 'ETHER_CONSUMER_SMOKE' -or
                 $runtimeResult.outcome -ne 'success' -or
                 $missingResources.Count -ne 0 -or
@@ -1201,7 +1215,15 @@ try {
                 @($runtimeResult.attachedVisualProperties.evidence | Where-Object { [string]::IsNullOrWhiteSpace($_.property) -or [string]::IsNullOrWhiteSpace($_.method) -or [string]::IsNullOrWhiteSpace($_.observation) -or $_.method -cnotin $allowedVisualEvidenceMethods }).Count -ne 0 -or
                 @($runtimeResult.publicPropertyClassification.visualProperties | Where-Object { $_ -cnotin @($runtimeResult.attachedVisualProperties.verifiedProperties) }).Count -ne 0 -or
                 @($runtimeResult.publicPropertyClassification.visualProperties | Where-Object { $_ -cnotin @($runtimeResult.attachedVisualProperties.evidence | ForEach-Object { $_.property }) }).Count -ne 0 -or
-                @($runtimeResult.attachedVisualProperties.evidence | ForEach-Object { $_.property } | Select-Object -Unique).Count -ne $expectedVisualPublicProperties) {
+                @($runtimeResult.attachedVisualProperties.evidence | ForEach-Object { $_.property } | Select-Object -Unique).Count -ne $expectedVisualPublicProperties -or
+                # R-06: 445 total evidence records must split into exactly 270 observable
+                # (pixel-difference/layout-difference/visibility-transition) and 175
+                # contract-only (platform-dp-contract/ether-component-dp-contract), and the two
+                # buckets must reconcile back to the total - this is what stops the docs from
+                # silently drifting back to overstating the 445 as all "observable".
+                $observedVisualEvidenceCount -ne $expectedObservableVisualProperties -or
+                $contractOnlyVisualEvidenceCount -ne $expectedContractOnlyVisualProperties -or
+                ($observedVisualEvidenceCount + $contractOnlyVisualEvidenceCount) -ne $expectedVisualPublicProperties) {
                 throw "The unpackaged runtime smoke fixture did not verify Foundation resources, assets, and theme re-resolution: $(Get-Content -LiteralPath $markerPath -Raw)"
             }
             Assert-RtlMarker $runtimeResult
@@ -1222,7 +1244,7 @@ try {
             Copy-Item -LiteralPath $markerPath -Destination (Join-Path $evidenceDirectory 'runtime-result.json') -Force
             Copy-Item -LiteralPath (Join-Path $workRoot 'screenshots') -Destination (Join-Path $evidenceDirectory 'screenshots') -Recurse -Force
             $storageFileResolvedCount = @($reportedAssets | Where-Object { $_.storageFileResolved -eq $true }).Count
-            Write-Host "Unpackaged consumer runtime smoke passed: all $expectedWritablePublicProperties public writable properties were read and invoked on detached component instances; all $expectedVisualPublicProperties visual properties were mutated, laid out, rendered, and emitted a per-property observation on attached WinUI controls; all $($expectedConsumedProperties.Count) declared Ether dependency properties wrote/read/raised callbacks and emitted JSON backend envelopes; 12 standard interaction adapters emitted business envelopes; resources $($reportedResourceKeys -join ', '); templates, states, Light/Dark, RTL, UIA, 2.25 scale, localization, screenshots, SVG loading, and OS-selected High Contrast verified; marker: $markerPath; retained audit evidence: $evidenceDirectory"
+            Write-Host "Unpackaged consumer runtime smoke passed: all $expectedWritablePublicProperties public writable properties were read and invoked on detached component instances; $expectedVisualPublicProperties of $expectedWritablePublicProperties carry per-property evidence from being mutated, laid out, and rendered on an attached control - $expectedObservableVisualProperties proven to visibly take effect (pixel/layout/visibility differences) and $expectedContractOnlyVisualProperties proven only as a DP round-trip (getter/setter invoked without throwing; bitmap pixels unchanged); the remaining $($expectedWritablePublicProperties - $expectedVisualPublicProperties) are verified only as callable on a detached instance; all $($expectedConsumedProperties.Count) declared Ether dependency properties wrote/read/raised callbacks and emitted JSON backend envelopes; 12 standard interaction adapters emitted business envelopes; resources $($reportedResourceKeys -join ', '); templates, states, Light/Dark, RTL, UIA, 2.25 scale, localization, screenshots, SVG loading, and OS-selected High Contrast verified; marker: $markerPath; retained audit evidence: $evidenceDirectory"
         }
         finally {
             if ($null -ne $smokeProcess -and -not $smokeProcess.HasExited) {
