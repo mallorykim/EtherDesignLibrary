@@ -88,6 +88,9 @@ jobs:
       - name: Verify EtherScrollBar L3 contract
         shell: pwsh
         run: ./scripts/Verify-EtherScrollBarContract.ps1
+      - name: Verify silently-ineffective public properties are documented and genuinely unconsumed
+        shell: pwsh
+        run: ./scripts/Verify-UnsupportedProperties.ps1
       - name: Verify backend-consumable interaction contracts
         shell: pwsh
         run: ./scripts/Verify-InteractionContracts.ps1

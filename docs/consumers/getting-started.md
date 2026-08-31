@@ -239,11 +239,47 @@ dotnet build -c Debug -p:Platform=x64
 ## 4. 已知边界
 
 - 仅支持 `x64`。请将应用构建为 `x64`，不要把 x86 或 ARM64 当作受支持目标。
-- `EtherInput` 继承了 `TextBox` 的 `Header` / `HeaderTemplate`，但 Ether 模板
-  **不渲染** header 或 description slot。设置这两个属性不会显示内容，也没有
-  运行时提示。请使用外部 `TextBlock`、表单标签或自己的表单容器提供标签与说明。
 - 当前版本是 preview，公开 API、样式和资源契约仍可能变化。升级前请阅读对应
   发布说明并在应用中回归关键页面。
+
+### 4.1 继承自基类、但 Ether 模板不消费的属性
+
+下表里的属性都**继承自 WinUI 基类、对外公开、编译通过、运行不报错**——但
+Ether 的自定义模板完全不引用它们，所以设置之后**界面上什么也不会发生**（对
+`EtherDropdown.Text` / `IsEditable` 而言，是连功能也不会发生）。这不是文档
+单方面的说法：`scripts/Verify-UnsupportedProperties.ps1` 以
+`scripts/UnsupportedProperties.psd1`（唯一事实来源）为准，逐条断言对应模板
+文件里确实没有消费这个属性；这张表也从同一份文件生成/校验，二者不会各写各的。
+
+这些属性目前**不会**在设置时抛异常或给出运行时提示——它们只是不显示内容，
+不是显示错误的内容（这点和上一轮 `IsThreeState` 不同：`IsThreeState=true`
+会让 `EtherCheckbox` / `EtherRadioButton` 渲染出一个看似合理但错误的
+Unchecked/Checked 状态，所以那次选择了拦截+抛异常；这一批属性设置后画面
+和不设置时完全一样，没有误导性的错误状态,因此选择了"文档 + 机器可校验门禁"
+而不是运行时拦截）。
+
+<!-- UNSUPPORTED-PROPERTIES:START -->
+| 控件 | 属性 | 继承自 | 替代做法 |
+| --- | --- | --- | --- |
+| `EtherDropdown` | `Header` | `ComboBox` | 用外部 `TextBlock` 或表单容器在控件上方放标签。 |
+| `EtherDropdown` | `HeaderTemplate` | `ComboBox` | 同 `Header`：标签内容放在控件外部构建。 |
+| `EtherDropdown` | `Description` | `ComboBox` | 在控件下方再放一个 `TextBlock` 作为说明文字。 |
+| `EtherDropdown` | `PlaceholderText` | `ComboBox` | `EtherDropdown` 始终通过 `TriggerText` 显示已选项，没有"未选中"占位态；请添加一个真实的占位 `ComboBoxItem`（如 `Content="请选择"`）并作为默认选中项。 |
+| `EtherDropdown` | `PlaceholderForeground` | `ComboBox` | 与 `PlaceholderText` 一致：没有占位视觉，此属性不适用。 |
+| `EtherDropdown` | `Text` | `ComboBox` | `EtherDropdown` 是**选择型控件**（Figma 源没有可编辑组合框变体），不提供可编辑模式。需要自由文本输入请改用 `EtherInput`，或自行样式化原生可编辑 `ComboBox`。 |
+| `EtherDropdown` | `IsEditable` | `ComboBox` | 同 `Text`：设计上不支持可编辑模式。设为 `true` 不会让控件可输入——模板里没有 `ComboBox` 内部需要的 `"EditableText"` 部件，所以这个开关静默不生效。 |
+| `EtherInput` | `Header` | `TextBox` | 这是既有的设计决策（见 `EtherInput.cs` 备注："does not add ... header/description slots"），不是遗漏。请用外部标签/说明布局包裹 `EtherInput`。 |
+| `EtherInput` | `HeaderTemplate` | `TextBox` | 同 `Header`。 |
+| `EtherInput` | `Description` | `TextBox` | 同 `Header`：在控件下方另放一个 `TextBlock`。 |
+| `EtherSwitch` | `Header` | `ToggleSwitch` | `EtherSwitch` 是套在原生 `ToggleSwitch` 上的**键控样式**（`Style="{StaticResource EtherSwitch}"`），不是子类控件，没有 code-behind 可以拦截这次写入。请用外部标签布局代替 `Header`。 |
+| `EtherSwitch` | `HeaderTemplate` | `ToggleSwitch` | 同 `Header`。 |
+<!-- UNSUPPORTED-PROPERTIES:END -->
+
+> 说明：`ToggleSwitch` 在当前使用的 `Microsoft.WindowsAppSDK 2.3.1` 里**没有**
+> `Description` 属性（已用反射确认：`Microsoft.UI.Xaml.Controls.ToggleSwitch`
+> 只有 `Header` / `HeaderTemplate`，没有 `Description`），因此上表没有列出
+> `EtherSwitch.Description` 这一行——它连"存在但无效的属性"都不是，是根本不
+> 存在的属性。
 - `Ether.DesignSystem.Controls.Primitives.HandContentControl` 虽因 XAML 资源解析
   而公开，但它是模板实现支撑类型，不是受支持的设计系统控件契约；请使用命名的
   `Ether*` 控件。
