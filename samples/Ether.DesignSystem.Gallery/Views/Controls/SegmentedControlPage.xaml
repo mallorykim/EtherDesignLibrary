@@ -25,12 +25,12 @@
                                                     SelectedValue="list"
                                                     SelectionChanged="InteractiveSegmentedControl_SelectionChanged">
                         <controls:EtherSegmentPanel>
-<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage187" GroupName="SegmentedTwo" Content="List"
+<controls:EtherSegmentRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage187" GroupName="SegmentedTwo" Content="List"
                                          Tag="list"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Two-segment list"
                                          IsChecked="True"/>
-<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage188" GroupName="SegmentedTwo" Content="Grid"
+<controls:EtherSegmentRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage188" GroupName="SegmentedTwo" Content="Grid"
                                          Tag="grid"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Two-segment grid"/>
@@ -46,16 +46,16 @@
                                                     SelectedValue="overview"
                                                     SelectionChanged="InteractiveSegmentedControl_SelectionChanged">
                         <controls:EtherSegmentPanel>
-<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage190" GroupName="SegmentedThree" Content="Overview"
+<controls:EtherSegmentRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage190" GroupName="SegmentedThree" Content="Overview"
                                          Tag="overview"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Three-segment overview"
                                          IsChecked="True"/>
-<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage191" GroupName="SegmentedThree" Content="Details"
+<controls:EtherSegmentRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage191" GroupName="SegmentedThree" Content="Details"
                                          Tag="details"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Three-segment details"/>
-<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage192" GroupName="SegmentedThree" Content="History"
+<controls:EtherSegmentRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage192" GroupName="SegmentedThree" Content="History"
                                          Tag="history"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Three-segment history"/>
@@ -71,20 +71,20 @@
                                                     SelectedValue="day"
                                                     SelectionChanged="InteractiveSegmentedControl_SelectionChanged">
                         <controls:EtherSegmentPanel>
-<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage194" GroupName="SegmentedFour" Content="Day"
+<controls:EtherSegmentRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage194" GroupName="SegmentedFour" Content="Day"
                                          Tag="day"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment day"
                                          IsChecked="True"/>
-<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage195" GroupName="SegmentedFour" Content="Week"
+<controls:EtherSegmentRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage195" GroupName="SegmentedFour" Content="Week"
                                          Tag="week"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment week"/>
-<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage196" GroupName="SegmentedFour" Content="Month"
+<controls:EtherSegmentRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage196" GroupName="SegmentedFour" Content="Month"
                                          Tag="month"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment month"/>
-<controls:HandRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage197" GroupName="SegmentedFour" Content="Year"
+<controls:EtherSegmentRadioButton x:Uid="GalleryViewsControlsSegmentedControlPage197" GroupName="SegmentedFour" Content="Year"
                                          Tag="year"
                                          Style="{StaticResource EtherSegment}"
                                          AutomationProperties.Name="Four-segment year"/>

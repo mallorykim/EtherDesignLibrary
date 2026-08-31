@@ -10,17 +10,19 @@ public sealed partial class SegmentedControlPage : Page
         """
         <controls:EtherSegmentedControl SelectedValue="list">
             <controls:EtherSegmentPanel>
-                <controls:HandRadioButton GroupName="SegmentedTwo" Content="List" Tag="list"
+                <controls:EtherSegmentRadioButton GroupName="SegmentedTwo" Content="List" Tag="list"
                                          Style="{StaticResource EtherSegment}"
                                          IsChecked="True"/>
-                <controls:HandRadioButton GroupName="SegmentedTwo" Content="Grid" Tag="grid"
+                <controls:EtherSegmentRadioButton GroupName="SegmentedTwo" Content="Grid" Tag="grid"
                                          Style="{StaticResource EtherSegment}"/>
             </controls:EtherSegmentPanel>
         </controls:EtherSegmentedControl>
         """;
 
-    // The STATES preview swatches force their look via HandRadioButton.PreviewState in XAML,
-    // so no code-behind visual-state poking is needed here.
+    // The STATES preview swatches force their look via HandRadioButton.PreviewState in XAML
+    // (HandRadioButton is a thin Gallery-only subclass of the shipped
+    // Ether.DesignSystem.Controls.EtherSegmentRadioButton), so no code-behind visual-state
+    // poking is needed here.
     public SegmentedControlPage()
     {
         this.InitializeComponent();

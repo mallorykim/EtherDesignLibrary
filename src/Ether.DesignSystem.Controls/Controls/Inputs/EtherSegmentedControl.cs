@@ -21,8 +21,8 @@ namespace Ether.DesignSystem.Controls;
 /// equal-width slots. Set a segment's <see cref="FrameworkElement.Tag"/> to its stable
 /// business value; <see cref="SelectedValue"/> exposes that value and
 /// <see cref="SelectionChanged"/> reports transitions. When Tag is null, the segment's
-/// Content is used. Native radio grouping and <c>HandRadioButton</c> layer opacity remain
-/// the interaction model; the host does not add visual-state groups.
+/// Content is used. Native radio grouping and <see cref="EtherSegmentRadioButton"/> layer
+/// opacity remain the interaction model; the host does not add visual-state groups.
 /// </remarks>
 [TemplatePart(Name = ShadowHostPartName, Type = typeof(Border))]
 [TemplatePart(Name = TrackSurfacePartName, Type = typeof(Border))]

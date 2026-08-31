@@ -3,15 +3,17 @@
     ═══════════════════════════════════════════════════════════════════════
 
     USAGE
-      Default (DefaultEtherSegmentedControlStyle via DefaultStyleKey):
+      Default (DefaultEtherSegmentedControlStyle via DefaultStyleKey). Segments should be
+      EtherSegmentRadioButton for full hover/pressed/checked fidelity (recommended - a plain
+      RadioButton still shows the selected pill but not hover/pressed feedback):
 
         <controls:EtherSegmentedControl>
             <controls:EtherSegmentPanel>
-                <RadioButton Style="{StaticResource EtherSegment}" GroupName="MyCtrl"
+                <controls:EtherSegmentRadioButton Style="{StaticResource EtherSegment}" GroupName="MyCtrl"
                              Content="Overview"  IsChecked="True"/>
-                <RadioButton Style="{StaticResource EtherSegment}" GroupName="MyCtrl"
+                <controls:EtherSegmentRadioButton Style="{StaticResource EtherSegment}" GroupName="MyCtrl"
                              Content="Details"/>
-                <RadioButton Style="{StaticResource EtherSegment}" GroupName="MyCtrl"
+                <controls:EtherSegmentRadioButton Style="{StaticResource EtherSegment}" GroupName="MyCtrl"
                              Content="History"/>
             </controls:EtherSegmentPanel>
         </controls:EtherSegmentedControl>
@@ -166,15 +168,18 @@
     <ControlTemplate x:Key="EtherSegmentTemplate" TargetType="RadioButton">
         <Grid HorizontalAlignment="Stretch">
             <VisualStateManager.VisualStateGroups>
-                <!-- HoverLayer/PressedLayer are driven directly from code in
-                     HandRadioButton.UpdateSegmentVisual — NOT from these states — because the VSM
-                     leaves layer opacity stuck after the pointer leaves. CheckedLayer is different:
-                     it is ALSO lit from here (Checked/CheckedPointerOver/CheckedPressed set its
-                     Opacity to 1 as a discrete Setter, which reverts fine on state exit, same as the
-                     checked TEXT colour and the disabled dim below) so that a plain RadioButton with
-                     no HandRadioButton behind it — the documented consumer usage — still shows the
-                     selected pill. HandRadioButton's code-set Opacity agrees with these values, so
-                     there is no conflict when it is present (Gallery). -->
+                <!-- HoverLayer/PressedLayer are driven directly from code in the SHIPPED
+                     Ether.DesignSystem.Controls.EtherSegmentRadioButton.UpdateSegmentVisual —
+                     NOT from these states — because the VSM leaves layer opacity stuck after the
+                     pointer leaves. Use EtherSegmentRadioButton (recommended; see
+                     docs/consumers/getting-started.md) to get full hover/pressed/checked
+                     fidelity. CheckedLayer is different: it is ALSO lit from here
+                     (Checked/CheckedPointerOver/CheckedPressed set its Opacity to 1 as a discrete
+                     Setter, which reverts fine on state exit, same as the checked TEXT colour and
+                     the disabled dim below) as a GRACEFUL FALLBACK so that a plain RadioButton
+                     with no EtherSegmentRadioButton behind it still shows the selected pill (just
+                     without hover/pressed feedback). EtherSegmentRadioButton's code-set Opacity
+                     agrees with these values, so there is no conflict when it is present. -->
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal"/>
                     <!-- Only the label color lives here (see EtherSegmentedControlSegmentForegroundHoverBrush
@@ -226,7 +231,7 @@
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
 
-            <!-- Background state layers (behind the text). Opacity toggled by HandRadioButton. -->
+            <!-- Background state layers (behind the text). Opacity toggled by EtherSegmentRadioButton. -->
             <Border x:Name="HoverLayer"
                     Background="{ThemeResource EtherSegmentedControlSegmentHoverBrush}"
                     CornerRadius="{StaticResource RadiusSm}"

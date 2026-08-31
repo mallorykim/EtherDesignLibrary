@@ -365,21 +365,23 @@ Unchecked/Checked 状态，所以那次选择了拦截+抛异常；这一批属�
 </ether:EtherDropdown>
 ```
 
-**EtherSegmentedControl**（`Views/Controls/SegmentedControlPage.xaml`）——段项是
-`RadioButton`，套用 `EtherSegment` 样式并放进 `EtherSegmentPanel`：
+**EtherSegmentedControl**（`Views/Controls/SegmentedControlPage.xaml`）——段项推荐用
+`EtherSegmentRadioButton`（套用 `EtherSegment` 样式，放进 `EtherSegmentPanel`）：具备完整
+的 hover / pressed / checked 反馈，和 Gallery 效果一致：
 ```xml
 <ether:EtherSegmentedControl AutomationProperties.Name="Package segmented control">
     <ether:EtherSegmentPanel>
-        <RadioButton Style="{StaticResource EtherSegment}"
+        <ether:EtherSegmentRadioButton Style="{StaticResource EtherSegment}"
                      GroupName="package-segment"
                      Content="A"
                      IsChecked="True"/>
-        <RadioButton Style="{StaticResource EtherSegment}"
+        <ether:EtherSegmentRadioButton Style="{StaticResource EtherSegment}"
                      GroupName="package-segment"
                      Content="B"/>
     </ether:EtherSegmentPanel>
 </ether:EtherSegmentedControl>
 ```
+普通 `RadioButton` 套用 `EtherSegment` 样式仍会显示选中态的药丸背景，但不会有 hover / pressed 反馈。
 
 **EtherIntelligenceButton**（`Views/Controls/IntelligenceButtonPage.xaml`）：
 ```xml

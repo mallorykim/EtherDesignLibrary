@@ -66,6 +66,8 @@ Ether.DesignSystem.Controls.Resources.EtherScrollBarResources.EtherScrollBarReso
 Ether.DesignSystem.Controls.Resources.EtherScrollBarResources.InitializeComponent() -> void
 Ether.DesignSystem.Controls.EtherSegmentPanel
 Ether.DesignSystem.Controls.EtherSegmentPanel.EtherSegmentPanel() -> void
+Ether.DesignSystem.Controls.EtherSegmentRadioButton
+Ether.DesignSystem.Controls.EtherSegmentRadioButton.EtherSegmentRadioButton() -> void
 Ether.DesignSystem.Controls.EtherSegmentPanel.Spacing.get -> double
 Ether.DesignSystem.Controls.EtherSegmentPanel.Spacing.set -> void
 Ether.DesignSystem.Controls.EtherSegmentedControl
@@ -140,6 +142,19 @@ Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs.OldValue.get -> dou
 Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs.SteeringBarValueChangedEventArgs(double oldValue, double newValue) -> void
 override Ether.DesignSystem.Controls.EtherButton.OnApplyTemplate() -> void
 override Ether.DesignSystem.Controls.EtherSegmentedControl.OnApplyTemplate() -> void
+override Ether.DesignSystem.Controls.EtherSegmentRadioButton.OnApplyTemplate() -> void
+override Ether.DesignSystem.Controls.EtherSegmentRadioButton.OnPointerCanceled(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs! e) -> void
+override Ether.DesignSystem.Controls.EtherSegmentRadioButton.OnPointerCaptureLost(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs! e) -> void
+override Ether.DesignSystem.Controls.EtherSegmentRadioButton.OnPointerEntered(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs! e) -> void
+override Ether.DesignSystem.Controls.EtherSegmentRadioButton.OnPointerExited(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs! e) -> void
+override Ether.DesignSystem.Controls.EtherSegmentRadioButton.OnPointerPressed(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs! e) -> void
+override Ether.DesignSystem.Controls.EtherSegmentRadioButton.OnPointerReleased(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs! e) -> void
+const Ether.DesignSystem.Controls.EtherSegmentRadioButton.HoverLayerPartName = "HoverLayer" -> string!
+const Ether.DesignSystem.Controls.EtherSegmentRadioButton.PressedLayerPartName = "PressedLayer" -> string!
+const Ether.DesignSystem.Controls.EtherSegmentRadioButton.CheckedLayerPartName = "CheckedLayer" -> string!
+Ether.DesignSystem.Controls.EtherSegmentRadioButton.UpdateSegmentVisual() -> void
+virtual Ether.DesignSystem.Controls.EtherSegmentRadioButton.IsPointerOverEffective.get -> bool
+virtual Ether.DesignSystem.Controls.EtherSegmentRadioButton.IsPressedEffective.get -> bool
 static readonly Ether.DesignSystem.Controls.EtherButton.RightIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherButton.LeftIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherButton.SizeProperty -> Microsoft.UI.Xaml.DependencyProperty!
