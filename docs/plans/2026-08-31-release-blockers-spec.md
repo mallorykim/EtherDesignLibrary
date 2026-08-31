@@ -621,3 +621,5 @@ pushed            = [bool]$Push
 | 2026-08-31 | R-10 | 亲验并**修正审核措辞**：5 个 XAML-only 类型中 2 个已有明确 doc，EtherSegmentPanel 缺；真实问题是标注不一致 + 全库 0 处 `[EditorBrowsable]`，IntelliSense 仍暴露 |
 | 2026-08-31 | R-00 | 决议：defect#1 已修+保留至 `spike/self-contained-investigation` @82f12e9；defect#2 判定为平台限制（DefaultStyleKey→PRI），descope 自包含-非打包，发布走框架依赖（待用户复核）。清干净基线 `03bf6ad` |
 | 2026-08-31 | R-01 | **F1 落地** commit `26f2adc`：global.json 锁 10.0.400（disable）+ CI 8.0.x→10.0.x + 2 处 PS5.1 hex；restore/build×2/PSCompat 全 exit 0。并行 restore 与 InteractionContracts 均**未复现**（判定为审核期并发污染）。**残留隐患**：CI `10.0.x` 与 `disable` 不精确匹配 → F2 必修为精确 `10.0.400` |
+| 2026-08-31 | R-02/R-03 | **F2 落地** `f8002ee`：Gates.psd1 单一事实源 + Verify-GateManifest 反漂移（变异测试过）；Publish-Internal 派生 28 门禁并集（含 PowerShellCompat+GallerySmoke+完整 ConsumerFixtures）；Pack push 移除；CI 精确锁 10.0.400。arm64 脚本未删（有 tracked 注释/文档引用，全惰性 → F5 彻底清）。**顺带修掉 R-04 splat 根因**（哈希表 Args） |
+| 2026-08-31 | R-04/R-05 | **F3 落地** `cbd7e51`：删除并 gitignore 误名文件 `-RequireHighContrastParity`；Verify-GateManifest 增"Args 必须哈希表"断言（变异测试过）；Publish-Internal 初始 summary `pushed=$false` + 防回归 guard，仅真实 push 成功后置 true。我独立复跑 GateManifest/ResourceKeys 均 exit 0 |
