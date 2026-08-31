@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: 10.0.400
       - name: Restore
         run: dotnet restore Ether.DesignSystem.slnx -p:Platform=x64
       - name: Build (${{ matrix.configuration }}, x64)
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: 10.0.400
       - name: Audit scripts/*.ps1 for Windows PowerShell 5.1 incompatibilities
         shell: pwsh
         # CI runs every scripts/*.ps1 with shell: pwsh (PowerShell 7+), so a 5.1-only failure
@@ -128,3 +128,10 @@ jobs:
         # after "Verify package consumers", which packs Foundation/Controls/Interactions
         # into the local feed this fixture restores from.
         run: ./scripts/Verify-MsixPackage.ps1 -SkipSolutionBuild
+      - name: Verify the gate manifest matches this workflow (anti-drift, R-02)
+        shell: pwsh
+        # Asserts scripts/Gates.psd1's 'ci'-tagged gate set/order matches the steps above exactly,
+        # and that every scripts/Verify-*.ps1 on disk is accounted for by the manifest. Must be the
+        # last step in this job's list so a future step added above it without a matching manifest
+        # update fails here instead of drifting silently (see scripts/Gates.psd1's header comment).
+        run: ./scripts/Verify-GateManifest.ps1

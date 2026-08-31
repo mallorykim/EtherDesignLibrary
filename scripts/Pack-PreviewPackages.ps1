@@ -2,14 +2,16 @@
 param(
     [ValidateSet('Debug', 'Release')]
     [string]$Configuration = 'Release',
-    [string]$OutputDirectory,
-    [string]$Source,
-    [string]$ApiKey
+    [string]$OutputDirectory
 )
 
-# Packs the coordinated Foundation, Controls, and Interactions preview packages.
-# Push is opt-in: pass -Source (and -ApiKey when the feed requires it).
-# Hosted CI must not call this with a public source.
+# Packs the coordinated Foundation, Controls, and Interactions preview packages. Pack-only - this
+# script has no push capability (R-03). scripts/Publish-Internal.ps1 is the single authorized
+# publish entry point: it runs the full acceptance gate chain (derived from scripts/Gates.psd1),
+# calls this script to pack, and only then - behind its own -Push switch, feed configuration, and
+# a typed confirmation - runs `dotnet nuget push` itself. This script used to also accept -Source
+# / -ApiKey and push directly, which let a real release bypass every gate Publish-Internal.ps1
+# enforces; do not re-add push here.
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -63,17 +65,4 @@ foreach ($package in $packages) {
     Write-Host "Packed $($package.FullName)"
 }
 
-if ([string]::IsNullOrWhiteSpace($Source)) {
-    Write-Host "Preview packages are local only. Pass -Source to push (and -ApiKey when required)."
-    return
-}
-
-foreach ($package in $packages) {
-    $pushArgs = @('nuget', 'push', $package.FullName, '--source', $Source, '--skip-duplicate')
-    if (-not [string]::IsNullOrWhiteSpace($ApiKey)) {
-        $pushArgs += @('--api-key', $ApiKey)
-    }
-    Invoke-DotNet $pushArgs
-}
-
-Write-Host "Pushed preview packages to $Source."
+Write-Host "Preview packages are local only. This script cannot push - use scripts/Publish-Internal.ps1 -Push to publish for real."

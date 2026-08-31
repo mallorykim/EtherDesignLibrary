@@ -8,37 +8,56 @@ param(
 # not invoke this script (it also runs Verify-MsixPackage.ps1 itself, in the
 # package-consumers job, since that check needs no GUI or desktop session).
 #
-# arm64 is intentionally not chained here. Directory.Build.props declares only
-# x64 (see the comment there); Verify-Arm64Packages.ps1 packs/compiles for
-# arm64 but was never wired into any CI or release gate, so it verified a
-# support range nobody was promising. It is left in scripts/ (not deleted) and
-# marked disabled at its own top; re-enable both the Platforms/RuntimeIdentifiers
-# declaration and this script together if arm64 consumer demand returns.
+# Gate set is derived from scripts/Gates.psd1 (single source of truth, R-02):
+# every entry tagged environment 'local-runtime' runs here, in the order it is
+# declared in the manifest, invoked via hashtable splat (never array splat -
+# see Gates.psd1's header comment / R-04). This replaced a hardcoded 3-script
+# list that had no automated caller of its own and had already drifted from
+# .github/workflows/build.yml and scripts/Publish-Internal.ps1.
+#
+# arm64 remains intentionally not chained here - see Gates.psd1's
+# UnmanifestedScripts entry for Verify-Arm64Packages.ps1 for why it stays on
+# disk unused rather than being deleted or re-added to this chain.
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$consumerFixtures = Join-Path $repoRoot 'scripts\Verify-ConsumerFixtures.ps1'
-$gallerySmoke = Join-Path $repoRoot 'scripts\Verify-GallerySmoke.ps1'
-$msixPackage = Join-Path $repoRoot 'scripts\Verify-MsixPackage.ps1'
+$scriptsDir = Join-Path $repoRoot 'scripts'
+$manifestPath = Join-Path $scriptsDir 'Gates.psd1'
 
-foreach ($path in @($consumerFixtures, $gallerySmoke, $msixPackage)) {
-    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
-        throw "Required runtime verifier is missing: $path"
+if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) {
+    throw "Gate manifest is missing: $manifestPath"
+}
+
+$manifest = Import-PowerShellDataFile -Path $manifestPath
+$gates = @($manifest.Gates | Where-Object { @($_.Environments) -contains 'local-runtime' })
+if ($gates.Count -eq 0) {
+    throw "No gates tagged 'local-runtime' found in $manifestPath. Expected at least Verify-ConsumerFixtures.ps1, Verify-GallerySmoke.ps1, and Verify-MsixPackage.ps1."
+}
+
+foreach ($gate in $gates) {
+    $gatePath = Join-Path $scriptsDir $gate.Script
+    if (-not (Test-Path -LiteralPath $gatePath -PathType Leaf)) {
+        throw "Required runtime verifier is missing: $gatePath"
     }
 }
 
-$consumerArgs = @{}
-if ($SkipSolutionBuild) {
-    $consumerArgs['SkipSolutionBuild'] = $true
-}
+# Verify-ConsumerFixtures.ps1 and Verify-MsixPackage.ps1 each accept their own
+# -SkipSolutionBuild switch; Verify-GallerySmoke.ps1 does not. This script's own
+# -SkipSolutionBuild is passed through only to gates whose script supports it.
+$skipSolutionBuildCapableScripts = @('Verify-ConsumerFixtures.ps1', 'Verify-MsixPackage.ps1')
 
 Push-Location $repoRoot
 try {
-    & $consumerFixtures @consumerArgs
-    & $gallerySmoke
-    & $msixPackage @consumerArgs
+    foreach ($gate in $gates) {
+        $callArgs = @{}
+        foreach ($key in $gate.Args.Keys) { $callArgs[$key] = $gate.Args[$key] }
+        if ($SkipSolutionBuild -and ($skipSolutionBuildCapableScripts -contains $gate.Script)) {
+            $callArgs['SkipSolutionBuild'] = $true
+        }
+        & (Join-Path $scriptsDir $gate.Script) @callArgs
+    }
     Write-Host 'Runtime gates passed: consumer fixture markers, Gallery smoke Light/Dark, and unsigned MSIX produce.'
 }
 finally {

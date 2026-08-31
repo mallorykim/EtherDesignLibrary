@@ -8,13 +8,20 @@
     a thing anyone can do by hand. It always runs, in order and to completion:
 
       1. dotnet build (Debug x64, then Release x64) for Ether.DesignSystem.slnx
-      2. All 22 static gates that .github/workflows/build.yml runs in the package-consumers job
-         (resource/marker/contract/convention audits - no GUI required)
+      2. Every gate in scripts/Gates.psd1 (the single source of truth, R-02) tagged 'ci',
+         'local-runtime', or 'local-external' - the union of everything build.yml's
+         package-consumers job, Verify-RuntimeGates.ps1, and the out-of-repo consumer check would
+         run anywhere, using the fuller variant wherever the same script has both a CI-trimmed
+         '-Skip*' form and a full local-runtime form (Verify-ConsumerFixtures.ps1,
+         Verify-MsixPackage.ps1). This is the FINAL pre-release check, so nothing is CI-trimmed
+         here: Verify-PowerShellCompatibility.ps1 and Verify-GallerySmoke.ps1 run too, and
+         Verify-ConsumerFixtures.ps1/Verify-MsixPackage.ps1 always run to completion, not skipped.
+         Pass -ListGates to print exactly what this resolves to without running any of it.
       3. git diff --check
-      4. scripts/Verify-ConsumerFixtures.ps1 -SkipSolutionBuild, TWICE in a row (determinism:
-         the same GUI runtime pass must produce the same outcome back to back)
-      5. scripts/Verify-ExternalConsumer.ps1 (both fixture variants, outside-the-repo consumer)
-      6. scripts/Verify-MsixPackage.ps1 -SkipSolutionBuild (unsigned MSIX produce)
+      4. The manifest's Verify-ConsumerFixtures.ps1 gate, TWICE in a row (determinism: the same
+         GUI runtime pass must produce the same outcome back to back)
+      5. The manifest's Verify-MsixPackage.ps1 gate, always after Verify-ConsumerFixtures.ps1
+         (it restores from the local feed ConsumerFixtures packs)
 
     There is no switch to skip, shrink, or "-Force" past any of the above. If you need that,
     you need a different script, and probably a conversation with whoever owns this file.
@@ -66,6 +73,11 @@
     check). Falls back to $env:ETHER_PUBLISH_PAT. This is deliberately never a plaintext default
     - there is no built-in credential.
 
+.PARAMETER ListGates
+    Print the gate list derived from scripts/Gates.psd1 (name, script, args, execution order) and
+    exit immediately - no version resolution, no dotnet build, no gates actually run. For
+    inspecting what a real run would do without paying for it.
+
 .EXAMPLE
     ./scripts/Publish-Internal.ps1
     Full release rehearsal: every gate, pack, no push, nothing needs to be configured.
@@ -81,11 +93,19 @@ param(
     [switch]$Push,
     [string]$PackageOwner,
     [string]$Feed,
-    [string]$ApiKey
+    [string]$ApiKey,
+    [switch]$ListGates
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+# $LASTEXITCODE does not exist as a variable at all until some native (non-PowerShell) command
+# has run at least once in this session - under Set-StrictMode, reading it before that throws
+# "cannot be retrieved because it has not been set" rather than comparing against $null. The gate
+# loop below reads it after every gate script invocation, so define it up front instead of relying
+# on the dotnet build calls a few lines down to happen to run first.
+$LASTEXITCODE = 0
 
 $scriptStartUtc = [DateTime]::UtcNow
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -129,6 +149,102 @@ function Invoke-Gate {
         throw "Publish-Internal aborted: gate '$Name' failed. Fix the underlying issue and re-run the full chain from the top - there is no partial-resume or -Force in this script by design."
     }
     Write-Host "PASSED: $Name" -ForegroundColor Green
+}
+
+# ---------------------------------------------------------------------------
+# Gate list: derived from scripts/Gates.psd1 (single source of truth, R-02) instead of a
+# hardcoded, hand-synced list. This is the FINAL pre-release check, so it runs EVERYTHING any
+# environment would run - the union of every gate tagged 'ci', 'local-runtime', or
+# 'local-external' - using the fuller variant wherever the same script appears in more than one
+# environment (e.g. full Verify-ConsumerFixtures.ps1, not the ci form's
+# -SkipSolutionBuild/-SkipRuntimeSmoke; full Verify-MsixPackage.ps1, not the ci form's
+# -SkipSolutionBuild). This fixes R-03: the previous hardcoded 22-gate list omitted
+# Verify-PowerShellCompatibility.ps1 and Verify-GallerySmoke.ps1 entirely and never ran any
+# local-runtime gate.
+# ---------------------------------------------------------------------------
+$gatesManifestPath = Join-Path $repoRoot 'scripts\Gates.psd1'
+if (-not (Test-Path -LiteralPath $gatesManifestPath -PathType Leaf)) {
+    throw "Gate manifest is missing: $gatesManifestPath"
+}
+$gatesManifest = Import-PowerShellDataFile -Path $gatesManifestPath
+$publishEnvironments = @('ci', 'local-runtime', 'local-external')
+# Preference when the same Script is tagged more than one of the environments above: prefer
+# whichever runs to completion locally over the CI-trimmed '-Skip*' form.
+$environmentRank = @{ 'local-runtime' = 2; 'local-external' = 1; 'ci' = 0 }
+
+function Get-GateEnvironmentRank {
+    param([Parameter(Mandatory)]$Gate)
+    $best = -1
+    foreach ($gateEnv in @($Gate.Environments)) {
+        if ($environmentRank.ContainsKey($gateEnv) -and $environmentRank[$gateEnv] -gt $best) {
+            $best = $environmentRank[$gateEnv]
+        }
+    }
+    return $best
+}
+
+$publishCandidates = @($gatesManifest.Gates | Where-Object {
+    $gateEnvs = @($_.Environments)
+    @($gateEnvs | Where-Object { $publishEnvironments -contains $_ }).Count -gt 0
+})
+
+$bestRankByScript = @{}
+foreach ($candidate in $publishCandidates) {
+    $rank = Get-GateEnvironmentRank -Gate $candidate
+    if (-not $bestRankByScript.ContainsKey($candidate.Script) -or $rank -gt $bestRankByScript[$candidate.Script]) {
+        $bestRankByScript[$candidate.Script] = $rank
+    }
+}
+
+$seenPublishScripts = New-Object System.Collections.Generic.HashSet[string]
+$publishGates = New-Object System.Collections.Generic.List[object]
+foreach ($candidate in $publishCandidates) {
+    $isWinner = (Get-GateEnvironmentRank -Gate $candidate) -eq $bestRankByScript[$candidate.Script]
+    if ($isWinner -and -not $seenPublishScripts.Contains($candidate.Script)) {
+        [void]$seenPublishScripts.Add($candidate.Script)
+        $publishGates.Add($candidate)
+    }
+}
+if ($publishGates.Count -eq 0) {
+    throw "Derived an empty gate list from $gatesManifestPath for environments ($($publishEnvironments -join ', ')). Refusing to proceed."
+}
+
+# Verify-ConsumerFixtures.ps1 packs Foundation/Controls/Interactions into the local feed that
+# Verify-MsixPackage.ps1 restores from, so MsixPackage must always run after it (same dependency
+# .github/workflows/build.yml documents for the 'ci' forms of both). ConsumerFixtures also runs
+# twice in a row further down (determinism: the same GUI runtime pass must produce the same
+# outcome back to back), so both are pulled out of the single-pass loop below and driven
+# explicitly, in dependency order, instead.
+$consumerFixturesGate = @($publishGates | Where-Object { $_.Script -eq 'Verify-ConsumerFixtures.ps1' } | Select-Object -First 1)
+$msixPackageGate = @($publishGates | Where-Object { $_.Script -eq 'Verify-MsixPackage.ps1' } | Select-Object -First 1)
+if ($consumerFixturesGate.Count -eq 0) {
+    throw "$gatesManifestPath has no Verify-ConsumerFixtures.ps1 entry tagged 'ci', 'local-runtime', or 'local-external'."
+}
+if ($msixPackageGate.Count -eq 0) {
+    throw "$gatesManifestPath has no Verify-MsixPackage.ps1 entry tagged 'ci', 'local-runtime', or 'local-external'."
+}
+$consumerFixturesGate = $consumerFixturesGate[0]
+$msixPackageGate = $msixPackageGate[0]
+$singlePassGates = @($publishGates | Where-Object { $_.Script -ne 'Verify-ConsumerFixtures.ps1' -and $_.Script -ne 'Verify-MsixPackage.ps1' })
+
+if ($ListGates) {
+    Write-Host "Publish-Internal would run $($publishGates.Count) gate(s), derived from $gatesManifestPath (environments: $($publishEnvironments -join ', ')):"
+    $listIndex = 0
+    foreach ($gate in $singlePassGates) {
+        $listIndex++
+        $argsText = '(no args)'
+        if (@($gate.Args.Keys).Count -gt 0) {
+            $argsText = (@($gate.Args.Keys) | ForEach-Object { "-$_=$($gate.Args[$_])" }) -join ' '
+        }
+        Write-Host ("  {0,2}. {1,-28} {2,-38} {3}" -f $listIndex, $gate.Name, $gate.Script, $argsText)
+    }
+    $listIndex++
+    Write-Host ("  {0,2}. {1,-28} {2,-38} (runs twice in a row)" -f $listIndex, $consumerFixturesGate.Name, $consumerFixturesGate.Script)
+    $listIndex++
+    Write-Host ("  {0,2}. {1,-28} {2,-38} (always after ConsumerFixtures)" -f $listIndex, $msixPackageGate.Name, $msixPackageGate.Script)
+    Write-Host ''
+    Write-Host 'Plus, unconditionally and not from the manifest: dotnet build (Debug, x64), dotnet build (Release, x64), and git diff --check.'
+    return
 }
 
 # ---------------------------------------------------------------------------
@@ -201,41 +317,15 @@ try {
         Invoke-DotNet @('build', 'Ether.DesignSystem.slnx', '-c', 'Release', $platformProperty)
     }
 
-    # The 22 static gates .github/workflows/build.yml runs in package-consumers, in the same
-    # order, with the same arguments. Kept as one literal list (not re-derived from the
-    # workflow file) so a change to either place is a visible diff, not silent drift.
-    $staticGates = @(
-        @{ Name = 'Verify-ResourceKeys.ps1 -RequireHighContrastParity'; Script = 'Verify-ResourceKeys.ps1'; Args = @('-RequireHighContrastParity') }
-        @{ Name = 'Verify-ResourceGraph.ps1'; Script = 'Verify-ResourceGraph.ps1'; Args = @() }
-        @{ Name = 'Verify-MarkerContract.ps1'; Script = 'Verify-MarkerContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherProgressBarContract.ps1'; Script = 'Verify-EtherProgressBarContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherButtonContract.ps1'; Script = 'Verify-EtherButtonContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherCheckboxContract.ps1'; Script = 'Verify-EtherCheckboxContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherRadioButtonContract.ps1'; Script = 'Verify-EtherRadioButtonContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherInputContract.ps1'; Script = 'Verify-EtherInputContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherDropdownContract.ps1'; Script = 'Verify-EtherDropdownContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherSegmentedControlContract.ps1'; Script = 'Verify-EtherSegmentedControlContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherIntelligenceButtonContract.ps1'; Script = 'Verify-EtherIntelligenceButtonContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherSteeringBarContract.ps1'; Script = 'Verify-EtherSteeringBarContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherSliderContract.ps1'; Script = 'Verify-EtherSliderContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherMastheadContract.ps1'; Script = 'Verify-EtherMastheadContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherSwitchContract.ps1'; Script = 'Verify-EtherSwitchContract.ps1'; Args = @() }
-        @{ Name = 'Verify-EtherScrollBarContract.ps1'; Script = 'Verify-EtherScrollBarContract.ps1'; Args = @() }
-        @{ Name = 'Verify-UnsupportedProperties.ps1'; Script = 'Verify-UnsupportedProperties.ps1'; Args = @() }
-        @{ Name = 'Verify-InteractionContracts.ps1'; Script = 'Verify-InteractionContracts.ps1'; Args = @() }
-        @{ Name = 'Verify-WinUiConventions.ps1'; Script = 'Verify-WinUiConventions.ps1'; Args = @() }
-        @{ Name = 'Verify-HighContrastPairing.ps1'; Script = 'Verify-HighContrastPairing.ps1'; Args = @() }
-        @{ Name = 'Verify-GalleryControlExample.ps1'; Script = 'Verify-GalleryControlExample.ps1'; Args = @() }
-        @{ Name = 'Verify-GalleryLocalization.ps1'; Script = 'Verify-GalleryLocalization.ps1'; Args = @() }
-    )
-    if ($staticGates.Count -ne 22) {
-        throw "Internal error: expected exactly 22 static gates, found $($staticGates.Count). Do not silently change this count - update this comment and the acceptance criteria together if a gate is genuinely added or removed."
-    }
-
-    foreach ($gate in $staticGates) {
+    # Every manifest-derived publish gate except Verify-ConsumerFixtures.ps1 and
+    # Verify-MsixPackage.ps1 (those two are driven explicitly below, in dependency order - see
+    # the comment above where $singlePassGates was computed). Invoked via hashtable splat only -
+    # never array splat (R-04; see scripts/Gates.psd1's header comment).
+    foreach ($gate in $singlePassGates) {
         Invoke-Gate $gate.Name {
             $scriptPath = Join-Path $repoRoot ('scripts\' + $gate.Script)
-            $gateArgs = $gate.Args
+            $gateArgs = @{}
+            foreach ($key in $gate.Args.Keys) { $gateArgs[$key] = $gate.Args[$key] }
             & $scriptPath @gateArgs
             if ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE) {
                 throw "$($gate.Script) exited with code $LASTEXITCODE."
@@ -250,20 +340,23 @@ try {
         }
     }
 
-    Invoke-Gate 'Verify-ConsumerFixtures.ps1 -SkipSolutionBuild (round 1 of 2)' {
-        & (Join-Path $repoRoot 'scripts\Verify-ConsumerFixtures.ps1') -SkipSolutionBuild
+    $consumerFixturesArgs = @{}
+    foreach ($key in $consumerFixturesGate.Args.Keys) { $consumerFixturesArgs[$key] = $consumerFixturesGate.Args[$key] }
+    $consumerFixturesPath = Join-Path $repoRoot ('scripts\' + $consumerFixturesGate.Script)
+
+    Invoke-Gate "$($consumerFixturesGate.Name) (round 1 of 2)" {
+        & $consumerFixturesPath @consumerFixturesArgs
     }
 
-    Invoke-Gate 'Verify-ConsumerFixtures.ps1 -SkipSolutionBuild (round 2 of 2)' {
-        & (Join-Path $repoRoot 'scripts\Verify-ConsumerFixtures.ps1') -SkipSolutionBuild
+    Invoke-Gate "$($consumerFixturesGate.Name) (round 2 of 2)" {
+        & $consumerFixturesPath @consumerFixturesArgs
     }
 
-    Invoke-Gate 'Verify-ExternalConsumer.ps1' {
-        & (Join-Path $repoRoot 'scripts\Verify-ExternalConsumer.ps1')
-    }
+    $msixPackageArgs = @{}
+    foreach ($key in $msixPackageGate.Args.Keys) { $msixPackageArgs[$key] = $msixPackageGate.Args[$key] }
 
-    Invoke-Gate 'Verify-MsixPackage.ps1 -SkipSolutionBuild' {
-        & (Join-Path $repoRoot 'scripts\Verify-MsixPackage.ps1') -SkipSolutionBuild
+    Invoke-Gate $msixPackageGate.Name {
+        & (Join-Path $repoRoot ('scripts\' + $msixPackageGate.Script)) @msixPackageArgs
     }
 }
 finally {
@@ -295,9 +388,10 @@ foreach ($dir in $freshAuditRuns) {
 }
 
 # ---------------------------------------------------------------------------
-# 5. Pack. Always happens (rehearsal must produce real packages too), never
-#    pushes on its own - Pack-PreviewPackages.ps1 only pushes when given
-#    -Source, which we pass separately below only inside the -Push branch.
+# 5. Pack. Always happens (rehearsal must produce real packages too).
+#    Pack-PreviewPackages.ps1 has no push capability (R-03) - it only packs.
+#    Pushing, when -Push is given, happens explicitly in step 7 below, via this
+#    script's own `dotnet nuget push`, after the typed confirmation.
 # ---------------------------------------------------------------------------
 Write-Section 'Pack Release packages'
 $versionEvidenceRoot = Join-Path $releaseEvidenceRoot $version
