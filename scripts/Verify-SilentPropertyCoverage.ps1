@@ -72,10 +72,34 @@ This is a 'local-runtime' gate (see scripts/Gates.psd1): it needs a runtime evid
 only a local GUI/desktop Verify-ConsumerFixtures.ps1 pass produces, so hosted CI cannot run it.
 If no evidence directory exists yet, this script SKIPS with an explicit, loud message and exits 0
 - it does not silently pass by treating "no evidence" the same as "nothing to check".
+
+.PARAMETER EvidenceDir
+R-12 freshness fix: full path to a specific artifacts/audit-runs/consumer-runtime-evidence-*
+directory to grade, instead of scanning artifacts/audit-runs/ for whatever is newest on disk.
+Falls back to $env:ETHER_CONSUMER_EVIDENCE_DIR when not passed. A caller that just ran
+Verify-ConsumerFixtures.ps1 itself (Publish-Internal.ps1, Verify-RuntimeGates.ps1) should always
+pass this - it is the only way to guarantee this gate grades the evidence THIS run produced rather
+than a stale directory left over from an earlier run (the newest-on-disk scan below cannot tell
+the difference). When given, a missing directory or missing runtime-result.json is a HARD FAILURE
+(not a skip): the caller asserted this evidence exists, so a scan-and-skip fallback would silently
+defeat the whole point of passing the hint. Omit this (and the env var) for a standalone/manual
+run - the original newest-on-disk behavior is preserved unchanged for that case.
+
+.PARAMETER MinCreationTimeUtc
+Optional belt-and-suspenders staleness guard, only meaningful together with -EvidenceDir. An ISO
+8601 / round-trip ('o') timestamp string; falls back to $env:ETHER_CONSUMER_EVIDENCE_MIN_UTC. When
+given, the evidence directory named by -EvidenceDir must have a CreationTimeUtc at or after this
+timestamp, or the gate FAILS loudly - protecting against a future caller bug that resolves
+-EvidenceDir to a directory older than the run that was supposed to have produced it. Never
+required, and never applied when -EvidenceDir is not also given, so a standalone/manual run is
+never failed just because its evidence happens to be old.
 #>
 
 [CmdletBinding()]
-param()
+param(
+    [string]$EvidenceDir,
+    [string]$MinCreationTimeUtc
+)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -88,26 +112,58 @@ if (-not (Test-Path -LiteralPath $dataPath -PathType Leaf)) {
     throw "Single source of truth file not found: $dataPath"
 }
 
-# ---------------------------------------------------------------------------
-# Locate the newest evidence file. This is a 'local-runtime' gate: it is expected to be skipped
-# (not failed) when nothing has produced runtime evidence yet.
-# ---------------------------------------------------------------------------
-if (-not (Test-Path -LiteralPath $auditRunsRoot -PathType Container)) {
-    Write-Host "SKIP: Verify-SilentPropertyCoverage found no $auditRunsRoot directory yet. This gate needs a runtime evidence file produced by a local GUI Verify-ConsumerFixtures.ps1 pass (see scripts/Verify-RuntimeGates.ps1 / Publish-Internal.ps1). Run that first, then re-run this gate." -ForegroundColor Yellow
-    exit 0
+if ([string]::IsNullOrWhiteSpace($EvidenceDir)) {
+    $EvidenceDir = $env:ETHER_CONSUMER_EVIDENCE_DIR
 }
-
-$evidenceDirs = @(Get-ChildItem -LiteralPath $auditRunsRoot -Directory -Filter 'consumer-runtime-evidence-*' | Sort-Object Name -Descending)
-if ($evidenceDirs.Count -eq 0) {
-    Write-Host "SKIP: Verify-SilentPropertyCoverage found $auditRunsRoot but no consumer-runtime-evidence-* subdirectory. This gate needs a runtime evidence file produced by a local GUI Verify-ConsumerFixtures.ps1 pass. Run that first, then re-run this gate." -ForegroundColor Yellow
-    exit 0
+if ([string]::IsNullOrWhiteSpace($MinCreationTimeUtc)) {
+    $MinCreationTimeUtc = $env:ETHER_CONSUMER_EVIDENCE_MIN_UTC
 }
+$hintedMode = -not [string]::IsNullOrWhiteSpace($EvidenceDir)
 
-$newestEvidenceDir = $evidenceDirs[0]
-$evidencePath = Join-Path $newestEvidenceDir.FullName 'runtime-result.json'
-if (-not (Test-Path -LiteralPath $evidencePath -PathType Leaf)) {
-    Write-Host "SKIP: Verify-SilentPropertyCoverage found the newest evidence directory ($($newestEvidenceDir.Name)) but it has no runtime-result.json. Re-run a local GUI Verify-ConsumerFixtures.ps1 pass, then re-run this gate." -ForegroundColor Yellow
-    exit 0
+# ---------------------------------------------------------------------------
+# Locate the evidence file. HINTED MODE (-EvidenceDir / $env:ETHER_CONSUMER_EVIDENCE_DIR): the
+# caller says this is the exact evidence this run produced, so a missing directory or missing
+# runtime-result.json is a hard failure, not a skip - falling back to "newest on disk" here would
+# silently reintroduce the R-12 staleness bug this parameter exists to close. STANDALONE MODE (no
+# hint): scan artifacts/audit-runs/ for the newest consumer-runtime-evidence-* directory, and SKIP
+# (not fail) when nothing has produced runtime evidence yet - unchanged from before R-12.
+# ---------------------------------------------------------------------------
+if ($hintedMode) {
+    if (-not (Test-Path -LiteralPath $EvidenceDir -PathType Container)) {
+        throw "Verify-SilentPropertyCoverage was given an evidence directory hint ('$EvidenceDir', via -EvidenceDir or `$env:ETHER_CONSUMER_EVIDENCE_DIR) that does not exist. The caller (Publish-Internal.ps1 / Verify-RuntimeGates.ps1) says this is the evidence directory THIS run just produced - failing loudly instead of silently falling back to 'newest on disk', which would defeat the entire point of the hint."
+    }
+    $newestEvidenceDir = Get-Item -LiteralPath $EvidenceDir
+    $evidencePath = Join-Path $newestEvidenceDir.FullName 'runtime-result.json'
+    if (-not (Test-Path -LiteralPath $evidencePath -PathType Leaf)) {
+        throw "Verify-SilentPropertyCoverage was given evidence directory hint '$($newestEvidenceDir.FullName)' but it has no runtime-result.json."
+    }
+    if (-not [string]::IsNullOrWhiteSpace($MinCreationTimeUtc)) {
+        $minUtc = [DateTime]::Parse($MinCreationTimeUtc, [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::RoundtripKind)
+        $minUtc = $minUtc.ToUniversalTime()
+        if ($newestEvidenceDir.CreationTimeUtc -lt $minUtc) {
+            throw "Verify-SilentPropertyCoverage's evidence directory hint '$($newestEvidenceDir.FullName)' (created $($newestEvidenceDir.CreationTimeUtc.ToString('o'))) predates this run's start ($($minUtc.ToString('o'))) given via -MinCreationTimeUtc. The caller asserted this evidence was produced by THIS run - a directory older than that means the freshness guarantee was violated somewhere upstream (this is the R-12 staleness guard). Do not investigate by removing -MinCreationTimeUtc; re-run the whole gate chain."
+        }
+    }
+    Write-Host "Verify-SilentPropertyCoverage: using hinted evidence directory (not a newest-on-disk scan): $($newestEvidenceDir.FullName)"
+}
+else {
+    if (-not (Test-Path -LiteralPath $auditRunsRoot -PathType Container)) {
+        Write-Host "SKIP: Verify-SilentPropertyCoverage found no $auditRunsRoot directory yet. This gate needs a runtime evidence file produced by a local GUI Verify-ConsumerFixtures.ps1 pass (see scripts/Verify-RuntimeGates.ps1 / Publish-Internal.ps1). Run that first, then re-run this gate." -ForegroundColor Yellow
+        exit 0
+    }
+
+    $evidenceDirs = @(Get-ChildItem -LiteralPath $auditRunsRoot -Directory -Filter 'consumer-runtime-evidence-*' | Sort-Object Name -Descending)
+    if ($evidenceDirs.Count -eq 0) {
+        Write-Host "SKIP: Verify-SilentPropertyCoverage found $auditRunsRoot but no consumer-runtime-evidence-* subdirectory. This gate needs a runtime evidence file produced by a local GUI Verify-ConsumerFixtures.ps1 pass. Run that first, then re-run this gate." -ForegroundColor Yellow
+        exit 0
+    }
+
+    $newestEvidenceDir = $evidenceDirs[0]
+    $evidencePath = Join-Path $newestEvidenceDir.FullName 'runtime-result.json'
+    if (-not (Test-Path -LiteralPath $evidencePath -PathType Leaf)) {
+        Write-Host "SKIP: Verify-SilentPropertyCoverage found the newest evidence directory ($($newestEvidenceDir.Name)) but it has no runtime-result.json. Re-run a local GUI Verify-ConsumerFixtures.ps1 pass, then re-run this gate." -ForegroundColor Yellow
+        exit 0
+    }
 }
 
 # ---------------------------------------------------------------------------

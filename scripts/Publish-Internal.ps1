@@ -20,7 +20,11 @@
       3. git diff --check
       4. The manifest's Verify-ConsumerFixtures.ps1 gate, TWICE in a row (determinism: the same
          GUI runtime pass must produce the same outcome back to back)
-      5. The manifest's Verify-MsixPackage.ps1 gate, always after Verify-ConsumerFixtures.ps1
+      5. The manifest's Verify-SilentPropertyCoverage.ps1 gate, always after
+         Verify-ConsumerFixtures.ps1 and pointed (via -EvidenceDir) at the exact evidence
+         directory that pass just produced - not "newest on disk" (R-12: it CONSUMES the runtime
+         evidence Verify-ConsumerFixtures.ps1 GENERATES, so it must never grade a stale prior run)
+      6. The manifest's Verify-MsixPackage.ps1 gate, always after Verify-ConsumerFixtures.ps1
          (it restores from the local feed ConsumerFixtures packs)
 
     There is no switch to skip, shrink, or "-Force" past any of the above. If you need that,
@@ -215,17 +219,34 @@ if ($publishGates.Count -eq 0) {
 # twice in a row further down (determinism: the same GUI runtime pass must produce the same
 # outcome back to back), so both are pulled out of the single-pass loop below and driven
 # explicitly, in dependency order, instead.
+#
+# R-12 follow-up: Verify-SilentPropertyCoverage.ps1 has the SAME kind of dependency -
+# ConsumerFixtures GENERATES the artifacts/audit-runs/consumer-runtime-evidence-*/runtime-result
+# .json evidence it CONSUMES - so it is pulled out here too. Previously it stayed in the
+# single-pass loop, which runs in the manifest's declared order (Gates.psd1 lists
+# SilentPropertyCoverage right after ConsumerFixtures-runtime); that order is correct for
+# Verify-RuntimeGates.ps1, which runs gates in declared order, but Publish-Internal.ps1 already
+# reorders ConsumerFixtures/MsixPackage to the end, so the single-pass loop ran
+# SilentPropertyCoverage BEFORE ConsumerFixtures had produced this run's evidence - it graded
+# whatever evidence directory happened to be newest on disk from an earlier run instead. See
+# docs/plans/2026-08-31-release-blockers-spec.md R-12 and the comment on Gates.psd1's
+# SilentPropertyCoverage entry.
 $consumerFixturesGate = @($publishGates | Where-Object { $_.Script -eq 'Verify-ConsumerFixtures.ps1' } | Select-Object -First 1)
 $msixPackageGate = @($publishGates | Where-Object { $_.Script -eq 'Verify-MsixPackage.ps1' } | Select-Object -First 1)
+$silentCoverageGate = @($publishGates | Where-Object { $_.Script -eq 'Verify-SilentPropertyCoverage.ps1' } | Select-Object -First 1)
 if ($consumerFixturesGate.Count -eq 0) {
     throw "$gatesManifestPath has no Verify-ConsumerFixtures.ps1 entry tagged 'ci', 'local-runtime', or 'local-external'."
 }
 if ($msixPackageGate.Count -eq 0) {
     throw "$gatesManifestPath has no Verify-MsixPackage.ps1 entry tagged 'ci', 'local-runtime', or 'local-external'."
 }
+if ($silentCoverageGate.Count -eq 0) {
+    throw "$gatesManifestPath has no Verify-SilentPropertyCoverage.ps1 entry tagged 'ci', 'local-runtime', or 'local-external'."
+}
 $consumerFixturesGate = $consumerFixturesGate[0]
 $msixPackageGate = $msixPackageGate[0]
-$singlePassGates = @($publishGates | Where-Object { $_.Script -ne 'Verify-ConsumerFixtures.ps1' -and $_.Script -ne 'Verify-MsixPackage.ps1' })
+$silentCoverageGate = $silentCoverageGate[0]
+$singlePassGates = @($publishGates | Where-Object { $_.Script -ne 'Verify-ConsumerFixtures.ps1' -and $_.Script -ne 'Verify-MsixPackage.ps1' -and $_.Script -ne 'Verify-SilentPropertyCoverage.ps1' })
 
 if ($ListGates) {
     Write-Host "Publish-Internal would run $($publishGates.Count) gate(s), derived from $gatesManifestPath (environments: $($publishEnvironments -join ', ')):"
@@ -240,6 +261,8 @@ if ($ListGates) {
     }
     $listIndex++
     Write-Host ("  {0,2}. {1,-28} {2,-38} (runs twice in a row)" -f $listIndex, $consumerFixturesGate.Name, $consumerFixturesGate.Script)
+    $listIndex++
+    Write-Host ("  {0,2}. {1,-28} {2,-38} (after ConsumerFixtures; -EvidenceDir pins it to THIS run's evidence, R-12)" -f $listIndex, $silentCoverageGate.Name, $silentCoverageGate.Script)
     $listIndex++
     Write-Host ("  {0,2}. {1,-28} {2,-38} (always after ConsumerFixtures)" -f $listIndex, $msixPackageGate.Name, $msixPackageGate.Script)
     Write-Host ''
@@ -317,10 +340,11 @@ try {
         Invoke-DotNet @('build', 'Ether.DesignSystem.slnx', '-c', 'Release', $platformProperty)
     }
 
-    # Every manifest-derived publish gate except Verify-ConsumerFixtures.ps1 and
-    # Verify-MsixPackage.ps1 (those two are driven explicitly below, in dependency order - see
-    # the comment above where $singlePassGates was computed). Invoked via hashtable splat only -
-    # never array splat (R-04; see scripts/Gates.psd1's header comment).
+    # Every manifest-derived publish gate except Verify-ConsumerFixtures.ps1,
+    # Verify-MsixPackage.ps1, and Verify-SilentPropertyCoverage.ps1 (those three are driven
+    # explicitly below, in dependency order - see the comment above where $singlePassGates was
+    # computed). Invoked via hashtable splat only - never array splat (R-04; see
+    # scripts/Gates.psd1's header comment).
     foreach ($gate in $singlePassGates) {
         Invoke-Gate $gate.Name {
             $scriptPath = Join-Path $repoRoot ('scripts\' + $gate.Script)
@@ -352,6 +376,51 @@ try {
         & $consumerFixturesPath @consumerFixturesArgs
     }
 
+    # -------------------------------------------------------------------
+    # Evidence freshness. The two Verify-ConsumerFixtures.ps1 rounds above must each have written
+    # a NEW artifacts/audit-runs/consumer-runtime-evidence-* directory with a timestamp after this
+    # script started. A directory left over from an earlier run does not satisfy this, even if its
+    # contents claim success. This is computed HERE (moved up from a standalone post-chain step)
+    # so Verify-SilentPropertyCoverage.ps1 - which runs next and CONSUMES this evidence - can be
+    # pointed at the exact directory this run just produced instead of "newest on disk" (R-12).
+    # -------------------------------------------------------------------
+    Write-Section 'Evidence freshness'
+    if (-not (Test-Path -LiteralPath $auditRunsRoot)) {
+        throw "Publish-Internal aborted: $auditRunsRoot does not exist after running Verify-ConsumerFixtures.ps1 twice. Expected fresh evidence directories."
+    }
+    $auditRunsAfter = @(Get-ChildItem -LiteralPath $auditRunsRoot -Directory)
+    $newAuditRuns = @($auditRunsAfter | Where-Object { $_.Name -notin $auditRunsBefore })
+    $freshAuditRuns = @($newAuditRuns | Where-Object { $_.CreationTimeUtc -ge $scriptStartUtc })
+
+    if ($freshAuditRuns.Count -lt 2) {
+        $seen = if ($newAuditRuns.Count -eq 0) { '(none)' } else { ($newAuditRuns | ForEach-Object { "$($_.Name) [created $($_.CreationTimeUtc.ToString('o'))]" }) -join '; ' }
+        throw "Publish-Internal aborted: expected at least 2 new artifacts/audit-runs/ evidence directories created at or after this run's start ($($scriptStartUtc.ToString('o'))), found $($freshAuditRuns.Count). New directories seen: $seen. This is the stale-evidence guard - do not investigate by re-running only the evidence check; re-run the whole script."
+    }
+    Write-Host "Fresh evidence confirmed: $($freshAuditRuns.Count) new audit-run director$(if ($freshAuditRuns.Count -eq 1) { 'y' } else { 'ies' }) created after $($scriptStartUtc.ToString('o'))."
+    foreach ($dir in $freshAuditRuns) {
+        Write-Host "  - $($dir.FullName)"
+    }
+
+    # R-12: the freshest of the two evidence directories just confirmed above is what
+    # Verify-SilentPropertyCoverage.ps1 must grade - not whatever it would find by scanning
+    # artifacts/audit-runs/ for the newest directory on disk (that scan cannot distinguish
+    # "produced by this run" from "left over from an earlier run"). Passed via -EvidenceDir, with
+    # -MinCreationTimeUtc as a belt-and-suspenders staleness guard inside the gate script itself -
+    # see Verify-SilentPropertyCoverage.ps1's own header comment for what it does with these.
+    $freshestEvidenceDir = @($freshAuditRuns | Sort-Object Name -Descending | Select-Object -First 1)[0]
+
+    $silentCoverageArgs = @{}
+    foreach ($key in $silentCoverageGate.Args.Keys) { $silentCoverageArgs[$key] = $silentCoverageGate.Args[$key] }
+    $silentCoverageArgs['EvidenceDir'] = $freshestEvidenceDir.FullName
+    $silentCoverageArgs['MinCreationTimeUtc'] = $scriptStartUtc.ToString('o')
+
+    Invoke-Gate $silentCoverageGate.Name {
+        & (Join-Path $repoRoot ('scripts\' + $silentCoverageGate.Script)) @silentCoverageArgs
+        if ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE) {
+            throw "$($silentCoverageGate.Script) exited with code $LASTEXITCODE."
+        }
+    }
+
     $msixPackageArgs = @{}
     foreach ($key in $msixPackageGate.Args.Keys) { $msixPackageArgs[$key] = $msixPackageGate.Args[$key] }
 
@@ -364,33 +433,9 @@ finally {
 }
 
 # ---------------------------------------------------------------------------
-# 4. Evidence freshness. The two Verify-ConsumerFixtures.ps1 rounds above must
-#    each have written a NEW artifacts/audit-runs/consumer-runtime-evidence-*
-#    directory with a timestamp after this script started. A directory left
-#    over from an earlier run does not satisfy this, even if its contents
-#    claim success.
-# ---------------------------------------------------------------------------
-Write-Section 'Evidence freshness'
-if (-not (Test-Path -LiteralPath $auditRunsRoot)) {
-    throw "Publish-Internal aborted: $auditRunsRoot does not exist after running Verify-ConsumerFixtures.ps1 twice. Expected fresh evidence directories."
-}
-$auditRunsAfter = @(Get-ChildItem -LiteralPath $auditRunsRoot -Directory)
-$newAuditRuns = @($auditRunsAfter | Where-Object { $_.Name -notin $auditRunsBefore })
-$freshAuditRuns = @($newAuditRuns | Where-Object { $_.CreationTimeUtc -ge $scriptStartUtc })
-
-if ($freshAuditRuns.Count -lt 2) {
-    $seen = if ($newAuditRuns.Count -eq 0) { '(none)' } else { ($newAuditRuns | ForEach-Object { "$($_.Name) [created $($_.CreationTimeUtc.ToString('o'))]" }) -join '; ' }
-    throw "Publish-Internal aborted: expected at least 2 new artifacts/audit-runs/ evidence directories created at or after this run's start ($($scriptStartUtc.ToString('o'))), found $($freshAuditRuns.Count). New directories seen: $seen. This is the stale-evidence guard - do not investigate by re-running only the evidence check; re-run the whole script."
-}
-Write-Host "Fresh evidence confirmed: $($freshAuditRuns.Count) new audit-run director$(if ($freshAuditRuns.Count -eq 1) { 'y' } else { 'ies' }) created after $($scriptStartUtc.ToString('o'))."
-foreach ($dir in $freshAuditRuns) {
-    Write-Host "  - $($dir.FullName)"
-}
-
-# ---------------------------------------------------------------------------
-# 5. Pack. Always happens (rehearsal must produce real packages too).
+# 4. Pack. Always happens (rehearsal must produce real packages too).
 #    Pack-PreviewPackages.ps1 has no push capability (R-03) - it only packs.
-#    Pushing, when -Push is given, happens explicitly in step 7 below, via this
+#    Pushing, when -Push is given, happens explicitly in step 6 below, via this
 #    script's own `dotnet nuget push`, after the typed confirmation.
 # ---------------------------------------------------------------------------
 Write-Section 'Pack Release packages'
@@ -414,7 +459,7 @@ foreach ($id in $packageIds) {
 }
 
 # ---------------------------------------------------------------------------
-# 6. Evidence bundle. Written every run (rehearsal or real push) so a
+# 5. Evidence bundle. Written every run (rehearsal or real push) so a
 #    rehearsal leaves the same kind of trail a real publish does.
 # ---------------------------------------------------------------------------
 $summary = [ordered]@{
@@ -451,7 +496,7 @@ if (-not $Push) {
 }
 
 # ---------------------------------------------------------------------------
-# 7. Push path. Everything above already ran unconditionally; this is purely
+# 6. Push path. Everything above already ran unconditionally; this is purely
 #    additive on top of a rehearsal that already succeeded.
 # ---------------------------------------------------------------------------
 Write-Section 'Resolve feed configuration'

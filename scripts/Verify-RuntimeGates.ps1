@@ -22,9 +22,11 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+$scriptStartUtc = [DateTime]::UtcNow
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $scriptsDir = Join-Path $repoRoot 'scripts'
 $manifestPath = Join-Path $scriptsDir 'Gates.psd1'
+$auditRunsRoot = Join-Path $repoRoot 'artifacts\audit-runs'
 
 if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) {
     throw "Gate manifest is missing: $manifestPath"
@@ -48,6 +50,16 @@ foreach ($gate in $gates) {
 # -SkipSolutionBuild is passed through only to gates whose script supports it.
 $skipSolutionBuildCapableScripts = @('Verify-ConsumerFixtures.ps1', 'Verify-MsixPackage.ps1')
 
+# R-12: Verify-SilentPropertyCoverage.ps1 CONSUMES the runtime evidence that
+# Verify-ConsumerFixtures.ps1 GENERATES (artifacts/audit-runs/consumer-runtime-evidence-*/
+# runtime-result.json). Gates.psd1 already declares SilentPropertyCoverage after
+# ConsumerFixtures-runtime, so running gates in declared order is correct here - but capture and
+# pass the exact evidence directory ConsumerFixtures just produced anyway (via
+# Verify-SilentPropertyCoverage.ps1's -EvidenceDir/-MinCreationTimeUtc), so correctness does not
+# silently depend on manifest ordering alone. See Gates.psd1's comment on the SilentPropertyCoverage
+# entry and docs/plans/2026-08-31-release-blockers-spec.md R-12.
+$capturedEvidenceDir = $null
+
 Push-Location $repoRoot
 try {
     foreach ($gate in $gates) {
@@ -56,6 +68,31 @@ try {
         if ($SkipSolutionBuild -and ($skipSolutionBuildCapableScripts -contains $gate.Script)) {
             $callArgs['SkipSolutionBuild'] = $true
         }
+
+        if ($gate.Script -eq 'Verify-ConsumerFixtures.ps1') {
+            $evidenceDirsBefore = @()
+            if (Test-Path -LiteralPath $auditRunsRoot) {
+                $evidenceDirsBefore = @(Get-ChildItem -LiteralPath $auditRunsRoot -Directory -Filter 'consumer-runtime-evidence-*' | ForEach-Object { $_.Name })
+            }
+            & (Join-Path $scriptsDir $gate.Script) @callArgs
+            if (Test-Path -LiteralPath $auditRunsRoot) {
+                $newEvidenceDirs = @(
+                    Get-ChildItem -LiteralPath $auditRunsRoot -Directory -Filter 'consumer-runtime-evidence-*' |
+                        Where-Object { $evidenceDirsBefore -notcontains $_.Name } |
+                        Sort-Object Name -Descending
+                )
+                if ($newEvidenceDirs.Count -gt 0) {
+                    $capturedEvidenceDir = $newEvidenceDirs[0].FullName
+                }
+            }
+            continue
+        }
+
+        if ($gate.Script -eq 'Verify-SilentPropertyCoverage.ps1' -and $capturedEvidenceDir) {
+            $callArgs['EvidenceDir'] = $capturedEvidenceDir
+            $callArgs['MinCreationTimeUtc'] = $scriptStartUtc.ToString('o')
+        }
+
         & (Join-Path $scriptsDir $gate.Script) @callArgs
     }
     Write-Host 'Runtime gates passed: consumer fixture markers, Gallery smoke Light/Dark, and unsigned MSIX produce.'

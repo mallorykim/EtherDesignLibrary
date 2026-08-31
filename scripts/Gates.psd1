@@ -77,15 +77,21 @@
         @{ Name = 'ConsumerFixtures-runtime';     Script = 'Verify-ConsumerFixtures.ps1';             Environments = @('local-runtime'); Args = @{} }
         @{ Name = 'GallerySmoke';                 Script = 'Verify-GallerySmoke.ps1';                 Environments = @('local-runtime'); Args = @{} }
         @{ Name = 'MsixPackage-runtime';          Script = 'Verify-MsixPackage.ps1';                  Environments = @('local-runtime'); Args = @{} }
-        # R-07: reads the newest artifacts/audit-runs/consumer-runtime-evidence-*/runtime-result.json,
-        # which ConsumerFixtures-runtime (above) produces. Placed last so Verify-RuntimeGates.ps1 (which
-        # runs local-runtime gates in this declared order) sees fresh evidence. NOTE: Publish-Internal.ps1
-        # pulls Verify-ConsumerFixtures.ps1/Verify-MsixPackage.ps1 out of manifest order to run them last
-        # (dependency ordering - see its own header comment), so in a Publish-Internal run specifically
-        # this gate still runs against whatever evidence directory is newest ON DISK BEFORE that run's own
-        # fresh ConsumerFixtures pass, not necessarily produced by the current commit. Not a false-pass
-        # risk (a stale evidence file can only be a superset/subset of a fresh one's findings, not hide a
-        # real regression it would have caught), but a real gap in "evidence matches this exact commit".
+        # R-07: reads a runtime evidence file (artifacts/audit-runs/consumer-runtime-evidence-*/
+        # runtime-result.json) that ConsumerFixtures-runtime (above) produces. Placed last so
+        # Verify-RuntimeGates.ps1 (which runs local-runtime gates in this declared order) sees fresh
+        # evidence by manifest order alone.
+        #
+        # R-12 fix: Publish-Internal.ps1 pulls Verify-ConsumerFixtures.ps1/Verify-MsixPackage.ps1 out of
+        # manifest order to run them last (dependency ordering - see its own header comment), which used
+        # to mean this gate ran BEFORE that run's own ConsumerFixtures pass and graded whatever evidence
+        # directory was newest ON DISK from some earlier run instead. Publish-Internal.ps1 now pulls this
+        # gate out too and drives it explicitly after ConsumerFixtures, passing the exact evidence
+        # directory that pass just produced via Verify-SilentPropertyCoverage.ps1's -EvidenceDir
+        # parameter (env var equivalent: $env:ETHER_CONSUMER_EVIDENCE_DIR) - so it is no longer a
+        # newest-on-disk scan in either Publish-Internal.ps1 or Verify-RuntimeGates.ps1. See
+        # Verify-SilentPropertyCoverage.ps1's own header comment and
+        # docs/plans/2026-08-31-release-blockers-spec.md R-12 for the full mechanism.
         @{ Name = 'SilentPropertyCoverage';       Script = 'Verify-SilentPropertyCoverage.ps1';       Environments = @('local-runtime'); Args = @{} }
 
         # --- local-external: needs the machine's NuGet cache and a true out-of-repo consumer ---
