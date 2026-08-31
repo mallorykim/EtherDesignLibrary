@@ -10,6 +10,8 @@
     <Authors>Ether Design System</Authors>
     <Description>Application-layer interaction adapters for Ether WinUI 3 controls.</Description>
     <PackageTags>winui;winui3;design-system;interaction;events;preview</PackageTags>
+    <PackageReleaseNotes>0.1.0-preview.1. See docs/releases/0.1.0-preview.1.md. EtherButton RightIconVisibility was removed (RightIconStates). High Contrast semantic keys map to Windows SystemColor*. x64 unpackaged and packaged (MSIX build/produce) consumers are verified; MSIX install/runtime, any architecture other than x64, Insights/Appium, and stable-release readiness remain incomplete.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/yiqizhong/ether-lib</PackageProjectUrl>
     <RepositoryUrl>https://github.com/yiqizhong/ether-lib</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>

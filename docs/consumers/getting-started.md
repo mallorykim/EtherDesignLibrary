@@ -9,7 +9,8 @@
 - 目标框架：`net8.0-windows10.0.19041.0`
 - 最低 Windows 平台版本：`10.0.17763.0`
 - 架构：仅 `x64`
-- 宿主：已验证 unpackaged 与 packaged（MSIX）两种形态。
+- 宿主：已验证 unpackaged 与 packaged（MSIX **构建/产出**）两种形态；
+  MSIX 的**安装与运行时**尚未验证，仍不完整。
 - 包：`Ether.DesignSystem.Foundation`、`Ether.DesignSystem.Controls`、
   `Ether.DesignSystem.Interactions`，当前均使用 `0.1.0-preview.1`。
 

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
@@ -13,6 +14,7 @@ namespace Ether.DesignSystem.Controls.Primitives;
 /// conversion utility. The owning bindings are one-way visibility bindings, so reverse
 /// conversion is deliberately unsupported.
 /// </remarks>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class EtherStringContentVisibilityConverter : IValueConverter
 {
     /// <inheritdoc />

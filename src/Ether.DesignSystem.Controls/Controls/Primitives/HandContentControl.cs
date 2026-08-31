@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 
@@ -8,6 +9,7 @@ namespace Ether.DesignSystem.Controls.Primitives;
 /// public metadata. It is template implementation support, not a supported design-system
 /// control contract; consumers should use the named Ether controls instead.
 /// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public class HandContentControl : ContentControl
 {
     public HandContentControl()

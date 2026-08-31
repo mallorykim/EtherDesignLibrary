@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
@@ -7,8 +8,11 @@ namespace Ether.DesignSystem.Controls;
 /// <summary>
 /// Equal-width row for <see cref="EtherSegmentedControl"/> segments. When the parent
 /// gives a finite width the slots fill it; when unconstrained each slot uses the
-/// widest child's desired width (Figma's equal 110px segments).
+/// widest child's desired width (Figma's equal 110px segments). Public only because
+/// WinUI XAML resolves <c>using:</c> types through public metadata; not a supported
+/// consumer API.
 /// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class EtherSegmentPanel : Panel
 {
     /// <summary>Identifies the <see cref="Spacing"/> dependency property.</summary>
