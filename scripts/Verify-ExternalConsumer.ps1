@@ -46,6 +46,41 @@ function Write-Utf8File {
     Set-Content -LiteralPath $Path -Value $Content -Encoding utf8
 }
 
+function Remove-DirectoryLongPathSafe {
+    # Plain 'Remove-Item -Recurse -Force' fails once a nested path exceeds the Windows
+    # MAX_PATH (260-character) limit, which the deeply nested WindowsAppSDK build output
+    # under a GUID-suffixed temp root can exceed. robocopy has native long-path support, so
+    # mirroring an empty directory over the target deletes its contents regardless of path
+    # length; the (now-empty) directories are then trivially removable.
+    param(
+        [Parameter(Mandatory)][string]$Path
+    )
+
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return
+    }
+
+    $emptyMirror = Join-Path ([System.IO.Path]::GetTempPath()) ("ether-empty-{0}" -f [guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $emptyMirror -Force | Out-Null
+    try {
+        $robocopyOutput = & robocopy $emptyMirror $Path /MIR /NFL /NDL /NJH /NJS /NC /NS /NP 2>&1
+        $robocopyExitCode = $LASTEXITCODE
+        # robocopy exit codes 0-7 are success (bit flags for "files copied/skipped/mismatched");
+        # only >= 8 indicates a real failure.
+        if ($robocopyExitCode -ge 8) {
+            throw "robocopy mirror-purge of '$Path' failed with exit code $robocopyExitCode. Output: $($robocopyOutput -join [Environment]::NewLine)"
+        }
+
+        Remove-Item -LiteralPath $Path -Recurse -Force -ErrorAction SilentlyContinue
+        if (Test-Path -LiteralPath $Path) {
+            throw "Directory '$Path' still exists after long-path-safe deletion."
+        }
+    }
+    finally {
+        Remove-Item -LiteralPath $emptyMirror -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
 function New-ExternalConsumerProject {
     param(
         [Parameter(Mandatory)][string]$Variant,
@@ -632,8 +667,16 @@ try {
 }
 finally {
     if ($succeeded) {
-        Remove-Item -LiteralPath $temporaryRoot -Recurse -Force
-        Write-Host "External consumer verification passed; cleaned temporary root $temporaryRoot"
+        # Verification substance already passed at this point. A housekeeping failure while
+        # deleting the temp root (e.g. a residual long-path edge case) must not turn that pass
+        # into a gate failure, so cleanup errors are reported as warnings, not rethrown.
+        try {
+            Remove-DirectoryLongPathSafe -Path $temporaryRoot
+            Write-Host "External consumer verification passed; cleaned temporary root $temporaryRoot"
+        }
+        catch {
+            Write-Warning "External consumer verification passed, but cleanup of temporary root '$temporaryRoot' failed and it was left behind for manual removal: $($_.Exception.Message)"
+        }
     }
     else {
         Write-Warning "External consumer verification failed; retained temporary root for diagnosis: $temporaryRoot"
