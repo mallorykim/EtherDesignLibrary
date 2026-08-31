@@ -676,3 +676,4 @@ golden 基线会把**坏渲染**当正确锁死:`segmentedControl-light/dark.png
 | 日期 | 条目 | 变更 |
 |---|---|---|
 | 2026-08-31 | R-13 | 用户手动验收发现 segment 选中隐形(库模板依赖没进包的 Gallery HandRadioButton);修复 a872330+39b9fde,重生成坏基线 3d926b9;全 13 控件对等审计通过;Dropdown 亲验正常。教训:基线会锁坏渲染,真人眼睛是最后闸。待重跑 rehearsal |
+| 2026-08-31 | R-13 复验 | 首次重跑 rehearsal 挂在 SteeringBar 玻璃拇指(round1 过 round2 挂,241px 超阈值 39=运行间玻璃噪声,非回归;segment round1 已验证过)。修 `0349ab9`:非锁定 Infrastructure.cs 加每控件容差 steeringBar=800(>241 噪声、<<9495 真实改动),锁定 AttachedVisualProperties.cs 不动;并修 Verify-ConsumerFixtures.ps1 先查 outcome 再读 .evidence(否则真失败被盖成 "property evidence not found")。双跑 ConsumerFixtures 均绿。待再跑全链 |
