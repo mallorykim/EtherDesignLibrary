@@ -286,16 +286,25 @@ Unchecked/Checked 状态，所以那次选择了拦截+抛异常；这一批属�
   `Ether*` 控件。
 - Controls 与 Foundation 在当前 preview 发布线按同一版本使用；升级时应一起升级
   两者。Interaction 包也应与发布公告给出的版本组合保持一致。
-- 除上表这 12 个属性外，各控件还继承了大量 WinUI 基类属性（`Background` /
-  `BorderBrush` / `BorderThickness` / `CornerRadius` / `Padding` / `Foreground` /
-  `FontSize` 等外观类属性）——这些同样是**设计系统故意不开放覆盖**的：控件模板
-  固定引用设计令牌而非 `{TemplateBinding ...}`，为的是让所有消费方看到一致的
-  视觉语言，"设置了没反应"是特性而不是遗漏。这类属性、以及少数确认无效的底层
-  平台属性（如 `Clip` / `CompositeMode`），完整登记在
-  `scripts/UnsupportedProperties.psd1` 的 `AcknowledgedSilent` 列表中（按
-  `design-system-owned` / `platform-noop` 分类），并由 `local-runtime` 门禁
-  `scripts/Verify-SilentPropertyCoverage.ps1` 针对每次运行时证据自动核对：任何
-  新出现的、未被登记的静默失效属性都会让该门禁失败，而不是被漏掉。
+- 除上表这 12 个属性外，各控件还继承了大量 WinUI 基类属性。其中多数确实是
+  外观类属性（`Background` / `BorderBrush` / `BorderThickness` / `CornerRadius` /
+  `Padding` / `Foreground` / `FontSize` 等）——这些是**设计系统故意不开放覆盖**
+  的：控件模板固定引用设计令牌而非 `{TemplateBinding ...}`，为的是让所有消费方
+  看到一致的视觉语言，"设置了没反应"是特性而不是遗漏。但**并非全部如此**：还有
+  一部分属性模板其实做了 `{TemplateBinding ...}`（只是画面探针在其测试条件下
+  没能测出像素差异——例如 `EtherInput.PlaceholderText` 只在控件为空且未获焦时
+  渲染），或由 WinUI 基类在模板之外自行处理（例如 `TextBox` 的 `AcceptsReturn`
+  / `IsReadOnly` / `CharacterCasing`）——这些属性其实是**生效的**，不应被当成
+  "不支持"。以上区分（连同少数确认无效的底层平台属性，如 `Clip` /
+  `CompositeMode`），完整登记在 `scripts/UnsupportedProperties.psd1` 的
+  `AcknowledgedSilent` 列表中，按 `design-system-owned`（确认未绑定，故意锁定）/
+  `consumed-visually-stable`（确认已绑定，只是探针未测出像素差异）/
+  `behavioral`（基类行为生效，不可用像素差异测试）/ `platform-noop`（底层平台
+  DP，无消费方期待）/ `needs-review`（尚不确定，待人工复核）五类归档，每条都附
+  `Reason`。`local-runtime` 门禁 `scripts/Verify-SilentPropertyCoverage.ps1` 针对
+  每次运行时证据自动双向核对（新出现的、未登记的静默失效属性会让门禁失败），
+  并额外做 `TemplateBinding` 交叉检查确保 `design-system-owned` /
+  `consumed-visually-stable` 的标签本身没有标错。
 
 ## 5. 各控件标记参考
 
