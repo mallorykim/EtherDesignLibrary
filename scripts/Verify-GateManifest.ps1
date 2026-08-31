@@ -157,10 +157,31 @@ if ($selfGate.Count -eq 0) {
     $violations.Add("$thisScriptName has no Gates entry tagged 'ci' in $manifestPath. This script must be a manifest-declared 'ci' gate (and a build.yml step) so it cannot remove itself from what it enforces.")
 }
 
+# ---------------------------------------------------------------------------
+# Check 4 (R-04): every Gates[].Args must be a [hashtable]. Gates.psd1's own header
+# comment (see lines 12-25) requires hashtable splat for every consumer - an array
+# (e.g. @('-RequireHighContrastParity')) or a bare dash-prefixed string binds
+# POSITIONALLY when splatted, silently leaving switches $false while the string
+# lands in the first positional parameter. That exact defect is what let the
+# HighContrast parity gate run disabled while writing a JSON audit to a repo-root
+# file literally named "-RequireHighContrastParity". Asserting the type here means
+# a future entry cannot reintroduce that defect without failing this gate.
+# ---------------------------------------------------------------------------
+foreach ($gate in $gates) {
+    if ($null -eq $gate.Args) {
+        $violations.Add("Gates entry '$($gate.Name)' has no 'Args' key. Every entry must declare Args as a hashtable (use @{} for no arguments).")
+        continue
+    }
+    if (-not ($gate.Args -is [hashtable])) {
+        $actualType = $gate.Args.GetType().FullName
+        $violations.Add("Gates entry '$($gate.Name)' has Args of type '$actualType', not [hashtable]. Args must always be a hashtable (e.g. @{} or @{ SomeSwitch = `$true }) - an array or bare string splats POSITIONALLY and can silently leave switches unbound (R-04).")
+    }
+}
+
 if ($violations.Count -gt 0) {
     Write-Host 'Verify-GateManifest failures:' -ForegroundColor Red
     foreach ($violation in $violations) { Write-Host "  - $violation" -ForegroundColor Red }
     throw "Verify-GateManifest found $($violations.Count) issue(s). scripts/Gates.psd1 and its consumers have drifted - see above."
 }
 
-Write-Host "Verify-GateManifest passed: $($gates.Count) manifest entries ($($manifestCiScripts.Count) tagged 'ci'), $($unmanifested.Count) intentionally-unmanifested script(s), $($onDisk.Count) Verify-*.ps1 files on disk all accounted for, and Gates.psd1's 'ci' set/order matches build.yml's package-consumers job exactly."
+Write-Host "Verify-GateManifest passed: $($gates.Count) manifest entries ($($manifestCiScripts.Count) tagged 'ci'), all with hashtable Args, $($unmanifested.Count) intentionally-unmanifested script(s), $($onDisk.Count) Verify-*.ps1 files on disk all accounted for, and Gates.psd1's 'ci' set/order matches build.yml's package-consumers job exactly."

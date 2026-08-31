@@ -425,9 +425,18 @@ $summary = [ordered]@{
     user              = $env:USERNAME
     gitCommit         = (& git -C $repoRoot rev-parse HEAD).Trim()
     gitBranch         = (& git -C $repoRoot rev-parse --abbrev-ref HEAD).Trim()
-    pushed            = [bool]$Push
+    # R-05: never claim pushed until the push actually succeeds. This must stay $false here even
+    # when -Push was requested - a mistyped confirmation (see the Read-Host check below) or a
+    # failed `dotnet nuget push` must not leave a publish-summary.json on disk that says "pushed:
+    # true" for a publish that never happened. The post-push rewrite further down (after `dotnet
+    # nuget push` for every package has succeeded) is the ONLY place allowed to set this to $true.
+    pushed            = $false
     packages          = @($packedPackages | ForEach-Object { $_.Name })
     freshEvidenceDirs = @($freshAuditRuns | ForEach-Object { $_.FullName })
+}
+if ($summary.pushed) {
+    # Guard against a future edit re-deriving this field from -Push again (R-05 regression).
+    throw 'Internal error: the initial publish-summary.json write must always record pushed=$false, regardless of -Push. It is written before the confirmation prompt and before dotnet nuget push runs, so it cannot yet know whether a push will succeed.'
 }
 $summaryPath = Join-Path $versionEvidenceRoot 'publish-summary.json'
 ($summary | ConvertTo-Json -Depth 10) | Set-Content -LiteralPath $summaryPath -Encoding utf8

@@ -42,3 +42,11 @@ TestResults/
 
 # Local agent scratch (task briefs/reports; not source of truth)
 .superpowers/
+
+# R-04: array-splat-of-a-switch bug in Publish-Internal.ps1 used to bind the
+# '-RequireHighContrastParity' string to Verify-ResourceKeys.ps1's positional
+# $OutputPath, writing a 22 KB JSON audit to a repo-root file literally named
+# "-RequireHighContrastParity". The splat bug is fixed (hashtable splat via
+# scripts/Gates.psd1), but keep this ignored so the misnamed file can never be
+# committed again if the bug (or something like it) resurfaces.
+/-RequireHighContrastParity
