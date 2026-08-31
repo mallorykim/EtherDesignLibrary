@@ -1009,6 +1009,24 @@ try {
             $assetsWithoutStorageFileDiagnosis = @($reportedAssets | Where-Object {
                 $_.storageFileResolved -ne $true -and [string]::IsNullOrWhiteSpace($_.storageFileError)
             })
+            # Surface the real failure BEFORE touching any nested property of $runtimeResult
+            # (in particular .attachedVisualProperties.evidence below). On a failed run,
+            # $runtimeResult can be $null (bad/missing marker JSON) or a success-shaped-but-empty
+            # object whose .attachedVisualProperties is $null - under Set-StrictMode -Version
+            # Latest, chaining a second property lookup off a $null value throws a generic
+            # "The property 'evidence' cannot be found on this object" error that masks the
+            # actual failure. Check outcome first and fail with the real exception text
+            # ($runtimeResult.message, populated by RuntimeVerification.WriteMarker) instead.
+            if ($null -eq $runtimeResult -or $runtimeResult.outcome -ne 'success') {
+                $failureDetail = $null
+                if ($null -ne $runtimeResult -and -not [string]::IsNullOrWhiteSpace($runtimeResult.message)) {
+                    $failureDetail = $runtimeResult.message
+                }
+                if ([string]::IsNullOrWhiteSpace($failureDetail)) {
+                    $failureDetail = "no failure message was captured; raw marker: $(Get-Content -LiteralPath $markerPath -Raw)"
+                }
+                throw "Unpackaged consumer runtime smoke did not report outcome = success: $failureDetail"
+            }
             # R-06: derive the observable/contract-only split from the live evidence records
             # themselves (never hand-authored) so the two counts cannot silently drift apart
             # from what the locked classifier in RuntimeVerification.AttachedVisualProperties.cs
