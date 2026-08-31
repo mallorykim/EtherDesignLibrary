@@ -286,6 +286,16 @@ Unchecked/Checked 状态，所以那次选择了拦截+抛异常；这一批属�
   `Ether*` 控件。
 - Controls 与 Foundation 在当前 preview 发布线按同一版本使用；升级时应一起升级
   两者。Interaction 包也应与发布公告给出的版本组合保持一致。
+- 除上表这 12 个属性外，各控件还继承了大量 WinUI 基类属性（`Background` /
+  `BorderBrush` / `BorderThickness` / `CornerRadius` / `Padding` / `Foreground` /
+  `FontSize` 等外观类属性）——这些同样是**设计系统故意不开放覆盖**的：控件模板
+  固定引用设计令牌而非 `{TemplateBinding ...}`，为的是让所有消费方看到一致的
+  视觉语言，"设置了没反应"是特性而不是遗漏。这类属性、以及少数确认无效的底层
+  平台属性（如 `Clip` / `CompositeMode`），完整登记在
+  `scripts/UnsupportedProperties.psd1` 的 `AcknowledgedSilent` 列表中（按
+  `design-system-owned` / `platform-noop` 分类），并由 `local-runtime` 门禁
+  `scripts/Verify-SilentPropertyCoverage.ps1` 针对每次运行时证据自动核对：任何
+  新出现的、未被登记的静默失效属性都会让该门禁失败，而不是被漏掉。
 
 ## 5. 各控件标记参考
 

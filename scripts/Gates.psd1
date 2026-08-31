@@ -77,6 +77,16 @@
         @{ Name = 'ConsumerFixtures-runtime';     Script = 'Verify-ConsumerFixtures.ps1';             Environments = @('local-runtime'); Args = @{} }
         @{ Name = 'GallerySmoke';                 Script = 'Verify-GallerySmoke.ps1';                 Environments = @('local-runtime'); Args = @{} }
         @{ Name = 'MsixPackage-runtime';          Script = 'Verify-MsixPackage.ps1';                  Environments = @('local-runtime'); Args = @{} }
+        # R-07: reads the newest artifacts/audit-runs/consumer-runtime-evidence-*/runtime-result.json,
+        # which ConsumerFixtures-runtime (above) produces. Placed last so Verify-RuntimeGates.ps1 (which
+        # runs local-runtime gates in this declared order) sees fresh evidence. NOTE: Publish-Internal.ps1
+        # pulls Verify-ConsumerFixtures.ps1/Verify-MsixPackage.ps1 out of manifest order to run them last
+        # (dependency ordering - see its own header comment), so in a Publish-Internal run specifically
+        # this gate still runs against whatever evidence directory is newest ON DISK BEFORE that run's own
+        # fresh ConsumerFixtures pass, not necessarily produced by the current commit. Not a false-pass
+        # risk (a stale evidence file can only be a superset/subset of a fresh one's findings, not hide a
+        # real regression it would have caught), but a real gap in "evidence matches this exact commit".
+        @{ Name = 'SilentPropertyCoverage';       Script = 'Verify-SilentPropertyCoverage.ps1';       Environments = @('local-runtime'); Args = @{} }
 
         # --- local-external: needs the machine's NuGet cache and a true out-of-repo consumer ---
         @{ Name = 'ExternalConsumer';             Script = 'Verify-ExternalConsumer.ps1';             Environments = @('local-external'); Args = @{} }
