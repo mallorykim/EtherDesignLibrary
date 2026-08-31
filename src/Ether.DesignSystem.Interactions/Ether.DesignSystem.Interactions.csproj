@@ -10,6 +10,8 @@
     <Authors>Ether Design System</Authors>
     <Description>Application-layer interaction adapters for Ether WinUI 3 controls.</Description>
     <PackageTags>winui;winui3;design-system;interaction;events;preview</PackageTags>
+    <RepositoryUrl>https://github.com/yiqizhong/ether-lib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
@@ -19,6 +21,7 @@
     <Deterministic>true</Deterministic>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <EnablePackageValidation>true</EnablePackageValidation>
   </PropertyGroup>
 
   <ItemGroup>

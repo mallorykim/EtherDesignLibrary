@@ -235,6 +235,7 @@ dotnet build -c Debug -p:Platform=x64
 | 重新打包后消费者仍像在用旧代码；`restore` 成功但 build 出现旧命名空间等错误 | NuGet 按 **包 ID + 版本号** 缓存；复用已发布的版本会静默命中旧包 | 正确处理是发布新版本，并在 `PackageReference` 中升级版本。仅用于本机排障时，可由 `dotnet nuget locals global-packages --list` 找到全局目录后，删除**仅该包 ID / 旧版本**的目录；不要清空整个 NuGet 缓存。 |
 | `XamlParseException`，或 `ms-appx:///Ether.DesignSystem.Controls/...` 资源找不到 | 未合并 `DesignSystem.xaml`，或 URI 拼写错误 | 将 `XamlControlsResources` 和 `ms-appx:///Ether.DesignSystem.Controls/Themes/DesignSystem.xaml` 一起放入 `App.xaml` 的 `ResourceDictionary.MergedDictionaries`，然后清理并重新 build。 |
 | `WMC0001: Unknown type 'EtherButton'` | `xmlns` 使用了错误命名空间，或包没有正确 restore | 使用 `xmlns:ether="using:Ether.DesignSystem.Controls"`；确认 restore 成功且 `Ether.DesignSystem.Controls` 的版本存在于 assets 文件。 |
+| restore 成功，但装到的不是 Ether 包（例如同名的公共 nuget.org 包，或版本内容对不上预期） | `nuget.config` 里 `github-ether` 与 `nuget.org` 两个源共存，任一源解析失败或搜索顺序意外时，NuGet 可能从**另一个源**满足同名包 ID | 在 `project.assets.json` 或 restore 日志中核对每个 Ether 包 ID 实际解析到的源（`source` 字段）是否为 `github-ether`；长期做法是给 `nuget.config` 加 [package source mapping](https://learn.microsoft.com/en-us/nuget/consume-packages/package-source-mapping)，把 `Ether.DesignSystem.*` 显式钉死到 `github-ether`，把其余包 ID 钉死到 `nuget.org`，避免任一源意外满足另一源的包名。 |
 
 ## 4. 已知边界
 
@@ -286,7 +287,142 @@ Unchecked/Checked 状态，所以那次选择了拦截+抛异常；这一批属�
 - Controls 与 Foundation 在当前 preview 发布线按同一版本使用；升级时应一起升级
   两者。Interaction 包也应与发布公告给出的版本组合保持一致。
 
-## 5. 版本纪律
+## 5. 各控件标记参考
+
+下面每个控件给出一段可以直接复制的标记示例，取自
+[`tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml`](../../tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml)
+的 `*Proof` 元素——这些标记是仓库外消费者验证（A1/A4）实际运行过的形态，与
+`samples/Ether.DesignSystem.Gallery` 对应页面的写法一致。命名空间前缀在示例中
+省略，按第 2 节声明 `xmlns:ether="using:Ether.DesignSystem.Controls"` 后把
+`controls:` 换成你自己的前缀即可。
+
+**EtherButton**（对应 Gallery `Views/Controls/ButtonPage.xaml`）：
+```xml
+<ether:EtherButton Content="Package button"
+                   AutomationProperties.Name="Package button" />
+<ether:EtherButton Style="{StaticResource EtherButtonSecondary}"
+                   Content="Secondary package button"
+                   AutomationProperties.Name="Secondary package button" />
+```
+
+**EtherProgressBar**（`Views/DataDisplay/ProgressBarPage.xaml`）：
+```xml
+<ether:EtherProgressBar HorizontalAlignment="Stretch"
+                        Title="Package download"
+                        ValueContent="65%"
+                        Value="65"
+                        AutomationProperties.Name="Package download progress" />
+```
+
+**EtherCheckbox**（`Views/Controls/CheckboxPage.xaml`）：
+```xml
+<ether:EtherCheckbox Content="Package checkbox"
+                     AutomationProperties.Name="Package checkbox" />
+```
+
+**EtherRadioButton**（`Views/Controls/RadioButtonPage.xaml`）：
+```xml
+<ether:EtherRadioButton GroupName="package-radio"
+                        Content="Package radio"
+                        AutomationProperties.Name="Package radio button" />
+```
+
+**EtherInput**（`Views/Controls/InputPage.xaml`）：
+```xml
+<ether:EtherInput PlaceholderText="Package input"
+                  HorizontalAlignment="Stretch"
+                  AutomationProperties.Name="Package input" />
+```
+
+**EtherDropdown**（`Views/Controls/DropdownPage.xaml`）：
+```xml
+<ether:EtherDropdown SelectedIndex="0"
+                     HorizontalAlignment="Stretch"
+                     AutomationProperties.Name="Package dropdown">
+    <ComboBoxItem Content="10 Minutes"/>
+    <ComboBoxItem Content="30 Minutes"/>
+    <ComboBoxItem Content="1 Hour"/>
+</ether:EtherDropdown>
+```
+
+**EtherSegmentedControl**（`Views/Controls/SegmentedControlPage.xaml`）——段项是
+`RadioButton`，套用 `EtherSegment` 样式并放进 `EtherSegmentPanel`：
+```xml
+<ether:EtherSegmentedControl AutomationProperties.Name="Package segmented control">
+    <ether:EtherSegmentPanel>
+        <RadioButton Style="{StaticResource EtherSegment}"
+                     GroupName="package-segment"
+                     Content="A"
+                     IsChecked="True"/>
+        <RadioButton Style="{StaticResource EtherSegment}"
+                     GroupName="package-segment"
+                     Content="B"/>
+    </ether:EtherSegmentPanel>
+</ether:EtherSegmentedControl>
+```
+
+**EtherIntelligenceButton**（`Views/Controls/IntelligenceButtonPage.xaml`）：
+```xml
+<ether:EtherIntelligenceButton Content="Package intelligence"
+                               AutomationProperties.Name="Package intelligence button"/>
+```
+
+**EtherSteeringBar**（`Views/Controls/SteeringBarPage.xaml`）：
+```xml
+<ether:EtherSteeringBar HorizontalAlignment="Stretch"
+                        Title="Package playback"
+                        ValueContent="65%"
+                        Value="65"
+                        AutomationProperties.Name="Package steering bar"/>
+```
+
+**EtherSlider**（`Views/Controls/SliderPage.xaml`）：
+```xml
+<ether:EtherSlider HorizontalAlignment="Stretch"
+                   Value="65"
+                   AutomationProperties.Name="Package slider"/>
+```
+
+**EtherMasthead**（`Views/Navigation/MastheadPage.xaml`）——`EnableWindowCommands="False"`
+是内嵌到普通面板中演示时的写法；真实标题栏用法保留默认值：
+```xml
+<ether:EtherMasthead EnableWindowCommands="False"
+                     AutomationProperties.Name="Package masthead"/>
+```
+
+**EtherSwitch**（`Views/Controls/ToggleSwitchPage.xaml`）——不是独立类型，是套在原生
+`ToggleSwitch` 上的样式：
+```xml
+<ToggleSwitch Style="{StaticResource EtherSwitch}"
+              IsOn="True"
+              OffContent="Off"
+              OnContent="On"
+              AutomationProperties.Name="Package toggle switch"/>
+```
+
+**EtherCard**（`Views/Surfaces/CardPage.xaml`）——同样不是独立类型，是套在
+`Border` 上的一组样式，`Normal`/`Intelligence`/`Callout` 三种：
+```xml
+<Border Style="{StaticResource EtherCardNormal}">
+    <Border Style="{StaticResource EtherCardNormalBody}">
+        <TextBlock Text="Card" Style="{StaticResource headers/h3}"
+                   Foreground="{ThemeResource text/primary}"/>
+    </Border>
+</Border>
+```
+
+**EtherScrollBar**（`Views/Foundations/ScrollBarPage.xaml`）——合并
+`DesignSystem.xaml` 后对原生 `ScrollBar`/`ScrollViewer` 隐式生效，不需要额外
+`Style=`：
+```xml
+<ScrollViewer Width="240" Height="200"
+              VerticalScrollBarVisibility="Visible"
+              HorizontalScrollBarVisibility="Visible">
+    <Border Width="400" Height="400"/>
+</ScrollViewer>
+```
+
+## 6. 版本纪律
 
 发布方必须让**任何内容变化**对应新的包版本，绝不复用已经打过或发布过的版本。
 NuGet 的缓存键是包 ID 加版本号；复用版本号会让消费者（以及验证设施）在

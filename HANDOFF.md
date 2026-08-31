@@ -9,17 +9,19 @@ This file is the operational context. It supersedes the 2026-08-26 pause notes t
 
 The **original execution plan** is reproduced in [Appendix A](#appendix-a--original-execution-plan). Section 3 of that plan is a **pre-branch audit**, not a description of today's tree.
 
+> **状态更新（2026-08-30）**：本文件写于分支 `codex/refactor` 在提交 `48cac9f` 时的状态。该分支已延续为当前分支 `codex/refine-components`（`codex/refactor` 是其祖先），HEAD 早已不是 `48cac9f`（当前见 `git log --oneline -1`）；`48cac9f` 之后另有 28 次以上提交。其中会直接推翻本文件下方具体断言的变化包括：`EtherComponentSandbox.csproj`/`.slnx`（legacy sandbox host）已被彻底删除，不再是可构建目标；三个包（Foundation/Controls/Interactions）的命名空间已从 `EtherSandbox` 完整迁移为 `Ether.DesignSystem.*`（提交 `e4260f6`），Gallery **示例应用自身**的 `EtherSandbox.*` 命名空间保留（它不打包，不算公开 API）；平台声明收窄为仅 `x64`——`arm64`/`x86` 已从 `Directory.Build.props` 与 `Ether.DesignSystem.slnx` 两处彻底移除，不只是"未构建"；新增 `Ether.DesignSystem.Interactions` 包与 `tests/Ether.DesignSystem.Interactions.ContractTests` 项目；新增 26 张控件黄金基线截图（`tests/Ether.DesignSystem.ConsumerFixtures/VisualBaselines/`）；新增门禁脚本 `Verify-HighContrastPairing.ps1`、`Verify-InteractionContracts.ps1`、`Verify-MarkerContract.ps1`、`Verify-UnsupportedProperties.ps1`、`Verify-GalleryLocalization.ps1`、`Verify-ExternalConsumer.ps1`；`Verify-MsixPackage.ps1` 已接入 hosted CI；新增 `scripts/Publish-Internal.ps1` 作为发布的单一授权入口（默认只彩排、不推送，`-Push` 才会真正推送）。本文件下方与上述矛盾、且已确认的具体断言，已在原位加 **[2026-08-30 更正]** 标记直接改写，而不是删除了事。第 2、3 节的里程碑表 / 提交历史表，以及附录 A 的原始计划正文，是 `2d56d6f`/`48cac9f` 时点的历史记录（本文件本已如此自我标注，见上方与附录 A 开头），继续保留原文不逐行重写；比它们更新的现状记录见 `docs/plans/2026-08-30-third-party-consumability-plan.md` 与 `docs/handoff/2026-08-29-winui3-full-property-audit-handoff.md`（两者都采用"保留原计划正文 + 追加带日期的执行进度更新"的记法，可作为如何读这类文档的参照）。
+
 ---
 
 ## 0. Read this first
 
-1. This branch turns `EtherComponentSandbox` into a WinUI 3 design-library skeleton: Foundation + Controls packages, Gallery sample, package-consumer fixtures, and migrated templated controls.
+1. **[2026-08-30 更正]** This repository is a WinUI 3 design-library skeleton refactored out of the original `EtherComponentSandbox` sandbox app — that project/solution file has since been deleted and no longer exists on disk. Today's tree: `Ether.DesignSystem.Foundation` + `Ether.DesignSystem.Controls` + `Ether.DesignSystem.Interactions` packages, a Gallery sample, package-consumer fixtures (with golden-image visual baselines), an Interactions contract-test project, and migrated templated controls.
 2. It is **preview**, not production. Do not claim Fluent parity, stable API, or nuget.org readiness.
-3. **Do not `nuget push`.** Local pack is `scripts/Pack-PreviewPackages.ps1` → `artifacts/packages/` (gitignored). Publish steps stay in `docs/releases/0.1.0-preview.1.md`.
+3. **Do not `nuget push`** by hand. **[2026-08-30 更正]** `scripts/Publish-Internal.ps1` now exists as the single authorized publish entry point (it did not exist when this file was first written) — by default it only verifies and packs (safe rehearsal), and pushes only with the explicit `-Push` switch plus feed configuration and a typed confirmation. Local pack alone is still `scripts/Pack-PreviewPackages.ps1` → `artifacts/packages/` (gitignored). Full publish steps: `docs/releases/0.1.0-preview.1.md`, whose status is still **hold**.
 4. **Do not** add Gallery GUI or consumer runtime smoke to `.github/workflows/build.yml`. Hosted CI is static-only (`-SkipRuntimeSmoke`). Local runtime owner: `scripts/Verify-RuntimeGates.ps1`.
 5. **Do not** edit frozen token **content** except the already-landed `EtherColors.xaml` HighContrast slash-key mapping. Other token files are byte-frozen.
 6. **Do not** invent UnitTests/UITests, Appium, Accessibility Insights, MSIX install, or arm64 runtime just to make the plan diagram look complete.
-7. `pwsh` is not on PATH here. Use `powershell -File`. Before rebuilds, stop leftover `Ether.DesignSystem.ConsumerFixtures.Unpackaged` / Gallery / sandbox processes if they lock outputs.
+7. `pwsh` is not on PATH here. Use `powershell -File`. Before rebuilds, stop leftover `Ether.DesignSystem.ConsumerFixtures.Unpackaged` / `Ether.DesignSystem.ConsumerFixtures.Packaged` / Gallery processes if they lock outputs. **[2026-08-30 更正]** there is no `sandbox` process anymore — that host was deleted.
 8. Named fixture `x:Name` / `AutomationProperties.Name` values are contract. Do not rename them.
 
 ### Hard constraints still in force
@@ -27,10 +29,10 @@ The **original execution plan** is reproduced in [Appendix A](#appendix-a--origi
 | Constraint | Today |
 | --- | --- |
 | Token freeze | Paths below; hashes must match. Only authorized `EtherColors` HC mapping differs from plan-start hash `79440485…`. |
-| Dependency | `Foundation ← Controls ← Gallery`. Consumer fixtures use **PackageReference** from a local nupkg feed, never library ProjectReference. |
-| TFM | `net8.0-windows10.0.19041.0`, min OS `10.0.17763.0`. No framework upgrade on this branch. |
-| Public API | Preview. Baselines: `PublicAPI.Shipped.txt` / `PublicAPI.Unshipped.txt`. `Unshipped` is the current surface, not a removal ledger. |
-| Namespace | Still `EtherSandbox` / `Ether.DesignSystem.Controls` (preview public API). Do not rename as a drive-by. |
+| Dependency | **[2026-08-30 更正]** `Foundation ← Controls ← Gallery`; `Foundation ← Controls ← Interactions ← Interactions.ContractTests` (all in-repo `ProjectReference`). Consumer fixtures use **PackageReference** from a local nupkg feed, never library ProjectReference. |
+| TFM | `net8.0-windows10.0.19041.0`, min OS `10.0.17763.0`. No framework upgrade on this branch. **[2026-08-30 更正]** `Platforms`/`RuntimeIdentifiers` are now `x64` only — `arm64`/`x86` were removed outright from `Directory.Build.props` and `Ether.DesignSystem.slnx`, not merely left unbuilt. |
+| Public API | Preview. Baselines: `PublicAPI.Shipped.txt` / `PublicAPI.Unshipped.txt`. `Unshipped` is the current surface, not a removal ledger. **[2026-08-30 更正]** now three projects carry these baselines: Foundation, Controls, and Interactions. |
+| Namespace | **[2026-08-30 更正]** All three packages (`Ether.DesignSystem.Foundation`/`.Controls`/`.Interactions`) now live fully under `Ether.DesignSystem.*` namespaces (migration landed in `e4260f6`); no `EtherSandbox` remains anywhere in packable source. The Gallery **sample app** (not packed) still uses `EtherSandbox.*` for its own app/view classes — that's fine, it isn't public API. Do not rename either without a new mandate. |
 | Fonts / Assets | Stay at **repo root**. Frozen typography uses `ms-appx:///Fonts/...` and `ms-appx:///Assets/...`. |
 
 Frozen token hashes (after the byte-for-byte Git move):
@@ -55,17 +57,21 @@ External authoring spec used at branch start (`2026-08-24-winui3-fluent-design-l
 ## 1. Where things live (today)
 
 ```text
-Ether.DesignSystem.slnx
+Ether.DesignSystem.slnx                   Platforms: x64 only (arm64/x86 removed — see Directory.Build.props)
 ├─ src/Ether.DesignSystem.Foundation/     tokens, Themes/Foundation.xaml, buildTransitive fonts/assets
 ├─ src/Ether.DesignSystem.Controls/       packable controls, EtherCard, Themes/Generic.xaml + DesignSystem.xaml, PublicAPI
+├─ src/Ether.DesignSystem.Interactions/   backend-consumable interaction adapters, PublicAPI
+├─ tests/Ether.DesignSystem.Interactions.ContractTests/   contract tests for Interactions
 samples/Ether.DesignSystem.Gallery/       WinExe Gallery: App, Views, GalleryControls, Strings/en-US, Visuals
 tests/Ether.DesignSystem.ConsumerFixtures/
 │  Unpackaged/  + Packaged/               PackageReference-only hosts (not in the .slnx)
-scripts/Verify-*.ps1
+│  VisualBaselines/                       golden-image PNGs (26: 13 controls × Light/Dark)
+scripts/Verify-*.ps1, Publish-Internal.ps1, Pack-PreviewPackages.ps1
 docs/architecture/2026-08-26-*.md
-EtherComponentSandbox.csproj              legacy second host (not in Ether.DesignSystem.slnx)
 Fonts/  Assets/                           repo-root host-root URIs — do not move
 ```
+
+**[2026-08-30 更正]** `EtherComponentSandbox.csproj`/`.slnx` (the legacy second host) have been deleted outright — they are no longer tracked, no longer referenced by any project, and no longer a build target anywhere.
 
 **Resource graph (do not bypass):**
 
@@ -73,7 +79,7 @@ Fonts/  Assets/                           repo-root host-root URIs — do not mo
 
 Gallery also merges Gallery-only `ms-appx:///Resources/Visuals/EtherPageTitleGradient.xaml`.
 
-**Legacy sandbox** ProjectReferences Foundation + Controls and compiles Gallery sources. It no longer compiles a second copy of controls or the flattened `src/Themes/Generic.xaml` graph (that file was deleted).
+**[2026-08-30 更正]** The legacy sandbox host described in earlier drafts of this section no longer exists — `EtherComponentSandbox.csproj`/`.slnx` have been deleted. Gallery is the only `WinExe` in the tree.
 
 **Not created:** `tests/Ether.DesignSystem.UnitTests`, `tests/Ether.DesignSystem.UITests`.
 
@@ -95,7 +101,7 @@ Plan phases are Appendix A §5. Status is **this branch at `2d56d6f`**.
 | **L3** | Ten control/style migrations | **Done** (`b3d3bf1`). Order in git is not identical to the numbered list (SteeringBar landed with the big L2/L3 commit; Slider/Masthead/Switch/ScrollBar closed L3). |
 | **L4.1–2** | Gallery `ControlExample` (example/output/source/copy, responsive) | **Done** for **control** pages. Foundations primitives + Home stay on plain `ComponentPage` on purpose. |
 | **L4.3 quality gates** | HC baselines, Appium, UIA snapshots, Insights, 225%, RTL, localization | **Split.** In-repo substitutes are green. External engines are **not** installed and stay red. See §4. |
-| **L4.4–5** | Perf budgets, arm64 **runtime**, x64/arm64 package fixtures, **publish** | Partial: unsigned MSIX **produce**, arm64 **pack/compile**, in-repo PackageReference proof. **Publish held.** |
+| **L4.4–5** | Perf budgets, arm64 **runtime**, x64/arm64 package fixtures, **publish** | Partial: unsigned MSIX **produce**, in-repo PackageReference proof. **Publish held** (now via `scripts/Publish-Internal.ps1`, rehearsal by default, `-Push` required to actually push). **[2026-08-30 更正]** arm64 pack/compile no longer applies — `arm64`/`x86` were later removed entirely from `Directory.Build.props` and `Ether.DesignSystem.slnx`; only `x64` is declared or built anywhere. `scripts/Verify-Arm64Packages.ps1` stays on disk, unused, with a re-enable note at its top. |
 | **§4.1 layout** | Sources physically in Foundation / Controls / Gallery | **Done** (`2d56d6f`). Fonts/Assets stay at repo root. |
 | **§4.1 tests** | UnitTests + UITests projects | **Not done** (intentionally not faked). |
 
@@ -187,7 +193,7 @@ On the unpackaged **package consumer** unless noted:
 - Light/Dark `RenderTargetBitmap` under `artifacts/` (not HC, not golden-image CI)
 - Elapsed harness `< 20000ms` (not scroll/animation budgets)
 - Unsigned MSIX **produce** (`Verify-MsixPackage.ps1`; no `Add-AppxPackage`)
-- arm64 **pack + fixture compile** (`Verify-Arm64Packages.ps1`; exe not launched)
+- ~~arm64 pack + fixture compile~~ — **[2026-08-30 更正]** removed; `arm64` is no longer a declared platform anywhere in this repo (see hard constraints in §0). `Verify-Arm64Packages.ps1` remains on disk, unused.
 - Local aggregator: `scripts/Verify-RuntimeGates.ps1`
 
 ---
@@ -202,7 +208,7 @@ Treat these as **known open work**, not as “the last agent forgot.” Do not f
 - Appium / out-of-process UIA / WinAppDriver
 - Hosted-CI WinUI launch (`build.yml` stays `-SkipRuntimeSmoke`)
 - MSIX **install** and **runtime**
-- arm64 **runtime** smoke
+- arm64 **runtime** smoke — **[2026-08-30 更正]** moot: arm64 is no longer built at all, not merely unrun.
 - On-device High Contrast themes (Aquatic / Desert / Night Sky)
 - **nuget.org / GitHub Packages / Azure Artifacts publish**
 - Out-of-repo consumer against a real feed (in-repo fixtures only prove `ether-local`)
@@ -248,21 +254,38 @@ Windows x64. PowerShell 5.1. From repo root; use `;` not `&&`.
 ```powershell
 dotnet build Ether.DesignSystem.slnx -c Debug -p:Platform=x64
 dotnet build Ether.DesignSystem.slnx -c Release -p:Platform=x64
-dotnet build EtherComponentSandbox.csproj -c Debug -p:Platform=x64
-dotnet build EtherComponentSandbox.csproj -c Release -p:Platform=x64
+# [2026-08-30 更正] EtherComponentSandbox.csproj/.slnx no longer exist — there is no second
+# build target. The .slnx above is the only build entry point now.
 
 powershell -File .\scripts\Verify-ResourceGraph.ps1
 powershell -File .\scripts\Verify-ResourceKeys.ps1
 powershell -File .\scripts\Verify-ResourceKeys.ps1 -RequireHighContrastParity
 powershell -File .\scripts\Verify-WinUiConventions.ps1
 powershell -File .\scripts\Verify-GalleryControlExample.ps1
+powershell -File .\scripts\Verify-GalleryLocalization.ps1
+powershell -File .\scripts\Verify-HighContrastPairing.ps1
+powershell -File .\scripts\Verify-MarkerContract.ps1
+powershell -File .\scripts\Verify-UnsupportedProperties.ps1
+powershell -File .\scripts\Verify-InteractionContracts.ps1
+powershell -File .\scripts\Verify-MsixPackage.ps1 -SkipSolutionBuild
 Get-ChildItem .\scripts\Verify-Ether*Contract.ps1 | ForEach-Object { powershell -File $_.FullName }
+# [2026-08-30 更正] the six Verify-*.ps1 lines above are gates added since this file was
+# written (all static / no GUI, matching .github/workflows/build.yml's package-consumers
+# job — Verify-MsixPackage only builds an unsigned MSIX, it does not install or launch it).
+# The Get-ChildItem glob already covers every per-control contract script including ones
+# added later (Switch, ScrollBar, Slider, Masthead, ...); it needs no manual upkeep.
 
-# Local desktop only (launches WinUI):
+# Local desktop only (launches WinUI) — do not run more than one of these, or one of these
+# alongside scripts/Publish-Internal.ps1, at the same time: they fight over the OS High
+# Contrast setting and pollute each other's results.
 powershell -File .\scripts\Verify-GallerySmoke.ps1
 powershell -File .\scripts\Verify-ConsumerFixtures.ps1
+powershell -File .\scripts\Verify-ExternalConsumer.ps1
 # or the aggregator:
 powershell -File .\scripts\Verify-RuntimeGates.ps1 -SkipSolutionBuild
+# or the full authorized release rehearsal (build + every static gate above + consumer
+# fixtures twice + external consumer + MSIX produce; add -Push only to actually publish):
+powershell -File .\scripts\Publish-Internal.ps1
 
 git diff -- src/Ether.DesignSystem.Foundation/Resources/Tokens
 git ls-files 'src/Ether.DesignSystem.Foundation/Resources/Tokens/*' | ForEach-Object { git hash-object $_ }
@@ -289,6 +312,9 @@ Expect hosted CI to skip the GUI lines.
 | `docs/releases/0.1.0-preview.1.md` | Pack vs publish hold |
 | `SEMVER.md` | Preview/stable and resource-key compatibility |
 | `docs/architecture/2026-08-26-foundation-refactor-full-review-handoff.md` | Independent review at L4 deepen; **paths in §4/§5 are stale** (pre-`git mv`) |
+| `docs/consumers/getting-started.md` | **[2026-08-30 新增]** How an internal consuming team adds the packages; more current than this file for consumption steps |
+| `docs/plans/2026-08-30-third-party-consumability-plan.md` | **[2026-08-30 新增]** Third-party consumability plan with dated "执行进度更新" notes on top of the original plan text — same annotate-in-place convention used in this update |
+| `docs/handoff/2026-08-29-winui3-full-property-audit-handoff.md` | **[2026-08-30 新增]** Full-property backend-consumable audit handoff; current authoritative property-evidence numbers (1,388 / 445 / 69 / 943) live here, not in this file |
 
 Official references used for control-authoring decisions:
 

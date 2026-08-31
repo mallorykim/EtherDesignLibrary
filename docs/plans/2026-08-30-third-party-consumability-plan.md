@@ -18,6 +18,18 @@
 > 的核实记录。B2（Interactions PublicApiAnalyzers）、B3（发布门禁流程化）、B6（消
 > 费方接入文档，已有 `docs/consumers/getting-started.md`）等其余分项的完成状态未
 > 在本次更新中逐一复核，仍以正文原状为准。
+>
+> **执行进度更新（2026-08-30，第三轮复核）**：本轮逐项独立核实了上一条更新里标记
+> 为"未复核"的 B2/B3/B6，以及正文未给出状态的 A5，一律以读源码/脚本/CI 配置为准，
+> 不采信交办时的自述：
+> - **A5（RootNamespace 决策）**：已完成，决策=改名对齐包名。`Ether.DesignSystem.Controls.csproj` 的 `RootNamespace` 现为 `Ether.DesignSystem.Controls`（提交 `e4260f6`「align namespaces with package ids and prove external consumption」）；`docs/consumers/getting-started.md` 已显式告知消费者不要用旧的 `EtherSandbox.Controls`。
+> - **B2（Interactions 接入 PublicApiAnalyzers）**：主干确认已完成——`PublicAPI.Shipped.txt`/`PublicAPI.Unshipped.txt`、`Microsoft.CodeAnalysis.PublicApiAnalyzers` 引用、`WarningsAsErrors=RS0016;RS0017` 均已就位。但本条"怎么做"里提到的"顺手补它缺的 `RepositoryUrl`/`RepositoryType`/`EnablePackageValidation`"此前遗漏未做（对照 Controls/Foundation 的 csproj 逐属性核对后发现）——本轮已补齐这三项到 `Ether.DesignSystem.Interactions.csproj`。
+> - **B3（发布门禁流程化）**：核实确属未做，`scripts/` 下此前没有任何发布入口脚本。本轮新增 `scripts/Publish-Internal.ps1`：串联全部静态门禁 + `Verify-ConsumerFixtures.ps1`（两轮）+ `Verify-ExternalConsumer.ps1` + `Verify-MsixPackage.ps1`，校验证据时间戳新于本次运行、版本号未被本地 feed/已知发布清单复用，默认只验证+打包不推送，`-Push` 才会真正 `dotnet nuget push` 且推送前打印确认信息；GitHub Packages 的 owner/feed 做成必填参数，缺失时报错并说明需要什么。
+> - **B4（平台声明收口到 x64）**：原判"已完成"成立，但发现声明与现实仍有一处没对齐——`Directory.Build.props` 早前收窄到 `Platforms=x64`，但 `Ether.DesignSystem.slnx` 的 solution-platform 映射当时未同步清理，仍残留 11 处 `x86` + 11 处 `arm64` 映射（VS 平台选择器里会出现两个建不出来的选项）。本轮已清理 `Ether.DesignSystem.slnx`，只保留 `x64`，并用 `dotnet build -p:Platform=x64`（Debug 与 Release）验证过 slnx 改动后仍可正常构建。
+> - **B5（MSIX 双形态验证接入 CI）**：核实确认已完成——`.github/workflows/build.yml` 已有「Verify unsigned MSIX package produce」步骤，执行 `Verify-MsixPackage.ps1 -SkipSolutionBuild`，与计划里"构建/结构断言部分进 hosted CI，GUI 安装运行部分留在本地 RuntimeGates"的方案一致。
+> - **B6（消费方接入文档）**：逐条比对计划清单后，`docs/consumers/getting-started.md` 覆盖了 GitHub Packages 接入、最小 csproj、xmlns、故障排查、已知边界、版本纪律，但有两处缺口，本轮已补齐：(a) 故障排查表没有"restore 到同名公共包"这一行（`<clear/>` 后仍有 `github-ether` 与 `nuget.org` 两个源共存，其中一个解析异常时的静默取错风险）——已新增一行并给出 package source mapping 的建议；(b) "每控件一段与 Gallery 页面一致的标记示例"此前只写了 3 个控件（Button/ProgressBar/Input），但 `samples/Ether.DesignSystem.Gallery/Views` 下实际有 14 个控件页面——已新增「5. 各控件标记参考」小节覆盖全部 14 个控件，标记取自已验证的 `tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml` 的 `*Proof` 元素（而非新编），与 A1/A4 的验证形态一致。清单里"README 每个代码块必须能在 fixture/Gallery 找到等价物"的机器抽查脚本，计划原文本身写的是"可"（可选）而非强制，本轮未新增脚本，仍靠人工核对。
+> - **B1 状态确认（非本轮核实范围，但顺带读码验证了intro note的准确性）**：`RuntimeVerification.FullPropertyCode.cs:85-86` 的 `TryInvokeOnUnattachedInstance` 仍是"读当前值→原样写回"（未升级为写扰动值+读回校验），`docs/releases/0.1.0-preview.1.md:58` 与 `src/Ether.DesignSystem.Controls/README.md` 的文案已用诚实表述（"445 of 1,388 ... the remaining 943 are verified only as callable"）。即 B1 的"文案先行"部分属实已完成，"setter 升级为 round-trip"部分确实未做——与上一条更新"B1（属性诚实化文案）已完成"的措辞（未称完成 round-trip）一致，不构成需要更正的状态。
+> - **C5（卫生项，可选）核实**：(a) 仓库根 `EtherComponentSandbox.csproj`/`EtherComponentSandbox.slnx` 本轮核实为死代码（`git ls-files` 显示被跟踪但除本计划等历史文档外仓库内无任何脚本/CI/其他 csproj 引用；最后一次有意义的改动是提交 `9b4d492`，此后 43 次提交未再被触碰）并已删除（`git rm`）；`.vs/` 已在 `.gitignore` 第 9 行。(b) `Directory.Build.props.example` 仍是自述"no longer required"的废弃文件，本轮**未删除**——不在本次任务的明确授权范围内，留给维护者决定。(c) "专有/仅限公司内部使用"声明文件仍未创建。
 
 ## 0. 目标与已确认的前提
 
