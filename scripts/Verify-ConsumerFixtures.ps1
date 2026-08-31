@@ -345,7 +345,8 @@ function Get-ZipEntrySha256 {
         try {
             $sha256 = [System.Security.Cryptography.SHA256]::Create()
             try {
-                return [System.Convert]::ToHexString($sha256.ComputeHash($stream)).ToLowerInvariant()
+                # [System.Convert]::ToHexString is .NET 5+ only; manual hex works on Windows PowerShell 5.1 too.
+                return (($sha256.ComputeHash($stream) | ForEach-Object { $_.ToString('x2') }) -join '')
             }
             finally {
                 $sha256.Dispose()
