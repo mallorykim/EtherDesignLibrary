@@ -160,12 +160,18 @@ $ dotnet --list-sdks      → 10.0.400 [C:\Program Files\dotnet\sdk]
 
 **CI 钉死 SDK 8.0.x，本地无 `global.json` 所以吃 10.0.400。** 这就是"官方命令在不同机器上行为不同"的根源——CI 上 `dotnet restore` 用 SDK 8 正常，本地用 SDK 10 的并行 restore 才退 1。不是玄学，是 SDK 版本没对齐。
 
-### 审核另称（⚠️ dotnet 侧待我在无并发时复现）
+### 审核另称 —— 无并发复跑后：两条都**未复现**（2026-08-31，F1）
 
-- `dotnet restore Ether.DesignSystem.slnx -p:Platform=x64` 在 SDK 10.0.400 下退出码 1 且**无错误输出**，加 `-m:1` 串行后成功
-- `Verify-InteractionContracts.ps1` 在内层 `dotnet run --no-restore` 处失败
+- `dotnet restore ...slnx -p:Platform=x64`：单独跑 6 次（1 热 + 5 冷，每次删光各项目 obj/），**全部 exit 0**，无 `-m:1` 之需
+- `Verify-InteractionContracts.ps1`：exit 0，内层 `dotnet run --no-restore` 未失败
 
-> 这两条需要跑 dotnet 才能复现，会与 R-00 agent 抢 NuGet 缓存，故推迟到 R-00 落地、仓库无并发时验证。
+> **结论：审核当时的 restore 失败几乎可以确定是并发 agent 抢 NuGet 缓存的产物（正是 R-12 所述），不是真的 SDK bug。** SDK 二进制与审核时相同（都是 10.0.400），唯一差别是这次无并发。再次印证"一次只有一个 agent 动仓库"这条纪律。
+
+### F1 修复已落地（commit `26f2adc`），但留有一处我复核时发现的隐患 → 已并入 F2
+
+- `global.json` = `{ version: 10.0.400, rollForward: disable }`（最严格，本机唯一装的就是 10.0.400）
+- CI setup-dotnet 从 `8.0.x` 改成 `10.0.x` —— **隐患**：`disable` 要求**精确** 10.0.400，而 `10.0.x` 会装最新 10.0 补丁；一旦 runner 装到 10.0.401 之类，CI 会"SDK 未找到"而崩。
+- **F2 必做**：把 CI 两处 `dotnet-version` 从 `10.0.x` 改成精确 `10.0.400`，与 `global.json` 的 `disable` 精确对齐（这才是 R-01 真正要的可复现）。
 
 ### 为什么排最前
 
@@ -613,3 +619,5 @@ pushed            = [bool]$Push
 | 2026-08-31 | — | 建立本文件；R-01/02/03/04/05/06/08/09/11/12 完成亲验；R-07/R-10 仍为审核声称待复核 |
 | 2026-08-31 | R-07 | 亲验证实：清单确为 12 条封闭列表；EtherCheckbox 8 属性 `platform-dp-contract` 且不在清单内；补充"陷阱型/设计系统自持型/无人问津型"三分类，接线范围列为产品决策 |
 | 2026-08-31 | R-10 | 亲验并**修正审核措辞**：5 个 XAML-only 类型中 2 个已有明确 doc，EtherSegmentPanel 缺；真实问题是标注不一致 + 全库 0 处 `[EditorBrowsable]`，IntelliSense 仍暴露 |
+| 2026-08-31 | R-00 | 决议：defect#1 已修+保留至 `spike/self-contained-investigation` @82f12e9；defect#2 判定为平台限制（DefaultStyleKey→PRI），descope 自包含-非打包，发布走框架依赖（待用户复核）。清干净基线 `03bf6ad` |
+| 2026-08-31 | R-01 | **F1 落地** commit `26f2adc`：global.json 锁 10.0.400（disable）+ CI 8.0.x→10.0.x + 2 处 PS5.1 hex；restore/build×2/PSCompat 全 exit 0。并行 restore 与 InteractionContracts 均**未复现**（判定为审核期并发污染）。**残留隐患**：CI `10.0.x` 与 `disable` 不精确匹配 → F2 必修为精确 `10.0.400` |
