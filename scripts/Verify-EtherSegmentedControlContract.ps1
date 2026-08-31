@@ -11,8 +11,8 @@ $galleryPath = Join-Path $repoRoot 'samples\Ether.DesignSystem.Gallery\Views\Con
 $fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
-$expectedComponentKeys = 'EtherSegmentedControlCasterBrush,EtherSegmentedControlFocusStrokeBrush,EtherSegmentedControlSegmentCheckedBrush,EtherSegmentedControlSegmentForegroundBrush,EtherSegmentedControlSegmentForegroundCheckedBrush,EtherSegmentedControlSegmentForegroundHoverBrush,EtherSegmentedControlSegmentForegroundPressedBrush,EtherSegmentedControlSegmentHoverBrush,EtherSegmentedControlSegmentPressedBrush,EtherSegmentedControlShadowBrush,EtherSegmentedControlTrackBackgroundBrush'
-$templateParts = @('ShadowHost', 'TrackSurface', 'CasterBrushSource', 'ShadowBrushSource')
+$expectedComponentKeys = 'EtherSegmentedControlFocusStrokeBrush,EtherSegmentedControlSegmentCheckedBrush,EtherSegmentedControlSegmentForegroundBrush,EtherSegmentedControlSegmentForegroundCheckedBrush,EtherSegmentedControlSegmentForegroundHoverBrush,EtherSegmentedControlSegmentForegroundPressedBrush,EtherSegmentedControlSegmentHoverBrush,EtherSegmentedControlSegmentPressedBrush,EtherSegmentedControlTrackBackgroundBrush'
+$templateParts = @('TrackSurface')
 $segmentCommonStates = @('Normal', 'PointerOver', 'Pressed', 'Disabled', 'Checked', 'CheckedPointerOver', 'CheckedPressed', 'Indeterminate')
 $segmentFocusStates = @('Focused', 'Unfocused', 'PointerFocused')
 
@@ -48,12 +48,6 @@ if ($Matches['ctor'] -match '(Padding|Background|HorizontalContentAlignment|Vert
 foreach ($part in $templateParts) {
     Assert-Contains $control "TemplatePart\(Name = .*${part}" "EtherSegmentedControl TemplatePart contract for $part"
 }
-Assert-Contains $control 'GetTemplateChild\(ShadowHostPartName\)' 'EtherSegmentedControl composition shadow host lookup'
-Assert-Contains $control 'GetTemplateChild\(TrackSurfacePartName\)' 'EtherSegmentedControl composition track surface lookup'
-Assert-Contains $control 'GetTemplateChild\(CasterBrushSourcePartName\)' 'EtherSegmentedControl caster brush-source lookup'
-Assert-Contains $control 'GetTemplateChild\(ShadowBrushSourcePartName\)' 'EtherSegmentedControl shadow brush-source lookup'
-Assert-Contains $control 'CreateExpressionAnimation' 'EtherSegmentedControl binds composition shadow size to the track visual'
-Assert-Contains $control 'CreateDropShadow' 'EtherSegmentedControl composition drop-shadow layers'
 Assert-Contains $control 'SelectedValueProperty' 'EtherSegmentedControl selection dependency property'
 Assert-Contains $control 'SelectionChanged' 'EtherSegmentedControl selection event'
 Assert-Contains $control 'WireSegments' 'EtherSegmentedControl segment selection wiring'
@@ -151,7 +145,6 @@ Assert-Contains $xamlRaw 'Value="\{StaticResource InstrumentSans\}"' 'EtherSegme
 Assert-Contains $xamlRaw 'Value="\{StaticResource Size12\}"' 'EtherSegmentedControl segment FontSize is Size12'
 Assert-Contains $xamlRaw 'Value="\{StaticResource WeightSemibold\}"' 'EtherSegmentedControl segment FontWeight is WeightSemibold'
 Assert-Contains $xamlRaw 'AutomationProperties.AccessibilityView="Raw"' 'EtherSegmentedControl content presenters mark content Raw like WinUI RadioButton'
-Assert-Contains $xamlRaw 'Margin="-24,0"' 'EtherSegmentedControl ShadowHost reserves horizontal blur bleed'
 Assert-Contains $xamlRaw 'Value="Stretch"' 'EtherSegmentedControl stretches with the parent width'
 if ($xamlRaw -match 'radius/control') {
     throw 'EtherSegmentedControl templates must use RadiusMd/RadiusSm, not radius/control aliases.'
@@ -195,7 +188,7 @@ foreach ($resource in @($highContrast.ChildNodes | Where-Object { $_ -is [System
 }
 
 $fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
-foreach ($evidence in 'DefaultEtherSegmentedControlStyle', 'ShadowHost', 'TrackSurface', 'SegmentedControlVerification', 'segmentedControl = result\?\.SegmentedControl') {
+foreach ($evidence in 'DefaultEtherSegmentedControlStyle', 'TrackSurface', 'SegmentedControlVerification', 'segmentedControl = result\?\.SegmentedControl') {
     Assert-Contains $fixture $evidence "EtherSegmentedControl consumer runtime evidence for $evidence"
 }
 

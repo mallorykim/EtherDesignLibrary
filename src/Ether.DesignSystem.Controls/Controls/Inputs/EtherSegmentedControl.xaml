@@ -30,7 +30,6 @@
     KEY MEASUREMENTS (Figma: ursRC201v8IiVeafliI45F
       selected 62110:23700 · Light track 62110:24735 · Dark 62110:24850)
       Track     padding 4 · RadiusMd 8 · Light AlphaWhite40 · Dark AlphaBlack70
-                soft blue shadows (Blue800 @ 8% / 10%)
       Segment   px=16 py=12 · RadiusSm 4 · min-height 33
                 selected: Blue600 fill · Gray0 label
                 default: transparent · Light AlphaBlack70 / Dark AlphaWhite70
@@ -52,7 +51,6 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="EtherSegmentedControlCasterBrush" Color="{StaticResource Gray0}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlFocusStrokeBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentCheckedBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundBrush" Color="{StaticResource AlphaBlack70}"/>
@@ -65,11 +63,9 @@
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundPressedBrush" Color="{StaticResource AlphaBlack70}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{StaticResource AlphaBrand6}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{StaticResource AlphaBrand10}"/>
-            <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="{StaticResource Blue800}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlTrackBackgroundBrush" Color="{StaticResource AlphaWhite40}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="EtherSegmentedControlCasterBrush" Color="{StaticResource Gray900}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlFocusStrokeBrush" Color="{StaticResource Blue500}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentCheckedBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundBrush" Color="{StaticResource AlphaWhite70}"/>
@@ -78,11 +74,9 @@
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundPressedBrush" Color="{StaticResource AlphaWhite70}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{StaticResource AlphaBrand10}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{StaticResource AlphaBrand16}"/>
-            <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="{StaticResource Blue800}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlTrackBackgroundBrush" Color="{StaticResource AlphaBlack70}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
-            <SolidColorBrush x:Key="EtherSegmentedControlCasterBrush" Color="{ThemeResource SystemColorWindowColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlFocusStrokeBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentCheckedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
@@ -95,7 +89,6 @@
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundPressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
-            <SolidColorBrush x:Key="EtherSegmentedControlShadowBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlTrackBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
@@ -104,35 +97,10 @@
          theme keys while the segment text container stays empty. -->
     <SolidColorBrush x:Key="EtherSegmentedControlTransparentBrush" Color="Transparent"/>
 
-    <!-- Track container template. Composition shadows are rendered behind TrackSurface
-         by EtherSegmentedControl. TrackSurface reserves 8/30 epx vertical space for the
-         18px blur / 12px offset; ShadowHost is wider on the sides for horizontal blur bleed. -->
+    <!-- Track container template. -->
     <ControlTemplate x:Key="EtherSegmentedTrackTemplate" TargetType="controls:EtherSegmentedControl">
         <Grid>
-            <Border x:Name="CasterBrushSource"
-                    Width="1"
-                    Height="1"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Opacity="0"
-                    IsHitTestVisible="False"
-                    Background="{ThemeResource EtherSegmentedControlCasterBrush}"/>
-            <Border x:Name="ShadowBrushSource"
-                    Width="1"
-                    Height="1"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Opacity="0"
-                    IsHitTestVisible="False"
-                    Background="{ThemeResource EtherSegmentedControlShadowBrush}"/>
-            <!-- Wider than TrackSurface so the blurred far shadow (18px) can bleed
-                 left/right instead of being cut at the track edge. -->
-            <Border x:Name="ShadowHost"
-                    Margin="-24,0"
-                    Background="{StaticResource EtherSegmentedControlTransparentBrush}"
-                    IsHitTestVisible="False"/>
             <Border x:Name="TrackSurface"
-                    Margin="0,8,0,30"
                     Background="{TemplateBinding Background}"
                     Padding="{TemplateBinding Padding}"
                     CornerRadius="{StaticResource RadiusMd}">

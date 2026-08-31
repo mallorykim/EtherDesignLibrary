@@ -32,9 +32,8 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("The keyed EtherSegmentedControl style did not apply its default Padding, stretch alignment, IsTabStop=False, UseSystemFocusVisuals=False, and template.");
         }
 
-        GetTemplatePart<Border>(segmentedControl, "ShadowHost", nameof(EtherSegmentedControl));
         var trackSurface = GetTemplatePart<Border>(segmentedControl, "TrackSurface", nameof(EtherSegmentedControl));
-        var templateParts = new[] { "ShadowHost", "TrackSurface" };
+        var templateParts = new[] { "TrackSurface" };
         var segments = GetSegmentRadioButtons(segmentedControl);
         if (segments.Length < 2)
         {
