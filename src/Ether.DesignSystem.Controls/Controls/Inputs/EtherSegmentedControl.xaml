@@ -166,10 +166,15 @@
     <ControlTemplate x:Key="EtherSegmentTemplate" TargetType="RadioButton">
         <Grid HorizontalAlignment="Stretch">
             <VisualStateManager.VisualStateGroups>
-                <!-- Background layers (HoverLayer/PressedLayer/CheckedLayer) are driven directly
-                     from code in HandRadioButton.UpdateSegmentVisual — NOT from these states —
-                     because the VSM leaves layer opacity stuck after the pointer leaves. Only the
-                     checked TEXT colour and the disabled dim stay here (those revert fine). -->
+                <!-- HoverLayer/PressedLayer are driven directly from code in
+                     HandRadioButton.UpdateSegmentVisual — NOT from these states — because the VSM
+                     leaves layer opacity stuck after the pointer leaves. CheckedLayer is different:
+                     it is ALSO lit from here (Checked/CheckedPointerOver/CheckedPressed set its
+                     Opacity to 1 as a discrete Setter, which reverts fine on state exit, same as the
+                     checked TEXT colour and the disabled dim below) so that a plain RadioButton with
+                     no HandRadioButton behind it — the documented consumer usage — still shows the
+                     selected pill. HandRadioButton's code-set Opacity agrees with these values, so
+                     there is no conflict when it is present (Gallery). -->
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal"/>
                     <!-- Only the label color lives here (see EtherSegmentedControlSegmentForegroundHoverBrush
@@ -193,16 +198,19 @@
                     <VisualState x:Name="Checked">
                         <VisualState.Setters>
                             <Setter Target="Cp.Foreground" Value="{ThemeResource EtherSegmentedControlSegmentForegroundCheckedBrush}"/>
+                            <Setter Target="CheckedLayer.Opacity" Value="1"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="CheckedPointerOver">
                         <VisualState.Setters>
                             <Setter Target="Cp.Foreground" Value="{ThemeResource EtherSegmentedControlSegmentForegroundCheckedBrush}"/>
+                            <Setter Target="CheckedLayer.Opacity" Value="1"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="CheckedPressed">
                         <VisualState.Setters>
                             <Setter Target="Cp.Foreground" Value="{ThemeResource EtherSegmentedControlSegmentForegroundCheckedBrush}"/>
+                            <Setter Target="CheckedLayer.Opacity" Value="1"/>
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Indeterminate"/>
