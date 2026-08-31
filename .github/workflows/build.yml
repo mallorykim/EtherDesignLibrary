@@ -1,10 +1,10 @@
 name: Build
 
-# Hosted windows-latest runs static contracts, resource audits, and package
-# restore only. It does not launch WinUI. Gallery smoke (Light/Dark 20/20) and
-# L3 consumer runtime markers are owned by scripts/Verify-RuntimeGates.ps1 on a
-# local Windows desktop, or a future self-hosted interactive runner, before
-# preview publish.
+# Hosted windows-latest runs static contracts, resource audits, package
+# restore, and unsigned MSIX package produce (build-only, no GUI). It does not
+# launch WinUI. Gallery smoke (Light/Dark 20/20) and L3 consumer runtime
+# markers are owned by scripts/Verify-RuntimeGates.ps1 on a local Windows
+# desktop, or a future self-hosted interactive runner, before preview publish.
 
 on:
   push:
@@ -111,3 +111,13 @@ jobs:
         # Hosted runners pack/restore fixtures only. GUI runtime markers stay on
         # scripts/Verify-RuntimeGates.ps1 because hosted WinUI launch is unreliable.
         run: ./scripts/Verify-ConsumerFixtures.ps1 -SkipSolutionBuild -SkipRuntimeSmoke
+      - name: Verify unsigned MSIX produce
+        shell: pwsh
+        # Builds the Packaged fixture with GenerateAppxPackageOnBuild=true and asserts a
+        # non-trivial .msix/.msixbundle exists under AppPackages. This is a pure MSBuild/
+        # Windows SDK packaging step (AppxPackageSigningEnabled=false, no signing, no
+        # install, no launch) - it needs no GUI or interactive desktop session, unlike the
+        # GUI runtime markers above, so it is safe to run on this hosted runner. Must run
+        # after "Verify package consumers", which packs Foundation/Controls/Interactions
+        # into the local feed this fixture restores from.
+        run: ./scripts/Verify-MsixPackage.ps1 -SkipSolutionBuild

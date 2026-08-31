@@ -101,7 +101,17 @@ WinUI 3 控件
 5. **端到端测试**：正常提交、断网恢复、超时、重复点击、重复送达、服务端拒绝、旧客户端与新后端兼容。
 6. **可观测性证据**：使用 `correlationId` 能查询一次交互从客户端到最终后端处理的完整链路。
 
-## 全属性可消费验收边界（2026-08-29）
+> **2026-08-30 更新**：本节记录的是 2026-08-29 审核当时的状态。`EtherSegmentedTrack`
+> 已于提交 `af909c93`（"refactor(controls): tighten the published surface before
+> release"）删除（未被库或 Gallery 实际构造，只有本审核的验收代码构造它，且其名字与
+> 同名样式键冲突），受审类型数由 13 降为 12，属性总数与分类随之从
+> `1,501 / 482 / 37 / 946` 变为当前的 `1,388 / 视觉 445 / 语义 69 / 平台 874`（Ether 自
+> 有 DP 由 37 降为 35）。以下数字为历史记录，不代表当前状态；当前权威数字见
+> `scripts/Verify-ConsumerFixtures.ps1` 的 `$expectedWritablePublicProperties` /
+> `$expectedVisualPublicProperties` / `$expectedSemanticPublicProperties` /
+> `$expectedPlatformPublicProperties` 与 `docs/handoff/2026-08-29-winui3-full-property-audit-handoff.md` §13。
+
+## 全属性可消费验收边界（2026-08-29，历史记录，见上方更新说明）
 
 “全属性”在 WinUI 3 中不能理解为把 `FrameworkElement`、`UIElement` 等祖先类型的全部布局与渲染属性都发送到后端；那既没有稳定的业务含义，也会把 UI 实现细节和潜在敏感内容带出客户端。本库采用以下可执行的边界：
 

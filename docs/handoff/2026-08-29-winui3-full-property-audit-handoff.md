@@ -309,3 +309,42 @@ Rule B 有一个已知、显式列出并逐一核实过用途的豁免名单（`
 - 不回退 `EtherDropdown.xaml` 的 `TemplateBinding` 重构。
 - 已更正上一节"回归验证"里"Light/Dark 视觉零回归"一句的范围（见上），使其不再暗示涵盖了这处未记录的重构。
 - **已知限制，未修复**：`CaptureThemeScreenshotsAsync`/`CaptureCurrentPngAsync`（`tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.Infrastructure.cs`）用于 Light/Dark 控件截图矩阵，没有 `CaptureSettledVisualFingerprintAsync` 那种收敛等待或容差比较，因此这条截图路径本身对逐字节比较不稳定（本节实测的二值化噪声就是例子）。当前 `Verify-ConsumerFixtures.ps1` 只用这些截图做"存在性 + 尺寸 + Light/Dark 哈希不相等"断言，没有做跨运行的逐字节比较，所以这个不稳定性目前不会导致门禁误报；但如果未来有人想用这些截图做"改动前后逐像素零回归"式的证据（就像本节的复核尝试做的那样），需要先按 §4.7 的方法把收敛/容差机制补到这条路径上，否则任何这种比较都会把噪声误判成真实差异，或者反过来把真实差异误判成噪声。这不是本次修复的任务范围，留在这里记录以免下次重蹈覆辙。
+
+## 13. 属性总数与受审类型数变更（2026-08-30，本文档记录范围之外的后续提交）
+
+本文档 §1、§4.1、§9 记录的 `1,501` 个公开可写属性、`482` 个视觉属性、`37` 个 Ether
+自有 DP、"13 个受审类型"（含 `EtherSegmentedTrack`）都是 **2026-08-29 审核当时的准确
+状态**，以下不是对那次审核的更正，而是记录此后代码本身发生的变化：
+
+提交 `af909c93`（"refactor(controls): tighten the published surface before
+release"，2026-08-30）将 `EtherSegmentedTrack` 从公开表面整体删除——库和 Gallery
+都从未构造过它，只有本文档描述的审核验收代码构造它，且它的类型名与一个同名样式键
+冲突。删除后 `RuntimeVerification.PublicPropertyInventory.cs` 的
+`PublicPropertyInventoryTypes` 由 13 个类型降为 12 个（不再含
+`EtherSegmentedTrack`），随之：
+
+| 项目 | 2026-08-29（本文档记录） | 2026-08-30 起（当前） |
+| --- | ---: | ---: |
+| 受审类型数 | 13 | 12 |
+| 公开可写属性总数 | 1,501 | 1,388 |
+| 视觉属性（逐项可观察证据） | 482 | 445 |
+| 语义属性 | 73 | 69 |
+| 平台属性 | 946 | 874 |
+| Ether 自有 DP | 37 | 35 |
+| 标准交互适配器 | 12 | 12（不变） |
+| 控件截图矩阵 | 13 控件 × Light/Dark | 13 控件 × Light/Dark（不变，控件类型集合本身没变，只是不再单列 `EtherSegmentedTrack` 这个无独立视觉契约的子类） |
+
+§9 提到的 `CreateVisualFixture` 把 `EtherSegmentedTrack` 替换成
+`EtherSegmentedControl` 渲染的说明，以及"公开属性代码调用仍以自身类型验证"的描述，
+在 `EtherSegmentedTrack` 删除后不再适用（不存在需要替换渲染标本的子类了）。
+
+当前权威数字见 `scripts/Verify-ConsumerFixtures.ps1` 的
+`$expectedWritablePublicProperties` / `$expectedVisualPublicProperties` /
+`$expectedSemanticPublicProperties` / `$expectedPlatformPublicProperties` /
+`$expectedConsumedProperties`（35 项），以及
+`tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.PublicPropertyInventory.cs`
+的 `PublicPropertyInventoryTypes`（12 项）。同一轮提交还新增了 26 张控件黄金基线
+PNG（`tests/Ether.DesignSystem.ConsumerFixtures/VisualBaselines/controls/`，13 控件 ×
+Light/Dark）和一个真正在仓库外运行、不继承本仓库构建配置的外部消费者验证脚本
+（`scripts/Verify-ExternalConsumer.ps1`），二者都晚于本文档记录的审核范围，不在
+本文档 §1–§12 的验收结果内。

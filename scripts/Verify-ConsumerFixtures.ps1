@@ -906,7 +906,7 @@ try {
             $updateVisualBaselinesValue = if ($UpdateVisualBaselines) { '1' } else { $null }
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_UPDATE_VISUAL_BASELINES', $updateVisualBaselinesValue, 'Process')
             $smokeProcess = Start-Process -FilePath $unpackagedExe -WorkingDirectory $unpackagedOutput -PassThru -WindowStyle Hidden
-            # The attached visual-property audit (482 properties) now waits deterministically
+            # The attached visual-property audit (445 properties) now waits deterministically
             # for compositor settle after each mutation: it samples the rendered bitmap
             # fingerprint a composition frame apart until 3 consecutive samples match (throwing
             # if that never happens within 60 samples) instead of a single Task.Yield(), so the

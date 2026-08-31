@@ -5,6 +5,20 @@
 范围：`Ether.DesignSystem.Foundation` / `Ether.DesignSystem.Controls` / `Ether.DesignSystem.Interactions`（`0.1.0-preview.1`，TFM `net8.0-windows10.0.19041.0`）
 读者：本库维护者。本文档只是计划，不包含任何代码改动。
 
+> **执行进度更新（2026-08-30，后续提交）**：本文档写成之后，A1（两层消费验证，见
+> `scripts/Verify-ExternalConsumer.ps1`）、A2（去 `InternalsVisibleTo` 特权）、A3（26
+> 张控件黄金基线 PNG）、A4 的一部分（Gallery 标记覆盖核对）已落地（提交
+> `e4260f6`、`0832287`、`d649d75`、`61b7bcc`）；本节之后描述的 B1（属性诚实化文
+> 案）、B4（平台声明收窄到 x64）、B5（`Verify-MsixPackage.ps1` 接入 hosted CI）已在
+> 本轮（提交 `af909c93` 之后的这次修订）完成。**本文档正文里出现的
+> `1501 / 482 / 37 / 946`、"13 个受审类型"、"约 1019 个仅可调用"等数字，都是
+> 2026-08-30 计划撰写当时对代码现状的核实结果，此后 `EtherSegmentedTrack` 被删除
+> （见 `af909c93`），当前权威数字是 `1388 / 视觉 445 / 语义 69 / 平台 874`、"12 个受
+> 审类型"、"943 个仅可调用"（`1388 − 445`）；正文不再逐处更正，以保留计划撰写时
+> 的核实记录。B2（Interactions PublicApiAnalyzers）、B3（发布门禁流程化）、B6（消
+> 费方接入文档，已有 `docs/consumers/getting-started.md`）等其余分项的完成状态未
+> 在本次更新中逐一复核，仍以正文原状为准。
+
 ## 0. 目标与已确认的前提
 
 ### 0.1 目标

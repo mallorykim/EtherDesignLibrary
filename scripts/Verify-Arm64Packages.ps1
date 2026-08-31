@@ -1,6 +1,17 @@
 [CmdletBinding()]
 param()
 
+# DISABLED / NOT CHAINED — not invoked from scripts/Verify-RuntimeGates.ps1, any
+# CI workflow, or any release gate. Directory.Build.props declares only
+# <Platforms>x64</Platforms> / <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+# (2026-08-30): the only consumers of this library are known to be x64-only, and
+# this script's arm64 pack/compile output was never checked by any automated
+# gate, so it verified a support range nobody was promising. The script itself
+# still works and is kept for when arm64 demand actually appears; to re-enable,
+# restore arm64 to Directory.Build.props' Platforms/RuntimeIdentifiers, add this
+# script back to the $arm64Packages chain in Verify-RuntimeGates.ps1, and update
+# the package README/consumer docs to claim arm64 support again.
+#
 # Packs Foundation, Controls, and Interactions for arm64 and compiles the
 # unpackaged package-consumer fixture for arm64. Does not launch the arm64 exe
 # (this machine is x64).

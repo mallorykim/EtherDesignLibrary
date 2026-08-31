@@ -2,8 +2,14 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <Platforms>x86;x64;arm64</Platforms>
-    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <!-- Only x64 is built in CI and verified end-to-end. x86/arm64 were previously declared
+         here but never built by .github/workflows/build.yml (which only ever passes
+         -p:Platform=x64), so the declaration promised a support range that was never checked.
+         scripts/Verify-Arm64Packages.ps1 is disabled (not chained from Verify-RuntimeGates.ps1)
+         for the same reason; see the comment at the top of that script to re-enable both
+         together if arm64 consumer demand returns. -->
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
