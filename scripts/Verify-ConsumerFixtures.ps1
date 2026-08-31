@@ -969,7 +969,7 @@ try {
             $expectedInputCommonStates = @('Normal', 'PointerOver', 'Focused', 'Disabled')
             $expectedDropdownTemplateParts = @('TriggerText', 'Arrow', 'Popup', 'PopupBorder', 'ScrollViewer')
             $expectedDropDownStates = @('Opened', 'Closed')
-            $expectedSegmentedControlTemplateParts = @('ShadowHost', 'TrackSurface')
+            $expectedSegmentedControlTemplateParts = @('TrackSurface')
             $expectedSegmentCheckStates = @('Unchecked', 'Checked')
             $expectedIntelligenceButtonTemplateParts = @('Bg', 'BorderIntelligenceBlue', 'BorderIntelligenceGradient', 'BlueGlowOuter', 'BlueGlowMiddle', 'BlueGlowCore', 'PurpleGlow', 'Cp', 'FocusRing')
             $expectedIntelligenceButtonCommonStates = @('Normal', 'PointerOver', 'Pressed', 'Disabled')
