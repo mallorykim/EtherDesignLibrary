@@ -71,6 +71,14 @@ function Remove-DirectoryLongPathSafe {
             throw "robocopy mirror-purge of '$Path' failed with exit code $robocopyExitCode. Output: $($robocopyOutput -join [Environment]::NewLine)"
         }
 
+        # robocopy's success bit-flags (e.g. 2 = "extra files/dirs purged", exactly what
+        # mirroring an empty dir over a populated one produces) otherwise leak out as the
+        # ambient $LASTEXITCODE. A caller further up the chain (Publish-Internal.ps1) checks
+        # $LASTEXITCODE after invoking this script and would misread that leaked 2 as a gate
+        # failure even though verification and cleanup both succeeded. Normalize it now that
+        # robocopy's exit code has been validated as success.
+        $global:LASTEXITCODE = 0
+
         Remove-Item -LiteralPath $Path -Recurse -Force -ErrorAction SilentlyContinue
         if (Test-Path -LiteralPath $Path) {
             throw "Directory '$Path' still exists after long-path-safe deletion."
@@ -682,3 +690,11 @@ finally {
         Write-Warning "External consumer verification failed; retained temporary root for diagnosis: $temporaryRoot"
     }
 }
+
+# This line is reached only when the try block above completed without throwing (i.e. the
+# success path: $succeeded -eq $true). On failure, the throw inside the try block propagates
+# past this point after 'finally' runs, so this exit is never reached on that path. An explicit,
+# deterministic success exit code guards against any residual ambient $LASTEXITCODE (e.g. from a
+# tool invoked during cleanup) leaking out and being misread as a gate failure by callers such as
+# Publish-Internal.ps1, which checks $LASTEXITCODE after invoking this script.
+exit 0
