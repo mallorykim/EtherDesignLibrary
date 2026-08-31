@@ -3,7 +3,7 @@
 Date: 2026-08-31
 Branch: `codex/refine-components`
 Baseline commit: `e270990`（干净基线；R-00 自包含调查已移至分支 `spike/self-contained-investigation` @ 82f12e9）
-Status: 施工中（F0 完结：自包含 descope 待用户复核；F1–F6 待执行）
+Status: **F0–F6 全部完成，rehearsal 绿（REHEARSAL_EXIT=0 @ 7daf1dc，3 包已产出）**；剩用户决定：自包含 descope 复核 / 3 条 needs-review / 提供 feed 后 -Push
 
 ## 这份文件的用途
 
@@ -635,3 +635,4 @@ pushed            = [bool]$Push
 | 2026-08-31 | R-12 前置 | **F6c 落地** `4684f05`：Verify-ExternalConsumer 清理改为 robocopy /MIR 空目录镜像（原生长路径支持）+ 清理失败仅 warning 不再 abort 已通过的验证。聚焦测试用 424 字符路径复现原异常并证明修复；验证实质字节不变。我独立核对 diff 仅清理逻辑、PSCompat/GateManifest exit0、tree clean |
 | 2026-08-31 | R-12 复验#2 | **F6b-redo 再失败于 ExternalConsumer（第二个、更窄的 bug）**：A/B 实质全通过、清理成功无残留，但 F6c 引入的 robocopy `/MIR` 退出码 2（"purged extra files"=成功位标志，非失败）泄漏进 `$LASTEXITCODE`，被 Publish-Internal 通用检查误判为门禁失败。假阴性 |
 | 2026-08-31 | R-12 前置 | **F6d 落地** `10ebbe3`：robocopy 后 `$global:LASTEXITCODE=0` 归一化 + 成功路径显式 `exit 0`。**这次真跑了实际门禁**确认 EXTERNALCONSUMER_EXIT=0（原泄漏 2），无残留 temp。我核对 diff 仅退出码逻辑、tree clean。注：ConsumerFixtures/SilentPropertyCoverage/MsixPackage/pack 迄今两次 rehearsal 都未跑到，下一轮首次全链穿透 |
+| 2026-08-31 | R-12 ✅ | **F6b-redo-2 全链 rehearsal 通过** `REHEARSAL_EXIT=0` @ 冻结提交 `7daf1dc`，wall-clock 18m21s：双 build + 22 静态门禁 + GallerySmoke 20/20 + ExternalConsumer(A/B) + git diff --check + ConsumerFixtures×2(1388/445=270+175/943/35/26，两轮确定性一致) + SilentPropertyCoverage(156 全账，3 needs-review warning) + MsixPackage(65MB .msix) + pack×3。证据 bundle gitCommit==7daf1dc、pushed=false、3 nupkg。我独立核对 tree clean/HEAD/证据绑定/包存在全部吻合。**13 项阻断全部完成** |
