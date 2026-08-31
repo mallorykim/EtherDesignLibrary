@@ -45,6 +45,11 @@
     <None Update="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Gallery-only preview support is intentionally not granted to ConsumerFixtures or package consumers. -->
+    <InternalsVisibleTo Include="Ether.DesignSystem.Gallery" />
+  </ItemGroup>
+
   <Target Name="IncludeCompiledXamlForPackage" BeforeTargets="GenerateNuspec">
     <ItemGroup>
       <!-- The generated PRI references these XBF files when a consumer loads library XAML. -->

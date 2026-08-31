@@ -28,16 +28,46 @@ internal static partial class RuntimeVerification
             defaultSlider.LargeChange == 10d &&
             defaultSlider.ShowTitle &&
             defaultSlider.ShowLabels &&
-            EtherSlider.MaxLabelCount == 11 &&
-            EtherSlider.MinBarCount == 8 &&
-            EtherSlider.MaxBarCount == 512 &&
             defaultSlider.HorizontalAlignment == HorizontalAlignment.Stretch &&
             !defaultSlider.UseSystemFocusVisuals &&
             defaultSlider.IsTabStop &&
             defaultSlider.Template is not null;
         if (!defaultStyleResolved)
         {
-            throw new InvalidOperationException("The keyed EtherSlider style did not apply its default range, chrome, even-tick caps, Stretch alignment, change steps, UseSystemFocusVisuals=False, IsTabStop, and template.");
+            throw new InvalidOperationException("The keyed EtherSlider style did not apply its default range, chrome, Stretch alignment, change steps, UseSystemFocusVisuals=False, IsTabStop, and template.");
+        }
+
+        // EtherSlider.MaxLabelCount, MinBarCount, and MaxBarCount are private
+        // implementation details by design - not part of the public contract.
+        // Rather than reading them, this fixture drives the rendered behavior
+        // they govern (the tick-label cap and the even tick-bar floor/ceiling)
+        // through isolated probe instances hosted in an unconstrained scratch
+        // Canvas, and checks the outcome against the same values the control's
+        // public XML docs describe (see the EtherSlider <remarks> and the
+        // <see cref="EtherSlider.Labels"/> doc comment).
+        const int ExpectedMaxLabelCount = 11;
+        const int ExpectedMinBarCount = 8;
+        const int ExpectedMaxBarCount = 512;
+
+        var overflowLabels = Enumerable.Range(0, ExpectedMaxLabelCount * 2).Select(i => i.ToString());
+        var renderedLabels = GetRenderedLabels(themeRoot, overflowLabels);
+        if (renderedLabels.Length != ExpectedMaxLabelCount ||
+            renderedLabels[0] != "0" ||
+            renderedLabels[^1] != (ExpectedMaxLabelCount - 1).ToString())
+        {
+            throw new InvalidOperationException($"Expected EtherSlider to render at most {ExpectedMaxLabelCount} tick labels ('0'..'{ExpectedMaxLabelCount - 1}') when given {ExpectedMaxLabelCount * 2} Labels, but observed [{string.Join(", ", renderedLabels)}].");
+        }
+
+        var narrowBarCount = GetRenderedBarCount(themeRoot, width: 10d);
+        if (narrowBarCount != ExpectedMinBarCount)
+        {
+            throw new InvalidOperationException($"Expected EtherSlider to floor its even tick-bar count at {ExpectedMinBarCount} for a narrow track, but observed {narrowBarCount}.");
+        }
+
+        var wideBarCount = GetRenderedBarCount(themeRoot, width: 4000d);
+        if (wideBarCount != ExpectedMaxBarCount)
+        {
+            throw new InvalidOperationException($"Expected EtherSlider to ceiling its even tick-bar count at {ExpectedMaxBarCount} for a wide track, but observed {wideBarCount}.");
         }
 
         var valueText = GetTemplatePart<TextBlock>(slider, "ValueText", nameof(EtherSlider));
@@ -58,9 +88,9 @@ internal static partial class RuntimeVerification
         slider.Value = 65d;
         slider.UpdateLayout();
         var totalBarCount = barCanvas.Children.OfType<Microsoft.UI.Xaml.Shapes.Rectangle>().Count(rectangle => rectangle.Height == 40d);
-        if (totalBarCount < EtherSlider.MinBarCount || totalBarCount % 2 != 0)
+        if (totalBarCount < ExpectedMinBarCount || totalBarCount % 2 != 0)
         {
-            throw new InvalidOperationException($"Expected an even tick count of at least {EtherSlider.MinBarCount}, but observed {totalBarCount}.");
+            throw new InvalidOperationException($"Expected an even tick count of at least {ExpectedMinBarCount}, but observed {totalBarCount}.");
         }
 
         var highlightedBarCount = CountHighlightedBars(barCanvas);
@@ -247,6 +277,84 @@ internal static partial class RuntimeVerification
             moveToStopExercised,
             lightTemplateBrushColors,
             darkTemplateBrushColors);
+    }
+
+    /// <summary>
+    /// Renders a disposable, isolated <see cref="EtherSlider"/> at the given
+    /// pixel width and returns how many even tick bars it actually produced.
+    /// Used to observe the floor/ceiling that EtherSlider's private
+    /// MinBarCount/MaxBarCount constants enforce, without reading those
+    /// constants.
+    /// </summary>
+    private static int GetRenderedBarCount(FrameworkElement themeRoot, double width)
+        => MeasureIsolatedSlider(
+            themeRoot,
+            probe => probe.Width = width,
+            probe =>
+            {
+                var barCanvas = GetTemplatePart<Canvas>(probe, "BarCanvas", nameof(EtherSlider));
+                return barCanvas.Children.OfType<Microsoft.UI.Xaml.Shapes.Rectangle>().Count(rectangle => rectangle.Height == 40d);
+            });
+
+    /// <summary>
+    /// Renders a disposable, isolated <see cref="EtherSlider"/> with the given
+    /// candidate tick labels and returns the text of every label that actually
+    /// rendered visible. Used to observe the cap that EtherSlider's private
+    /// MaxLabelCount constant enforces, without reading that constant.
+    /// </summary>
+    private static string[] GetRenderedLabels(FrameworkElement themeRoot, IEnumerable<string> labels)
+        => MeasureIsolatedSlider(
+            themeRoot,
+            probe =>
+            {
+                probe.Width = 600d;
+                probe.Labels!.Clear();
+                foreach (var label in labels)
+                    probe.Labels.Add(label);
+            },
+            probe =>
+            {
+                var labelRow = GetTemplatePart<Grid>(probe, "LabelRow", nameof(EtherSlider));
+                return labelRow.Children.OfType<TextBlock>()
+                    .Where(label => label.Visibility == Visibility.Visible)
+                    .Select(label => label.Text)
+                    .ToArray();
+            });
+
+    /// <summary>
+    /// Hosts a brand-new <see cref="EtherSlider"/> inside an invisible, non-hit-testable
+    /// scratch <see cref="Canvas"/> attached to <paramref name="themeRoot"/>, configures
+    /// and lays it out, lets <paramref name="observe"/> read its rendered public state,
+    /// then tears the scratch container back down. A Canvas always measures its children
+    /// at infinite available size regardless of the Canvas's own size or any ancestor's
+    /// viewport (including the fixture window's ScrollViewer), so an explicit Width set on
+    /// the probe is exactly what it renders at - independent of the live window's real size.
+    /// This keeps the probe from disturbing the shared, already-verified slider instances
+    /// or anything else in the fixture's visual tree.
+    /// </summary>
+    private static T MeasureIsolatedSlider<T>(FrameworkElement themeRoot, Action<EtherSlider> configure, Func<EtherSlider, T> observe)
+    {
+        if (themeRoot is not Panel hostPanel)
+        {
+            throw new InvalidOperationException("EtherSlider boundary probe requires a panel-based theme root to host an isolated scratch container.");
+        }
+
+        var scratch = new Canvas { Opacity = 0d, IsHitTestVisible = false };
+        hostPanel.Children.Add(scratch);
+        try
+        {
+            var probe = new EtherSlider();
+            configure(probe);
+            scratch.Children.Add(probe);
+            probe.ApplyTemplate();
+            probe.UpdateLayout();
+            return observe(probe);
+        }
+        finally
+        {
+            scratch.Children.Clear();
+            hostPanel.Children.Remove(scratch);
+        }
     }
 
     private static int CountHighlightedBars(Canvas canvas)

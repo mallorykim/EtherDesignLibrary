@@ -25,8 +25,7 @@
                                    FontWeight="SemiBold"
                                    Foreground="{ThemeResource text/primary}"/>
                         <Border CornerRadius="{StaticResource radius/surface}">
-                            <controls:EtherMasthead ShowSettings="False"
-                                                    PreviewIsMaximized="False"
+                            <controls:EtherMasthead x:Name="DefaultMasthead" ShowSettings="False"
                                                     EnableWindowCommands="False"
                                                     AutomationProperties.Name="Default masthead"/>
                         </Border>
@@ -45,8 +44,7 @@
                                    FontWeight="SemiBold"
                                    Foreground="{ThemeResource text/primary}"/>
                         <Border CornerRadius="{StaticResource radius/surface}">
-                            <controls:EtherMasthead ShowSettings="False"
-                                                    PreviewIsMaximized="True"
+                            <controls:EtherMasthead x:Name="MaximizedMasthead" ShowSettings="False"
                                                     EnableWindowCommands="False"
                                                     AutomationProperties.Name="Maximized masthead"/>
                         </Border>

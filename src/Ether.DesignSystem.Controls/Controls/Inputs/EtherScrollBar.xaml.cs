@@ -1,10 +1,15 @@
 using Microsoft.UI.Xaml;
 
-namespace Ether.DesignSystem.Controls;
+namespace Ether.DesignSystem.Controls.Resources;
 
-public sealed partial class EtherScrollBar : ResourceDictionary
+/// <summary>
+/// Compiled resource dictionary that supplies the Ether ScrollBar resources.
+/// Consumers merge the design-system dictionary and consume its resource keys; this is not a
+/// ScrollBar control type.
+/// </summary>
+public sealed partial class EtherScrollBarResources : ResourceDictionary
 {
-    public EtherScrollBar()
+    public EtherScrollBarResources()
     {
         this.InitializeComponent();
     }

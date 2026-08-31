@@ -53,7 +53,7 @@ Assert-Contains $control 'VisualStateManager\.GoToState\(this, state, false\)' '
 if ($control -match '\.Visibility\s*=') {
     throw 'EtherSteeringBar must drive label visibility with VisualStateManager, not direct Visibility assignments.'
 }
-Assert-Contains $control 'PreviewStatus' 'EtherSteeringBar Gallery-oriented PreviewStatus surface'
+Assert-Contains $control 'internal SteeringBarPreviewStatus PreviewStatus' 'EtherSteeringBar Gallery-only PreviewStatus support'
 Assert-Contains $control 'AutomationControlType\.Slider' 'EtherSteeringBar automation control type'
 Assert-Contains $control 'PatternInterface\.RangeValue' 'EtherSteeringBar RangeValue pattern'
 Assert-Contains $control 'RangeValuePatternIdentifiers\.ValueProperty' 'EtherSteeringBar RangeValue value-changed event'
@@ -250,11 +250,11 @@ foreach ($name in 'Interactive steering bar', 'Interactive steering bar with sto
 }
 
 $fixture = (Get-ChildItem -Path $fixtureDirectory -Filter 'RuntimeVerification*.cs' -File | Get-Content -Raw) -join [Environment]::NewLine
-foreach ($evidence in 'DefaultEtherSteeringBarStyle', 'GetPattern\(PatternInterface\.RangeValue\)', 'SteeringBarVerification', 'steeringBar = result\?\.SteeringBar', 'PreviewStatusLocksAutomation', 'SetValueAccepted') {
+foreach ($evidence in 'DefaultEtherSteeringBarStyle', 'GetPattern\(PatternInterface\.RangeValue\)', 'SteeringBarVerification', 'steeringBar = result\?\.SteeringBar', 'DisabledLocksAutomation', 'SetValueAccepted') {
     Assert-Contains $fixture $evidence "EtherSteeringBar consumer runtime evidence for $evidence"
 }
 
 $ci = Get-Content -LiteralPath $ciPath -Raw
 Assert-Contains $ci 'Verify-EtherSteeringBarContract\.ps1' 'CI wiring for EtherSteeringBar contract verifier'
 
-Write-Host 'EtherSteeringBar contract audit passed: style/defaults, template metadata/states, component theme keys, High Contrast system resources, gallery automation names, PreviewStatus, RangeValue GetPattern evidence, and CI wiring are present.'
+Write-Host 'EtherSteeringBar contract audit passed: style/defaults, template metadata/states, component theme keys, High Contrast system resources, gallery automation names, Gallery-only preview support, RangeValue GetPattern evidence, and CI wiring are present.'

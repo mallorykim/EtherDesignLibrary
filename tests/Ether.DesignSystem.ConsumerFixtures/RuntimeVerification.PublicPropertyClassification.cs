@@ -56,7 +56,7 @@ internal static partial class RuntimeVerification
         "HorizontalAlignment", "HorizontalContentAlignment", "HorizontalTextAlignment", "IsChecked",
         "IsDropDownOpen", "IsEditable", "IsEnabled", "IsOn", "IsReadOnly", "Labels", "LeftIcon", "Margin", "MaxDropDownHeight",
         "MaxHeight", "MaxVisibleItems", "MaxWidth", "MenuGap", "MinHeight", "Minimum", "MinWidth", "Maximum", "Opacity", "Padding",
-        "PlaceholderForeground", "PlaceholderText", "PreviewIsMaximized", "PreviewStatus", "RenderTransform", "RightIcon", "Rotation", "Scale", "SelectedIndex",
+        "PlaceholderForeground", "PlaceholderText", "RenderTransform", "RightIcon", "Rotation", "Scale", "SelectedIndex",
         "SelectedItem", "SelectedValue", "ShowChevron", "ShowLabels", "ShowMenuIcon", "ShowSearch",
         "ShowSettings", "ShowStops", "ShowTitle", "ShowValue", "Size", "SnapToStops", "Spacing", "Stops", "EnableWindowCommands",
         "Text", "TextAlignment", "TextWrapping", "Title", "Value", "ValueContent", "Variant", "VerticalAlignment",

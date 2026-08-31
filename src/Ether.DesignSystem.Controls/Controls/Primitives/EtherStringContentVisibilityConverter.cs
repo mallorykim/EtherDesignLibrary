@@ -2,16 +2,16 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace Ether.DesignSystem.Controls;
+namespace Ether.DesignSystem.Controls.Primitives;
 
 /// <summary>
-/// Maps content type to visibility for paired text and arbitrary-content template paths.
+/// Internal-template converter that selects the text or arbitrary-content presentation path.
 /// </summary>
 /// <remarks>
-/// Use <c>String</c> as <see cref="IValueConverter.Convert"/>'s parameter to show only
-/// string content; any other parameter shows only non-string content. When the source value
-/// is a <see cref="bool"/>, use <c>False</c> to show only false values; any other parameter
-/// shows only true values.
+/// This type is public only because WinUI resolves types referenced by compiled resource
+/// dictionaries through public XAML metadata. It is template support, not a general consumer
+/// conversion utility. The owning bindings are one-way visibility bindings, so reverse
+/// conversion is deliberately unsupported.
 /// </remarks>
 public sealed class EtherStringContentVisibilityConverter : IValueConverter
 {
@@ -28,7 +28,9 @@ public sealed class EtherStringContentVisibilityConverter : IValueConverter
         return value is string == showString ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Always throws because every template binding that uses this converter is one-way.
+    /// </summary>
     public object ConvertBack(object value, Type targetType, object parameter, string language)
-        => throw new NotSupportedException();
+        => throw new NotSupportedException("EtherStringContentVisibilityConverter supports one-way template bindings only.");
 }

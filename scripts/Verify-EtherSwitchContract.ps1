@@ -35,11 +35,11 @@ function Get-KeyedResources {
 }
 
 $control = Get-Content -LiteralPath $controlPath -Raw
-Assert-Contains $control 'class EtherSwitch\s*:\s*ResourceDictionary' 'EtherSwitch ResourceDictionary contract'
+Assert-Contains $control 'class EtherSwitchResources\s*:\s*ResourceDictionary' 'EtherSwitch resources ResourceDictionary contract'
 if ($control -match 'DefaultStyleKey') {
     throw 'EtherSwitch must stay a keyed ResourceDictionary style contract; do not introduce DefaultStyleKey.'
 }
-if ($control -match 'class EtherSwitch\s*:\s*(Control|ToggleSwitch)') {
+if ($control -match 'class EtherSwitchResources\s*:\s*(Control|ToggleSwitch)') {
     throw 'EtherSwitch must not become a custom ToggleSwitch subclass.'
 }
 

@@ -14,10 +14,10 @@ using Windows.UI;
 namespace Ether.DesignSystem.Controls;
 
 /// <summary>
-/// Gallery-oriented preview chrome for <see cref="EtherSteeringBar"/>. Product
-/// call sites should leave this at <see cref="None"/>.
+/// Gallery-only forced chrome for <see cref="EtherSteeringBar"/>.
+/// This is internal implementation support, not a product contract.
 /// </summary>
-public enum SteeringBarPreviewStatus
+internal enum SteeringBarPreviewStatus
 {
     None,
     Default,
@@ -50,15 +50,12 @@ public sealed class SteeringBarValueChangedEventArgs : EventArgs
 /// <summary>
 /// Ether steering bar: a draggable progress/slider hybrid with a rounded track,
 /// gradient fill, glass-like thumb, and optional title/value labels. The live
-/// control is interactive; showcase pages can force a visual preview state via
-/// <see cref="PreviewStatus"/>.
+/// control is interactive.
 /// </summary>
 /// <remarks>
-/// <see cref="PreviewStatus"/> is Gallery-oriented and remains part of the public
-/// surface. Removing it would be a PublicAPI breaking change. Label visibility is
-/// driven through <c>LabelStates</c>. Thumb size, fill width, stop markers, and
-/// PreviewStatus opacity stay code-driven so pointer and keyboard interaction is
-/// not rewritten onto VisualStateManager.
+/// Label visibility is driven through <c>LabelStates</c>. Thumb size, fill width, stop
+/// markers, and interaction-state opacity stay code-driven so pointer and keyboard interaction
+/// is not rewritten onto VisualStateManager.
 /// </remarks>
 [TemplatePart(Name = LayoutRootPart, Type = typeof(Grid))]
 [TemplatePart(Name = InteractionSurfacePart, Type = typeof(Grid))]
@@ -148,8 +145,8 @@ public sealed class EtherSteeringBar : Control
         DependencyProperty.Register(nameof(Value), typeof(double), typeof(EtherSteeringBar),
             new PropertyMetadata(0d, OnRangePropertyChanged));
 
-    /// <summary>Identifies the <see cref="PreviewStatus"/> dependency property.</summary>
-    public static readonly DependencyProperty PreviewStatusProperty =
+    /// <summary>Identifies the Gallery-only preview-status dependency property.</summary>
+    internal static readonly DependencyProperty PreviewStatusProperty =
         DependencyProperty.Register(nameof(PreviewStatus), typeof(SteeringBarPreviewStatus), typeof(EtherSteeringBar),
             new PropertyMetadata(SteeringBarPreviewStatus.None, OnRangePropertyChanged));
 
@@ -219,8 +216,8 @@ public sealed class EtherSteeringBar : Control
         set => SetValue(ValueProperty, NormalizeValue(value));
     }
 
-    /// <summary>Gets or sets Gallery-forced chrome. Product call sites should leave this at <see cref="SteeringBarPreviewStatus.None"/>.</summary>
-    public SteeringBarPreviewStatus PreviewStatus
+    /// <summary>Gets or sets Gallery-forced chrome.</summary>
+    internal SteeringBarPreviewStatus PreviewStatus
     {
         get => (SteeringBarPreviewStatus)GetValue(PreviewStatusProperty);
         set => SetValue(PreviewStatusProperty, value);

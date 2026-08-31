@@ -132,23 +132,23 @@ internal static partial class RuntimeVerification
         }
         steeringBar.Value = 65d;
 
-        steeringBar.PreviewStatus = SteeringBarPreviewStatus.Default;
-        var previewStatusLocksAutomation = false;
+        steeringBar.IsEnabled = false;
+        var disabledLocksAutomation = false;
         try
         {
             rangeValue.SetValue(12d);
         }
         catch (InvalidOperationException)
         {
-            previewStatusLocksAutomation = steeringBar.Value == 65d && rangeValue.IsReadOnly;
+            disabledLocksAutomation = steeringBar.Value == 65d && rangeValue.IsReadOnly;
         }
 
-        if (!previewStatusLocksAutomation)
+        if (!disabledLocksAutomation)
         {
-            throw new InvalidOperationException("PreviewStatus did not lock the steering bar RangeValue provider.");
+            throw new InvalidOperationException("Disabled EtherSteeringBar did not lock the public RangeValue provider.");
         }
 
-        steeringBar.PreviewStatus = SteeringBarPreviewStatus.None;
+        steeringBar.IsEnabled = true;
 
         var lightGradient = await GetSteeringBarGradientAsync(themeRoot, steeringBar, fillBorder, ElementTheme.Light);
         var darkGradient = await GetSteeringBarGradientAsync(themeRoot, steeringBar, fillBorder, ElementTheme.Dark);
@@ -180,7 +180,7 @@ internal static partial class RuntimeVerification
             rangeValue.Maximum,
             rangeValue.Value,
             setValueAccepted,
-            previewStatusLocksAutomation,
+            disabledLocksAutomation,
             valueChangeExercised,
             lightGradient,
             darkGradient,

@@ -35,11 +35,11 @@ function Get-KeyedResources {
 }
 
 $control = Get-Content -LiteralPath $controlPath -Raw
-Assert-Contains $control 'class EtherScrollBar\s*:\s*ResourceDictionary' 'EtherScrollBar ResourceDictionary contract'
+Assert-Contains $control 'class EtherScrollBarResources\s*:\s*ResourceDictionary' 'EtherScrollBar resources ResourceDictionary contract'
 if ($control -match 'DefaultStyleKey') {
     throw 'EtherScrollBar must stay an implicit ResourceDictionary style contract; do not introduce DefaultStyleKey.'
 }
-if ($control -match 'class EtherScrollBar\s*:\s*(Control|ScrollBar)') {
+if ($control -match 'class EtherScrollBarResources\s*:\s*(Control|ScrollBar)') {
     throw 'EtherScrollBar must not become a custom ScrollBar subclass.'
 }
 

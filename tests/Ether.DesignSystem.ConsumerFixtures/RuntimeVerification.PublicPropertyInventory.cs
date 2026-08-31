@@ -39,7 +39,6 @@ internal static partial class RuntimeVerification
         typeof(EtherProgressBar),
         typeof(EtherRadioButton),
         typeof(EtherSegmentedControl),
-        typeof(EtherSegmentedTrack),
         typeof(EtherSegmentPanel),
         typeof(EtherSlider),
         typeof(EtherSteeringBar),

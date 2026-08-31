@@ -152,7 +152,7 @@ internal static partial class RuntimeVerification
         double Maximum,
         double Value,
         bool SetValueAccepted,
-        bool PreviewStatusLocksAutomation,
+        bool DisabledLocksAutomation,
         bool ValueChangeExercised,
         string[] LightGradientColors,
         string[] DarkGradientColors,

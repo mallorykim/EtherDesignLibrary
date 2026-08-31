@@ -327,6 +327,102 @@ function Assert-FoundationFlowsTransitively {
     }
 }
 
+function Get-ZipEntrySha256 {
+    param(
+        [Parameter(Mandatory)][string]$PackagePath,
+        [Parameter(Mandatory)][string]$EntryPath
+    )
+
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $archive = [System.IO.Compression.ZipFile]::OpenRead($PackagePath)
+    try {
+        $entry = @($archive.Entries | Where-Object { $_.FullName -ceq $EntryPath })[0]
+        if ($null -eq $entry) {
+            throw "Package '$PackagePath' does not contain expected entry '$EntryPath'."
+        }
+
+        $stream = $entry.Open()
+        try {
+            $sha256 = [System.Security.Cryptography.SHA256]::Create()
+            try {
+                return [System.Convert]::ToHexString($sha256.ComputeHash($stream)).ToLowerInvariant()
+            }
+            finally {
+                $sha256.Dispose()
+            }
+        }
+        finally {
+            $stream.Dispose()
+        }
+    }
+    finally {
+        $archive.Dispose()
+    }
+}
+
+# Guards against the stale-artifact trap that has bitten this project three times before
+# (a silently reused yesterday's package, a --no-restore build masking an uncleaned
+# dependency, and a fixture that kept compiling against a private member because it was
+# still linked to an old package). The isolated $packageCache restore directory already
+# prevents NuGet from reusing a previously cached Ether package for this version number,
+# but that only guarantees the *mechanism* took a fresh path - it does not by itself prove
+# the DLL the fixture actually links against is byte-for-byte the one this run just packed
+# into $localFeed. Comparing SHA-256 hashes of the same compile asset in both places proves
+# the *result*, not just the mechanism.
+function Assert-RestoredControlsPackageMatchesLocalFeed {
+    param(
+        [Parameter(Mandatory)][string]$Variant,
+        [Parameter(Mandatory)][string]$ProjectRoot
+    )
+
+    $assetsPath = Join-Path $ProjectRoot 'obj/project.assets.json'
+    if (-not (Test-Path -LiteralPath $assetsPath -PathType Leaf)) {
+        throw "$Variant restore did not produce '$assetsPath'."
+    }
+
+    $assets = Get-Content -LiteralPath $assetsPath -Raw | ConvertFrom-Json
+    $libraryKey = "Ether.DesignSystem.Controls/$packageVersion"
+    $library = $assets.libraries.PSObject.Properties[$libraryKey].Value
+    if ($null -eq $library) {
+        throw "$Variant assets file did not resolve '$libraryKey'."
+    }
+
+    $target = @($assets.targets.PSObject.Properties |
+        Where-Object { $_.Name -like 'net8.0-windows10.0.19041*' } |
+        Select-Object -First 1)[0]
+    if ($null -eq $target) {
+        throw "$Variant assets file has no net8.0-windows10.0.19041 target."
+    }
+
+    $targetLibrary = $target.Value.PSObject.Properties[$libraryKey].Value
+    $libraryAsset = @($targetLibrary.compile.PSObject.Properties.Name |
+        Where-Object { $_ -like 'lib/*/Ether.DesignSystem.Controls.dll' } |
+        Select-Object -First 1)[0]
+    if ([string]::IsNullOrWhiteSpace($libraryAsset)) {
+        throw "$Variant assets file has no compile asset for '$libraryKey'."
+    }
+
+    $restoredDll = Join-Path (Join-Path $packageCache $library.path) ($libraryAsset -replace '/', '\\')
+    if (-not (Test-Path -LiteralPath $restoredDll -PathType Leaf)) {
+        throw "$Variant resolved Controls assembly is absent from this run's isolated package cache: '$restoredDll'."
+    }
+
+    $packagePath = Join-Path $localFeed "Ether.DesignSystem.Controls.$packageVersion.nupkg"
+    if (-not (Test-Path -LiteralPath $packagePath -PathType Leaf)) {
+        throw "Current-run Controls package was not found in local feed: '$packagePath'."
+    }
+
+    $expectedHash = Get-ZipEntrySha256 $packagePath $libraryAsset
+    $restoredHash = (Get-FileHash -LiteralPath $restoredDll -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($restoredHash -cne $expectedHash) {
+        throw "$Variant resolved Controls DLL does not match this run's freshly packed local feed package. " +
+            "Expected SHA-256 (from '$packagePath' entry '$libraryAsset') = $expectedHash; " +
+            "Actual SHA-256 (from '$restoredDll') = $restoredHash."
+    }
+
+    Write-Host "$Variant verified current-run Controls package: $libraryAsset SHA-256=$restoredHash"
+}
+
 function Assert-NoPackageEntriesMatching {
     param(
         [Parameter(Mandatory)][string[]]$Entries,
@@ -772,6 +868,7 @@ try {
         Assert-EtherPackageReferences $fixtureProject
         Invoke-DotNet @('restore', $fixtureProject, '--configfile', $fixtureNuGetConfig, '--packages', $packageCache)
         Assert-FoundationFlowsTransitively (Join-Path (Split-Path -Parent $fixtureProject) 'obj/project.assets.json')
+        Assert-RestoredControlsPackageMatchesLocalFeed (Split-Path -Leaf (Split-Path -Parent $fixtureProject)) (Split-Path -Parent $fixtureProject)
         Invoke-DotNet @('build', $fixtureProject, '-c', $configuration, $platformProperty, '--no-restore')
     }
 
@@ -889,13 +986,13 @@ try {
                 'EtherProgressBar.ShowTitle', 'EtherProgressBar.ShowValue', 'EtherProgressBar.Title', 'EtherProgressBar.ValueContent',
                 'EtherSegmentPanel.Spacing', 'EtherSegmentedControl.SelectedValue',
                 'EtherSlider.Labels', 'EtherSlider.ShowLabels', 'EtherSlider.ShowTitle', 'EtherSlider.SnapToStops', 'EtherSlider.Stops', 'EtherSlider.Title',
-                'EtherSteeringBar.LargeChange', 'EtherSteeringBar.Maximum', 'EtherSteeringBar.Minimum', 'EtherSteeringBar.PreviewStatus', 'EtherSteeringBar.ShowStops', 'EtherSteeringBar.ShowTitle', 'EtherSteeringBar.ShowValue', 'EtherSteeringBar.SmallChange', 'EtherSteeringBar.SnapToStops', 'EtherSteeringBar.Stops', 'EtherSteeringBar.Title', 'EtherSteeringBar.Value', 'EtherSteeringBar.ValueContent',
-                'EtherMasthead.EnableWindowCommands', 'EtherMasthead.PreviewIsMaximized', 'EtherMasthead.ShowChevron', 'EtherMasthead.ShowMenuIcon', 'EtherMasthead.ShowSearch', 'EtherMasthead.ShowSettings'
+                'EtherSteeringBar.LargeChange', 'EtherSteeringBar.Maximum', 'EtherSteeringBar.Minimum', 'EtherSteeringBar.ShowStops', 'EtherSteeringBar.ShowTitle', 'EtherSteeringBar.ShowValue', 'EtherSteeringBar.SmallChange', 'EtherSteeringBar.SnapToStops', 'EtherSteeringBar.Stops', 'EtherSteeringBar.Title', 'EtherSteeringBar.Value', 'EtherSteeringBar.ValueContent',
+                'EtherMasthead.EnableWindowCommands', 'EtherMasthead.ShowChevron', 'EtherMasthead.ShowMenuIcon', 'EtherMasthead.ShowSearch', 'EtherMasthead.ShowSettings'
             )
-            $expectedWritablePublicProperties = 1501
-            $expectedVisualPublicProperties = 482
-            $expectedSemanticPublicProperties = 73
-            $expectedPlatformPublicProperties = 946
+            $expectedWritablePublicProperties = 1388
+            $expectedVisualPublicProperties = 445
+            $expectedSemanticPublicProperties = 69
+            $expectedPlatformPublicProperties = 874
             $allowedVisualEvidenceMethods = @('pixel-difference', 'layout-difference', 'visibility-transition', 'platform-dp-contract', 'ether-component-dp-contract', 'platform-clr-visual-contract')
             $missingResources = @($expectedResourceKeys | Where-Object { $_ -cnotin $reportedResourceKeys })
             $missingAssets = @($expectedAssetUris | Where-Object { $_ -cnotin $reportedAssetUris })
@@ -1016,7 +1113,7 @@ try {
                 [double]$steeringBar.maximum -ne 100 -or
                 [double]$steeringBar.value -ne 65 -or
                 $steeringBar.setValueAccepted -ne $true -or
-                $steeringBar.previewStatusLocksAutomation -ne $true -or
+                $steeringBar.disabledLocksAutomation -ne $true -or
                 $steeringBar.valueChangeExercised -ne $true -or
                 (@($steeringBar.lightGradientColors) -join ',') -cne ($expectedSteeringBarGradient -join ',') -or
                 (@($steeringBar.darkGradientColors) -join ',') -cne ($expectedSteeringBarGradient -join ',') -or

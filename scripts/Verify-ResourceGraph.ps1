@@ -40,7 +40,28 @@ function Assert-CompiledDictionary {
     param([string]$Path, [string]$TypeName, [string]$Description)
 
     $text = Get-Content -LiteralPath $Path -Raw
-    if ($text -notmatch "<controls:$TypeName(?:\s|/|>)") {
+    [xml]$document = $text
+    $root = $document.DocumentElement
+
+    # The dictionary's CLR type can be reached via any xmlns prefix mapped to a
+    # 'using:' clause for the Controls assembly (e.g. the root controls namespace
+    # or its nested Resources namespace) - resolve every such prefix rather than
+    # assuming a single hardcoded alias.
+    $prefixes = @($root.Attributes |
+        Where-Object { $_.Name -eq 'xmlns' -or $_.Name.StartsWith('xmlns:') } |
+        Where-Object { $_.Value -like 'using:Ether.DesignSystem.Controls*' } |
+        ForEach-Object { if ($_.Name -eq 'xmlns') { '' } else { $_.Name.Substring('xmlns:'.Length) } })
+
+    $matched = $false
+    foreach ($prefix in $prefixes) {
+        $qualified = if ($prefix) { "${prefix}:$TypeName" } else { $TypeName }
+        if ($text -match "<$qualified(?:\s|/|>)") {
+            $matched = $true
+            break
+        }
+    }
+
+    if (-not $matched) {
         throw "$Description does not instantiate compiled dictionary '$TypeName'."
     }
 }
@@ -75,8 +96,8 @@ Assert-SetEquals (Get-MergedDictionarySources $controlsGeneric) @('ms-appx:///Et
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Resources/Foundations/EtherCard.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherIntelligenceButton.xaml') 'Controls Generic.xaml'
-Assert-CompiledDictionary $controlsGeneric 'EtherScrollBar' 'Controls Generic.xaml'
-Assert-CompiledDictionary $controlsGeneric 'EtherSwitch' 'Controls Generic.xaml'
+Assert-CompiledDictionary $controlsGeneric 'EtherScrollBarResources' 'Controls Generic.xaml'
+Assert-CompiledDictionary $controlsGeneric 'EtherSwitchResources' 'Controls Generic.xaml'
 Assert-SetEquals (Get-MergedDictionarySources $controlsEntry) @('ms-appx:///Ether.DesignSystem.Controls/Themes/Generic.xaml') 'Controls DesignSystem.xaml'
 
 $controlsEntrySource = 'ms-appx:///Ether.DesignSystem.Controls/Themes/DesignSystem.xaml'

@@ -7,12 +7,13 @@ public sealed partial class MastheadPage : Page
     public string SpecimenXaml { get; } =
         """
         <controls:EtherMasthead ShowSettings="False"
-                                PreviewIsMaximized="False"
                                 EnableWindowCommands="False" />
         """;
 
     public MastheadPage()
     {
         this.InitializeComponent();
+        DefaultMasthead.PreviewIsMaximized = false;
+        MaximizedMasthead.PreviewIsMaximized = true;
     }
 }

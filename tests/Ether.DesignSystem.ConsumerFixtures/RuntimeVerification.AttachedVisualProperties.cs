@@ -349,15 +349,6 @@ internal static partial class RuntimeVerification
 
     private static FrameworkElement CreateVisualFixture(Type type)
     {
-        // EtherSegmentedTrack is a source-compatibility subclass with no independent
-        // template contract. WinUI's keyed ControlTemplate is targeted at the base type;
-        // render inherited properties against that canonical template while the separate
-        // public-property code gate still instantiates the compatibility type itself.
-        if (type == typeof(EtherSegmentedTrack))
-        {
-            type = typeof(EtherSegmentedControl);
-        }
-
         var control = Activator.CreateInstance(type) as FrameworkElement
             ?? throw new InvalidOperationException($"Could not instantiate {type.Name}.");
 

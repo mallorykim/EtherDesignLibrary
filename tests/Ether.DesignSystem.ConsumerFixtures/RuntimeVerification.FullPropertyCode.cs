@@ -30,7 +30,6 @@ internal static partial class RuntimeVerification
         {
             button, checkbox, dropdown, input, intelligenceButton, progressBar, radioButton,
             segmentedControl, segmentPanel, slider, steeringBar, masthead,
-            new EtherSegmentedTrack(),
         };
         var readCount = 0;
         var setterCount = 0;

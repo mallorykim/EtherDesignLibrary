@@ -87,13 +87,13 @@ public sealed partial class EtherSlider : RangeBase
     private INotifyCollectionChanged? _labelsCollection;
 
     /// <summary>Fewest even tick bars rendered on a narrow track.</summary>
-    public const int MinBarCount = 8;
+    private const int MinBarCount = 8;
 
     /// <summary>Most even tick bars rendered on a wide track.</summary>
-    public const int MaxBarCount = 512;
+    private const int MaxBarCount = 512;
 
     /// <summary>Maximum number of tick labels rendered under the track.</summary>
-    public const int MaxLabelCount = 11;
+    private const int MaxLabelCount = 11;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EtherSlider"/> class.

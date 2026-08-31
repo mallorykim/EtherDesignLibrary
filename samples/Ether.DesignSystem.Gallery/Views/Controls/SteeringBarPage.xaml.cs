@@ -19,6 +19,10 @@ public sealed partial class SteeringBarPage : Page
     public SteeringBarPage()
     {
         this.InitializeComponent();
+        DefaultPreview.PreviewStatus = SteeringBarPreviewStatus.Default;
+        HoverPreview.PreviewStatus = SteeringBarPreviewStatus.Hover;
+        PressedPreview.PreviewStatus = SteeringBarPreviewStatus.Pressed;
+        DisabledPreview.PreviewStatus = SteeringBarPreviewStatus.Disabled;
         this.Loaded += (_, _) => ApplyStopCount();
     }
 

@@ -169,7 +169,6 @@ internal static partial class RuntimeVerification
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Minimum)) => 10d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Maximum)) => 120d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Value)) => 42d,
-        (nameof(EtherSteeringBar), nameof(EtherSteeringBar.PreviewStatus)) => SteeringBarPreviewStatus.Hover,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Stops)) => new DoubleCollection { 10d, 42d, 90d },
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.SnapToStops)) => true,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ShowStops)) => false,
@@ -183,7 +182,6 @@ internal static partial class RuntimeVerification
         (nameof(EtherMasthead), nameof(EtherMasthead.ShowSearch)) => true,
         (nameof(EtherMasthead), nameof(EtherMasthead.ShowMenuIcon)) => true,
         (nameof(EtherMasthead), nameof(EtherMasthead.ShowChevron)) => true,
-        (nameof(EtherMasthead), nameof(EtherMasthead.PreviewIsMaximized)) => true,
         (nameof(EtherMasthead), nameof(EtherMasthead.EnableWindowCommands)) => false,
         _ => throw new InvalidOperationException($"No property-audit sample is registered for {type.Name}.{propertyName}."),
     };

@@ -1,15 +1,16 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:Ether.DesignSystem.Controls">
+    xmlns:controls="using:Ether.DesignSystem.Controls"
+    xmlns:resources="using:Ether.DesignSystem.Controls.Resources">
 
     <ResourceDictionary.MergedDictionaries>
         <!-- Foundation resources must be available before control templates are loaded. -->
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Foundation/Themes/Foundation.xaml" />
 
-        <controls:EtherScrollBar />
+        <resources:EtherScrollBarResources />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherButton.xaml" />
-        <controls:EtherSwitch />
+        <resources:EtherSwitchResources />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherCheckbox.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherRadioButton.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherProgressBar.xaml" />

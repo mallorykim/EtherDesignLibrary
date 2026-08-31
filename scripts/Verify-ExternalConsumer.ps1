@@ -255,7 +255,7 @@ public partial class App : Application
 
             <ether:EtherSteeringBar x:Name="SteeringProbe"
                                     Minimum="0" Maximum="100" Value="75"
-                                    PreviewStatus="Hover" SmallChange="5" LargeChange="25"
+                                    SmallChange="5" LargeChange="25"
                                     Title="Playback" ValueContent="75%"
                                     ShowTitle="True" ShowValue="True" ShowStops="True" SnapToStops="True">
                 <ether:EtherSteeringBar.Stops><media:DoubleCollection>0,25,50,75,100</media:DoubleCollection></ether:EtherSteeringBar.Stops>
@@ -318,8 +318,8 @@ public sealed partial class MainWindow : Window
         ["slider.collection.numeric.bool"] = SliderProbe.Minimum == 0 && SliderProbe.Maximum == 100 && SliderProbe.Value == 50 &&
             SliderProbe.ShowTitle && SliderProbe.ShowLabels && SliderProbe.SnapToStops && SliderProbe.Title == "Volume" &&
             SliderProbe.Labels is { Count: 3 } && SliderProbe.Stops is { Count: 3 },
-        ["steering.enum.collection.numeric.bool"] = SteeringProbe.Minimum == 0 && SteeringProbe.Maximum == 100 && SteeringProbe.Value == 75 &&
-            SteeringProbe.PreviewStatus == SteeringBarPreviewStatus.Hover && SteeringProbe.SmallChange == 5 && SteeringProbe.LargeChange == 25 &&
+        ["steering.collection.numeric.bool"] = SteeringProbe.Minimum == 0 && SteeringProbe.Maximum == 100 && SteeringProbe.Value == 75 &&
+            SteeringProbe.SmallChange == 5 && SteeringProbe.LargeChange == 25 &&
             SteeringProbe.ShowTitle && SteeringProbe.ShowValue && SteeringProbe.ShowStops && SteeringProbe.SnapToStops &&
             Equals(SteeringProbe.Title, "Playback") && Equals(SteeringProbe.ValueContent, "75%") && SteeringProbe.Stops is { Count: 5 },
         ["masthead.bool"] = !MastheadProbe.EnableWindowCommands && !MastheadProbe.ShowSettings && MastheadProbe.ShowSearch &&

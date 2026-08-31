@@ -22,8 +22,8 @@ namespace Ether.DesignSystem.Controls;
 /// (<c>SettingsIconStates</c>, <c>SearchIconStates</c>, <c>MenuIconStates</c>,
 /// <c>ChevronStates</c>). Maximize/restore glyph swap uses <c>WindowStates</c>.
 /// Caption click handling stays code-driven. Gallery specimens set
-/// <see cref="EnableWindowCommands"/> to false and may force
-/// <see cref="PreviewIsMaximized"/>.
+/// <see cref="EnableWindowCommands"/> to false and use an internal preview override for
+/// their static maximize/restore samples.
 /// </remarks>
 [TemplatePart(Name = MenuIconSlotPart, Type = typeof(FrameworkElement))]
 [TemplatePart(Name = SearchIconSlotPart, Type = typeof(FrameworkElement))]
@@ -174,19 +174,16 @@ public sealed class EtherMasthead : Control
         set => SetValue(ShowChevronProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="PreviewIsMaximized"/> dependency property.</summary>
-    public static readonly DependencyProperty PreviewIsMaximizedProperty =
+    /// <summary>Identifies the Gallery-only preview window-state dependency property.</summary>
+    internal static readonly DependencyProperty PreviewIsMaximizedProperty =
         DependencyProperty.Register(
             nameof(PreviewIsMaximized),
             typeof(bool?),
             typeof(EtherMasthead),
             new PropertyMetadata(null, OnPreviewWindowStateChanged));
 
-    /// <summary>
-    /// Gets or sets a Gallery-oriented override for the maximize/restore glyph.
-    /// Null uses the host <see cref="AppWindow"/> presenter state.
-    /// </summary>
-    public bool? PreviewIsMaximized
+    /// <summary>Gets or sets the Gallery-only maximize/restore glyph override.</summary>
+    internal bool? PreviewIsMaximized
     {
         get => (bool?)GetValue(PreviewIsMaximizedProperty);
         set => SetValue(PreviewIsMaximizedProperty, value);

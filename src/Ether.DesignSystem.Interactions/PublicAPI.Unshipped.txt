@@ -1,0 +1,63 @@
+#nullable enable
+Ether.DesignSystem.Interactions.ControlInteractionAdapter
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ControlInteractionAdapter() -> void
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.InteractionProduced -> System.EventHandler<Ether.DesignSystem.Interactions.InteractionProducedEventArgs!>?
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ObserveButton(Microsoft.UI.Xaml.Controls.Button! control, string! eventType, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, System.Func<string!>? idempotencyKeyFactory = null) -> System.IDisposable!
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ObserveDropdown(Microsoft.UI.Xaml.Controls.ComboBox! control, string! eventType, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, System.Func<string!>? idempotencyKeyFactory = null) -> System.IDisposable!
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ObserveInput(Microsoft.UI.Xaml.Controls.TextBox! control, string! eventType, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, System.Func<string!>? idempotencyKeyFactory = null) -> System.IDisposable!
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ObserveProperty(Microsoft.UI.Xaml.DependencyObject! control, Microsoft.UI.Xaml.DependencyProperty! property, string! propertyName, string! eventType, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, System.Func<string!>? idempotencyKeyFactory = null) -> System.IDisposable!
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ObserveRange(Microsoft.UI.Xaml.Controls.Primitives.RangeBase! control, string! eventType, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, System.Func<string!>? idempotencyKeyFactory = null) -> System.IDisposable!
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ObserveSegmentedControl(Ether.DesignSystem.Controls.EtherSegmentedControl! control, string! eventType, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, System.Func<string!>? idempotencyKeyFactory = null) -> System.IDisposable!
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ObserveSteeringBar(Ether.DesignSystem.Controls.EtherSteeringBar! control, string! eventType, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, System.Func<string!>? idempotencyKeyFactory = null) -> System.IDisposable!
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ObserveSwitch(Microsoft.UI.Xaml.Controls.ToggleSwitch! control, string! eventType, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, System.Func<string!>? idempotencyKeyFactory = null) -> System.IDisposable!
+Ether.DesignSystem.Interactions.ControlInteractionAdapter.ObserveToggle(Microsoft.UI.Xaml.Controls.Primitives.ToggleButton! control, string! eventType, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, System.Func<string!>? idempotencyKeyFactory = null) -> System.IDisposable!
+Ether.DesignSystem.Interactions.IInteractionSink
+Ether.DesignSystem.Interactions.IInteractionSink.EnqueueAsync(Ether.DesignSystem.Interactions.InteractionEvent! interaction, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+Ether.DesignSystem.Interactions.InteractionContext
+Ether.DesignSystem.Interactions.InteractionContext.<Clone>$() -> Ether.DesignSystem.Interactions.InteractionContext!
+Ether.DesignSystem.Interactions.InteractionContext.ActorId.get -> string?
+Ether.DesignSystem.Interactions.InteractionContext.ActorId.init -> void
+Ether.DesignSystem.Interactions.InteractionContext.CorrelationId.get -> string!
+Ether.DesignSystem.Interactions.InteractionContext.CorrelationId.init -> void
+Ether.DesignSystem.Interactions.InteractionContext.Deconstruct(out string! CorrelationId, out string? Screen, out string? TenantId, out string? ActorId) -> void
+Ether.DesignSystem.Interactions.InteractionContext.Equals(Ether.DesignSystem.Interactions.InteractionContext? other) -> bool
+Ether.DesignSystem.Interactions.InteractionContext.InteractionContext(string! CorrelationId, string? Screen = null, string? TenantId = null, string? ActorId = null) -> void
+Ether.DesignSystem.Interactions.InteractionContext.Screen.get -> string?
+Ether.DesignSystem.Interactions.InteractionContext.Screen.init -> void
+Ether.DesignSystem.Interactions.InteractionContext.TenantId.get -> string?
+Ether.DesignSystem.Interactions.InteractionContext.TenantId.init -> void
+Ether.DesignSystem.Interactions.InteractionEvent
+Ether.DesignSystem.Interactions.InteractionEvent.<Clone>$() -> Ether.DesignSystem.Interactions.InteractionEvent!
+Ether.DesignSystem.Interactions.InteractionEvent.ComponentId.get -> string!
+Ether.DesignSystem.Interactions.InteractionEvent.ComponentId.init -> void
+Ether.DesignSystem.Interactions.InteractionEvent.Context.get -> Ether.DesignSystem.Interactions.InteractionContext!
+Ether.DesignSystem.Interactions.InteractionEvent.Context.init -> void
+Ether.DesignSystem.Interactions.InteractionEvent.Data.get -> System.Text.Json.JsonElement
+Ether.DesignSystem.Interactions.InteractionEvent.Data.init -> void
+Ether.DesignSystem.Interactions.InteractionEvent.Deconstruct(out System.Guid EventId, out string! IdempotencyKey, out string! Type, out int SchemaVersion, out System.DateTimeOffset OccurredAtUtc, out Ether.DesignSystem.Interactions.InteractionContext! Context, out string! ComponentId, out System.Text.Json.JsonElement Data) -> void
+Ether.DesignSystem.Interactions.InteractionEvent.Equals(Ether.DesignSystem.Interactions.InteractionEvent? other) -> bool
+Ether.DesignSystem.Interactions.InteractionEvent.EventId.get -> System.Guid
+Ether.DesignSystem.Interactions.InteractionEvent.EventId.init -> void
+Ether.DesignSystem.Interactions.InteractionEvent.IdempotencyKey.get -> string!
+Ether.DesignSystem.Interactions.InteractionEvent.IdempotencyKey.init -> void
+Ether.DesignSystem.Interactions.InteractionEvent.InteractionEvent(System.Guid EventId, string! IdempotencyKey, string! Type, int SchemaVersion, System.DateTimeOffset OccurredAtUtc, Ether.DesignSystem.Interactions.InteractionContext! Context, string! ComponentId, System.Text.Json.JsonElement Data) -> void
+Ether.DesignSystem.Interactions.InteractionEvent.OccurredAtUtc.get -> System.DateTimeOffset
+Ether.DesignSystem.Interactions.InteractionEvent.OccurredAtUtc.init -> void
+Ether.DesignSystem.Interactions.InteractionEvent.SchemaVersion.get -> int
+Ether.DesignSystem.Interactions.InteractionEvent.SchemaVersion.init -> void
+Ether.DesignSystem.Interactions.InteractionEvent.Type.get -> string!
+Ether.DesignSystem.Interactions.InteractionEvent.Type.init -> void
+Ether.DesignSystem.Interactions.InteractionProducedEventArgs
+Ether.DesignSystem.Interactions.InteractionProducedEventArgs.Interaction.get -> Ether.DesignSystem.Interactions.InteractionEvent!
+Ether.DesignSystem.Interactions.InteractionProducedEventArgs.InteractionProducedEventArgs(Ether.DesignSystem.Interactions.InteractionEvent! interaction) -> void
+override Ether.DesignSystem.Interactions.InteractionContext.Equals(object? obj) -> bool
+override Ether.DesignSystem.Interactions.InteractionContext.GetHashCode() -> int
+override Ether.DesignSystem.Interactions.InteractionContext.ToString() -> string!
+override Ether.DesignSystem.Interactions.InteractionEvent.Equals(object? obj) -> bool
+override Ether.DesignSystem.Interactions.InteractionEvent.GetHashCode() -> int
+override Ether.DesignSystem.Interactions.InteractionEvent.ToString() -> string!
+static Ether.DesignSystem.Interactions.InteractionContext.operator !=(Ether.DesignSystem.Interactions.InteractionContext? left, Ether.DesignSystem.Interactions.InteractionContext? right) -> bool
+static Ether.DesignSystem.Interactions.InteractionContext.operator ==(Ether.DesignSystem.Interactions.InteractionContext? left, Ether.DesignSystem.Interactions.InteractionContext? right) -> bool
+static Ether.DesignSystem.Interactions.InteractionEvent.Create(string! type, Ether.DesignSystem.Interactions.InteractionContext! context, string! componentId, object? data, string? idempotencyKey = null) -> Ether.DesignSystem.Interactions.InteractionEvent!
+static Ether.DesignSystem.Interactions.InteractionEvent.operator !=(Ether.DesignSystem.Interactions.InteractionEvent? left, Ether.DesignSystem.Interactions.InteractionEvent? right) -> bool
+static Ether.DesignSystem.Interactions.InteractionEvent.operator ==(Ether.DesignSystem.Interactions.InteractionEvent? left, Ether.DesignSystem.Interactions.InteractionEvent? right) -> bool

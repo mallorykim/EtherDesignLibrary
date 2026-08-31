@@ -66,10 +66,9 @@
 <TextBlock x:Uid="GalleryViewsControlsSteeringBarPage214" Text="TITLE + VALUE"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage215" Width="480"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage215" x:Name="DefaultPreview" Width="480"
                                                Title="Playback"
                                                Value="31"
-                                               PreviewStatus="Default"
                                                IsHitTestVisible="False"
                                                AutomationProperties.Name="Default steering bar"/>
                 </StackPanel>
@@ -78,12 +77,11 @@
 <TextBlock x:Uid="GalleryViewsControlsSteeringBarPage216" Text="TITLE ONLY"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage217" Width="480"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage217" x:Name="HoverPreview" Width="480"
                                                Title="Playback"
                                                Value="31"
                                                ShowTitle="True"
                                                ShowValue="False"
-                                               PreviewStatus="Hover"
                                                IsHitTestVisible="False"
                                                AutomationProperties.Name="Hover steering bar"/>
                 </StackPanel>
@@ -92,12 +90,11 @@
 <TextBlock x:Uid="GalleryViewsControlsSteeringBarPage218" Text="VALUE ONLY"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage219" Width="480"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage219" x:Name="PressedPreview" Width="480"
                                                Title="Playback"
                                                Value="31"
                                                ShowTitle="False"
                                                ShowValue="True"
-                                               PreviewStatus="Pressed"
                                                IsHitTestVisible="False"
                                                AutomationProperties.Name="Pressed steering bar"/>
                 </StackPanel>
@@ -106,12 +103,11 @@
 <TextBlock x:Uid="GalleryViewsControlsSteeringBarPage220" Text="BAR ONLY"
                                Style="{StaticResource micro/regular}"
                                Foreground="{ThemeResource TextTertiary}"/>
-<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage221" Width="480"
+<controls:EtherSteeringBar x:Uid="GalleryViewsControlsSteeringBarPage221" x:Name="DisabledPreview" Width="480"
                                                Title="Playback"
                                                Value="31"
                                                ShowTitle="False"
                                                ShowValue="False"
-                                               PreviewStatus="Disabled"
                                                IsHitTestVisible="False"
                                                AutomationProperties.Name="Disabled steering bar"/>
                 </StackPanel>

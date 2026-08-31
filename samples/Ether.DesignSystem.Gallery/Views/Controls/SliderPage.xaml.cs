@@ -82,12 +82,17 @@ public sealed partial class SliderPage : Page
     private static string FormatNumber(double value)
         => value.ToString("0.##", CultureInfo.InvariantCulture);
 
+    // Mirrors EtherSlider's internal label-rendering cap (private const MaxLabelCount = 11).
+    // Duplicated here because the control intentionally keeps that limit as an implementation
+    // detail, not part of its public API.
+    private const int MaxRenderedLabelCount = 11;
+
     private static string? CaptionFor(EtherSlider? slider, double value)
     {
         if (slider?.Labels is not { Count: > 0 } labels)
             return null;
 
-        var count = Math.Min(labels.Count, EtherSlider.MaxLabelCount);
+        var count = Math.Min(labels.Count, MaxRenderedLabelCount);
         var span = slider.Maximum - slider.Minimum;
         var t = span <= 0d ? 0d : (value - slider.Minimum) / span;
         var index = Math.Clamp((int)Math.Round(t * (count - 1)), 0, count - 1);
