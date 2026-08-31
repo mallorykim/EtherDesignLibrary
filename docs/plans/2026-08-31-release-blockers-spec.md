@@ -641,3 +641,38 @@ pushed            = [bool]$Push
 | 2026-08-31 | R-12 前置 | **F6d 落地** `10ebbe3`：robocopy 后 `$global:LASTEXITCODE=0` 归一化 + 成功路径显式 `exit 0`。**这次真跑了实际门禁**确认 EXTERNALCONSUMER_EXIT=0（原泄漏 2），无残留 temp。我核对 diff 仅退出码逻辑、tree clean。注：ConsumerFixtures/SilentPropertyCoverage/MsixPackage/pack 迄今两次 rehearsal 都未跑到，下一轮首次全链穿透 |
 | 2026-08-31 | R-12 ✅ | **F6b-redo-2 全链 rehearsal 通过** `REHEARSAL_EXIT=0` @ 冻结提交 `7daf1dc`，wall-clock 18m21s：双 build + 22 静态门禁 + GallerySmoke 20/20 + ExternalConsumer(A/B) + git diff --check + ConsumerFixtures×2(1388/445=270+175/943/35/26，两轮确定性一致) + SilentPropertyCoverage(156 全账，3 needs-review warning) + MsixPackage(65MB .msix) + pack×3。证据 bundle gitCommit==7daf1dc、pushed=false、3 nupkg。我独立核对 tree clean/HEAD/证据绑定/包存在全部吻合。**13 项阻断全部完成** |
 | 2026-08-31 | R-00 修正 | WebFetch/WebSearch 核实:issue 编号对但**仓库写错**（应为 microsoft-ui-xaml #7830/#10970，非 WindowsAppSDK，故早前链接 404）；#7830 讲的是打包应用消费 NuGet 控件即崩、本库框架依赖仍通过，故 issue 是佐证背景非精确出处。核实消费端部署:正常 MSIX/安装器路径下 end user **不需手动装 SDK**；真实缺口=未在干净机实测 MSIX 装+跑、未测自包含+MSIX（可选后续，非阻断）。descope 决定不变 |
+
+---
+
+## R-13 — 消费视觉对等(用户手动验收发现,超出原 12 条审核)
+
+**严重度**：阻断（旗舰控件消费端渲染错误）　**批次**：F7　**状态**：✅ 已修复并亲验
+
+### 起因
+用户亲自跑起真窗口、亲手点,发现 **EtherSegmentedControl 选中段在 NuGet 消费端隐形**——这是 265 断言 + 26 基线 + 全 rehearsal 都没抓到的缺陷。
+
+### 根因（已证明）
+选中药丸 `CheckedLayer`(Opacity=0)只由 `HandRadioButton.UpdateSegmentVisual()` 点亮,而 `HandRadioButton` 在 **Gallery 项目**里、**没进包**。普通 RadioButton 消费者(getting-started 写法)得到白字+透明药丸=隐形。
+
+### 盲区（重要教训）
+golden 基线会把**坏渲染**当正确锁死:`segmentedControl-light/dark.png` 锁的就是"选中段无药丸"。fixture 截图前把选中翻到 B,B 白字压白底隐形,基线一直"通过"。**断言验事件/属性,不验"看起来对不对";基线锁像素,分不清对错。真人眼睛才是最后一道闸。**
+
+### 修复（3 提交)
+- `a872330` — VSM 在 Checked/CheckedPointerOver/CheckedPressed 补 `CheckedLayer.Opacity=1`(普通 RadioButton 兜底,选中药丸可见)
+- `39b9fde` — 公开控件 `EtherSegmentRadioButton`(手型光标 + hover/pressed/checked 三层全代码驱动,与 Gallery 同一路径);getting-started 改用它;Gallery 保留薄 HandRadioButton 子类给预览色板
+- `3d926b9` — 重生成 2 张 segment 基线为正确渲染(A 灰未选、B 蓝药丸白字),亲验确认
+
+### 全控件对等审计（13 个）
+消费端 vs Gallery,明/暗、默认/禁用,**全部 MATCH**。用户圈的 Dropdown 亲验=正常(真控件展开态与 Gallery 一致;那 3 个 `DropdownMenuPreview*` 只是文档静态 mockup,非真控件样式)。除 segment 外无第二个控件依赖 Gallery-only 代码/样式。
+
+### 验收标准
+- 消费端 SegmentedControl 选中段显示蓝药丸+白字(明/暗),hover/pressed 反馈与 Gallery 一致 —— ✅ 亲验(截图)
+- 基线锁的是正确渲染 —— ✅ 亲验
+- 全 13 控件消费端==Gallery —— ✅ 审计
+- **待办**:HEAD 已越过冻结的 `7daf1dc`(经 a872330/39b9fde/3d926b9 及 spec 提交),**必须在新 HEAD 重跑 Publish-Internal rehearsal**,才算回到"只差发布"。
+
+## 变更记录（续）
+
+| 日期 | 条目 | 变更 |
+|---|---|---|
+| 2026-08-31 | R-13 | 用户手动验收发现 segment 选中隐形(库模板依赖没进包的 Gallery HandRadioButton);修复 a872330+39b9fde,重生成坏基线 3d926b9;全 13 控件对等审计通过;Dropdown 亲验正常。教训:基线会锁坏渲染,真人眼睛是最后闸。待重跑 rehearsal |
