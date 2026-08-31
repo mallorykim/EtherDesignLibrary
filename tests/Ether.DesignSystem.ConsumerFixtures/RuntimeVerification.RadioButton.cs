@@ -64,6 +64,8 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("EtherRadioButton did not expose the required automation name.");
         }
 
+        var isThreeStateRejected = VerifyRadioButtonIsThreeStateRejected();
+
         return new RadioButtonVerification(
             true,
             defaultRadioButton.IsThreeState,
@@ -71,6 +73,34 @@ internal static partial class RuntimeVerification
             checkStates.ToArray(),
             peer.GetName(),
             lightTemplateBrushColors,
-            darkTemplateBrushColors);
+            darkTemplateBrushColors,
+            isThreeStateRejected);
+    }
+
+    /// <summary>
+    /// Regression coverage for the IsThreeState interception: DefaultEtherRadioButtonStyle has
+    /// no Indeterminate visual, so flipping IsThreeState to true must fail loudly at the moment
+    /// it is set, and must not leave the property sitting at true. Uses a throwaway, off-tree
+    /// instance since this is pure dependency-property behavior - no template or layout needed.
+    /// </summary>
+    private static bool VerifyRadioButtonIsThreeStateRejected()
+    {
+        var probe = new EtherRadioButton();
+        var threw = false;
+        try
+        {
+            probe.IsThreeState = true;
+        }
+        catch (NotSupportedException)
+        {
+            threw = true;
+        }
+
+        if (!threw || probe.IsThreeState)
+        {
+            throw new InvalidOperationException("EtherRadioButton.IsThreeState=true did not throw NotSupportedException and reset back to false.");
+        }
+
+        return true;
     }
 }

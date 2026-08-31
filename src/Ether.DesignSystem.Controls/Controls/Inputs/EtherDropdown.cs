@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using System.Reflection;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -184,7 +185,7 @@ public sealed class EtherDropdown : ComboBox
         var widest = 0d;
         foreach (var item in Items)
         {
-            var text = ContentOf(item)?.ToString();
+            var text = ResolveDisplayText(item);
             if (string.IsNullOrEmpty(text))
                 continue;
 
@@ -215,6 +216,41 @@ public sealed class EtherDropdown : ComboBox
         item is ComboBoxItem container ? container.Content : item;
 
     /// <summary>
+    /// Text shown for one item, honouring <see cref="ItemsControl.DisplayMemberPath"/> the same
+    /// way the native dropdown list does. Without this, an ItemsSource of plain objects (rather
+    /// than strings or ComboBoxItem) would render its .NET type name instead of the bound
+    /// property, since TriggerText is not driven by the framework's own item template.
+    /// </summary>
+    private string? ResolveDisplayText(object? item)
+    {
+        var content = ContentOf(item);
+        if (content is null)
+            return null;
+
+        var path = DisplayMemberPath;
+        return string.IsNullOrEmpty(path) ? content.ToString() : ResolvePropertyPath(content, path)?.ToString() ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Resolves a (possibly dotted) simple property path via reflection, mirroring what
+    /// DisplayMemberPath supports for the native item template.
+    /// </summary>
+    private static object? ResolvePropertyPath(object? source, string path)
+    {
+        var current = source;
+        foreach (var segment in path.Split('.'))
+        {
+            if (current is null)
+                return null;
+
+            var property = current.GetType().GetProperty(segment, BindingFlags.Public | BindingFlags.Instance);
+            current = property?.GetValue(current);
+        }
+
+        return current;
+    }
+
+    /// <summary>
     /// ComboBox clears both SelectionBoxItem and its "ContentPresenter" part while the menu is
     /// open, so neither can drive the trigger's text. TriggerText is ours alone.
     /// </summary>
@@ -223,7 +259,7 @@ public sealed class EtherDropdown : ComboBox
         if (_triggerText is null)
             return;
 
-        _triggerText.Text = ContentOf(SelectedItem)?.ToString() ?? string.Empty;
+        _triggerText.Text = ResolveDisplayText(SelectedItem) ?? string.Empty;
     }
 
     protected override void OnDropDownOpened(object e)

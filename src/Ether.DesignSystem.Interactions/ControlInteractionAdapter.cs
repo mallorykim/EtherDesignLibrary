@@ -21,6 +21,7 @@ public sealed class ControlInteractionAdapter
     public IDisposable ObserveButton(Button control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
     {
         ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
         RoutedEventHandler handler = (_, _) => Emit(eventType, context, componentId, new { }, idempotencyKeyFactory);
         control.Click += handler;
         return new Subscription(() => control.Click -= handler);
@@ -30,6 +31,7 @@ public sealed class ControlInteractionAdapter
     public IDisposable ObserveInput(TextBox control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
     {
         ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
         var token = control.RegisterPropertyChangedCallback(
             TextBox.TextProperty,
             (_, _) => Emit(eventType, context, componentId, new { control.Text }, idempotencyKeyFactory));
@@ -40,6 +42,7 @@ public sealed class ControlInteractionAdapter
     public IDisposable ObserveDropdown(ComboBox control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
     {
         ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
         SelectionChangedEventHandler handler = (_, _) => Emit(
             eventType,
             context,
@@ -54,6 +57,7 @@ public sealed class ControlInteractionAdapter
     public IDisposable ObserveToggle(ToggleButton control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
     {
         ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
         RoutedEventHandler handler = (_, _) => Emit(eventType, context, componentId, new { control.IsChecked }, idempotencyKeyFactory);
         control.Checked += handler;
         control.Unchecked += handler;
@@ -70,6 +74,7 @@ public sealed class ControlInteractionAdapter
     public IDisposable ObserveSwitch(ToggleSwitch control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
     {
         ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
         RoutedEventHandler handler = (_, _) => Emit(eventType, context, componentId, new { control.IsOn }, idempotencyKeyFactory);
         control.Toggled += handler;
         return new Subscription(() => control.Toggled -= handler);
@@ -79,6 +84,7 @@ public sealed class ControlInteractionAdapter
     public IDisposable ObserveSegmentedControl(EtherSegmentedControl control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
     {
         ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
         EventHandler<SegmentedSelectionChangedEventArgs> handler = (_, args) =>
             Emit(
                 eventType,
@@ -94,6 +100,7 @@ public sealed class ControlInteractionAdapter
     public IDisposable ObserveSteeringBar(EtherSteeringBar control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
     {
         ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
         EventHandler<SteeringBarValueChangedEventArgs> handler = (_, args) =>
             Emit(eventType, context, componentId, new { args.OldValue, args.NewValue }, idempotencyKeyFactory);
         control.ValueChanged += handler;
@@ -104,6 +111,7 @@ public sealed class ControlInteractionAdapter
     public IDisposable ObserveRange(RangeBase control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
     {
         ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
         RangeBaseValueChangedEventHandler handler = (_, args) =>
             Emit(eventType, context, componentId, new { args.OldValue, args.NewValue }, idempotencyKeyFactory);
         control.ValueChanged += handler;
@@ -129,6 +137,7 @@ public sealed class ControlInteractionAdapter
         ArgumentNullException.ThrowIfNull(control);
         ArgumentNullException.ThrowIfNull(property);
         ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
+        ValidateSubscriptionArguments(eventType, context, componentId);
 
         var token = control.RegisterPropertyChangedCallback(
             property,
@@ -140,6 +149,20 @@ public sealed class ControlInteractionAdapter
                 idempotencyKeyFactory));
 
         return new Subscription(() => control.UnregisterPropertyChangedCallback(property, token));
+    }
+
+    /// <summary>
+    /// Validates the envelope inputs at subscription time rather than leaving them to surface
+    /// only when <see cref="InteractionEvent.Create"/> runs on the first real interaction. A
+    /// misconfigured eventType, context, or componentId is then a wiring bug, not a runtime
+    /// surprise that waits for a user to click something before it is caught.
+    /// </summary>
+    private static void ValidateSubscriptionArguments(string eventType, InteractionContext context, string componentId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(eventType);
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentException.ThrowIfNullOrWhiteSpace(context.CorrelationId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(componentId);
     }
 
     private void Emit(string eventType, InteractionContext context, string componentId, object data, Func<string>? idempotencyKeyFactory)

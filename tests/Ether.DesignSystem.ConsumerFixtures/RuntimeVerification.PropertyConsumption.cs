@@ -20,7 +20,9 @@ internal static partial class RuntimeVerification
         int PropertyChangedCallbackCount,
         int BackendPropertyEventCount,
         int StandardInteractionEventCount,
-        string[] VerifiedProperties);
+        string[] VerifiedProperties,
+        bool SubscriptionValidatedEagerly,
+        bool DirectConstructionBlocked);
 
     private static PropertyConsumptionVerification VerifyPropertyConsumption(
         EtherButton button,
@@ -126,12 +128,120 @@ internal static partial class RuntimeVerification
             toggleSwitch,
             scrollBar);
 
+        var subscriptionValidatedEagerly = VerifySubscriptionValidatesEagerly(adapter, button, context);
+        var directConstructionBlocked = VerifyInteractionEventConstructionBlocked();
+
         return new PropertyConsumptionVerification(
             verified.Count,
             callbackCount,
             propertyEventCount,
             standardInteractionEventCount,
-            verified.ToArray());
+            verified.ToArray(),
+            subscriptionValidatedEagerly,
+            directConstructionBlocked);
+    }
+
+    /// <summary>
+    /// Regression coverage for B3: eventType, context, and componentId must be validated when
+    /// Observe* is called, not deferred to the first real interaction. Probes ObserveButton with
+    /// each kind of invalid input and asserts the exception surfaces synchronously from the
+    /// subscribe call itself - clicking is never reached - and that a rejected subscription
+    /// leaves no dangling event-handler registration on the control.
+    /// </summary>
+    private static bool VerifySubscriptionValidatesEagerly(ControlInteractionAdapter adapter, EtherButton button, InteractionContext validContext)
+    {
+        var blankCorrelationContext = new InteractionContext(string.Empty);
+
+        void AssertRejectedAtSubscribeTime(string description, Func<IDisposable> subscribe)
+        {
+            IDisposable? subscription = null;
+            try
+            {
+                subscription = subscribe();
+                throw new InvalidOperationException($"ControlInteractionAdapter.ObserveButton did not validate {description} at subscription time.");
+            }
+            catch (ArgumentException)
+            {
+                // Expected: rejected eagerly, at Observe* itself, before any interaction fires.
+            }
+            finally
+            {
+                subscription?.Dispose();
+            }
+        }
+
+        AssertRejectedAtSubscribeTime(
+            "a blank eventType",
+            () => adapter.ObserveButton(button, string.Empty, validContext, "button.subscription-validation-probe"));
+        AssertRejectedAtSubscribeTime(
+            "a blank componentId",
+            () => adapter.ObserveButton(button, "subscription.validation.probe", validContext, string.Empty));
+        AssertRejectedAtSubscribeTime(
+            "a context with a blank CorrelationId",
+            () => adapter.ObserveButton(button, "subscription.validation.probe", blankCorrelationContext, "button.subscription-validation-probe"));
+
+        var producedByRejectedSubscriptions = new List<InteractionEvent>();
+        void Handler(object? _, InteractionProducedEventArgs args) => producedByRejectedSubscriptions.Add(args.Interaction);
+        adapter.InteractionProduced += Handler;
+        try
+        {
+            Invoke(button);
+        }
+        finally
+        {
+            adapter.InteractionProduced -= Handler;
+        }
+
+        if (producedByRejectedSubscriptions.Count != 0)
+        {
+            throw new InvalidOperationException("A rejected ControlInteractionAdapter.ObserveButton subscription still left a control event handler wired up.");
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Regression coverage for B4: InteractionEvent must not expose a public constructor -
+    /// InteractionEvent.Create is the only supported construction path. Also re-confirms Create
+    /// itself still enforces its invariants, and that `with`-expressions on an already-valid
+    /// instance keep working now that the primary constructor is private.
+    /// </summary>
+    private static bool VerifyInteractionEventConstructionBlocked()
+    {
+        var publicConstructors = typeof(InteractionEvent).GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+        if (publicConstructors.Length != 0)
+        {
+            throw new InvalidOperationException("InteractionEvent must not expose a public constructor; InteractionEvent.Create should be the only supported construction path.");
+        }
+
+        var validContext = new InteractionContext("construction-audit");
+
+        void AssertCreateRejects(string description, Action create)
+        {
+            try
+            {
+                create();
+            }
+            catch (ArgumentException)
+            {
+                return;
+            }
+
+            throw new InvalidOperationException($"InteractionEvent.Create did not reject {description}.");
+        }
+
+        AssertCreateRejects("a blank type", () => InteractionEvent.Create(string.Empty, validContext, "component", null));
+        AssertCreateRejects("a blank componentId", () => InteractionEvent.Create("audit.event", validContext, string.Empty, null));
+        AssertCreateRejects("a context with a blank CorrelationId", () => InteractionEvent.Create("audit.event", new InteractionContext(string.Empty), "component", null));
+
+        var original = InteractionEvent.Create("audit.event", validContext, "component", new { Ok = true });
+        var mutated = original with { ComponentId = "component-2" };
+        if (mutated.ComponentId != "component-2" || mutated.EventId != original.EventId)
+        {
+            throw new InvalidOperationException("InteractionEvent no longer supports `with`-expressions after tightening its constructor.");
+        }
+
+        return true;
     }
 
     private static readonly Type[] DeclaredPropertyOwnerTypes =

@@ -67,6 +67,7 @@ public sealed class EtherRadioButton : RadioButton
         RegisterPropertyChangedCallback(ContentProperty, OnContentPresentationPropertyChanged);
         RegisterPropertyChangedCallback(ContentTemplateProperty, OnContentPresentationPropertyChanged);
         RegisterPropertyChangedCallback(ContentTemplateSelectorProperty, OnContentPresentationPropertyChanged);
+        RegisterPropertyChangedCallback(IsThreeStateProperty, OnIsThreeStateChanged);
         UpdateUsesTextContentPath();
     }
 
@@ -77,4 +78,25 @@ public sealed class EtherRadioButton : RadioButton
         => SetValue(
             UsesTextContentPathProperty,
             Content is string && ContentTemplate is null && ContentTemplateSelector is null);
+
+    /// <summary>
+    /// DefaultEtherRadioButtonStyle's CheckStates group only declares Unchecked and Checked
+    /// (see the [TemplateVisualState] attributes above) - there is no Indeterminate visual.
+    /// Letting a consumer flip IsThreeState to true would not fail immediately; it would sit
+    /// quietly until IsChecked became null, at which point the control renders whichever of
+    /// Unchecked/Checked the state machine lands on - a wrong-but-plausible-looking state, not
+    /// a visible failure. Reject the misconfiguration here, at the moment it is introduced,
+    /// instead of leaving that trap for whoever hits a null IsChecked later.
+    /// </summary>
+    private void OnIsThreeStateChanged(DependencyObject sender, DependencyProperty dp)
+    {
+        if (!IsThreeState)
+            return;
+
+        SetValue(IsThreeStateProperty, false);
+        throw new NotSupportedException(
+            $"{nameof(EtherRadioButton)} does not support IsThreeState=true: its default style has no " +
+            "Indeterminate visual, so IsChecked=null would render an untrustworthy Unchecked/Checked " +
+            "state instead of failing loudly. IsThreeState has been reset to false.");
+    }
 }

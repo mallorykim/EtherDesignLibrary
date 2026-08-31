@@ -10,6 +10,10 @@ namespace Ether.DesignSystem.ConsumerFixtures;
 
 internal static partial class RuntimeVerification
 {
+    // Plain object with a public property, standing in for a consumer's view model. Its type
+    // name ("DisplayMemberPathProbeItem") is intentionally distinctive so the assertion below
+    // can tell "resolved the bound property" apart from "fell back to ToString() on the item".
+    private sealed record DisplayMemberPathProbeItem(string Label);
 
     private static async Task<DropdownVerification> VerifyDropdownAsync(
         FrameworkElement themeRoot,
@@ -103,6 +107,8 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("EtherDropdown did not expose the required automation name.");
         }
 
+        var displayMemberPathTriggerText = VerifyDisplayMemberPath(themeRoot);
+
         return new DropdownVerification(
             true,
             defaultDropdown.MinWidth,
@@ -116,7 +122,56 @@ internal static partial class RuntimeVerification
             activeStroke.Visibility == Visibility.Collapsed,
             peer.GetName(),
             lightTemplateBrushColors,
-            darkTemplateBrushColors);
+            darkTemplateBrushColors,
+            displayMemberPathTriggerText);
+    }
+
+    /// <summary>
+    /// Regression coverage for DisplayMemberPath: binds an object data source (not a string or
+    /// ComboBoxItem) and asserts the trigger text shows the bound property's value, not the
+    /// item's .NET type name. Runs on an isolated, invisible probe hosted in a scratch Canvas so
+    /// it does not disturb the shared, already-verified dropdown instances or their visual
+    /// baselines - the same pattern EtherSlider's boundary probes use.
+    /// </summary>
+    private static string VerifyDisplayMemberPath(FrameworkElement themeRoot)
+    {
+        if (themeRoot is not Panel hostPanel)
+        {
+            throw new InvalidOperationException("EtherDropdown DisplayMemberPath probe requires a panel-based theme root to host an isolated scratch container.");
+        }
+
+        var scratch = new Canvas { Opacity = 0d, IsHitTestVisible = false };
+        hostPanel.Children.Add(scratch);
+        try
+        {
+            var probe = new EtherDropdown
+            {
+                ItemsSource = new[]
+                {
+                    new DisplayMemberPathProbeItem("Widget A"),
+                    new DisplayMemberPathProbeItem("Widget B"),
+                },
+                DisplayMemberPath = nameof(DisplayMemberPathProbeItem.Label),
+            };
+            scratch.Children.Add(probe);
+            probe.ApplyTemplate();
+            probe.SelectedIndex = 0;
+            probe.UpdateLayout();
+
+            var triggerText = GetTemplatePart<TextBlock>(probe, "TriggerText", nameof(EtherDropdown));
+            var text = triggerText.Text;
+            if (text != "Widget A" || text.Contains(nameof(DisplayMemberPathProbeItem), StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"EtherDropdown did not resolve DisplayMemberPath for an object data source. Observed trigger text '{text}'.");
+            }
+
+            return text;
+        }
+        finally
+        {
+            scratch.Children.Clear();
+            hostPanel.Children.Remove(scratch);
+        }
     }
 
     private static async Task<string[]> GetDropdownForegroundBrushColorsAsync(

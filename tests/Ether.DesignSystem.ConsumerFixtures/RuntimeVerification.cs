@@ -76,7 +76,8 @@ internal static partial class RuntimeVerification
         string[] CheckStates,
         string AutomationName,
         string[] LightTemplateBrushColors,
-        string[] DarkTemplateBrushColors);
+        string[] DarkTemplateBrushColors,
+        bool IsThreeStateRejected);
 
     internal sealed record RadioButtonVerification(
         bool DefaultStyleResolved,
@@ -85,7 +86,8 @@ internal static partial class RuntimeVerification
         string[] CheckStates,
         string AutomationName,
         string[] LightTemplateBrushColors,
-        string[] DarkTemplateBrushColors);
+        string[] DarkTemplateBrushColors,
+        bool IsThreeStateRejected);
 
     internal sealed record InputVerification(
         bool DefaultStyleResolved,
@@ -112,7 +114,8 @@ internal static partial class RuntimeVerification
         bool ClosedActiveStrokeCollapsed,
         string AutomationName,
         string[] LightTemplateBrushColors,
-        string[] DarkTemplateBrushColors);
+        string[] DarkTemplateBrushColors,
+        string DisplayMemberPathTriggerText);
 
     internal sealed record SegmentedControlVerification(
         bool DefaultStyleResolved,

@@ -44,6 +44,11 @@ jobs:
       - name: Audit public resource merge graph
         shell: pwsh
         run: ./scripts/Verify-ResourceGraph.ps1
+      - name: Audit marker field contract (PowerShell vs C# records)
+        shell: pwsh
+        # Purely static: catches a PowerShell/C# marker-field mismatch (e.g. a renamed record
+        # field) before it costs a full GUI runtime-verification round to discover.
+        run: ./scripts/Verify-MarkerContract.ps1
       - name: Verify EtherProgressBar exemplar contract
         shell: pwsh
         run: ./scripts/Verify-EtherProgressBarContract.ps1

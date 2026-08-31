@@ -9,17 +9,67 @@ public sealed record InteractionContext(
     string? TenantId = null,
     string? ActorId = null);
 
-/// <summary>A versioned, backend-consumable user interaction envelope.</summary>
-public sealed record InteractionEvent(
-    Guid EventId,
-    string IdempotencyKey,
-    string Type,
-    int SchemaVersion,
-    DateTimeOffset OccurredAtUtc,
-    InteractionContext Context,
-    string ComponentId,
-    JsonElement Data)
+/// <summary>
+/// A versioned, backend-consumable user interaction envelope.
+/// </summary>
+/// <remarks>
+/// Direct construction is not supported: the primary constructor is private, so this is
+/// deliberately not a positional record you can call <c>new InteractionEvent(...)</c> on.
+/// <see cref="Create"/> is the only supported way to obtain one - it is what fills in a fresh
+/// <see cref="EventId"/>, stamps <see cref="SchemaVersion"/> at the version this library
+/// actually emits, derives a fallback <see cref="IdempotencyKey"/> when the caller does not
+/// supply one, and rejects a blank <see cref="Type"/>, <see cref="ComponentId"/>, or
+/// <see cref="InteractionContext.CorrelationId"/> up front. Bypassing it (for example by
+/// reflecting into the private constructor) would trade all of that for envelopes an outbox
+/// cannot trust. <c>with</c>-expressions on an already-valid instance remain supported, the
+/// same as for any other record.
+/// </remarks>
+public sealed record InteractionEvent
 {
+    private InteractionEvent(
+        Guid eventId,
+        string idempotencyKey,
+        string type,
+        int schemaVersion,
+        DateTimeOffset occurredAtUtc,
+        InteractionContext context,
+        string componentId,
+        JsonElement data)
+    {
+        EventId = eventId;
+        IdempotencyKey = idempotencyKey;
+        Type = type;
+        SchemaVersion = schemaVersion;
+        OccurredAtUtc = occurredAtUtc;
+        Context = context;
+        ComponentId = componentId;
+        Data = data;
+    }
+
+    /// <summary>Gets the unique identifier of this event instance.</summary>
+    public Guid EventId { get; init; }
+
+    /// <summary>Gets the key a durable outbox uses to deduplicate delivery attempts.</summary>
+    public string IdempotencyKey { get; init; }
+
+    /// <summary>Gets the business event type.</summary>
+    public string Type { get; init; }
+
+    /// <summary>Gets the envelope schema version.</summary>
+    public int SchemaVersion { get; init; }
+
+    /// <summary>Gets the UTC instant the interaction occurred.</summary>
+    public DateTimeOffset OccurredAtUtc { get; init; }
+
+    /// <summary>Gets the screen/tenant/actor context attached to this event.</summary>
+    public InteractionContext Context { get; init; }
+
+    /// <summary>Gets the identifier of the control that produced this event.</summary>
+    public string ComponentId { get; init; }
+
+    /// <summary>Gets the immutable JSON payload.</summary>
+    public JsonElement Data { get; init; }
+
     /// <summary>Creates a version-one interaction envelope with an immutable JSON payload.</summary>
     public static InteractionEvent Create(
         string type,

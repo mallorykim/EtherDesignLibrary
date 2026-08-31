@@ -1049,6 +1049,7 @@ try {
                 @($expectedCheckStates | Where-Object { $_ -cnotin @($checkbox.checkStates) }).Count -ne 0 -or
                 $checkbox.automationName -ne 'Package checkbox' -or
                 (@($checkbox.lightTemplateBrushColors) -join ',') -ceq (@($checkbox.darkTemplateBrushColors) -join ',') -or
+                $checkbox.isThreeStateRejected -ne $true -or
                 $null -eq $radioButton -or
                 $radioButton.defaultStyleResolved -ne $true -or
                 $radioButton.defaultIsThreeState -ne $false -or
@@ -1056,6 +1057,7 @@ try {
                 @($expectedCheckStates | Where-Object { $_ -cnotin @($radioButton.checkStates) }).Count -ne 0 -or
                 $radioButton.automationName -ne 'Package radio button' -or
                 (@($radioButton.lightTemplateBrushColors) -join ',') -ceq (@($radioButton.darkTemplateBrushColors) -join ',') -or
+                $radioButton.isThreeStateRejected -ne $true -or
                 $null -eq $etherInput -or
                 $etherInput.defaultStyleResolved -ne $true -or
                 [double]$etherInput.defaultMinWidth -ne 130 -or
@@ -1079,6 +1081,7 @@ try {
                 $dropdown.closedActiveStrokeCollapsed -ne $true -or
                 $dropdown.automationName -ne 'Package dropdown' -or
                 (@($dropdown.lightTemplateBrushColors) -join ',') -ceq (@($dropdown.darkTemplateBrushColors) -join ',') -or
+                $dropdown.displayMemberPathTriggerText -cne 'Widget A' -or
                 $null -eq $segmentedControl -or
                 $segmentedControl.defaultStyleResolved -ne $true -or
                 [double]$segmentedControl.defaultPadding -ne 4 -or
@@ -1175,6 +1178,8 @@ try {
                 [int]$runtimeResult.propertyConsumption.backendPropertyEventCount -ne $expectedConsumedProperties.Count -or
                 [int]$runtimeResult.propertyConsumption.standardInteractionEventCount -ne 12 -or
                 @($expectedConsumedProperties | Where-Object { $_ -cnotin @($runtimeResult.propertyConsumption.verifiedProperties) }).Count -ne 0 -or
+                $runtimeResult.propertyConsumption.subscriptionValidatedEagerly -ne $true -or
+                $runtimeResult.propertyConsumption.directConstructionBlocked -ne $true -or
                 $null -eq $runtimeResult.publicPropertyInventory -or
                 [int]$runtimeResult.publicPropertyInventory.writablePropertyCount -ne $expectedWritablePublicProperties -or
                 @($runtimeResult.publicPropertyInventory.propertyKeys).Count -ne $expectedWritablePublicProperties -or

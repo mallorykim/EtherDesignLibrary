@@ -34,13 +34,11 @@ Ether.DesignSystem.Interactions.InteractionEvent.Context.get -> Ether.DesignSyst
 Ether.DesignSystem.Interactions.InteractionEvent.Context.init -> void
 Ether.DesignSystem.Interactions.InteractionEvent.Data.get -> System.Text.Json.JsonElement
 Ether.DesignSystem.Interactions.InteractionEvent.Data.init -> void
-Ether.DesignSystem.Interactions.InteractionEvent.Deconstruct(out System.Guid EventId, out string! IdempotencyKey, out string! Type, out int SchemaVersion, out System.DateTimeOffset OccurredAtUtc, out Ether.DesignSystem.Interactions.InteractionContext! Context, out string! ComponentId, out System.Text.Json.JsonElement Data) -> void
 Ether.DesignSystem.Interactions.InteractionEvent.Equals(Ether.DesignSystem.Interactions.InteractionEvent? other) -> bool
 Ether.DesignSystem.Interactions.InteractionEvent.EventId.get -> System.Guid
 Ether.DesignSystem.Interactions.InteractionEvent.EventId.init -> void
 Ether.DesignSystem.Interactions.InteractionEvent.IdempotencyKey.get -> string!
 Ether.DesignSystem.Interactions.InteractionEvent.IdempotencyKey.init -> void
-Ether.DesignSystem.Interactions.InteractionEvent.InteractionEvent(System.Guid EventId, string! IdempotencyKey, string! Type, int SchemaVersion, System.DateTimeOffset OccurredAtUtc, Ether.DesignSystem.Interactions.InteractionContext! Context, string! ComponentId, System.Text.Json.JsonElement Data) -> void
 Ether.DesignSystem.Interactions.InteractionEvent.OccurredAtUtc.get -> System.DateTimeOffset
 Ether.DesignSystem.Interactions.InteractionEvent.OccurredAtUtc.init -> void
 Ether.DesignSystem.Interactions.InteractionEvent.SchemaVersion.get -> int

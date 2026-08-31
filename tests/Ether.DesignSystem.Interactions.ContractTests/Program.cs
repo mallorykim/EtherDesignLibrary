@@ -23,6 +23,40 @@ if (mockBackend.Interactions.Count != 1 ||
     throw new InvalidOperationException("The interaction envelope was not consumable by the mock backend.");
 }
 
+// B4: direct construction must not be reachable. InteractionEvent.Create is the only
+// supported path, so the type must not expose a public constructor.
+if (typeof(InteractionEvent).GetConstructors(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).Length != 0)
+{
+    throw new InvalidOperationException("InteractionEvent must not expose a public constructor; use InteractionEvent.Create instead.");
+}
+
+// Create() must still reject the inputs that would otherwise produce an unusable envelope.
+void AssertCreateRejects(string description, Action create)
+{
+    try
+    {
+        create();
+    }
+    catch (ArgumentException)
+    {
+        return;
+    }
+
+    throw new InvalidOperationException($"InteractionEvent.Create did not reject {description}.");
+}
+
+AssertCreateRejects("a blank type", () => InteractionEvent.Create("", context, "order-submit", null));
+AssertCreateRejects("a blank componentId", () => InteractionEvent.Create("order.submit.requested", context, "", null));
+AssertCreateRejects("a context with a blank CorrelationId", () => InteractionEvent.Create("order.submit.requested", new InteractionContext(""), "order-submit", null));
+
+// `with`-expressions on an already-valid instance must keep working now that the primary
+// constructor is private.
+var mutated = interaction with { ComponentId = "order-submit-2" };
+if (mutated.ComponentId != "order-submit-2" || mutated.EventId != interaction.EventId)
+{
+    throw new InvalidOperationException("InteractionEvent no longer supports `with`-expressions after tightening its constructor.");
+}
+
 Console.WriteLine("Interaction contract mock-consumer smoke test passed.");
 
 sealed class RecordingSink : IInteractionSink
