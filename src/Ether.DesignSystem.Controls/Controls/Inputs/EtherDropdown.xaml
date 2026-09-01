@@ -171,21 +171,15 @@
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Unfocused"/>
-                    <VisualState x:Name="FocusedPressed">
-                        <VisualState.Setters>
-                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState x:Name="PointerFocused">
-                        <VisualState.Setters>
-                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState x:Name="FocusedDropDown">
-                        <VisualState.Setters>
-                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
-                        </VisualState.Setters>
-                    </VisualState>
+                    <!-- These substates are declared (not left undefined) but empty ON PURPOSE:
+                         entering them reverts FocusRing to its base (Collapsed). The keyboard focus
+                         ring shows ONLY in Focused (keyboard-focused, menu closed) — not while the
+                         menu is open (FocusedDropDown), not for pointer focus (PointerFocused), and
+                         not mid-press (FocusedPressed). If they were left undeclared, GoToState would
+                         no-op and the Focused ring would persist into the open state. -->
+                    <VisualState x:Name="FocusedPressed"/>
+                    <VisualState x:Name="PointerFocused"/>
+                    <VisualState x:Name="FocusedDropDown"/>
                 </VisualStateGroup>
                 <VisualStateGroup x:Name="DropDownStates">
                     <VisualState x:Name="Opened">
