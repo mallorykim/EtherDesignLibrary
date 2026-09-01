@@ -1,0 +1,97 @@
+<!-- WinUI ListView skin. WinAppSDK 2.3.1 has no ListViewItemPresenter.SelectionIndicatorMode;
+     the item template therefore uses the specified layered fallback to remove that indicator. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:Ether.DesignSystem.Controls">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="EtherTabItemBackgroundSelectedBrush" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="EtherTabItemBackgroundHoverBrush" Color="{StaticResource AlphaBlack4}"/>
+            <SolidColorBrush x:Key="EtherTabItemBackgroundPressedBrush" Color="{StaticResource AlphaBlack6}"/>
+            <SolidColorBrush x:Key="EtherTabItemForegroundBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherTabItemForegroundSelectedBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherTabNavigationFocusStrokeBrush" Color="{StaticResource Blue600}"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="EtherTabItemBackgroundSelectedBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherTabItemBackgroundHoverBrush" Color="{StaticResource AlphaWhite4}"/>
+            <SolidColorBrush x:Key="EtherTabItemBackgroundPressedBrush" Color="{StaticResource AlphaWhite6}"/>
+            <SolidColorBrush x:Key="EtherTabItemForegroundBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherTabItemForegroundSelectedBrush" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="EtherTabNavigationFocusStrokeBrush" Color="{StaticResource Blue500}"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="EtherTabItemBackgroundSelectedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherTabItemBackgroundHoverBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherTabItemBackgroundPressedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherTabItemForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherTabItemForegroundSelectedBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="EtherTabNavigationFocusStrokeBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <!-- Copy of the official ListView structural skeleton, with tab scrolling disabled. -->
+    <ControlTemplate x:Key="EtherTabNavigationTemplate" TargetType="controls:EtherTabNavigation">
+        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+            <ScrollViewer x:Name="ScrollViewer" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Hidden"
+                          VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" ZoomMode="Disabled"
+                          AutomationProperties.AccessibilityView="Raw">
+                <ItemsPresenter x:Name="ItemsPresenter" Header="{TemplateBinding Header}" HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                                HeaderTransitions="{TemplateBinding HeaderTransitions}" Footer="{TemplateBinding Footer}"
+                                FooterTemplate="{TemplateBinding FooterTemplate}" FooterTransitions="{TemplateBinding FooterTransitions}"/>
+            </ScrollViewer>
+        </Border>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="EtherTabItemTemplate" TargetType="controls:EtherTabItem">
+        <Grid x:Name="Root">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal"/>
+                    <VisualState x:Name="PointerOver"><VisualState.Setters><Setter Target="HoverLayer.Opacity" Value="1"/></VisualState.Setters></VisualState>
+                    <VisualState x:Name="Pressed"><VisualState.Setters><Setter Target="PressedLayer.Opacity" Value="1"/></VisualState.Setters></VisualState>
+                    <VisualState x:Name="PointerOverPressed"><VisualState.Setters><Setter Target="PressedLayer.Opacity" Value="1"/></VisualState.Setters></VisualState>
+                    <VisualState x:Name="Selected"><VisualState.Setters><Setter Target="SelectedLayer.Opacity" Value="1"/><Setter Target="ContentText.Foreground" Value="{ThemeResource EtherTabItemForegroundSelectedBrush}"/><Setter Target="IconPresenter.Foreground" Value="{ThemeResource EtherTabItemForegroundSelectedBrush}"/></VisualState.Setters></VisualState>
+                    <VisualState x:Name="PointerOverSelected"><VisualState.Setters><Setter Target="SelectedLayer.Opacity" Value="1"/><Setter Target="ContentText.Foreground" Value="{ThemeResource EtherTabItemForegroundSelectedBrush}"/><Setter Target="IconPresenter.Foreground" Value="{ThemeResource EtherTabItemForegroundSelectedBrush}"/></VisualState.Setters></VisualState>
+                    <VisualState x:Name="PressedSelected"><VisualState.Setters><Setter Target="SelectedLayer.Opacity" Value="1"/><Setter Target="ContentText.Foreground" Value="{ThemeResource EtherTabItemForegroundSelectedBrush}"/><Setter Target="IconPresenter.Foreground" Value="{ThemeResource EtherTabItemForegroundSelectedBrush}"/></VisualState.Setters></VisualState>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="DisabledStates">
+                    <VisualState x:Name="Enabled"/>
+                    <VisualState x:Name="Disabled"><VisualState.Setters><Setter Target="Root.Opacity" Value="0.4"/></VisualState.Setters></VisualState>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="FocusStates"><VisualState x:Name="Focused"><VisualState.Setters><Setter Target="FocusRing.Opacity" Value="1"/></VisualState.Setters></VisualState><VisualState x:Name="Unfocused"/><VisualState x:Name="PointerFocused"/></VisualStateGroup>
+                <!-- Stock ListViewItem groups retained for ListView-driven states. -->
+                <VisualStateGroup x:Name="MultiSelectStates"><VisualState x:Name="SingleSelect"/><VisualState x:Name="MultiSelect"/><VisualState x:Name="ExtendedSelect"/></VisualStateGroup>
+                <VisualStateGroup x:Name="ReorderHintStates"><VisualState x:Name="NoReorderHint"/><VisualState x:Name="BottomReorderHint"/><VisualState x:Name="TopReorderHint"/><VisualState x:Name="RightReorderHint"/><VisualState x:Name="LeftReorderHint"/></VisualStateGroup>
+                <VisualStateGroup x:Name="DragStates"><VisualState x:Name="NotDragging"/><VisualState x:Name="Dragging"/><VisualState x:Name="DraggingTarget"/><VisualState x:Name="DragOver"/></VisualStateGroup>
+                <VisualStateGroup x:Name="DataVirtualizationStates"><VisualState x:Name="DataAvailable"/><VisualState x:Name="DataPlaceholder"/></VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Border x:Name="HoverLayer" Background="{ThemeResource EtherTabItemBackgroundHoverBrush}" CornerRadius="{StaticResource RadiusMd}" Opacity="0"/>
+            <Border x:Name="PressedLayer" Background="{ThemeResource EtherTabItemBackgroundPressedBrush}" CornerRadius="{StaticResource RadiusMd}" Opacity="0"/>
+            <Border x:Name="SelectedLayer" Background="{ThemeResource EtherTabItemBackgroundSelectedBrush}" CornerRadius="{StaticResource RadiusMd}" Opacity="0"/>
+            <Border Background="Transparent" Padding="{TemplateBinding Padding}" CornerRadius="{StaticResource RadiusMd}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                    <!-- Leading icon: code creates a fresh PathIcon backed by a deep-cloned Geometry
+                         object graph, so ListView teardown/recycling never reuses render-owned data. -->
+                    <ContentPresenter x:Name="IconPresenter" Visibility="Collapsed" VerticalAlignment="Center" Foreground="{ThemeResource EtherTabItemForegroundBrush}" AutomationProperties.AccessibilityView="Raw"/>
+                    <Grid>
+                        <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" ContentTransitions="{TemplateBinding ContentTransitions}" Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource EtherTabItemForegroundBrush}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" AutomationProperties.AccessibilityView="Raw"/>
+                        <TextBlock x:Name="ContentText" Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}" Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=String}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource EtherTabItemForegroundBrush}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" AutomationProperties.AccessibilityView="Raw"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            <Border x:Name="FocusRing" Margin="-3" BorderBrush="{ThemeResource EtherTabNavigationFocusStrokeBrush}" BorderThickness="2" CornerRadius="11" IsHitTestVisible="False" Opacity="0"/>
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="DefaultEtherTabNavigationStyle" TargetType="controls:EtherTabNavigation">
+        <Setter Property="SelectionMode" Value="Single"/><Setter Property="IsItemClickEnabled" Value="False"/><Setter Property="Padding" Value="0"/><Setter Property="HorizontalAlignment" Value="Left"/><Setter Property="Background" Value="Transparent"/><Setter Property="IsTabStop" Value="False"/><Setter Property="UseSystemFocusVisuals" Value="False"/><Setter Property="HighContrastAdjustment" Value="None"/>
+        <Setter Property="ItemsPanel"><Setter.Value><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing12}" HorizontalAlignment="Left"/></ItemsPanelTemplate></Setter.Value></Setter>
+        <Setter Property="Template" Value="{StaticResource EtherTabNavigationTemplate}"/>
+    </Style>
+    <Style TargetType="controls:EtherTabNavigation" BasedOn="{StaticResource DefaultEtherTabNavigationStyle}"/>
+    <Style x:Key="DefaultEtherTabItemStyle" TargetType="controls:EtherTabItem">
+        <Setter Property="MinHeight" Value="0"/><Setter Property="MinWidth" Value="0"/><Setter Property="Margin" Value="0"/><Setter Property="HorizontalAlignment" Value="Left"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/><Setter Property="Padding" Value="12,8"/><Setter Property="FontFamily" Value="{StaticResource InstrumentSans}"/><Setter Property="FontSize" Value="{StaticResource Size14}"/><Setter Property="FontWeight" Value="{StaticResource WeightSemibold}"/><Setter Property="UseSystemFocusVisuals" Value="False"/><Setter Property="HighContrastAdjustment" Value="None"/><Setter Property="Template" Value="{StaticResource EtherTabItemTemplate}"/>
+    </Style>
+    <Style TargetType="controls:EtherTabItem" BasedOn="{StaticResource DefaultEtherTabItemStyle}"/>
+</ResourceDictionary>
