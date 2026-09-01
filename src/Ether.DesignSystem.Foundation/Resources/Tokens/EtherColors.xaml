@@ -182,6 +182,12 @@
             <SolidColorBrush x:Key="background/menuitem/hover" Color="{StaticResource Gray50}"/>
             <SolidColorBrush x:Key="background/menuitem/pressed" Color="{StaticResource Gray25}"/>
 
+            <!-- background / Tabs -->
+            <SolidColorBrush x:Key="background/tabs/default" Color="Transparent"/>
+            <SolidColorBrush x:Key="background/tabs/selected" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="background/tabs/hover" Color="{StaticResource AlphaBlack4}"/>
+            <SolidColorBrush x:Key="background/tabs/pressed" Color="{StaticResource AlphaBlack6}"/>
+
             <!-- text -->
             <SolidColorBrush x:Key="text/primary" Color="{StaticResource Gray1000}"/>
             <SolidColorBrush x:Key="text/secondary" Color="{StaticResource AlphaBlack70}"/>
@@ -522,6 +528,12 @@
             <SolidColorBrush x:Key="background/menuitem/default" Color="{StaticResource Gray950}"/>
             <SolidColorBrush x:Key="background/menuitem/hover" Color="{StaticResource Gray850}"/>
             <SolidColorBrush x:Key="background/menuitem/pressed" Color="{StaticResource Gray800}"/>
+
+            <!-- background / Tabs -->
+            <SolidColorBrush x:Key="background/tabs/default" Color="Transparent"/>
+            <SolidColorBrush x:Key="background/tabs/selected" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="background/tabs/hover" Color="{StaticResource AlphaWhite4}"/>
+            <SolidColorBrush x:Key="background/tabs/pressed" Color="{StaticResource AlphaWhite6}"/>
 
             <!-- text -->
             <SolidColorBrush x:Key="text/primary" Color="{StaticResource Gray0}"/>
