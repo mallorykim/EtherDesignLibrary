@@ -60,6 +60,17 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("EtherDropdown ContentPresenter must stay collapsed so ComboBox can own it while TriggerText shows the selection.");
         }
 
+        dropdown.PlaceholderText = "Select duration";
+        dropdown.SelectedIndex = -1;
+        dropdown.UpdateLayout();
+        if (triggerText.Text != "Select duration")
+        {
+            throw new InvalidOperationException($"EtherDropdown PlaceholderText was not rendered while unselected. Observed '{triggerText.Text}'.");
+        }
+        var placeholderTextShowsWhenUnselected = true;
+
+        dropdown.SelectedIndex = 0;
+        dropdown.UpdateLayout();
         if (triggerText.Text != "10 Minutes")
         {
             throw new InvalidOperationException($"EtherDropdown TriggerText did not show the selected item. Observed '{triggerText.Text}'.");
@@ -108,6 +119,8 @@ internal static partial class RuntimeVerification
         }
 
         var displayMemberPathTriggerText = VerifyDisplayMemberPath(themeRoot);
+        var (maxDropDownHeightConstrainsPopup, maxDropDownHeightSmallerCap, maxDropDownHeightLargerCap) =
+            VerifyMaxDropDownHeightConstrainsPopup(themeRoot);
 
         return new DropdownVerification(
             true,
@@ -123,7 +136,83 @@ internal static partial class RuntimeVerification
             peer.GetName(),
             lightTemplateBrushColors,
             darkTemplateBrushColors,
-            displayMemberPathTriggerText);
+            placeholderTextShowsWhenUnselected,
+            displayMemberPathTriggerText,
+            maxDropDownHeightConstrainsPopup,
+            maxDropDownHeightSmallerCap,
+            maxDropDownHeightLargerCap);
+    }
+
+    /// <summary>
+    /// Regression coverage for <see cref="EtherDropdown.MaxDropDownHeight"/> (inherited from
+    /// <see cref="ComboBox"/>): <c>EtherDropdown.ApplyMaxVisibleHeight</c> now composes it with
+    /// <see cref="EtherDropdown.MaxVisibleItems"/> as an additional pixel ceiling on the popup's
+    /// ScrollViewer (EtherDropdown.cs). Sets <c>MaxVisibleItems = 0</c> (unbounded by item count)
+    /// on an isolated probe so only MaxDropDownHeight can constrain the popup, actually opens the
+    /// popup (not just a VisualStateManager state, unlike the DropDownStates proof above - opening
+    /// for real is what runs ApplyMaxVisibleHeight, since it is driven by the framework's own
+    /// OnDropDownOpened override) with two distinct, deliberately small MaxDropDownHeight values,
+    /// and asserts each opens the popup's ScrollViewer at exactly that height. Runs on an isolated,
+    /// invisible probe hosted in a scratch Canvas so it does not disturb the shared, already-
+    /// verified dropdown instance or its visual baseline - the same pattern VerifyDisplayMemberPath
+    /// above uses.
+    /// </summary>
+    private static (bool Constrains, double SmallerCap, double LargerCap) VerifyMaxDropDownHeightConstrainsPopup(
+        FrameworkElement themeRoot)
+    {
+        if (themeRoot is not Panel hostPanel)
+        {
+            throw new InvalidOperationException("EtherDropdown MaxDropDownHeight probe requires a panel-based theme root to host an isolated scratch container.");
+        }
+
+        var scratch = new Canvas { Opacity = 0d, IsHitTestVisible = false };
+        hostPanel.Children.Add(scratch);
+        try
+        {
+            var probe = new EtherDropdown
+            {
+                ItemsSource = Enumerable.Range(0, 20).Select(index => $"Item {index}").ToArray(),
+                MaxVisibleItems = 0,
+            };
+            scratch.Children.Add(probe);
+            probe.ApplyTemplate();
+            probe.UpdateLayout();
+
+            var scrollViewer = GetTemplatePart<ScrollViewer>(probe, "ScrollViewer", nameof(EtherDropdown));
+
+            const double SmallerCap = 80d;
+            const double LargerCap = 400d;
+            var smallerObserved = OpenDropdownAndReadPopupMaxHeight(probe, scrollViewer, SmallerCap);
+            var largerObserved = OpenDropdownAndReadPopupMaxHeight(probe, scrollViewer, LargerCap);
+
+            if (double.IsInfinity(smallerObserved) || Math.Abs(smallerObserved - SmallerCap) > 0.5 ||
+                double.IsInfinity(largerObserved) || Math.Abs(largerObserved - LargerCap) > 0.5 ||
+                !(smallerObserved < largerObserved))
+            {
+                throw new InvalidOperationException(
+                    $"EtherDropdown.MaxDropDownHeight did not constrain the popup. Expected the ScrollViewer " +
+                    $"MaxHeight to match each MaxDropDownHeight value exactly ({SmallerCap}, {LargerCap}), but " +
+                    $"observed {smallerObserved} and {largerObserved}.");
+            }
+
+            return (true, smallerObserved, largerObserved);
+        }
+        finally
+        {
+            scratch.Children.Clear();
+            hostPanel.Children.Remove(scratch);
+        }
+    }
+
+    private static double OpenDropdownAndReadPopupMaxHeight(EtherDropdown probe, ScrollViewer scrollViewer, double maxDropDownHeight)
+    {
+        probe.MaxDropDownHeight = maxDropDownHeight;
+        probe.IsDropDownOpen = true;
+        probe.UpdateLayout();
+        var observed = scrollViewer.MaxHeight;
+        probe.IsDropDownOpen = false;
+        probe.UpdateLayout();
+        return observed;
     }
 
     /// <summary>

@@ -387,7 +387,7 @@ internal static partial class RuntimeVerification
     // (RuntimeVerification.AttachedVisualProperties.cs - LOCKED) has already classified the frame
     // as different. This is deliberately scoped to this method only: it does not touch
     // ChannelToleranceLevels, SignificantPixelFraction, or MinimumSignificantPixelCount, which are
-    // shared with the locked property-mutation fingerprint and gate the locked 445/270/175
+    // shared with the locked property-mutation fingerprint and gate the locked 555/344/211
     // property-classification invariant. Every control not listed here keeps the strict shared
     // default with zero extra tolerance.
     //
@@ -517,7 +517,8 @@ internal static partial class RuntimeVerification
         FrameworkElement themeRoot,
         (string Id, FrameworkElement Control, string ExpectedAutomationName)[] controls,
         string lightCanvasColor,
-        string darkCanvasColor)
+        string darkCanvasColor,
+        Func<bool>? additionalStyleVerification = null)
     {
         var accessibility = new AccessibilitySettings();
         if (accessibility.HighContrast)
@@ -549,6 +550,7 @@ internal static partial class RuntimeVerification
         {
             var enable = await EnableOsHighContrastAsync(original, accessibility, () => appliedThemeFile = true);
             appliedThemeFile = enable.AppliedThemeFile;
+            additionalStyleVerification?.Invoke();
             var canvasColor = await ReadHighContrastCanvasColorAsync(themeRoot, lightCanvasColor, darkCanvasColor);
             var pngSize = await CaptureCurrentPngAsync(themeRoot, screenshotPath, "HighContrast");
             var namesIntact = true;

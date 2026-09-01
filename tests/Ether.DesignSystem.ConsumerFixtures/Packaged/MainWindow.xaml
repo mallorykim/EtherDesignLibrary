@@ -167,11 +167,11 @@
                                 <controls:EtherSegmentedControl x:Name="DefaultSegmentedControlProof"
                                                                 AutomationProperties.Name="Default package segmented control">
                                     <controls:EtherSegmentPanel>
-                                        <RadioButton Style="{StaticResource EtherSegment}"
+                                        <controls:EtherSegmentRadioButton Style="{StaticResource EtherSegment}"
                                                      GroupName="default-package-segment"
                                                      Content="A"
                                                      IsChecked="True"/>
-                                        <RadioButton Style="{StaticResource EtherSegment}"
+                                        <controls:EtherSegmentRadioButton Style="{StaticResource EtherSegment}"
                                                      GroupName="default-package-segment"
                                                      Content="B"/>
                                     </controls:EtherSegmentPanel>
@@ -179,11 +179,11 @@
                                 <controls:EtherSegmentedControl x:Name="SegmentedControlProof"
                                                                 AutomationProperties.Name="Package segmented control">
                                     <controls:EtherSegmentPanel>
-                                        <RadioButton Style="{StaticResource EtherSegment}"
+                                        <controls:EtherSegmentRadioButton Style="{StaticResource EtherSegment}"
                                                      GroupName="package-segment"
                                                      Content="A"
                                                      IsChecked="True"/>
-                                        <RadioButton Style="{StaticResource EtherSegment}"
+                                        <controls:EtherSegmentRadioButton Style="{StaticResource EtherSegment}"
                                                      GroupName="package-segment"
                                                      Content="B"/>
                                     </controls:EtherSegmentPanel>

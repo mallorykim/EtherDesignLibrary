@@ -907,7 +907,7 @@ try {
             $updateVisualBaselinesValue = if ($UpdateVisualBaselines) { '1' } else { $null }
             [Environment]::SetEnvironmentVariable('ETHER_CONSUMER_UPDATE_VISUAL_BASELINES', $updateVisualBaselinesValue, 'Process')
             $smokeProcess = Start-Process -FilePath $unpackagedExe -WorkingDirectory $unpackagedOutput -PassThru -WindowStyle Hidden
-            # The attached visual-property audit (445 properties) now waits deterministically
+            # The attached visual-property audit (555 properties) now waits deterministically
             # for compositor settle after each mutation: it samples the rendered bitmap
             # fingerprint a composition frame apart until 3 consecutive samples match (throwing
             # if that never happens within 60 samples) instead of a single Task.Yield(), so the
@@ -979,30 +979,36 @@ try {
             $expectedSliderTemplateParts = @('ValueText', 'BarCanvas', 'Knob', 'LabelRow')
             $expectedMastheadTemplateParts = @('SearchIconSlot', 'SettingsButton', 'MinimizeButton', 'MaximizeRestoreButton', 'CloseButton')
             $expectedMastheadOptionalIconStates = @('SearchCollapsed', 'SearchVisible')
-            $expectedToggleSwitchTemplateParts = @('TrackOff', 'TrackOn', 'KnobFill')
+            $expectedToggleSwitchTemplateParts = @('OuterBorder', 'OnTrackBacking', 'KnobFrame', 'SwitchAreaGrid')
             $expectedToggleSwitchStates = @('Off', 'On')
             $expectedConsumedProperties = @(
                 'EtherButton.LeftIcon', 'EtherButton.RightIcon', 'EtherButton.Size', 'EtherButton.Variant',
                 'EtherDropdown.MaxVisibleItems', 'EtherDropdown.MenuGap',
                 'EtherProgressBar.ShowTitle', 'EtherProgressBar.ShowValue', 'EtherProgressBar.Title', 'EtherProgressBar.ValueContent',
-                'EtherSegmentPanel.Spacing', 'EtherSegmentedControl.SelectedValue',
-                'EtherSlider.Labels', 'EtherSlider.ShowLabels', 'EtherSlider.ShowTitle', 'EtherSlider.SnapToStops', 'EtherSlider.Stops', 'EtherSlider.Title',
-                'EtherSteeringBar.LargeChange', 'EtherSteeringBar.Maximum', 'EtherSteeringBar.Minimum', 'EtherSteeringBar.ShowStops', 'EtherSteeringBar.ShowTitle', 'EtherSteeringBar.ShowValue', 'EtherSteeringBar.SmallChange', 'EtherSteeringBar.SnapToStops', 'EtherSteeringBar.Stops', 'EtherSteeringBar.Title', 'EtherSteeringBar.Value', 'EtherSteeringBar.ValueContent',
-                'EtherMasthead.EnableWindowCommands', 'EtherMasthead.ShowChevron', 'EtherMasthead.ShowMenuIcon', 'EtherMasthead.ShowSearch', 'EtherMasthead.ShowSettings'
+                'EtherSegmentPanel.Spacing',
+                'EtherSegmentedControl.DisplayMemberPath', 'EtherSegmentedControl.ItemTemplate', 'EtherSegmentedControl.ItemsSource', 'EtherSegmentedControl.SelectedIndex', 'EtherSegmentedControl.SelectedItem', 'EtherSegmentedControl.SelectedValue',
+                'EtherSlider.Labels', 'EtherSlider.ShowLabels', 'EtherSlider.ShowTitle', 'EtherSlider.SnapToStops', 'EtherSlider.StepFrequency', 'EtherSlider.Stops', 'EtherSlider.Title',
+                'EtherSteeringBar.LargeChange', 'EtherSteeringBar.Maximum', 'EtherSteeringBar.Minimum', 'EtherSteeringBar.ShowStops', 'EtherSteeringBar.ShowTitle', 'EtherSteeringBar.ShowValue', 'EtherSteeringBar.SmallChange', 'EtherSteeringBar.SnapToStops', 'EtherSteeringBar.StepFrequency', 'EtherSteeringBar.Stops', 'EtherSteeringBar.Title', 'EtherSteeringBar.Value', 'EtherSteeringBar.ValueContent',
+                'EtherMasthead.EnableWindowCommands', 'EtherMasthead.ShowChevron', 'EtherMasthead.ShowMenuIcon', 'EtherMasthead.ShowSearch', 'EtherMasthead.ShowSettings',
+                'EtherTabItem.Icon'
             )
-            $expectedWritablePublicProperties = 1388
-            $expectedVisualPublicProperties = 445
-            $expectedSemanticPublicProperties = 69
-            $expectedPlatformPublicProperties = 874
+            $expectedInventoryPublicProperties = 1764
+            $expectedWritablePublicProperties = 1395
+            $expectedVisualPublicProperties = 555
+            $expectedSemanticPublicProperties = 87
+            $expectedPlatformPublicProperties = 1122
             $allowedVisualEvidenceMethods = @('pixel-difference', 'layout-difference', 'visibility-transition', 'platform-dp-contract', 'ether-component-dp-contract', 'platform-clr-visual-contract')
-            # R-06: the 445 visual properties are not uniformly "observable" - split by Evidence.Method
+            # R-06: the 555 visual properties are not uniformly "observable" - split by Evidence.Method
             # into the subset that proved a visible effect (pixel/layout/visibility differences on a
             # rendered, attached control) versus the subset that only proved a DP round-trip (getter/setter
             # invoked without throwing; bitmap pixels unchanged). See docs/plans/2026-08-31-release-blockers-spec.md R-06.
+            # (Baseline was 445/270/175 at R-06; the 2026-09-01 consumability remediation added
+            # EtherTabNavigation/EtherTabItem/EtherSegmentRadioButton + 7 new DPs, growing the audited
+            # visual-property set to 555 = 344 observable + 211 contract-only.)
             $observableVisualEvidenceMethods = @('pixel-difference', 'layout-difference', 'visibility-transition')
             $contractOnlyVisualEvidenceMethods = @('platform-dp-contract', 'ether-component-dp-contract')
-            $expectedObservableVisualProperties = 270
-            $expectedContractOnlyVisualProperties = 175
+            $expectedObservableVisualProperties = 344
+            $expectedContractOnlyVisualProperties = 211
             $missingResources = @($expectedResourceKeys | Where-Object { $_ -cnotin $reportedResourceKeys })
             $missingAssets = @($expectedAssetUris | Where-Object { $_ -cnotin $reportedAssetUris })
             $emptyAssets = @($reportedAssets | Where-Object { [uint64]$_.size -eq 0 })
@@ -1082,7 +1088,7 @@ try {
                 @($expectedCheckStates | Where-Object { $_ -cnotin @($checkbox.checkStates) }).Count -ne 0 -or
                 $checkbox.automationName -ne 'Package checkbox' -or
                 (@($checkbox.lightTemplateBrushColors) -join ',') -ceq (@($checkbox.darkTemplateBrushColors) -join ',') -or
-                $checkbox.isThreeStateRejected -ne $true -or
+                $checkbox.twoStateCoercionVerified -ne $true -or
                 $null -eq $radioButton -or
                 $radioButton.defaultStyleResolved -ne $true -or
                 $radioButton.defaultIsThreeState -ne $false -or
@@ -1090,7 +1096,7 @@ try {
                 @($expectedCheckStates | Where-Object { $_ -cnotin @($radioButton.checkStates) }).Count -ne 0 -or
                 $radioButton.automationName -ne 'Package radio button' -or
                 (@($radioButton.lightTemplateBrushColors) -join ',') -ceq (@($radioButton.darkTemplateBrushColors) -join ',') -or
-                $radioButton.isThreeStateRejected -ne $true -or
+                $radioButton.twoStateCoercionVerified -ne $true -or
                 $null -eq $etherInput -or
                 $etherInput.defaultStyleResolved -ne $true -or
                 [double]$etherInput.defaultMinWidth -ne 130 -or
@@ -1109,6 +1115,7 @@ try {
                 @($expectedDropdownTemplateParts | Where-Object { $_ -cnotin @($dropdown.templateParts) }).Count -ne 0 -or
                 @($expectedDropDownStates | Where-Object { $_ -cnotin @($dropdown.dropDownStates) }).Count -ne 0 -or
                 $dropdown.triggerTextShowsSelection -ne $true -or
+                $dropdown.placeholderTextShowsWhenUnselected -ne $true -or
                 $dropdown.contentPresenterCollapsed -ne $true -or
                 $dropdown.openedActiveStrokeVisible -ne $true -or
                 $dropdown.closedActiveStrokeCollapsed -ne $true -or
@@ -1209,13 +1216,13 @@ try {
                 [int]$runtimeResult.propertyConsumption.componentOwnedPropertyCount -ne $expectedConsumedProperties.Count -or
                 [int]$runtimeResult.propertyConsumption.propertyChangedCallbackCount -ne $expectedConsumedProperties.Count -or
                 [int]$runtimeResult.propertyConsumption.backendPropertyEventCount -ne $expectedConsumedProperties.Count -or
-                [int]$runtimeResult.propertyConsumption.standardInteractionEventCount -ne 12 -or
+                [int]$runtimeResult.propertyConsumption.standardInteractionEventCount -ne 14 -or
                 @($expectedConsumedProperties | Where-Object { $_ -cnotin @($runtimeResult.propertyConsumption.verifiedProperties) }).Count -ne 0 -or
                 $runtimeResult.propertyConsumption.subscriptionValidatedEagerly -ne $true -or
                 $runtimeResult.propertyConsumption.directConstructionBlocked -ne $true -or
                 $null -eq $runtimeResult.publicPropertyInventory -or
-                [int]$runtimeResult.publicPropertyInventory.writablePropertyCount -ne $expectedWritablePublicProperties -or
-                @($runtimeResult.publicPropertyInventory.propertyKeys).Count -ne $expectedWritablePublicProperties -or
+                [int]$runtimeResult.publicPropertyInventory.writablePropertyCount -ne $expectedInventoryPublicProperties -or
+                @($runtimeResult.publicPropertyInventory.propertyKeys).Count -ne $expectedInventoryPublicProperties -or
                 $null -eq $runtimeResult.publicPropertyCode -or
                 [int]$runtimeResult.publicPropertyCode.getterReadCount -ne $expectedWritablePublicProperties -or
                 [int]$runtimeResult.publicPropertyCode.setterInvocationCount -ne $expectedWritablePublicProperties -or
@@ -1234,15 +1241,50 @@ try {
                 @($runtimeResult.publicPropertyClassification.visualProperties | Where-Object { $_ -cnotin @($runtimeResult.attachedVisualProperties.verifiedProperties) }).Count -ne 0 -or
                 @($runtimeResult.publicPropertyClassification.visualProperties | Where-Object { $_ -cnotin @($runtimeResult.attachedVisualProperties.evidence | ForEach-Object { $_.property }) }).Count -ne 0 -or
                 @($runtimeResult.attachedVisualProperties.evidence | ForEach-Object { $_.property } | Select-Object -Unique).Count -ne $expectedVisualPublicProperties -or
-                # R-06: 445 total evidence records must split into exactly 270 observable
-                # (pixel-difference/layout-difference/visibility-transition) and 175
+                # R-06: 555 total evidence records must split into exactly 344 observable
+                # (pixel-difference/layout-difference/visibility-transition) and 211
                 # contract-only (platform-dp-contract/ether-component-dp-contract), and the two
                 # buckets must reconcile back to the total - this is what stops the docs from
-                # silently drifting back to overstating the 445 as all "observable".
+                # silently drifting back to overstating the 555 as all "observable".
                 $observedVisualEvidenceCount -ne $expectedObservableVisualProperties -or
                 $contractOnlyVisualEvidenceCount -ne $expectedContractOnlyVisualProperties -or
                 ($observedVisualEvidenceCount + $contractOnlyVisualEvidenceCount) -ne $expectedVisualPublicProperties) {
                 throw "The unpackaged runtime smoke fixture did not verify Foundation resources, assets, and theme re-resolution: $(Get-Content -LiteralPath $markerPath -Raw)"
+            }
+            $expectedTwoWayProperties = @(
+                'EtherCheckbox.IsChecked', 'EtherRadioButton.IsChecked', 'EtherInput.Text',
+                'EtherDropdown.SelectedItem', 'EtherDropdown.SelectedValue',
+                'EtherSegmentedControl.SelectedValue', 'EtherSegmentedControl.SelectedIndex',
+                'EtherSteeringBar.Value', 'EtherSwitch.IsOn', 'EtherScrollBar.Value',
+                'EtherTabNavigation.SelectedIndex', 'EtherTabNavigation.SelectedItem'
+            )
+            $expectedAutomationPatterns = @(
+                'EtherButton.Invoke', 'EtherIntelligenceButton.Invoke', 'EtherCheckbox.Toggle',
+                'EtherRadioButton.SelectionItem', 'EtherSwitch.Toggle', 'EtherInput.Edit',
+                'EtherDropdown.ExpandCollapse', 'EtherTabNavigation.Selection',
+                'EtherSegmentedControl.Segment[0].SelectionItem',
+                'EtherSegmentedControl.Segment[1].SelectionItem'
+            )
+            $expectedCommandControls = @('EtherButton', 'EtherIntelligenceButton', 'EtherCheckbox', 'EtherRadioButton')
+            $expectedCardStyleKeys = @('EtherCardNormal', 'EtherCardNormalBody', 'EtherCardIntelligence', 'EtherCardIntelligenceBody', 'EtherCardCalloutShell', 'EtherCardCalloutBody')
+            if ($null -eq $runtimeResult.twoWayBindings -or
+                @($expectedTwoWayProperties | Where-Object { $_ -cnotin @($runtimeResult.twoWayBindings.properties) }).Count -ne 0 -or
+                $null -eq $runtimeResult.automationPatterns -or
+                @($runtimeResult.automationPatterns.patterns).Count -ne $expectedAutomationPatterns.Count -or
+                @($expectedAutomationPatterns | Where-Object { $_ -cnotin @($runtimeResult.automationPatterns.patterns) }).Count -ne 0 -or
+                $null -eq $runtimeResult.commands -or
+                @($expectedCommandControls | Where-Object { $_ -cnotin @($runtimeResult.commands.controls) }).Count -ne 0 -or
+                $null -eq $runtimeResult.dataPaths -or
+                [int]$runtimeResult.dataPaths.tabCount -ne 3 -or
+                [int]$runtimeResult.dataPaths.segmentCount -ne 2 -or
+                $runtimeResult.dataPaths.tabSelectionSynchronized -ne $true -or
+                $runtimeResult.dataPaths.segmentSelectionSynchronized -ne $true -or
+                $null -eq $runtimeResult.styleResources -or
+                @($expectedCardStyleKeys | Where-Object { $_ -cnotin @($runtimeResult.styleResources.cardStyleKeys) }).Count -ne 0 -or
+                $runtimeResult.styleResources.switchStyleResolved -ne $true -or
+                $runtimeResult.styleResources.scrollBarStyleResolved -ne $true -or
+                $runtimeResult.styleResources.highContrastBrushesResolved -ne $true) {
+                throw "The unpackaged runtime smoke fixture did not verify Wave R2.6-R2.9 two-way, UIA, command, data-path, and style-resource contracts: $(Get-Content -LiteralPath $markerPath -Raw)"
             }
             Assert-RtlMarker $runtimeResult
             Assert-UiaMarker $runtimeResult
@@ -1262,7 +1304,7 @@ try {
             Copy-Item -LiteralPath $markerPath -Destination (Join-Path $evidenceDirectory 'runtime-result.json') -Force
             Copy-Item -LiteralPath (Join-Path $workRoot 'screenshots') -Destination (Join-Path $evidenceDirectory 'screenshots') -Recurse -Force
             $storageFileResolvedCount = @($reportedAssets | Where-Object { $_.storageFileResolved -eq $true }).Count
-            Write-Host "Unpackaged consumer runtime smoke passed: all $expectedWritablePublicProperties public writable properties were read and invoked on detached component instances; $expectedVisualPublicProperties of $expectedWritablePublicProperties carry per-property evidence from being mutated, laid out, and rendered on an attached control - $expectedObservableVisualProperties proven to visibly take effect (pixel/layout/visibility differences) and $expectedContractOnlyVisualProperties proven only as a DP round-trip (getter/setter invoked without throwing; bitmap pixels unchanged); the remaining $($expectedWritablePublicProperties - $expectedVisualPublicProperties) are verified only as callable on a detached instance; all $($expectedConsumedProperties.Count) declared Ether dependency properties wrote/read/raised callbacks and emitted JSON backend envelopes; 12 standard interaction adapters emitted business envelopes; resources $($reportedResourceKeys -join ', '); templates, states, Light/Dark, RTL, UIA, 2.25 scale, localization, screenshots, SVG loading, and OS-selected High Contrast verified; marker: $markerPath; retained audit evidence: $evidenceDirectory"
+            Write-Host "Unpackaged consumer runtime smoke passed: all $expectedWritablePublicProperties public writable properties were read and invoked on detached component instances; $expectedVisualPublicProperties of $expectedWritablePublicProperties carry per-property evidence from being mutated, laid out, and rendered on an attached control - $expectedObservableVisualProperties proven to visibly take effect (pixel/layout/visibility differences) and $expectedContractOnlyVisualProperties proven only as a DP round-trip (getter/setter invoked without throwing; bitmap pixels unchanged); the remaining $($expectedWritablePublicProperties - $expectedVisualPublicProperties) are verified only as callable on a detached instance; all $($expectedConsumedProperties.Count) declared Ether dependency properties wrote/read/raised callbacks and emitted JSON backend envelopes; 14 standard interaction adapters emitted business envelopes; resources $($reportedResourceKeys -join ', '); templates, states, Light/Dark, RTL, UIA, 2.25 scale, localization, screenshots, SVG loading, and OS-selected High Contrast verified; marker: $markerPath; retained audit evidence: $evidenceDirectory"
         }
         finally {
             if ($null -ne $smokeProcess -and -not $smokeProcess.HasExited) {
@@ -1284,7 +1326,7 @@ try {
 
     $expectedTokenHashes = @{
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml' = 'd6ff0e5301b3672dbb492484c8d0ea584aca12be'
-        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = 'd7c218e5a631e86552ed2b089cbc03bbd571a090'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = 'a9c32562daa26daa3ace3fe0d55478fe46b1d7ef'
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherSpacing.xaml' = '5d631cd2ebde306d389a1fa8999000359441bcd2'
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml' = 'b24444567ee95467408e004fe7fab622eba79759'
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherIconGeometries.xaml' = '134c1667934376ba4943cf350b110a02607c81f4'

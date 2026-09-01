@@ -17,7 +17,7 @@ $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 
 $expectedTokenHashes = [ordered]@{
     'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml' = 'd6ff0e5301b3672dbb492484c8d0ea584aca12be'
-    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = 'd7c218e5a631e86552ed2b089cbc03bbd571a090'
+    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = 'a9c32562daa26daa3ace3fe0d55478fe46b1d7ef'
     'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherSpacing.xaml' = '5d631cd2ebde306d389a1fa8999000359441bcd2'
     'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml' = 'b24444567ee95467408e004fe7fab622eba79759'
     'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherIconGeometries.xaml' = '134c1667934376ba4943cf350b110a02607c81f4'

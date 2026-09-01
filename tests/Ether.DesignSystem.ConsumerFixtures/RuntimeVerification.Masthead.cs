@@ -82,6 +82,7 @@ internal static partial class RuntimeVerification
         }
 
         var (hoverLightColor, hoverDarkColor) = await VerifyMastheadHoverThemeTrackingAsync(themeRoot, masthead);
+        var (minimizeButtonInvokeExposed, closeButtonInvokeExposed) = VerifyMastheadCaptionButtonInvokePatterns(masthead);
 
         return new MastheadVerification(
             defaultStyleResolved,
@@ -96,7 +97,41 @@ internal static partial class RuntimeVerification
             lightTemplateBrushColors,
             darkTemplateBrushColors,
             hoverLightColor,
-            hoverDarkColor);
+            hoverDarkColor,
+            minimizeButtonInvokeExposed,
+            closeButtonInvokeExposed);
+    }
+
+    /// <summary>
+    /// Extends the composite-peer/name check above with per-caption-button automation proof:
+    /// MinimizeButton and CloseButton (both EtherButton template parts, EtherMasthead.xaml.cs:63-65)
+    /// must each expose PatternInterface.Invoke as IInvokeProvider, the same contract
+    /// MaximizeRestoreButton is proven to have as a side effect of actually being clicked in
+    /// VerifyStandardInteractionAdapters (RuntimeVerification.PropertyConsumption.cs:392-400,
+    /// 432-441). This deliberately does NOT call IInvokeProvider.Invoke() on either button:
+    /// invoking them would minimize or close the fixture's real host window, which would abort the
+    /// rest of this runtime verification run rather than merely proving the pattern is exposed.
+    /// </summary>
+    private static (bool MinimizeButtonInvokeExposed, bool CloseButtonInvokeExposed) VerifyMastheadCaptionButtonInvokePatterns(
+        EtherMasthead masthead)
+    {
+        var minimizeButton = GetTemplatePart<EtherButton>(masthead, "MinimizeButton", nameof(EtherMasthead));
+        var minimizeButtonPeer = FrameworkElementAutomationPeer.CreatePeerForElement(minimizeButton)
+            ?? throw new InvalidOperationException("EtherMasthead MinimizeButton did not create an automation peer.");
+        if (minimizeButtonPeer.GetPattern(PatternInterface.Invoke) is not IInvokeProvider)
+        {
+            throw new InvalidOperationException("EtherMasthead MinimizeButton did not expose UIA Invoke.");
+        }
+
+        var closeButton = GetTemplatePart<EtherButton>(masthead, "CloseButton", nameof(EtherMasthead));
+        var closeButtonPeer = FrameworkElementAutomationPeer.CreatePeerForElement(closeButton)
+            ?? throw new InvalidOperationException("EtherMasthead CloseButton did not create an automation peer.");
+        if (closeButtonPeer.GetPattern(PatternInterface.Invoke) is not IInvokeProvider)
+        {
+            throw new InvalidOperationException("EtherMasthead CloseButton did not expose UIA Invoke.");
+        }
+
+        return (true, true);
     }
 
     // Regression coverage for a bug where the caption icons' Fill/Stroke are assigned as

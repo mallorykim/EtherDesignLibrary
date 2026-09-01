@@ -156,7 +156,7 @@ internal static partial class RuntimeVerification
         {
             rangeValue.SetValue(12d);
         }
-        catch (InvalidOperationException)
+        catch (Exception ex) when (ex is InvalidOperationException or Microsoft.UI.Xaml.Automation.ElementNotEnabledException)
         {
             disabledLocksAutomation = slider.Value == 65d && rangeValue.IsReadOnly;
         }
@@ -188,7 +188,7 @@ internal static partial class RuntimeVerification
             rangeValue.SetValue(65.4d);
             setValueNoOpAccepted = slider.Value == 65d;
         }
-        catch (InvalidOperationException)
+        catch (Exception ex) when (ex is InvalidOperationException or Microsoft.UI.Xaml.Automation.ElementNotEnabledException)
         {
             setValueNoOpAccepted = false;
         }

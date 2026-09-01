@@ -54,6 +54,15 @@ internal static partial class RuntimeVerification
                 throw new InvalidOperationException($"Could not create {type.Name} for its public-property contract.");
             }
 
+            if (instance is EtherSegmentedControl segmentedInstance)
+            {
+                segmentedInstance.Content = new EtherSegmentRadioButton
+                {
+                    Tag = "audit-selected",
+                    Content = "audit-selected",
+                };
+            }
+
             var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
                 .Where(field => field.FieldType == typeof(DependencyProperty) && field.Name.EndsWith("Property", StringComparison.Ordinal))
                 .OrderBy(field => field.Name, StringComparer.Ordinal)
@@ -72,6 +81,19 @@ internal static partial class RuntimeVerification
                 }
 
                 var sample = CreatePropertySample(type, propertyName);
+                if (instance is EtherSegmentedControl segmentedForSelection &&
+                    propertyName == nameof(EtherSegmentedControl.SelectedValue))
+                {
+                    segmentedForSelection.ItemsSource = null;
+                    segmentedForSelection.Content = new EtherSegmentRadioButton
+                    {
+                        Tag = "audit-selected",
+                        Content = "audit-selected",
+                    };
+                    segmentedForSelection.SelectedIndex = -1;
+                    segmentedForSelection.SelectedItem = null;
+                    segmentedForSelection.SelectedValue = null;
+                }
                 var callbackObserved = false;
                 var token = instance.RegisterPropertyChangedCallback(property, (_, _) => callbackObserved = true);
                 using var subscription = adapter.ObserveProperty(
@@ -125,6 +147,7 @@ internal static partial class RuntimeVerification
             progressBar,
             steeringBar,
             slider,
+            masthead,
             toggleSwitch,
             scrollBar);
 
@@ -254,6 +277,7 @@ internal static partial class RuntimeVerification
         typeof(EtherSlider),
         typeof(EtherSteeringBar),
         typeof(EtherMasthead),
+        typeof(EtherTabItem),
     ];
 
     private static object? CreatePropertySample(Type type, string propertyName) => (type.Name, propertyName) switch
@@ -270,17 +294,24 @@ internal static partial class RuntimeVerification
         (nameof(EtherProgressBar), nameof(EtherProgressBar.ShowValue)) => true,
         (nameof(EtherSegmentPanel), nameof(EtherSegmentPanel.Spacing)) => 6d,
         (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.SelectedValue)) => "audit-selected",
+        (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.ItemsSource)) => new[] { "audit-a", "audit-b" },
+        (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.ItemTemplate)) => new DataTemplate(),
+        (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.DisplayMemberPath)) => "Label",
+        (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.SelectedIndex)) => 0,
+        (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.SelectedItem)) => "audit-b",
         (nameof(EtherSlider), nameof(EtherSlider.ShowTitle)) => true,
         (nameof(EtherSlider), nameof(EtherSlider.Title)) => "Audit slider",
         (nameof(EtherSlider), nameof(EtherSlider.ShowLabels)) => true,
         (nameof(EtherSlider), nameof(EtherSlider.Labels)) => new EtherSliderLabelCollection { "0", "50", "100" },
         (nameof(EtherSlider), nameof(EtherSlider.Stops)) => new DoubleCollection { 10d, 50d, 90d },
         (nameof(EtherSlider), nameof(EtherSlider.SnapToStops)) => true,
+        (nameof(EtherSlider), nameof(EtherSlider.StepFrequency)) => 0.5d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Minimum)) => 10d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Maximum)) => 120d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Value)) => 42d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Stops)) => new DoubleCollection { 10d, 42d, 90d },
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.SnapToStops)) => true,
+        (nameof(EtherSteeringBar), nameof(EtherSteeringBar.StepFrequency)) => 0.5d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ShowStops)) => false,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.SmallChange)) => 2d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.LargeChange)) => 20d,
@@ -293,6 +324,7 @@ internal static partial class RuntimeVerification
         (nameof(EtherMasthead), nameof(EtherMasthead.ShowMenuIcon)) => true,
         (nameof(EtherMasthead), nameof(EtherMasthead.ShowChevron)) => true,
         (nameof(EtherMasthead), nameof(EtherMasthead.EnableWindowCommands)) => false,
+        (nameof(EtherTabItem), nameof(EtherTabItem.Icon)) => "Home",
         _ => throw new InvalidOperationException($"No property-audit sample is registered for {type.Name}.{propertyName}."),
     };
 
@@ -321,6 +353,7 @@ internal static partial class RuntimeVerification
         EtherProgressBar progressBar,
         EtherSteeringBar steeringBar,
         EtherSlider slider,
+        EtherMasthead masthead,
         ToggleSwitch toggleSwitch,
         ScrollBar scrollBar)
     {
@@ -346,6 +379,30 @@ internal static partial class RuntimeVerification
         VerifyInteraction(adapter, produced, context, "steering.changed", "steering", () => steeringBar.Value = 43d, sink => sink.ObserveSteeringBar(steeringBar, "steering.changed", context, "steering")); verified++;
         slider.Value = 0d;
         VerifyInteraction(adapter, produced, context, "slider.changed", "slider", () => slider.Value = 43d, sink => sink.ObserveRange(slider, "slider.changed", context, "slider")); verified++;
+        var tabNavigation = new EtherTabNavigation
+        {
+            ItemsSource = new[] { "Home", "Settings" },
+            SelectedIndex = 0,
+        };
+        VerifyInteraction(adapter, produced, context, "tab.changed", "tab-navigation", () => tabNavigation.SelectedIndex = 1, sink => sink.ObserveSelection(tabNavigation, "tab.changed", context, "tab-navigation")); verified++;
+        var previousMastheadCommands = masthead.EnableWindowCommands;
+        masthead.EnableWindowCommands = true;
+        try
+        {
+            var maximizeButton = GetTemplatePart<EtherButton>(masthead, "MaximizeRestoreButton", nameof(EtherMasthead));
+            var beforeMasthead = produced.Count;
+            using var mastheadSubscription = adapter.ObserveMasthead(masthead, "masthead.action", context, "masthead");
+            Invoke(maximizeButton);
+            var mastheadInteraction = produced.Skip(beforeMasthead).LastOrDefault(item => item.Type == "masthead.action" && item.ComponentId == "masthead");
+            if (mastheadInteraction is null || !mastheadInteraction.Data.TryGetProperty("Action", out _))
+                throw new InvalidOperationException("The masthead adapter did not produce an action envelope.");
+            verified++;
+            Invoke(maximizeButton);
+        }
+        finally
+        {
+            masthead.EnableWindowCommands = previousMastheadCommands;
+        }
         toggleSwitch.IsOn = false;
         VerifyInteraction(adapter, produced, context, "switch.changed", "switch", () => toggleSwitch.IsOn = true, sink => sink.ObserveSwitch(toggleSwitch, "switch.changed", context, "switch")); verified++;
         scrollBar.Value = 0d;

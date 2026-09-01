@@ -64,7 +64,8 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("EtherRadioButton did not expose the required automation name.");
         }
 
-        var isThreeStateRejected = VerifyRadioButtonIsThreeStateRejected();
+        var twoStateCoercionVerified = VerifyRadioButtonTwoStateCoercion();
+        var groupNameMutualExclusionVerified = await VerifyRadioButtonGroupNameMutualExclusionAsync(themeRoot);
 
         return new RadioButtonVerification(
             true,
@@ -74,32 +75,84 @@ internal static partial class RuntimeVerification
             peer.GetName(),
             lightTemplateBrushColors,
             darkTemplateBrushColors,
-            isThreeStateRejected);
+            twoStateCoercionVerified,
+            groupNameMutualExclusionVerified);
     }
 
     /// <summary>
-    /// Regression coverage for the IsThreeState interception: DefaultEtherRadioButtonStyle has
-    /// no Indeterminate visual, so flipping IsThreeState to true must fail loudly at the moment
-    /// it is set, and must not leave the property sitting at true. Uses a throwaway, off-tree
-    /// instance since this is pure dependency-property behavior - no template or layout needed.
+    /// Regression coverage for native GroupName mutual exclusion (EtherRadioButton.cs:10-13):
+    /// hosts two isolated EtherRadioButton instances that share a GroupName under a common parent
+    /// (a scratch Canvas attached to themeRoot - not the shared fixture radioButton/
+    /// defaultRadioButton instances, which are unrelated controls with no GroupName set) and
+    /// proves checking the second automatically unchecks the first. Async so it can pump the
+    /// dispatcher a few turns after parenting the probes, in case native GroupName registration is
+    /// deferred rather than synchronous with the Children.Add call - the same defensive pattern
+    /// EtherMasthead's theme-tracking probe uses for its own deferred-callback wait
+    /// (RuntimeVerification.Masthead.cs:164-171).
     /// </summary>
-    private static bool VerifyRadioButtonIsThreeStateRejected()
+    private static async Task<bool> VerifyRadioButtonGroupNameMutualExclusionAsync(FrameworkElement themeRoot)
     {
-        var probe = new EtherRadioButton();
-        var threw = false;
-        try
+        if (themeRoot is not Panel hostPanel)
         {
-            probe.IsThreeState = true;
-        }
-        catch (NotSupportedException)
-        {
-            threw = true;
+            throw new InvalidOperationException("EtherRadioButton GroupName probe requires a panel-based theme root to host an isolated scratch container.");
         }
 
-        if (!threw || probe.IsThreeState)
+        var scratch = new Canvas { Opacity = 0d, IsHitTestVisible = false };
+        hostPanel.Children.Add(scratch);
+        try
         {
-            throw new InvalidOperationException("EtherRadioButton.IsThreeState=true did not throw NotSupportedException and reset back to false.");
+            const string ProbeGroupName = "EtherRadioButtonGroupNameProbe";
+            var first = new EtherRadioButton { GroupName = ProbeGroupName };
+            var second = new EtherRadioButton { GroupName = ProbeGroupName };
+            scratch.Children.Add(first);
+            scratch.Children.Add(second);
+            first.ApplyTemplate();
+            second.ApplyTemplate();
+            scratch.UpdateLayout();
+
+            for (var pump = 0; pump < 5; pump++)
+            {
+                await Task.Delay(10);
+            }
+
+            first.IsChecked = true;
+            scratch.UpdateLayout();
+            if (first.IsChecked != true || second.IsChecked == true)
+            {
+                throw new InvalidOperationException("EtherRadioButton did not check the first same-GroupName instance as expected before exercising mutual exclusion.");
+            }
+
+            second.IsChecked = true;
+            scratch.UpdateLayout();
+            if (second.IsChecked != true || first.IsChecked == true)
+            {
+                throw new InvalidOperationException("EtherRadioButton GroupName did not enforce mutual exclusion across peers: checking the second same-GroupName instance did not auto-uncheck the first.");
+            }
+
+            return true;
         }
+        finally
+        {
+            scratch.Children.Clear();
+            hostPanel.Children.Remove(scratch);
+        }
+    }
+
+    /// <summary>
+    /// Regression coverage for the intentional two-state contract. Nullable IsChecked input is
+    /// coerced to false and IsThreeState=true is coerced back to false. Uses a throwaway,
+    /// off-tree instance because this is dependency-property behavior.
+    /// </summary>
+    private static bool VerifyRadioButtonTwoStateCoercion()
+    {
+        var probe = new EtherRadioButton();
+        probe.IsChecked = null;
+        if (probe.IsChecked != false)
+            throw new InvalidOperationException("EtherRadioButton.IsChecked=null was not coerced to false.");
+
+        probe.IsThreeState = true;
+        if (probe.IsThreeState)
+            throw new InvalidOperationException("EtherRadioButton.IsThreeState=true was not coerced back to false.");
 
         return true;
     }

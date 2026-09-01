@@ -64,7 +64,7 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("EtherCheckbox did not expose the required automation name.");
         }
 
-        var isThreeStateRejected = VerifyIsThreeStateRejected();
+        var twoStateCoercionVerified = VerifyTwoStateCoercion();
 
         return new CheckboxVerification(
             true,
@@ -74,32 +74,24 @@ internal static partial class RuntimeVerification
             peer.GetName(),
             lightTemplateBrushColors,
             darkTemplateBrushColors,
-            isThreeStateRejected);
+            twoStateCoercionVerified);
     }
 
     /// <summary>
-    /// Regression coverage for the IsThreeState interception: DefaultEtherCheckboxStyle has no
-    /// Indeterminate visual, so flipping IsThreeState to true must fail loudly at the moment it
-    /// is set, and must not leave the property sitting at true. Uses a throwaway, off-tree
-    /// instance since this is pure dependency-property behavior - no template or layout needed.
+    /// Regression coverage for the intentional two-state contract. Nullable IsChecked input is
+    /// coerced to false and IsThreeState=true is coerced back to false. Uses a throwaway,
+    /// off-tree instance because this is dependency-property behavior.
     /// </summary>
-    private static bool VerifyIsThreeStateRejected()
+    private static bool VerifyTwoStateCoercion()
     {
         var probe = new EtherCheckbox();
-        var threw = false;
-        try
-        {
-            probe.IsThreeState = true;
-        }
-        catch (NotSupportedException)
-        {
-            threw = true;
-        }
+        probe.IsChecked = null;
+        if (probe.IsChecked != false)
+            throw new InvalidOperationException("EtherCheckbox.IsChecked=null was not coerced to false.");
 
-        if (!threw || probe.IsThreeState)
-        {
-            throw new InvalidOperationException("EtherCheckbox.IsThreeState=true did not throw NotSupportedException and reset back to false.");
-        }
+        probe.IsThreeState = true;
+        if (probe.IsThreeState)
+            throw new InvalidOperationException("EtherCheckbox.IsThreeState=true was not coerced back to false.");
 
         return true;
     }

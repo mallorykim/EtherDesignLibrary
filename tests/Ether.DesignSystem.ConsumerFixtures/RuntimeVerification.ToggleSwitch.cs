@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Ether.DesignSystem.ConsumerFixtures;
 
@@ -37,52 +38,46 @@ internal static partial class RuntimeVerification
             !defaultToggleSwitch.UseSystemFocusVisuals &&
             defaultToggleSwitch.Template is not null &&
             toggleSwitch.Template is not null &&
-            TryGetNamedDescendant<Border>(defaultToggleSwitch, "KnobFill");
+            TryGetNamedDescendant<Border>(defaultToggleSwitch, "KnobFrame");
         if (!keyedStyleResolved)
         {
             throw new InvalidOperationException("The keyed EtherSwitch style did not apply UseSystemFocusVisuals=False and EtherSwitchTemplate.");
         }
 
-        var implicitStyleRejected = !TryGetNamedDescendant<Border>(bareToggleSwitch, "KnobFill") &&
-            !TryGetNamedDescendant<Border>(bareToggleSwitch, "TrackOn");
+        var implicitStyleRejected = !TryGetNamedDescendant<Border>(bareToggleSwitch, "KnobFrame") &&
+            !TryGetNamedDescendant<Rectangle>(bareToggleSwitch, "OnTrackBacking");
         if (!implicitStyleRejected)
         {
             throw new InvalidOperationException("A bare ToggleSwitch received EtherSwitch chrome; the style must stay keyed, not implicit.");
         }
 
-        GetTemplatePart<Border>(toggleSwitch, "TrackOff", "EtherSwitch");
-        GetTemplatePart<Border>(toggleSwitch, "TrackOn", "EtherSwitch");
-        GetTemplatePart<Border>(toggleSwitch, "KnobFill", "EtherSwitch");
-        GetTemplatePart<Border>(defaultToggleSwitch, "TrackOff", "EtherSwitch");
-        var switchContent = GetTemplatePart<StackPanel>(toggleSwitch, "SwitchContent", "EtherSwitch");
-        if (switchContent.Children.Count < 3 ||
-            (switchContent.Children[0] as FrameworkElement)?.Name != "OffLabel" ||
-            (switchContent.Children[1] as FrameworkElement)?.Name != "OnLabel" ||
-            (switchContent.Children[2] as FrameworkElement)?.Name != "SwitchArea")
-        {
-            throw new InvalidOperationException("EtherSwitch labels must sit to the left of SwitchArea.");
-        }
+        GetTemplatePart<Rectangle>(toggleSwitch, "OuterBorder", "EtherSwitch");
+        GetTemplatePart<Rectangle>(toggleSwitch, "OnTrackBacking", "EtherSwitch");
+        GetTemplatePart<Border>(toggleSwitch, "KnobFrame", "EtherSwitch");
+        GetTemplatePart<Rectangle>(defaultToggleSwitch, "OuterBorder", "EtherSwitch");
+        GetTemplatePart<Grid>(toggleSwitch, "SwitchAreaGrid", "EtherSwitch");
 
-        var templateParts = new[] { "TrackOff", "TrackOn", "KnobFill" };
+        var templateParts = new[] { "OuterBorder", "OnTrackBacking", "KnobFrame", "SwitchAreaGrid" };
 
         var toggleStates = new List<string>();
         defaultToggleSwitch.IsOn = false;
         defaultToggleSwitch.UpdateLayout();
-        var defaultTrackOff = GetTemplatePart<Border>(defaultToggleSwitch, "TrackOff", "EtherSwitch");
-        var defaultTrackOn = GetTemplatePart<Border>(defaultToggleSwitch, "TrackOn", "EtherSwitch");
-        if (defaultTrackOff.Visibility != Visibility.Visible || defaultTrackOn.Visibility != Visibility.Collapsed)
+        var defaultTrackOff = GetTemplatePart<Rectangle>(defaultToggleSwitch, "OuterBorder", "EtherSwitch");
+        var defaultTrackOn = GetTemplatePart<Rectangle>(defaultToggleSwitch, "OnTrackBacking", "EtherSwitch");
+        if (defaultTrackOff.Opacity != 1d || defaultTrackOn.Opacity != 0d)
         {
-            throw new InvalidOperationException("EtherSwitch Off ToggleStates did not show TrackOff and collapse TrackOn.");
+            throw new InvalidOperationException("EtherSwitch Off ToggleStates did not show OuterBorder and collapse OnTrackBacking.");
         }
 
         toggleStates.Add("Off");
         toggleSwitch.IsOn = true;
         toggleSwitch.UpdateLayout();
-        var onTrackOff = GetTemplatePart<Border>(toggleSwitch, "TrackOff", "EtherSwitch");
-        var onTrackOn = GetTemplatePart<Border>(toggleSwitch, "TrackOn", "EtherSwitch");
-        if (onTrackOff.Visibility != Visibility.Collapsed || onTrackOn.Visibility != Visibility.Visible)
+        await Task.Delay(150);
+        var onTrackOff = GetTemplatePart<Rectangle>(toggleSwitch, "OuterBorder", "EtherSwitch");
+        var onTrackOn = GetTemplatePart<Rectangle>(toggleSwitch, "OnTrackBacking", "EtherSwitch");
+        if (onTrackOff.Opacity != 0d || onTrackOn.Opacity != 1d)
         {
-            throw new InvalidOperationException("EtherSwitch On ToggleStates did not show TrackOn and collapse TrackOff.");
+            throw new InvalidOperationException("EtherSwitch On ToggleStates did not show OnTrackBacking and collapse OuterBorder.");
         }
 
         toggleStates.Add("On");
@@ -90,7 +85,7 @@ internal static partial class RuntimeVerification
         toggleSwitch.IsEnabled = false;
         toggleSwitch.UpdateLayout();
         VisualStateManager.GoToState(toggleSwitch, "Disabled", false);
-        var disabledTrack = GetTemplatePart<Border>(toggleSwitch, "TrackOn", "EtherSwitch");
+        var disabledTrack = GetTemplatePart<Grid>(toggleSwitch, "TrackVisuals", "EtherSwitch");
         var disabledTrackOpacityApplied = Math.Abs(disabledTrack.Opacity - 0.4d) < 0.01d;
         if (!disabledTrackOpacityApplied)
         {
@@ -133,7 +128,7 @@ internal static partial class RuntimeVerification
     private static async Task<string[]> GetToggleSwitchTemplateBrushColorsAsync(
         FrameworkElement themeRoot,
         ToggleSwitch toggleSwitch,
-        Border trackOff,
+        Rectangle trackOff,
         ElementTheme theme)
     {
         themeRoot.RequestedTheme = theme;
@@ -147,7 +142,7 @@ internal static partial class RuntimeVerification
         toggleSwitch.UpdateLayout();
         return new[]
         {
-            GetSolidBrushColor(trackOff.Background, "off track", theme, "EtherSwitch"),
+            GetSolidBrushColor(trackOff.Fill, "off track", theme, "EtherSwitch"),
         };
     }
 }

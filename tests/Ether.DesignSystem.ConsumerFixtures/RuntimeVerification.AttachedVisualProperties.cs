@@ -400,6 +400,14 @@ internal static partial class RuntimeVerification
                 comboBox.Items.Add(new ComboBoxItem { Content = "Second visual choice", Tag = "second" });
                 comboBox.SelectedIndex = 0;
                 break;
+            case EtherTabNavigation tabNavigation:
+                // A ListView-based tab strip needs items before SelectedIndex/SelectedItem/
+                // SelectedValue can resolve to a member and round-trip in the audit (mirrors the
+                // ComboBox items setup above). "First"/"Second" match the SelectedItem/SelectedValue
+                // member sample returned by CreateAttachedVisualSample.
+                tabNavigation.ItemsSource = new[] { "First", "Second" };
+                tabNavigation.SelectedIndex = 0;
+                break;
             case RangeBase rangeBase:
                 rangeBase.Minimum = 0d;
                 rangeBase.Maximum = 100d;
@@ -619,6 +627,18 @@ internal static partial class RuntimeVerification
         if (property.Name == nameof(RangeBase.Minimum)) return 10d;
         if (property.Name == nameof(RangeBase.Maximum)) return 120d;
         if (property.Name == nameof(RangeBase.Value)) return 42d;
+        // EtherSegmentedControl (inline segments) and EtherTabNavigation (string ItemsSource) expose
+        // SelectedItem/SelectedValue as the selected member value (GetSegmentValue = Tag ?? Content;
+        // ListView item). "Second" is an actual, non-initial member, so the selection property
+        // genuinely changes and round-trips through the CLR getter. The generic object/string sample
+        // (and the ComboBox "second" below) is a non-member the Selector-style setter correctly coerces
+        // back to null (the D1 contract) - a fixture sample gap, not a control defect. Mirrors the
+        // ComboBox.SelectedItem = Items[1] member sample below.
+        if (control is EtherSegmentedControl or EtherTabNavigation
+            && property.Name is nameof(EtherSegmentedControl.SelectedItem) or nameof(EtherSegmentedControl.SelectedValue))
+        {
+            return "Second";
+        }
         if (property.Name == nameof(ComboBox.SelectedIndex)) return 1;
         if (property.Name == nameof(ComboBox.SelectedItem) && control is ComboBox comboBox) return comboBox.Items[1];
         if (property.Name == nameof(ComboBox.SelectedValue)) return "second";

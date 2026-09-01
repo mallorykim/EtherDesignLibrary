@@ -17,11 +17,11 @@
     # (see docs/plans/2026-08-31-release-blockers-spec.md, section R-07, for the full history -
     # do not edit that spec file; this comment is the operative account of what the code does.)
     #
-    #   Entries (below) - CLOSED allowlist, exactly 12 "trap" properties: consumer-facing
+    #   Entries (below) - CLOSED allowlist, exactly 9 "trap" properties: consumer-facing
     #     functional/decoration properties (Header, HeaderTemplate, Description, PlaceholderText,
     #     PlaceholderForeground, Text, IsEditable) on EtherDropdown/EtherInput/EtherSwitch that a
     #     consumer would REASONABLY expect to work but that silently do nothing.
-    #     scripts/Verify-UnsupportedProperties.ps1 statically re-checks only THESE 12 - it cannot
+    #     scripts/Verify-UnsupportedProperties.ps1 statically re-checks only THESE 9 - it cannot
     #     discover a 13th silently-ineffective property, by design (it is a regression guard for
     #     known traps, not a scanner). Do not add new entries here without also adding an
     #     Alternative and updating docs/consumers/getting-started.md's machine-checked table -
@@ -36,10 +36,8 @@
     #     publicly writable and inherited from a WinUI base class, but Ether's fixed control
     #     template does not consume it anywhere. As of the newest evidence run
     #     (consumer-runtime-evidence-20260831-033043851), that is 156 properties; 10 of those 156
-    #     are already covered by the 12 Entries above (the other 2 Entries, EtherSwitch.Header/
-    #     HeaderTemplate, do not appear in this evidence at all because EtherSwitch is a keyed
-    #     Style applied to a stock ToggleSwitch, not a distinct type the runtime harness attaches
-    #     evidence to by name) - leaving 146 properties accounted for here.
+    #     include the keyed EtherSwitch style's inherited surface, which the runtime harness
+    #     does not attach as a distinct control type.
     #
     #     R-07 decision #2 (see the spec file) is that NONE of these 156 properties get wired up
     #     in this pass - this is a design system, and appearance is intentionally not overridable
@@ -83,12 +81,15 @@
     #       rendering, or the property is masked by focus/content state, as with PlaceholderText
     #       only rendering while the field is empty and unfocused). NOT silently ineffective.
     #
-    #     'behavioral' - a known content/behavioral DP that the relevant WinUI BASE CLASS (TextBox
-    #       for EtherInput, Control for EtherProgressBar) honors internally, independent of the
-    #       ControlTemplate, so there is no TemplateBinding to find and no pixel-diff probe can
-    #       observe it (it never exercises the behavior - typing, read-only enforcement, etc.).
-    #       Functional, just not visually testable this way. NOT silently ineffective. Currently:
-    #       EtherInput.AcceptsReturn/CharacterCasing/IsReadOnly, EtherProgressBar.IsEnabled.
+    #     'behavioral' - a known content/behavioral DP that is honored internally independent of
+    #       the ControlTemplate (usually the relevant WinUI BASE CLASS, e.g. TextBox for EtherInput,
+    #       Control for EtherProgressBar - but also the owning Ether control's own code-behind, as
+    #       for EtherDropdown.MaxDropDownHeight below), so there is no TemplateBinding to find and
+    #       no pixel-diff probe can observe it (it never exercises the behavior - typing, read-only
+    #       enforcement, opening a popup near a height boundary, etc.). Functional, just not
+    #       visually testable this way. NOT silently ineffective. Currently:
+    #       EtherInput.AcceptsReturn/CharacterCasing/IsReadOnly, EtherProgressBar.IsEnabled,
+    #       EtherDropdown.MaxDropDownHeight.
     #
     #     'platform-noop' - a genuinely inert low-level DP with no TemplateBinding, no base-class
     #       behavior, and no consumer-visible effect expected (Clip, CompositeMode,
@@ -99,19 +100,20 @@
     #     'needs-review' - the TemplateBinding cross-check could not confidently resolve whether
     #       the property is behavioral (like AcceptsReturn/IsReadOnly) or genuinely dead (like a
     #       true design-system-owned entry), because unlike those confirmed cases there is no
-    #       equally clear WinUI base-class precedent either way. Currently exactly 3:
-    #       EtherInput.HorizontalTextAlignment, EtherDropdown.DisplayMemberPath,
-    #       EtherDropdown.MaxDropDownHeight. Each carries a Reason describing the specific
-    #       uncertainty and what a runtime probe would need to check to resolve it. Allowed to
-    #       exist (a human has not decided yet); scripts/Verify-SilentPropertyCoverage.ps1 prints
-    #       a loud WARNING listing them without failing, so they stay visible rather than buried.
+    #       equally clear WinUI base-class precedent either way. Currently exactly 1:
+    #       EtherDropdown.DisplayMemberPath (EtherInput.HorizontalTextAlignment and
+    #       EtherDropdown.MaxDropDownHeight were both previously here and have since been
+    #       resolved out of this bucket). Carries a Reason describing the specific uncertainty and
+    #       what a runtime probe would need to check to resolve it. Allowed to exist (a human has
+    #       not decided yet); scripts/Verify-SilentPropertyCoverage.ps1 prints a loud WARNING
+    #       listing it without failing, so it stays visible rather than buried.
     #
     #   TemplateBinding cross-check mechanism: the TemplateFiles hashtable at the bottom of this
     #   file maps each Control name appearing in AcknowledgedSilent to its ControlTemplate .xaml
     #   (the same file Entries above already reference per-entry). For every AcknowledgedSilent
     #   entry NOT in 'behavioral' or 'needs-review', scripts/Verify-SilentPropertyCoverage.ps1
     #   greps TemplateFiles[Control] for the literal token `{TemplateBinding <Property>}` - the
-    #   exact same regex scripts/Verify-UnsupportedProperties.ps1 already uses for the 12 closed
+    #   exact same regex scripts/Verify-UnsupportedProperties.ps1 already uses for the 9 closed
     #   Entries (`\{TemplateBinding\s+<Property>\b`) - and FAILS the gate if the label disagrees
     #   with what the template file actually contains:
     #     - 'design-system-owned' but a TemplateBinding IS found -> FAIL (it is actually consumed;
@@ -130,7 +132,7 @@
     #     - reverse: every AcknowledgedSilent entry must STILL be platform-dp-contract in that
     #       evidence (so a property that becomes genuinely wired/observable cannot leave a stale,
     #       lying entry behind)
-    #   This is the OPEN half of what was previously a closed, 12-entry-only detection mechanism.
+    #   This is the OPEN half of what was previously a closed, 9-entry-only detection mechanism.
     # ============================================================================================
     #
     # CheckKind:
@@ -179,19 +181,11 @@
         }
         @{
             Control      = 'EtherDropdown'
-            Property     = 'PlaceholderText'
-            BaseType     = 'ComboBox'
-            TemplateFile = 'src/Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml'
-            CheckKind    = 'TemplateBindingAbsent'
-            Alternative  = 'EtherDropdown always shows a selected item via TriggerText; there is no unselected placeholder state. Add a real placeholder ComboBoxItem (e.g. Content="Select...") and treat it as the default selection instead.'
-        }
-        @{
-            Control      = 'EtherDropdown'
             Property     = 'PlaceholderForeground'
             BaseType     = 'ComboBox'
             TemplateFile = 'src/Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml'
             CheckKind    = 'TemplateBindingAbsent'
-            Alternative  = 'Follows PlaceholderText: not applicable while there is no placeholder visual.'
+            Alternative  = 'PlaceholderText is supported for the unselected trigger. PlaceholderForeground is not template-bound; use a fixed visual or external placeholder treatment when that color must be controlled.'
         }
         @{
             Control      = 'EtherDropdown'
@@ -235,22 +229,6 @@
             CheckKind    = 'TemplateBindingAbsent'
             Alternative  = 'Same as Header: place a second TextBlock below the control.'
         }
-        @{
-            Control      = 'EtherSwitch'
-            Property     = 'Header'
-            BaseType     = 'ToggleSwitch'
-            TemplateFile = 'src/Ether.DesignSystem.Controls/Controls/Inputs/EtherSwitch.xaml'
-            CheckKind    = 'TemplateBindingAbsent'
-            Alternative  = 'EtherSwitch is a keyed Style="{StaticResource EtherSwitch}" applied to a stock ToggleSwitch, not a subclass; there is no code-behind to intercept the write in. Wrap the ToggleSwitch in your own label layout instead of using Header.'
-        }
-        @{
-            Control      = 'EtherSwitch'
-            Property     = 'HeaderTemplate'
-            BaseType     = 'ToggleSwitch'
-            TemplateFile = 'src/Ether.DesignSystem.Controls/Controls/Inputs/EtherSwitch.xaml'
-            CheckKind    = 'TemplateBindingAbsent'
-            Alternative  = 'Same as Header.'
-        }
         # NOTE: ToggleSwitch does NOT have a Description property in Microsoft.WindowsAppSDK
         # 2.3.1 (confirmed via reflection: Microsoft.UI.Xaml.Controls.ToggleSwitch exposes only
         # Header and HeaderTemplate from this family - no Description). It was not added here.
@@ -259,7 +237,7 @@
     # OPEN accounting (R-07) - see the file-header comment above for the full rule. Generated
     # programmatically from artifacts/audit-runs/consumer-runtime-evidence-20260831-033043851/
     # runtime-result.json's attachedVisualProperties.Evidence: every Method == 'platform-dp-
-    # contract' property that is not already one of the 12 Entries above. 146 entries across 5
+    # contract' property that is not already one of the 9 Entries above. 146 entries across 5
     # buckets - 94 design-system-owned + 30 platform-noop + 15 consumed-visually-stable + 4
     # behavioral + 3 needs-review (see the header comment for what each bucket means and the
     # TemplateBinding cross-check that makes 'design-system-owned' and 'consumed-visually-stable'
@@ -278,6 +256,9 @@
         @{ Property = 'EtherButton.VerticalContentAlignment'; Bucket = 'consumed-visually-stable'; Reason = '{TemplateBinding VerticalContentAlignment} is present in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherButton.xaml:217 - the property IS consumed by the template. The visual gate observed no pixel change under its test conditions; that reflects the probe''s conditions, not a lack of wiring. NOT silently ineffective.' }
 
         # EtherCheckbox
+        # D4: IsChecked and IsThreeState are intentionally two-state APIs. The control coerces
+        # null -> false and true -> false respectively; they are supported state properties, not
+        # entries in this silent/unsupported registry. RuntimeVerification proves both coercions.
         @{ Property = 'EtherCheckbox.Background'; Bucket = 'design-system-owned'; Reason = 'Appearance property (Background/Border*/CornerRadius/Padding/Foreground/Font*/CharacterSpacing/*ContentAlignment family); no {TemplateBinding Background} in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherCheckbox.xaml - the design system deliberately does not let consumers override this to keep the visual language consistent across every app that consumes it (no visible effect is a FEATURE here, not a defect).' }
         @{ Property = 'EtherCheckbox.BackgroundSizing'; Bucket = 'platform-noop'; Reason = 'Low-level rendering DP; not referenced via TemplateBinding in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherCheckbox.xaml, so no consumer value written to the control''s own BackgroundSizing property ever reaches rendering. Not part of the design system''s owned appearance surface and not something a consumer would reasonably expect to customize (unlike Background/BorderBrush/CornerRadius, which are visible identity choices).' }
         @{ Property = 'EtherCheckbox.BorderBrush'; Bucket = 'design-system-owned'; Reason = 'Appearance property (Background/Border*/CornerRadius/Padding/Foreground/Font*/CharacterSpacing/*ContentAlignment family); no {TemplateBinding BorderBrush} in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherCheckbox.xaml - the design system deliberately does not let consumers override this to keep the visual language consistent across every app that consumes it (no visible effect is a FEATURE here, not a defect).' }
@@ -301,7 +282,7 @@
         @{ Property = 'EtherDropdown.DisplayMemberPath'; Bucket = 'needs-review'; Reason = 'Uncertain: content-shaping DP for data-bound ComboBox item display. EtherDropdown''s template has no {TemplateBinding DisplayMemberPath} and the control is documented as selection-only (see the IsEditable trap Entry), which points toward platform-noop - but ComboBox''s own internal item-container generation may still consult this DP for non-ComboBoxItem bound data regardless of the outer ControlTemplate, the same way AcceptsReturn is honored without a TemplateBinding. Not confidently placed without a targeted runtime probe using a non-ComboBoxItem ItemsSource; flagged for human review rather than guessed.' }
         @{ Property = 'EtherDropdown.FontStretch'; Bucket = 'design-system-owned'; Reason = 'Appearance property (Background/Border*/CornerRadius/Padding/Foreground/Font*/CharacterSpacing/*ContentAlignment family); no {TemplateBinding FontStretch} in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml - the design system deliberately does not let consumers override this to keep the visual language consistent across every app that consumes it (no visible effect is a FEATURE here, not a defect).' }
         @{ Property = 'EtherDropdown.HorizontalContentAlignment'; Bucket = 'consumed-visually-stable'; Reason = '{TemplateBinding HorizontalContentAlignment} is present in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml:400 - the property IS consumed by the template. The visual gate observed no pixel change under its test conditions; that reflects the probe''s conditions, not a lack of wiring. NOT silently ineffective.' }
-        @{ Property = 'EtherDropdown.MaxDropDownHeight'; Bucket = 'needs-review'; Reason = 'Uncertain: EtherDropdown''s Popup/PopupBorder/ScrollViewer parts appear to size the dropdown independently of this DP (no {TemplateBinding MaxDropDownHeight} in the template), pointing toward platform-noop - but ComboBox''s internal Popup-opening/placement logic may still clamp against this inherited value at a layer outside the named template parts, the way base-class behavior does for AcceptsReturn/IsReadOnly. Not confidently placed without a targeted runtime probe forcing the dropdown near screen-height limits; flagged for human review rather than guessed.' }
+        @{ Property = 'EtherDropdown.MaxDropDownHeight'; Bucket = 'behavioral'; Reason = 'Resolved (was needs-review): EtherDropdown.ApplyMaxVisibleHeight (EtherDropdown.cs) now reads this inherited ComboBox DP and composes it with MaxVisibleItems as an additional pixel ceiling on the popup ScrollViewer''s MaxHeight - genuinely functional, honored by EtherDropdown''s own code-behind rather than a {TemplateBinding MaxDropDownHeight} in the XAML template (a plain TemplateBinding would be silently clobbered: the same method already writes ScrollViewer.MaxHeight as a local value on every popup open/resize, which unconditionally overrides a binding). Proven by a dedicated fixture that actually opens the popup with two distinct non-default MaxDropDownHeight values and asserts each constrains the ScrollViewer to that exact height (RuntimeVerification.Dropdown.cs, VerifyMaxDropDownHeightConstrainsPopup). The generic closed-tree attached-visual-property probe that produced the platform-dp-contract evidence for this property still cannot observe it and never will: it screenshots the CLOSED trigger control and this behavior only manifests in the popup while genuinely OPEN - the same reason AcceptsReturn/IsReadOnly stay bucketed behavioral instead of being reclassified by that probe.' }
         @{ Property = 'EtherDropdown.VerticalContentAlignment'; Bucket = 'consumed-visually-stable'; Reason = '{TemplateBinding VerticalContentAlignment} is present in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml:401 - the property IS consumed by the template. The visual gate observed no pixel change under its test conditions; that reflects the probe''s conditions, not a lack of wiring. NOT silently ineffective.' }
 
         # EtherInput
@@ -312,7 +293,6 @@
         @{ Property = 'EtherInput.FontFamily'; Bucket = 'consumed-visually-stable'; Reason = '{TemplateBinding FontFamily} is present in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml:153 - the property IS consumed by the template. The visual gate observed no pixel change under its test conditions; that reflects the probe''s conditions, not a lack of wiring. NOT silently ineffective.' }
         @{ Property = 'EtherInput.FontStretch'; Bucket = 'design-system-owned'; Reason = 'Appearance property (Background/Border*/CornerRadius/Padding/Foreground/Font*/CharacterSpacing/*ContentAlignment family); no {TemplateBinding FontStretch} in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml - the design system deliberately does not let consumers override this to keep the visual language consistent across every app that consumes it (no visible effect is a FEATURE here, not a defect).' }
         @{ Property = 'EtherInput.HorizontalContentAlignment'; Bucket = 'design-system-owned'; Reason = 'Appearance property (Background/Border*/CornerRadius/Padding/Foreground/Font*/CharacterSpacing/*ContentAlignment family); no {TemplateBinding HorizontalContentAlignment} in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml - the design system deliberately does not let consumers override this to keep the visual language consistent across every app that consumes it (no visible effect is a FEATURE here, not a defect).' }
-        @{ Property = 'EtherInput.HorizontalTextAlignment'; Bucket = 'needs-review'; Reason = 'Uncertain: inherited TextBox DP with no {TemplateBinding HorizontalTextAlignment} in EtherInput.xaml, so the template itself does not visually consume it - but unlike AcceptsReturn/CharacterCasing/IsReadOnly (confirmed behavioral: base TextBox definitely applies those internally regardless of template), it is unclear whether WinUI''s internal TextBoxView honors this purely through base-class rendering (making it behavioral, like the other three) or whether it needs a template surface EtherInput''s custom Grid-based placeholder overlay does not provide (making it genuinely dead). Not confidently placed without a targeted runtime probe; flagged for human review rather than guessed.' }
         @{ Property = 'EtherInput.IsReadOnly'; Bucket = 'behavioral'; Reason = 'Behavioral, not appearance: WinUI''s base TextBox blocks keyboard/IME edits internally when set, independent of the ControlTemplate. Functional; the visual gate''s pixel-diff probe does not exercise typing, so it observes no change either way. NOT silently ineffective.' }
         @{ Property = 'EtherInput.PlaceholderForeground'; Bucket = 'consumed-visually-stable'; Reason = '{TemplateBinding PlaceholderForeground} is present in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml:152 - the property IS consumed by the template. The visual gate observed no pixel change under its test conditions; that reflects the probe''s conditions, not a lack of wiring. NOT silently ineffective.' }
         @{ Property = 'EtherInput.PlaceholderText'; Bucket = 'consumed-visually-stable'; Reason = '{TemplateBinding PlaceholderText} is present in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml:150 - the property IS consumed by the template. The visual gate observed no pixel change under its test conditions; that reflects the probe''s conditions, not a lack of wiring. NOT silently ineffective.' }
@@ -372,6 +352,8 @@
         @{ Property = 'EtherProgressBar.VerticalContentAlignment'; Bucket = 'design-system-owned'; Reason = 'Appearance property (Background/Border*/CornerRadius/Padding/Foreground/Font*/CharacterSpacing/*ContentAlignment family); no {TemplateBinding VerticalContentAlignment} in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherProgressBar.xaml - the design system deliberately does not let consumers override this to keep the visual language consistent across every app that consumes it (no visible effect is a FEATURE here, not a defect).' }
 
         # EtherRadioButton
+        # D4: IsChecked and IsThreeState are intentionally two-state APIs, with the same coercion
+        # contract as EtherCheckbox; runtime verification is the source of truth for that behavior.
         @{ Property = 'EtherRadioButton.Background'; Bucket = 'design-system-owned'; Reason = 'Appearance property (Background/Border*/CornerRadius/Padding/Foreground/Font*/CharacterSpacing/*ContentAlignment family); no {TemplateBinding Background} in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherRadioButton.xaml - the design system deliberately does not let consumers override this to keep the visual language consistent across every app that consumes it (no visible effect is a FEATURE here, not a defect).' }
         @{ Property = 'EtherRadioButton.BackgroundSizing'; Bucket = 'platform-noop'; Reason = 'Low-level rendering DP; not referenced via TemplateBinding in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherRadioButton.xaml, so no consumer value written to the control''s own BackgroundSizing property ever reaches rendering. Not part of the design system''s owned appearance surface and not something a consumer would reasonably expect to customize (unlike Background/BorderBrush/CornerRadius, which are visible identity choices).' }
         @{ Property = 'EtherRadioButton.BorderBrush'; Bucket = 'design-system-owned'; Reason = 'Appearance property (Background/Border*/CornerRadius/Padding/Foreground/Font*/CharacterSpacing/*ContentAlignment family); no {TemplateBinding BorderBrush} in src/Ether.DesignSystem.Controls/Controls/Inputs/EtherRadioButton.xaml - the design system deliberately does not let consumers override this to keep the visual language consistent across every app that consumes it (no visible effect is a FEATURE here, not a defect).' }
@@ -442,7 +424,7 @@
 
     # Control -> ControlTemplate file map used by scripts/Verify-SilentPropertyCoverage.ps1 to run
     # the SAME TemplateBinding cross-check scripts/Verify-UnsupportedProperties.ps1 already runs
-    # for the 12 closed-list Entries above, but against every AcknowledgedSilent entry too. This is
+    # for the 9 closed-list Entries above, but against every AcknowledgedSilent entry too. This is
     # what makes the 'design-system-owned' / 'consumed-visually-stable' labels self-verifying
     # instead of merely asserted: the gate re-derives, from the template file text, whether each
     # entry's TemplateBinding claim is actually true, and fails if a label disagrees with reality.

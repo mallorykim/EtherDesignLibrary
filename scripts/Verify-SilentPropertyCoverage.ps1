@@ -55,7 +55,7 @@ silently ineffective, rather than as an independent hand-maintained list:
      'consumed-visually-stable', this script looks up the entry's Control in
      UnsupportedProperties.psd1's TemplateFiles map, reads that ControlTemplate .xaml, and checks
      for the literal token `{TemplateBinding <Property>}` - the SAME regex
-     scripts/Verify-UnsupportedProperties.ps1 already uses for the 12 closed Entries
+     scripts/Verify-UnsupportedProperties.ps1 already uses for the 9 closed Entries
      (`\{TemplateBinding\s+<Property>\b`). The label must agree with what is actually in the file:
        - 'design-system-owned' + a TemplateBinding IS found -> FAIL (mislabeled: it is actually
          consumed by the template; should be 'consumed-visually-stable')
@@ -353,7 +353,7 @@ $behavioralCount = @($acknowledgedEntries | Where-Object { [string]$_.Bucket -eq
 $platformNoopCount = @($acknowledgedEntries | Where-Object { [string]$_.Bucket -eq 'platform-noop' }).Count
 $needsReviewCount = $needsReviewProperties.Count
 
-Write-Host ("Verify-SilentPropertyCoverage passed: {0} platform-dp-contract propert{1} in {2} (newest evidence) all accounted for - {3} covered by the 12 closed-list traps, {4} in AcknowledgedSilent ({5} design-system-owned + {6} consumed-visually-stable + {7} behavioral + {8} platform-noop + {9} needs-review). No stale AcknowledgedSilent entries. TemplateBinding cross-check passed on every design-system-owned/consumed-visually-stable label." -f `
+Write-Host ("Verify-SilentPropertyCoverage passed: {0} platform-dp-contract propert{1} in {2} (newest evidence) all accounted for - {3} covered by the 9 closed-list traps, {4} in AcknowledgedSilent ({5} design-system-owned + {6} consumed-visually-stable + {7} behavioral + {8} platform-noop + {9} needs-review). No stale AcknowledgedSilent entries. TemplateBinding cross-check passed on every design-system-owned/consumed-visually-stable label." -f `
     $platformDpContractKeys.Count, `
     $(if ($platformDpContractKeys.Count -eq 1) { 'y' } else { 'ies' }), `
     $newestEvidenceDir.Name, `

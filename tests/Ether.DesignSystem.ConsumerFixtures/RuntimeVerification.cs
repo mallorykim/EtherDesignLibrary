@@ -77,7 +77,7 @@ internal static partial class RuntimeVerification
         string AutomationName,
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors,
-        bool IsThreeStateRejected);
+        bool TwoStateCoercionVerified);
 
     internal sealed record RadioButtonVerification(
         bool DefaultStyleResolved,
@@ -87,7 +87,8 @@ internal static partial class RuntimeVerification
         string AutomationName,
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors,
-        bool IsThreeStateRejected);
+        bool TwoStateCoercionVerified,
+        bool GroupNameMutualExclusionVerified);
 
     internal sealed record InputVerification(
         bool DefaultStyleResolved,
@@ -115,7 +116,11 @@ internal static partial class RuntimeVerification
         string AutomationName,
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors,
-        string DisplayMemberPathTriggerText);
+        bool PlaceholderTextShowsWhenUnselected,
+        string DisplayMemberPathTriggerText,
+        bool MaxDropDownHeightConstrainsPopup,
+        double MaxDropDownHeightSmallerCap,
+        double MaxDropDownHeightLargerCap);
 
     internal sealed record SegmentedControlVerification(
         bool DefaultStyleResolved,
@@ -203,7 +208,9 @@ internal static partial class RuntimeVerification
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors,
         string HoverThemeTrackingLightColor,
-        string HoverThemeTrackingDarkColor);
+        string HoverThemeTrackingDarkColor,
+        bool MinimizeButtonInvokeExposed,
+        bool CloseButtonInvokeExposed);
 
     internal sealed record ToggleSwitchVerification(
         bool KeyedStyleResolved,
@@ -225,6 +232,10 @@ internal static partial class RuntimeVerification
         double ThumbMinLength,
         bool ArrowsCollapsed,
         string AutomationName,
+        bool RangeValuePatternExposed,
+        bool RangeValueTracksValue,
+        double MinimumRoundTrip,
+        double MaximumRoundTrip,
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors);
 
@@ -296,6 +307,26 @@ internal static partial class RuntimeVerification
 
     internal sealed record PerformanceVerification(double ElapsedMilliseconds);
 
+    internal sealed record TwoWayBindingVerification(string[] Properties);
+
+    internal sealed record AutomationPatternVerification(string[] Patterns);
+
+    internal sealed record CommandVerification(string[] Controls);
+
+    internal sealed record DataPathVerification(
+        int TabCount,
+        int SegmentCount,
+        bool TabSelectionSynchronized,
+        bool SegmentSelectionSynchronized);
+
+    internal sealed record StyleResourceVerification(
+        string[] CardStyleKeys,
+        bool SwitchStyleResolved,
+        bool ScrollBarStyleResolved,
+        string[] LightBrushes,
+        string[] DarkBrushes,
+        bool HighContrastBrushesResolved);
+
     internal sealed record VerificationResult(
         string[] ResourceKeys,
         AssetVerification[] Assets,
@@ -327,7 +358,12 @@ internal static partial class RuntimeVerification
         LocalizationVerification Localization,
         ScreenshotVerification Screenshots,
         HighContrastVerification HighContrast,
-        PerformanceVerification Performance);
+        PerformanceVerification Performance,
+        TwoWayBindingVerification TwoWayBindings,
+        AutomationPatternVerification AutomationPatterns,
+        CommandVerification Commands,
+        DataPathVerification DataPaths,
+        StyleResourceVerification StyleResources);
 
     internal static async Task<VerificationResult> VerifyAsync(
         FrameworkElement themeRoot,
@@ -363,6 +399,7 @@ internal static partial class RuntimeVerification
         TextBlock statusText)
     {
         var stopwatch = Stopwatch.StartNew();
+        var styleResources = await VerifyStyleResourcesAsync(themeRoot);
         var resourceKeys = new[]
         {
             AssertResource("Spacing8", typeof(double)),
@@ -422,6 +459,11 @@ internal static partial class RuntimeVerification
             masthead,
             toggleSwitch,
             scrollBar);
+        var twoWayBindings = VerifyTwoWayBindings(themeRoot);
+        var automationPatterns = VerifyAutomationPatterns(
+            button, checkbox, radioButton, input, dropdown, segmentedControl, intelligenceButton, toggleSwitch, themeRoot);
+        var commands = VerifyCommands();
+        var dataPaths = VerifyDataPaths(themeRoot);
         var publicPropertyInventory = CapturePublicPropertyInventory();
         var publicPropertyCode = VerifyAllPublicPropertyCode(
             button, checkbox, dropdown, input, intelligenceButton, progressBar, radioButton,
@@ -455,17 +497,29 @@ internal static partial class RuntimeVerification
             ("scrollBar", scrollBar, "Package scroll bar"),
         };
 
+        // Make the segmentedControl golden-image capture deterministic: earlier stages
+        // (VerifySegmentedControlAsync selects the last segment; the UIA automation loop toggles
+        // segments) leave the shared instance in an incidental selection state. Restore its canonical
+        // XAML-default selection (segment "A" / SelectedIndex 0, per Unpackaged/MainWindow.xaml:172-173)
+        // so the captured baseline is stable and reproducible rather than dependent on leftover state.
+        // Setup-completion only - it does not change the baseline assertion or its tolerance.
+        segmentedControl.SelectedIndex = 0;
+        segmentedControl.UpdateLayout();
+
         var screenshots = await CaptureThemeScreenshotsAsync(themeRoot, controlsTuple);
         var uia = await CaptureUia(controlsTuple);
         var textScale = await VerifyTextScaleAsync(themeRoot, controlsTuple);
         var localization = VerifyLocalization(statusText);
         var rtlResult = await VerifyRtlAsync(themeRoot, controlsTuple);
         stopwatch.Stop();
+        var highContrastStylesVerified = false;
         var highContrast = await VerifyOsSelectedHighContrastAsync(
             themeRoot,
             controlsTuple,
             FormatColor(light),
-            FormatColor(dark));
+            FormatColor(dark),
+            () => highContrastStylesVerified = VerifyStyleResourcesInHighContrast(themeRoot));
+        styleResources = styleResources with { HighContrastBrushesResolved = highContrastStylesVerified };
         screenshots = screenshots with
         {
             HighContrastPath = highContrast.ScreenshotPath,
@@ -504,7 +558,12 @@ internal static partial class RuntimeVerification
             localization,
             screenshots,
             highContrast,
-            new PerformanceVerification(stopwatch.Elapsed.TotalMilliseconds - attachedVisualProperties.ElapsedMilliseconds));
+            new PerformanceVerification(stopwatch.Elapsed.TotalMilliseconds - attachedVisualProperties.ElapsedMilliseconds),
+            twoWayBindings,
+            automationPatterns,
+            commands,
+            dataPaths,
+            styleResources);
     }
 
     internal static void WriteMarker(bool succeeded, VerificationResult? result = null, Exception? exception = null)
@@ -550,6 +609,11 @@ internal static partial class RuntimeVerification
             localization = result?.Localization,
             screenshots = result?.Screenshots,
             highContrast = result?.HighContrast,
+            twoWayBindings = result?.TwoWayBindings,
+            automationPatterns = result?.AutomationPatterns,
+            commands = result?.Commands,
+            dataPaths = result?.DataPaths,
+            styleResources = result?.StyleResources,
             performance = result?.Performance,
             message = exception?.ToString(),
         });

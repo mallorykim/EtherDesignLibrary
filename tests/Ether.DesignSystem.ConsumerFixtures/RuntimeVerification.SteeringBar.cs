@@ -138,7 +138,7 @@ internal static partial class RuntimeVerification
         {
             rangeValue.SetValue(12d);
         }
-        catch (InvalidOperationException)
+        catch (Exception ex) when (ex is InvalidOperationException or Microsoft.UI.Xaml.Automation.ElementNotEnabledException)
         {
             disabledLocksAutomation = steeringBar.Value == 65d && rangeValue.IsReadOnly;
         }

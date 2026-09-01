@@ -59,6 +59,9 @@ internal static partial class RuntimeVerification
             throw new InvalidOperationException("Implicit ScrollBar fixture automation name was not applied.");
         }
 
+        var (rangeValuePatternExposed, rangeValueTracksValue) = VerifyScrollBarRangeValueAutomation(peer, scrollBar);
+        var (minimumRoundTrip, maximumRoundTrip) = VerifyScrollBarMinimumMaximumRoundTrip(scrollBar);
+
         var lightTemplateBrushColors = await GetScrollBarTemplateBrushColorsAsync(themeRoot, scrollBar, verticalThumb, ElementTheme.Light);
         var darkTemplateBrushColors = await GetScrollBarTemplateBrushColorsAsync(themeRoot, scrollBar, verticalThumb, ElementTheme.Dark);
         // Figma Light spec 62110:22970 uses Gray400 Default; Dark spec 62124:312 uses Gray600,
@@ -80,8 +83,98 @@ internal static partial class RuntimeVerification
             verticalThumb.MinHeight,
             arrowsCollapsed,
             peer.GetName(),
+            rangeValuePatternExposed,
+            rangeValueTracksValue,
+            minimumRoundTrip,
+            maximumRoundTrip,
             lightTemplateBrushColors,
             darkTemplateBrushColors);
+    }
+
+    /// <summary>
+    /// Mirrors the RangeValue automation proof already required of EtherSlider/EtherSteeringBar/
+    /// EtherProgressBar (RuntimeVerification.Slider.cs:104-135) for the reskinned stock ScrollBar:
+    /// the automation peer must expose PatternInterface.RangeValue as IRangeValueProvider, and the
+    /// provider's Value must track the control's own Value in both directions. Restores the
+    /// probed Value in a finally block so it does not disturb the later screenshot/UIA/RTL capture
+    /// stages, which reuse this same shared scrollBar instance.
+    /// </summary>
+    private static (bool PatternExposed, bool ValueTracksControl) VerifyScrollBarRangeValueAutomation(
+        AutomationPeer peer,
+        ScrollBar scrollBar)
+    {
+        var rangeValue = peer.GetPattern(PatternInterface.RangeValue) as IRangeValueProvider
+            ?? throw new InvalidOperationException("EtherScrollBar automation peer GetPattern(RangeValue) did not return IRangeValueProvider.");
+
+        var originalValue = scrollBar.Value;
+        try
+        {
+            var firstProbe = scrollBar.Minimum + 15d;
+            var secondProbe = scrollBar.Minimum + 30d;
+
+            scrollBar.Value = firstProbe;
+            var afterFirstChange = rangeValue.Value;
+            scrollBar.Value = secondProbe;
+            var afterSecondChange = rangeValue.Value;
+
+            var tracksValue = afterFirstChange == firstProbe && afterSecondChange == secondProbe;
+            if (!tracksValue)
+            {
+                throw new InvalidOperationException(
+                    $"EtherScrollBar RangeValue provider did not track owner Value assignments. " +
+                    $"Observed {afterFirstChange} after setting {firstProbe}, then {afterSecondChange} after setting {secondProbe}.");
+            }
+
+            return (true, tracksValue);
+        }
+        finally
+        {
+            scrollBar.Value = originalValue;
+        }
+    }
+
+    /// <summary>
+    /// Sets both Minimum and Maximum to deliberately non-default probe values on the shared
+    /// scrollBar instance, reads them back through both DependencyObject.GetValue and the CLR
+    /// wrapper, then restores the original Minimum/Maximum/Value in a finally block (Minimum and
+    /// Maximum are restored before Value so any coercion the platform applies while the probe
+    /// range is active does not leave a stale Value behind) so the shared instance renders with
+    /// its XAML-authored range (0-100, EtherScrollBar's fixture markup) for the later screenshot/
+    /// UIA/RTL capture stages.
+    /// </summary>
+    private static (double Minimum, double Maximum) VerifyScrollBarMinimumMaximumRoundTrip(ScrollBar scrollBar)
+    {
+        const double ProbeMinimum = 5d;
+        const double ProbeMaximum = 120d;
+
+        var originalMinimum = scrollBar.Minimum;
+        var originalMaximum = scrollBar.Maximum;
+        var originalValue = scrollBar.Value;
+        try
+        {
+            scrollBar.Minimum = ProbeMinimum;
+            scrollBar.Maximum = ProbeMaximum;
+
+            var minimumFromGetValue = (double)scrollBar.GetValue(RangeBase.MinimumProperty);
+            var maximumFromGetValue = (double)scrollBar.GetValue(RangeBase.MaximumProperty);
+
+            if (minimumFromGetValue != ProbeMinimum || scrollBar.Minimum != ProbeMinimum ||
+                maximumFromGetValue != ProbeMaximum || scrollBar.Maximum != ProbeMaximum)
+            {
+                throw new InvalidOperationException(
+                    "EtherScrollBar Minimum/Maximum did not round-trip through GetValue and the CLR wrapper. " +
+                    $"Observed Minimum(GetValue)={minimumFromGetValue}, Minimum(CLR)={scrollBar.Minimum}, " +
+                    $"Maximum(GetValue)={maximumFromGetValue}, Maximum(CLR)={scrollBar.Maximum}.");
+            }
+
+            return (minimumFromGetValue, maximumFromGetValue);
+        }
+        finally
+        {
+            scrollBar.Minimum = originalMinimum;
+            scrollBar.Maximum = originalMaximum;
+            scrollBar.Value = originalValue;
+        }
     }
 
     private static async Task<string[]> GetScrollBarTemplateBrushColorsAsync(
