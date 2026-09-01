@@ -130,17 +130,17 @@ public sealed class EtherSteeringBar : Control
     /// <summary>Raised after <see cref="Value"/> changes from user, code, or automation input.</summary>
     public event EventHandler<SteeringBarValueChangedEventArgs>? ValueChanged;
 
-    /// <summary>Identifies the <see cref="Minimum"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Minimum"/> dependency property. Registered and shipping-style default is 0.</summary>
     public static readonly DependencyProperty MinimumProperty =
         DependencyProperty.Register(nameof(Minimum), typeof(double), typeof(EtherSteeringBar),
             new PropertyMetadata(0d, OnRangePropertyChanged));
 
-    /// <summary>Identifies the <see cref="Maximum"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Maximum"/> dependency property. Registered and shipping-style default is 100.</summary>
     public static readonly DependencyProperty MaximumProperty =
         DependencyProperty.Register(nameof(Maximum), typeof(double), typeof(EtherSteeringBar),
             new PropertyMetadata(100d, OnRangePropertyChanged));
 
-    /// <summary>Identifies the <see cref="Value"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Value"/> dependency property. Registered default is 0; the shipping style default is 0.</summary>
     public static readonly DependencyProperty ValueProperty =
         DependencyProperty.Register(nameof(Value), typeof(double), typeof(EtherSteeringBar),
             new PropertyMetadata(0d, OnRangePropertyChanged));
@@ -150,66 +150,71 @@ public sealed class EtherSteeringBar : Control
         DependencyProperty.Register(nameof(PreviewStatus), typeof(SteeringBarPreviewStatus), typeof(EtherSteeringBar),
             new PropertyMetadata(SteeringBarPreviewStatus.None, OnRangePropertyChanged));
 
-    /// <summary>Identifies the <see cref="Stops"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Stops"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty StopsProperty =
         DependencyProperty.Register(nameof(Stops), typeof(DoubleCollection), typeof(EtherSteeringBar),
             new PropertyMetadata(null, OnRangePropertyChanged));
 
-    /// <summary>Identifies the <see cref="SnapToStops"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="SnapToStops"/> dependency property. Registered and effective default is false.</summary>
     public static readonly DependencyProperty SnapToStopsProperty =
         DependencyProperty.Register(nameof(SnapToStops), typeof(bool), typeof(EtherSteeringBar),
             new PropertyMetadata(false, OnRangePropertyChanged));
 
-    /// <summary>Identifies the <see cref="ShowStops"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="StepFrequency"/> dependency property. Registered and effective default is 1.0.</summary>
+    public static readonly DependencyProperty StepFrequencyProperty =
+        DependencyProperty.Register(nameof(StepFrequency), typeof(double), typeof(EtherSteeringBar),
+            new PropertyMetadata(1d, OnRangePropertyChanged));
+
+    /// <summary>Identifies the <see cref="ShowStops"/> dependency property. Registered and effective default is true.</summary>
     public static readonly DependencyProperty ShowStopsProperty =
         DependencyProperty.Register(nameof(ShowStops), typeof(bool), typeof(EtherSteeringBar),
             new PropertyMetadata(true, OnRangePropertyChanged));
 
-    /// <summary>Identifies the <see cref="SmallChange"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="SmallChange"/> dependency property. Registered and shipping-style default is 1.</summary>
     public static readonly DependencyProperty SmallChangeProperty =
         DependencyProperty.Register(nameof(SmallChange), typeof(double), typeof(EtherSteeringBar),
             new PropertyMetadata(1d, OnRangePropertyChanged));
 
-    /// <summary>Identifies the <see cref="LargeChange"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="LargeChange"/> dependency property. Registered and shipping-style default is 10.</summary>
     public static readonly DependencyProperty LargeChangeProperty =
         DependencyProperty.Register(nameof(LargeChange), typeof(double), typeof(EtherSteeringBar),
             new PropertyMetadata(10d, OnRangePropertyChanged));
 
-    /// <summary>Identifies the <see cref="Title"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Title"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty TitleProperty =
         DependencyProperty.Register(nameof(Title), typeof(object), typeof(EtherSteeringBar),
             new PropertyMetadata(null, OnLabelPropertyChanged));
 
-    /// <summary>Identifies the <see cref="ValueContent"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ValueContent"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty ValueContentProperty =
         DependencyProperty.Register(nameof(ValueContent), typeof(object), typeof(EtherSteeringBar),
             new PropertyMetadata(null, OnLabelPropertyChanged));
 
-    /// <summary>Identifies the <see cref="ShowTitle"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ShowTitle"/> dependency property. Registered default is false; the shipping style default is true.</summary>
     public static readonly DependencyProperty ShowTitleProperty =
         DependencyProperty.Register(nameof(ShowTitle), typeof(bool), typeof(EtherSteeringBar),
             new PropertyMetadata(false, OnLabelPropertyChanged));
 
-    /// <summary>Identifies the <see cref="ShowValue"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ShowValue"/> dependency property. Registered default is false; the shipping style default is true.</summary>
     public static readonly DependencyProperty ShowValueProperty =
         DependencyProperty.Register(nameof(ShowValue), typeof(bool), typeof(EtherSteeringBar),
             new PropertyMetadata(false, OnLabelPropertyChanged));
 
-    /// <summary>Gets or sets the inclusive lower bound of the range.</summary>
+    /// <summary>Gets or sets the inclusive lower bound of the range. Default is 0.</summary>
     public double Minimum
     {
         get => (double)GetValue(MinimumProperty);
         set => SetValue(MinimumProperty, value);
     }
 
-    /// <summary>Gets or sets the inclusive upper bound of the range.</summary>
+    /// <summary>Gets or sets the inclusive upper bound of the range. Default is 100.</summary>
     public double Maximum
     {
         get => (double)GetValue(MaximumProperty);
         set => SetValue(MaximumProperty, value);
     }
 
-    /// <summary>Gets or sets the current value. Bind TwoWay or listen to <see cref="ValueChanged"/>.</summary>
+    /// <summary>Gets or sets the current value. Default is 0. Bind TwoWay or listen to <see cref="ValueChanged"/>.</summary>
     public double Value
     {
         get => (double)GetValue(ValueProperty);
@@ -223,63 +228,74 @@ public sealed class EtherSteeringBar : Control
         set => SetValue(PreviewStatusProperty, value);
     }
 
-    /// <summary>Gets or sets optional stop positions along the range.</summary>
+    /// <summary>Gets or sets optional stop positions along the range. Registered and effective default is <see langword="null"/>.</summary>
     public DoubleCollection? Stops
     {
         get => (DoubleCollection?)GetValue(StopsProperty);
         set => SetValue(StopsProperty, value);
     }
 
-    /// <summary>Gets or sets whether <see cref="Value"/> snaps to the nearest <see cref="Stops"/> entry.</summary>
+    /// <summary>Gets or sets whether <see cref="Value"/> snaps to the nearest <see cref="Stops"/> entry. Registered and effective default is false.</summary>
     public bool SnapToStops
     {
         get => (bool)GetValue(SnapToStopsProperty);
         set => SetValue(SnapToStopsProperty, value);
     }
 
-    /// <summary>Gets or sets whether stop markers are drawn when <see cref="Stops"/> is set.</summary>
+    /// <summary>
+    /// Gets or sets the increment used to snap pointer, keyboard, and automation input.
+    /// Values less than or equal to zero disable step snapping. The default is 1.0.
+    /// <see cref="SnapToStops"/> takes precedence when enabled.
+    /// </summary>
+    public double StepFrequency
+    {
+        get => (double)GetValue(StepFrequencyProperty);
+        set => SetValue(StepFrequencyProperty, value);
+    }
+
+    /// <summary>Gets or sets whether stop markers are drawn when <see cref="Stops"/> is set. Registered and effective default is false.</summary>
     public bool ShowStops
     {
         get => (bool)GetValue(ShowStopsProperty);
         set => SetValue(ShowStopsProperty, value);
     }
 
-    /// <summary>Gets or sets the small keyboard / automation step.</summary>
+    /// <summary>Gets or sets the small keyboard / automation step. Registered and effective default is 1.</summary>
     public double SmallChange
     {
         get => (double)GetValue(SmallChangeProperty);
         set => SetValue(SmallChangeProperty, value);
     }
 
-    /// <summary>Gets or sets the large keyboard / automation step.</summary>
+    /// <summary>Gets or sets the large keyboard / automation step. Registered and effective default is 10.</summary>
     public double LargeChange
     {
         get => (double)GetValue(LargeChangeProperty);
         set => SetValue(LargeChangeProperty, value);
     }
 
-    /// <summary>Gets or sets the content of the left-hand title label.</summary>
+    /// <summary>Gets or sets the content of the left-hand title label. Registered and effective default is <see langword="null"/>.</summary>
     public object? Title
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
 
-    /// <summary>Gets or sets the content of the right-hand value label. When unset, the control formats <see cref="Value"/> as a percent.</summary>
+    /// <summary>Gets or sets the content of the right-hand value label. Registered and effective default is <see langword="null"/>; when unset, the control formats <see cref="Value"/> as a percent.</summary>
     public object? ValueContent
     {
         get => GetValue(ValueContentProperty);
         set => SetValue(ValueContentProperty, value);
     }
 
-    /// <summary>Gets or sets whether the title label is shown.</summary>
+    /// <summary>Gets or sets whether the title label is shown. Registered default is false; the shipping style default is true.</summary>
     public bool ShowTitle
     {
         get => (bool)GetValue(ShowTitleProperty);
         set => SetValue(ShowTitleProperty, value);
     }
 
-    /// <summary>Gets or sets whether the value label is shown.</summary>
+    /// <summary>Gets or sets whether the value label is shown. Registered default is false; the shipping style default is true.</summary>
     public bool ShowValue
     {
         get => (bool)GetValue(ShowValueProperty);
@@ -446,7 +462,15 @@ public sealed class EtherSteeringBar : Control
             return RangeMinimum;
 
         var clampedValue = Math.Clamp(value, RangeMinimum, RangeMaximum);
-        return SnapToStops ? SnapToNearestStop(clampedValue) : clampedValue;
+        if (SnapToStops)
+            return SnapToNearestStop(clampedValue);
+
+        var step = StepFrequency;
+        if (step <= 0)
+            return clampedValue;
+
+        var stepped = RangeMinimum + Math.Round((clampedValue - RangeMinimum) / step) * step;
+        return Math.Clamp(stepped, RangeMinimum, RangeMaximum);
     }
 
     private void OnValueChanged(double oldValue, double newValue)

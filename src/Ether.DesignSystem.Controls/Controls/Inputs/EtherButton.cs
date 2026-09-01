@@ -84,7 +84,7 @@ public class EtherButton : Button
         UpdateUsesTextContentPath();
     }
 
-    /// <summary>Identifies the <see cref="LeftIcon"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="LeftIcon"/> dependency property. Registered default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty LeftIconProperty =
         DependencyProperty.Register(
             nameof(LeftIcon),
@@ -92,14 +92,14 @@ public class EtherButton : Button
             typeof(EtherButton),
             new PropertyMetadata(null, OnIconChanged));
 
-    /// <summary>Optional leading icon. Null = text only on the leading edge.</summary>
+    /// <summary>Optional leading icon. Registered and effective default is <see langword="null"/>; the shipping style supplies the button chrome.</summary>
     public IconElement? LeftIcon
     {
         get => (IconElement?)GetValue(LeftIconProperty);
         set => SetValue(LeftIconProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="RightIcon"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="RightIcon"/> dependency property. Registered default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty RightIconProperty =
         DependencyProperty.Register(
             nameof(RightIcon),
@@ -107,14 +107,14 @@ public class EtherButton : Button
             typeof(EtherButton),
             new PropertyMetadata(null, OnIconChanged));
 
-    /// <summary>Optional trailing icon. Null = text only. Set (or replace) to show an icon.</summary>
+    /// <summary>Optional trailing icon. Registered and effective default is <see langword="null"/>. Set (or replace) to show an icon.</summary>
     public IconElement? RightIcon
     {
         get => (IconElement?)GetValue(RightIconProperty);
         set => SetValue(RightIconProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="Variant"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Variant"/> dependency property. Registered default is <see langword="null"/>; the default style is Primary.</summary>
     public static readonly DependencyProperty VariantProperty = DependencyProperty.Register(
         nameof(Variant), typeof(EtherButtonVariant?), typeof(EtherButton),
         new PropertyMetadata(null, OnVariantOrSizeChanged));
@@ -131,12 +131,12 @@ public class EtherButton : Button
         set => SetValue(VariantProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="Size"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Size"/> dependency property. Registered default is <see langword="null"/>; the default style is Large.</summary>
     public static readonly DependencyProperty SizeProperty = DependencyProperty.Register(
         nameof(Size), typeof(EtherButtonSize?), typeof(EtherButton),
         new PropertyMetadata(null, OnVariantOrSizeChanged));
 
-    /// <summary>Size of the button. See <see cref="Variant"/> — both must be set for this to
+    /// <summary>Size of the button. Registered default is <see langword="null"/>; the default style is Large. See <see cref="Variant"/> — both must be set for this to
     /// take effect.</summary>
     public EtherButtonSize? Size
     {

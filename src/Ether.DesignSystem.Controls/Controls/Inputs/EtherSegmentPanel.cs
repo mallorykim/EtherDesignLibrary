@@ -15,7 +15,7 @@ namespace Ether.DesignSystem.Controls;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class EtherSegmentPanel : Panel
 {
-    /// <summary>Identifies the <see cref="Spacing"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Spacing"/> dependency property. Registered and effective default is 4 device-independent pixels.</summary>
     public static readonly DependencyProperty SpacingProperty =
         DependencyProperty.Register(
             nameof(Spacing),
@@ -23,7 +23,7 @@ public sealed class EtherSegmentPanel : Panel
             typeof(EtherSegmentPanel),
             new PropertyMetadata(4d, OnSpacingChanged));
 
-    /// <summary>Gets or sets the gap between segments, in epx. Figma track gap is 4.</summary>
+    /// <summary>Gets or sets the gap between segments, in device-independent pixels. Registered and effective default is 4.</summary>
     public double Spacing
     {
         get => (double)GetValue(SpacingProperty);

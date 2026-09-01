@@ -30,8 +30,8 @@ namespace Ether.DesignSystem.Controls;
 /// keys bind Light/Dark colors to primitive tokens. Title and tick labels are
 /// optional; at most <see cref="MaxLabelCount"/> labels are shown. Tick labels may
 /// be numbers or named values via <see cref="Labels"/> (also XAML content) and are
-/// not the range payload. Pointer, keyboard, and automation input round to integers
-/// unless <see cref="SnapToStops"/> is on.
+/// not the range payload. Pointer, keyboard, and automation input snap to
+/// <see cref="StepFrequency"/> unless <see cref="SnapToStops"/> is on.
 /// </remarks>
 [TemplatePart(Name = ValueTextPart, Type = typeof(TextBlock))]
 [TemplatePart(Name = BarCanvasPart, Type = typeof(Canvas))]
@@ -114,63 +114,70 @@ public sealed partial class EtherSlider : RangeBase
         LostFocus += OnLostFocus;
     }
 
-    /// <summary>Identifies the <see cref="ShowTitle"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ShowTitle"/> dependency property. Registered default is false; the shipping style default is true.</summary>
     public static readonly DependencyProperty ShowTitleProperty = DependencyProperty.Register(
         nameof(ShowTitle),
         typeof(bool),
         typeof(EtherSlider),
         new PropertyMetadata(false, OnChromeChanged));
 
-    /// <summary>Identifies the <see cref="Title"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Title"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
         nameof(Title),
         typeof(string),
         typeof(EtherSlider),
         new PropertyMetadata(null, OnChromeChanged));
 
-    /// <summary>Identifies the <see cref="ShowLabels"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ShowLabels"/> dependency property. Registered default is false; the shipping style default is true.</summary>
     public static readonly DependencyProperty ShowLabelsProperty = DependencyProperty.Register(
         nameof(ShowLabels),
         typeof(bool),
         typeof(EtherSlider),
         new PropertyMetadata(false, OnChromeChanged));
 
-    /// <summary>Identifies the <see cref="Labels"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Labels"/> dependency property. Registered default is <see langword="null"/>; the constructor creates an empty collection.</summary>
     public static readonly DependencyProperty LabelsProperty = DependencyProperty.Register(
         nameof(Labels),
         typeof(EtherSliderLabelCollection),
         typeof(EtherSlider),
         new PropertyMetadata(null, OnLabelsChanged));
 
-    /// <summary>Identifies the <see cref="Stops"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Stops"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty StopsProperty = DependencyProperty.Register(
         nameof(Stops),
         typeof(DoubleCollection),
         typeof(EtherSlider),
         new PropertyMetadata(null, OnChromeChanged));
 
-    /// <summary>Identifies the <see cref="SnapToStops"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="SnapToStops"/> dependency property. Registered and effective default is false.</summary>
     public static readonly DependencyProperty SnapToStopsProperty = DependencyProperty.Register(
         nameof(SnapToStops),
         typeof(bool),
         typeof(EtherSlider),
         new PropertyMetadata(false, OnChromeChanged));
 
-    /// <summary>Gets or sets whether the title above the track is shown.</summary>
+    /// <summary>Identifies the <see cref="StepFrequency"/> dependency property. Registered and effective default is 1.0.</summary>
+    public static readonly DependencyProperty StepFrequencyProperty = DependencyProperty.Register(
+        nameof(StepFrequency),
+        typeof(double),
+        typeof(EtherSlider),
+        new PropertyMetadata(1d, OnChromeChanged));
+
+    /// <summary>Gets or sets whether the title above the track is shown. Registered default is false; the shipping style default is true.</summary>
     public bool ShowTitle
     {
         get => (bool)GetValue(ShowTitleProperty);
         set => SetValue(ShowTitleProperty, value);
     }
 
-    /// <summary>Gets or sets the title text. Hidden when null or empty even if <see cref="ShowTitle"/> is true.</summary>
+    /// <summary>Gets or sets the title text. Registered and effective default is <see langword="null"/>. Hidden when null or empty even if <see cref="ShowTitle"/> is true.</summary>
     public string? Title
     {
         get => (string?)GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
 
-    /// <summary>Gets or sets whether tick labels under the track are shown.</summary>
+    /// <summary>Gets or sets whether tick labels under the track are shown. Registered default is false; the shipping style default is true.</summary>
     public bool ShowLabels
     {
         get => (bool)GetValue(ShowLabelsProperty);
@@ -179,7 +186,7 @@ public sealed partial class EtherSlider : RangeBase
 
     /// <summary>
     /// Gets or sets tick-label strings under the track (numbers or named values).
-    /// At most <see cref="MaxLabelCount"/> entries are rendered. When empty,
+    /// The default is an empty constructor-created collection. At most <see cref="MaxLabelCount"/> entries are rendered. When empty,
     /// even integer steps of Minimum–Maximum are generated (0–100 → 0, 20, 40, 60, 80, 100).
     /// Strings may also be provided as XAML content on the control. Labels are UI only;
     /// the payload is always <see cref="RangeBase.Value"/>.
@@ -191,7 +198,7 @@ public sealed partial class EtherSlider : RangeBase
     }
 
     /// <summary>
-    /// Gets or sets explicit stop values. When empty and <see cref="SnapToStops"/> is true,
+    /// Gets or sets explicit stop values. Default is <see langword="null"/>. When empty and <see cref="SnapToStops"/> is true,
     /// stops are inferred evenly from <see cref="Labels"/>.
     /// </summary>
     public DoubleCollection? Stops
@@ -204,12 +211,23 @@ public sealed partial class EtherSlider : RangeBase
     /// Gets or sets whether pointer, keyboard, automation, and programmatic values
     /// snap to <see cref="Stops"/> (or to even label positions when Stops is empty).
     /// Enabling this, or changing Stops/Labels while it is true, coerces the current
-    /// <see cref="RangeBase.Value"/> onto the nearest stop.
+    /// <see cref="RangeBase.Value"/> onto the nearest stop. Default is false.
     /// </summary>
     public bool SnapToStops
     {
         get => (bool)GetValue(SnapToStopsProperty);
         set => SetValue(SnapToStopsProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the increment used to snap pointer, keyboard, and automation input.
+    /// Values less than or equal to zero disable step snapping. The default is 1.0.
+    /// <see cref="SnapToStops"/> takes precedence when enabled.
+    /// </summary>
+    public double StepFrequency
+    {
+        get => (double)GetValue(StepFrequencyProperty);
+        set => SetValue(StepFrequencyProperty, value);
     }
 
     private static void OnChromeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -776,8 +794,8 @@ public sealed partial class EtherSlider : RangeBase
     }
 
     /// <summary>
-    /// Normalizes pointer, keyboard, and automation input. Continuous mode rounds to
-    /// the nearest integer. <see cref="SnapToStops"/> uses explicit or inferred stops.
+    /// Normalizes pointer, keyboard, and automation input relative to <see cref="RangeBase.Minimum"/>
+    /// using <see cref="StepFrequency"/>. <see cref="SnapToStops"/> uses explicit or inferred stops.
     /// Direct <see cref="RangeBase.Value"/> assignment is not rounded unless snap is on.
     /// </summary>
     private double NormalizeInputValue(double value)
@@ -786,7 +804,12 @@ public sealed partial class EtherSlider : RangeBase
         if (SnapToStops)
             return SnapToNearestStop(clamped);
 
-        return Math.Round(clamped);
+        var step = StepFrequency;
+        if (step <= 0)
+            return clamped;
+
+        var stepped = RangeMinimum + Math.Round((clamped - RangeMinimum) / step) * step;
+        return Math.Clamp(stepped, RangeMinimum, RangeMaximum);
     }
 
     private double SnapToNearestStop(double value)

@@ -1,6 +1,8 @@
+using System.Collections;
+using System.Collections.Specialized;
+using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 
 namespace Ether.DesignSystem.Controls;
 
@@ -11,32 +13,111 @@ namespace Ether.DesignSystem.Controls;
 /// <remarks>
 /// Call sites may still set <c>Style="{StaticResource EtherSegmentedTrack}"</c>; that key
 /// is an alias of the default style. Segment item chrome stays on the keyed
-/// <c>EtherSegment</c> <see cref="RadioButton"/> style. Put segments in
+/// <c>EtherSegment</c> <see cref="RadioButton"/> style. Put inline segments in
 /// <see cref="EtherSegmentPanel"/> so the track can stretch with the parent and keep
-/// equal-width slots. Set a segment's <see cref="FrameworkElement.Tag"/> to its stable
-/// business value; <see cref="SelectedValue"/> exposes that value and
-/// <see cref="SelectionChanged"/> reports transitions. When Tag is null, the segment's
-/// Content is used. Native radio grouping and <see cref="EtherSegmentRadioButton"/> layer
-/// opacity remain the interaction model; the host does not add visual-state groups.
+/// equal-width slots. For data-backed segments, use <see cref="ItemsSource"/> with
+/// <see cref="ItemTemplate"/> or <see cref="DisplayMemberPath"/>. The data-backed path
+/// generates <see cref="EtherSegmentRadioButton"/> children inside the same panel and
+/// keeps <see cref="SelectedIndex"/>, <see cref="SelectedItem"/>, and
+/// <see cref="SelectedValue"/> synchronized. Inline segments keep the existing
+/// <see cref="FrameworkElement.Tag"/>/Content value contract. Native radio grouping and
+/// <see cref="EtherSegmentRadioButton"/> layer opacity remain the interaction model; the
+/// host does not add visual-state groups.
 /// </remarks>
 [TemplatePart(Name = TrackSurfacePartName, Type = typeof(Border))]
 public class EtherSegmentedControl : ContentControl
 {
     private const string TrackSurfacePartName = "TrackSurface";
     private readonly List<RadioButton> _segments = [];
+    private object? _inlineContent;
+    private INotifyCollectionChanged? _itemsSourceCollection;
+    private bool _managingItemsSourceContent;
     private bool _synchronizingSelection;
 
-    /// <summary>Identifies the <see cref="SelectedValue"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ItemsSource"/> dependency property. Registered default is <see langword="null"/>.</summary>
+    public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
+        nameof(ItemsSource),
+        typeof(object),
+        typeof(EtherSegmentedControl),
+        new PropertyMetadata(null, OnItemsSourceChanged));
+
+    /// <summary>Identifies the <see cref="ItemTemplate"/> dependency property. Registered default is <see langword="null"/>.</summary>
+    public static readonly DependencyProperty ItemTemplateProperty = DependencyProperty.Register(
+        nameof(ItemTemplate),
+        typeof(DataTemplate),
+        typeof(EtherSegmentedControl),
+        new PropertyMetadata(null, OnItemPresentationChanged));
+
+    /// <summary>Identifies the <see cref="DisplayMemberPath"/> dependency property. Registered default is <see langword="null"/>.</summary>
+    public static readonly DependencyProperty DisplayMemberPathProperty = DependencyProperty.Register(
+        nameof(DisplayMemberPath),
+        typeof(string),
+        typeof(EtherSegmentedControl),
+        new PropertyMetadata(null, OnItemPresentationChanged));
+
+    /// <summary>Identifies the <see cref="SelectedIndex"/> dependency property. Registered default is -1.</summary>
+    public static readonly DependencyProperty SelectedIndexProperty = DependencyProperty.Register(
+        nameof(SelectedIndex),
+        typeof(int),
+        typeof(EtherSegmentedControl),
+        new PropertyMetadata(-1, OnSelectedIndexChanged));
+
+    /// <summary>Identifies the <see cref="SelectedItem"/> dependency property. Registered default is <see langword="null"/>.</summary>
+    public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
+        nameof(SelectedItem),
+        typeof(object),
+        typeof(EtherSegmentedControl),
+        new PropertyMetadata(null, OnSelectedItemChanged));
+
+    /// <summary>Identifies the <see cref="SelectedValue"/> dependency property. Registered default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty SelectedValueProperty = DependencyProperty.Register(
         nameof(SelectedValue),
         typeof(object),
         typeof(EtherSegmentedControl),
         new PropertyMetadata(null, OnSelectedValueChanged));
 
+    /// <summary>Gets or sets the collection used to generate the segment items. Default is <see langword="null"/>; null selects the inline-content path.</summary>
+    public object? ItemsSource
+    {
+        get => GetValue(ItemsSourceProperty);
+        set => SetValue(ItemsSourceProperty, value);
+    }
+
+    /// <summary>Gets or sets the template used to display each item from <see cref="ItemsSource"/>. Default is <see langword="null"/>.</summary>
+    public DataTemplate? ItemTemplate
+    {
+        get => (DataTemplate?)GetValue(ItemTemplateProperty);
+        set => SetValue(ItemTemplateProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the property path used to display each item when <see cref="ItemTemplate"/>
+    /// is not set. Default is <see langword="null"/>.
+    /// </summary>
+    public string? DisplayMemberPath
+    {
+        get => (string?)GetValue(DisplayMemberPathProperty);
+        set => SetValue(DisplayMemberPathProperty, value);
+    }
+
+    /// <summary>Gets or sets the zero-based index of the selected segment, or -1 when none is selected. Default is -1.</summary>
+    public int SelectedIndex
+    {
+        get => (int)GetValue(SelectedIndexProperty);
+        set => SetValue(SelectedIndexProperty, value);
+    }
+
+    /// <summary>Gets or sets the selected segment item. Default is <see langword="null"/>.</summary>
+    public object? SelectedItem
+    {
+        get => GetValue(SelectedItemProperty);
+        set => SetValue(SelectedItemProperty, value);
+    }
+
     /// <summary>
     /// Gets or sets the selected segment's <see cref="FrameworkElement.Tag"/>, or its
-    /// Content when Tag is null. Bind this property TwoWay to expose a stable value to an
-    /// application or backend-interaction adapter.
+    /// Content when Tag is null. For data-backed segments this is the item from
+    /// <see cref="ItemsSource"/>. Default is <see langword="null"/>.
     /// </summary>
     public object? SelectedValue
     {
@@ -54,7 +135,14 @@ public class EtherSegmentedControl : ContentControl
     {
         DefaultStyleKey = typeof(EtherSegmentedControl);
         Loaded += OnLoaded;
-        RegisterPropertyChangedCallback(ContentProperty, (_, _) => WireSegments());
+        RegisterPropertyChangedCallback(ContentProperty, (_, _) =>
+        {
+            if (!_managingItemsSourceContent && ItemsSource is null)
+            {
+                _inlineContent = Content;
+                WireSegments();
+            }
+        });
     }
 
     /// <inheritdoc />
@@ -65,6 +153,38 @@ public class EtherSegmentedControl : ContentControl
     }
 
     private void OnLoaded(object sender, RoutedEventArgs args) => WireSegments();
+
+    private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var control = (EtherSegmentedControl)d;
+        control.DetachItemsSourceCollection();
+
+        if (e.NewValue is INotifyCollectionChanged collection)
+        {
+            control._itemsSourceCollection = collection;
+            collection.CollectionChanged += control.OnItemsSourceCollectionChanged;
+        }
+
+        if (e.OldValue is null && !control._managingItemsSourceContent)
+            control._inlineContent = control.Content;
+
+        if (e.NewValue is null)
+        {
+            control.SetInlineContent();
+            control.WireSegments();
+        }
+        else
+        {
+            control.RebuildGeneratedContent();
+        }
+    }
+
+    private static void OnItemPresentationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var control = (EtherSegmentedControl)d;
+        if (control.ItemsSource is not null)
+            control.RebuildGeneratedContent();
+    }
 
     private static void OnSelectedValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -77,7 +197,105 @@ public class EtherSegmentedControl : ContentControl
             new SegmentedSelectionChangedEventArgs(e.OldValue, e.NewValue));
     }
 
-    private void WireSegments()
+    private static void OnSelectedIndexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var control = (EtherSegmentedControl)d;
+        if (!control._synchronizingSelection)
+            control.SelectSegmentAtIndex((int)e.NewValue);
+    }
+
+    private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var control = (EtherSegmentedControl)d;
+        if (!control._synchronizingSelection)
+            control.SelectSegmentForValue(e.NewValue);
+    }
+
+    private void RebuildGeneratedContent()
+    {
+        if (ItemsSource is null)
+            return;
+
+        var selectedValue = SelectedValue;
+        var selectedItem = SelectedItem;
+        var selectedIndex = SelectedIndex;
+        var panel = new EtherSegmentPanel();
+
+        if (ItemsSource is IEnumerable items)
+        {
+            foreach (var item in items)
+                panel.Children.Add(CreateGeneratedSegment(item));
+        }
+
+        _managingItemsSourceContent = true;
+        try
+        {
+            SetValue(ContentProperty, panel);
+        }
+        finally
+        {
+            _managingItemsSourceContent = false;
+        }
+
+        WireSegments(restoreSelection: false);
+        if (selectedValue is not null)
+            SelectSegmentForValue(selectedValue);
+        else if (selectedItem is not null)
+            SelectSegmentForValue(selectedItem);
+        else if (selectedIndex >= 0)
+            SelectSegmentAtIndex(selectedIndex);
+        else
+            SelectFirstCheckedSegment();
+    }
+
+    private EtherSegmentRadioButton CreateGeneratedSegment(object? item)
+    {
+        var segment = new EtherSegmentRadioButton
+        {
+            Tag = item,
+            ContentTemplate = ItemTemplate
+        };
+
+        segment.Content = ItemTemplate is not null
+            ? item
+            : ResolveDisplayMember(item);
+        return segment;
+    }
+
+    private object? ResolveDisplayMember(object? item)
+    {
+        if (item is null || string.IsNullOrWhiteSpace(DisplayMemberPath))
+            return item;
+
+        object? current = item;
+        foreach (var memberName in DisplayMemberPath.Split('.'))
+        {
+            if (current is null)
+                return null;
+
+            var property = current.GetType().GetProperty(
+                memberName,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+            current = property?.GetValue(current);
+        }
+
+        return current;
+    }
+
+    private void SetInlineContent()
+    {
+        _managingItemsSourceContent = true;
+        try
+        {
+            SetValue(ContentProperty, _inlineContent);
+        }
+        finally
+        {
+            _managingItemsSourceContent = false;
+        }
+    }
+
+    private void WireSegments(bool restoreSelection = true)
     {
         foreach (var segment in _segments)
             segment.Checked -= OnSegmentChecked;
@@ -88,10 +306,31 @@ public class EtherSegmentedControl : ContentControl
         foreach (var segment in _segments)
             segment.Checked += OnSegmentChecked;
 
-        if (SelectedValue is null)
-            SelectFirstCheckedSegment();
-        else
+        if (restoreSelection)
+            SynchronizeSelectionFromProperties();
+    }
+
+    private void SynchronizeSelectionFromProperties()
+    {
+        if (SelectedIndex >= 0)
+        {
+            SelectSegmentAtIndex(SelectedIndex);
+            return;
+        }
+
+        if (SelectedItem is not null)
+        {
+            SelectSegmentForValue(SelectedItem);
+            return;
+        }
+
+        if (SelectedValue is not null)
+        {
             SelectSegmentForValue(SelectedValue);
+            return;
+        }
+
+        SelectFirstCheckedSegment();
     }
 
     private static void AddSegments(object? content, ICollection<RadioButton> target)
@@ -120,24 +359,15 @@ public class EtherSegmentedControl : ContentControl
 
     private void SelectSegmentForValue(object? value)
     {
-        var selected = _segments.FirstOrDefault(segment => Equals(GetSegmentValue(segment), value));
-        if (selected is null || selected.IsChecked == true)
-            return;
+        var selected = value is null
+            ? null
+            : _segments.FirstOrDefault(segment => Equals(GetSegmentValue(segment), value));
+        ApplySelection(selected);
+    }
 
-        _synchronizingSelection = true;
-        try
-        {
-            foreach (var segment in _segments)
-            {
-                if (!ReferenceEquals(segment, selected))
-                    segment.IsChecked = false;
-            }
-            selected.IsChecked = true;
-        }
-        finally
-        {
-            _synchronizingSelection = false;
-        }
+    private void SelectSegmentAtIndex(int index)
+    {
+        ApplySelection(index >= 0 && index < _segments.Count ? _segments[index] : null);
     }
 
     private void OnSegmentChecked(object sender, RoutedEventArgs e)
@@ -147,25 +377,38 @@ public class EtherSegmentedControl : ContentControl
     }
 
     private void SetSelectedValueFromSegment(RadioButton segment)
+        => ApplySelection(segment);
+
+    private void ApplySelection(RadioButton? selected)
     {
-        var value = GetSegmentValue(segment);
-        if (Equals(SelectedValue, value))
-            return;
+        var selectedIndex = selected is null ? -1 : _segments.IndexOf(selected);
+        var selectedValue = selected is null ? null : GetSegmentValue(selected);
 
         _synchronizingSelection = true;
         try
         {
-            foreach (var otherSegment in _segments)
-            {
-                if (!ReferenceEquals(otherSegment, segment))
-                    otherSegment.IsChecked = false;
-            }
-            SetValue(SelectedValueProperty, value);
+            foreach (var segment in _segments)
+                segment.IsChecked = ReferenceEquals(segment, selected);
+
+            SetValue(SelectedIndexProperty, selectedIndex);
+            SetValue(SelectedItemProperty, selectedValue);
+            SetValue(SelectedValueProperty, selectedValue);
         }
         finally
         {
             _synchronizingSelection = false;
         }
+    }
+
+    private void OnItemsSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        => RebuildGeneratedContent();
+
+    private void DetachItemsSourceCollection()
+    {
+        if (_itemsSourceCollection is not null)
+            _itemsSourceCollection.CollectionChanged -= OnItemsSourceCollectionChanged;
+
+        _itemsSourceCollection = null;
     }
 
     private static object? GetSegmentValue(RadioButton segment)

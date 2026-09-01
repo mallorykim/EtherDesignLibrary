@@ -135,6 +135,7 @@
                           IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
                           IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
                           IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                           AutomationProperties.AccessibilityView="Raw"
                           ZoomMode="Disabled"
                           IsTabStop="False"/>
@@ -148,7 +149,7 @@
                 <TextBlock x:Name="PlaceholderTextContentPresenter"
                            VerticalAlignment="Center"
                            Text="{TemplateBinding PlaceholderText}"
-                           TextAlignment="{TemplateBinding TextAlignment}"
+                           TextAlignment="{TemplateBinding HorizontalTextAlignment}"
                            Foreground="{TemplateBinding PlaceholderForeground}"
                            FontFamily="{TemplateBinding FontFamily}"
                            FontSize="{TemplateBinding FontSize}"

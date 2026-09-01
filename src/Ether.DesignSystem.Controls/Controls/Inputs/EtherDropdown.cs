@@ -35,7 +35,10 @@ namespace Ether.DesignSystem.Controls;
 ///
 /// SUPPORTED / NOT SUPPORTED (intentionally simplified — this is a compact, select-only dropdown):
 /// <see cref="ComboBox.PlaceholderText"/> IS honored (shown through TriggerText when nothing is
-/// selected). <see cref="ComboBox.IsEditable"/> is NOT supported (the template has no EditableText
+/// selected). <see cref="ComboBox.MaxDropDownHeight"/> IS also honored: the popup's ScrollViewer
+/// composes it with <see cref="MaxVisibleItems"/> as an additional pixel ceiling (whichever of the
+/// two constraints yields the smaller height wins), rather than only reacting to item count.
+/// <see cref="ComboBox.IsEditable"/> is NOT supported (the template has no EditableText
 /// part, so setting it does nothing). The trigger shows text only (DisplayMemberPath / ToString),
 /// not a templated SelectionBoxItem — a rich <c>ItemTemplate</c> renders in the list but not in the trigger.
 /// </remarks>
@@ -120,7 +123,7 @@ public sealed class EtherDropdown : ComboBox
         RegisterPropertyChangedCallback(ItemsSourceProperty, (_, _) => InvalidateItemMetrics());
     }
 
-    /// <summary>Identifies the <see cref="MaxVisibleItems"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="MaxVisibleItems"/> dependency property. Registered default is 0; the shipping style default is 6.</summary>
     public static readonly DependencyProperty MaxVisibleItemsProperty =
         DependencyProperty.Register(
             nameof(MaxVisibleItems),
@@ -128,14 +131,14 @@ public sealed class EtherDropdown : ComboBox
             typeof(EtherDropdown),
             new PropertyMetadata(0));
 
-    /// <summary>Items shown before the menu starts scrolling. Zero or less leaves it unbounded.</summary>
+    /// <summary>Items shown before the menu starts scrolling. Registered default is 0; the shipping style default is 6. Zero or less leaves it unbounded.</summary>
     public int MaxVisibleItems
     {
         get => (int)GetValue(MaxVisibleItemsProperty);
         set => SetValue(MaxVisibleItemsProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="MenuGap"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="MenuGap"/> dependency property. Registered default is 0; the shipping style default is <c>Spacing4</c>.</summary>
     public static readonly DependencyProperty MenuGapProperty =
         DependencyProperty.Register(
             nameof(MenuGap),
@@ -143,7 +146,7 @@ public sealed class EtherDropdown : ComboBox
             typeof(EtherDropdown),
             new PropertyMetadata(0d));
 
-    /// <summary>Gap between the trigger and the menu.</summary>
+    /// <summary>Gap between the trigger and the menu. Registered default is 0; the shipping style default is <c>Spacing4</c>.</summary>
     public double MenuGap
     {
         get => (double)GetValue(MenuGapProperty);
@@ -321,10 +324,19 @@ public sealed class EtherDropdown : ComboBox
 
     private void ApplyMaxVisibleHeight()
     {
-        if (_menuScrollViewer is null || MaxVisibleItems <= 0 || Items.Count <= MaxVisibleItems)
+        if (_menuScrollViewer is null)
+            return;
+
+        // MaxDropDownHeight is inherited from ComboBox (registered default: double.PositiveInfinity,
+        // i.e. "no cap" - Microsoft.UI.Xaml.xml: "The default is infinity"). MaxVisibleItems stays
+        // the primary, item-count-driven cap this popup was designed around; MaxDropDownHeight now
+        // composes with it as an additional pixel ceiling instead of being silently ignored (see the
+        // class <remarks> above).
+        var dropDownCap = MaxDropDownHeight;
+
+        if (MaxVisibleItems <= 0 || Items.Count <= MaxVisibleItems)
         {
-            if (_menuScrollViewer is not null && MaxVisibleItems <= 0)
-                _menuScrollViewer.MaxHeight = double.PositiveInfinity;
+            SetMenuScrollViewerMaxHeight(dropDownCap);
             return;
         }
 
@@ -333,12 +345,22 @@ public sealed class EtherDropdown : ComboBox
         _menuScrollViewer.UpdateLayout();
 
         var spacing = (ItemsPanelRoot as StackPanel)?.Spacing ?? 0;
-        var maxHeight = MeasureVisibleItemsHeight(MaxVisibleItems, spacing);
-        if (maxHeight <= 0)
+        var itemsHeight = MeasureVisibleItemsHeight(MaxVisibleItems, spacing);
+        if (itemsHeight <= 0)
             return;
 
-        // Only write a genuinely different value: this also runs while the menu is on screen,
-        // and re-assigning an unchanged MaxHeight would re-invalidate layout for nothing.
+        SetMenuScrollViewerMaxHeight(Math.Min(itemsHeight, dropDownCap));
+    }
+
+    /// <summary>
+    /// Only writes a genuinely different value: this also runs while the menu is on screen, and
+    /// re-assigning an unchanged MaxHeight would re-invalidate layout for nothing.
+    /// </summary>
+    private void SetMenuScrollViewerMaxHeight(double maxHeight)
+    {
+        if (_menuScrollViewer is null)
+            return;
+
         if (Math.Abs(_menuScrollViewer.MaxHeight - maxHeight) > 0.5)
             _menuScrollViewer.MaxHeight = maxHeight;
     }

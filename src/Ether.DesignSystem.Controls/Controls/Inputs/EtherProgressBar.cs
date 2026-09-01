@@ -56,44 +56,44 @@ public sealed class EtherProgressBar : RangeBase
         DefaultStyleKey = typeof(EtherProgressBar);
     }
 
-    /// <summary>Identifies the <see cref="Title"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="Title"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
         nameof(Title), typeof(object), typeof(EtherProgressBar), new PropertyMetadata(null));
 
-    /// <summary>Gets or sets the content of the left-hand title label.</summary>
+    /// <summary>Gets or sets the content of the left-hand title label. Registered and effective default is <see langword="null"/>.</summary>
     public object Title
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="ValueContent"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ValueContent"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty ValueContentProperty = DependencyProperty.Register(
         nameof(ValueContent), typeof(object), typeof(EtherProgressBar), new PropertyMetadata(null));
 
-    /// <summary>Gets or sets the content of the right-hand value label.</summary>
+    /// <summary>Gets or sets the content of the right-hand value label. Registered and effective default is <see langword="null"/>.</summary>
     public object ValueContent
     {
         get => GetValue(ValueContentProperty);
         set => SetValue(ValueContentProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="ShowTitle"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ShowTitle"/> dependency property. Registered default is false; the shipping style default is true.</summary>
     public static readonly DependencyProperty ShowTitleProperty = DependencyProperty.Register(
         nameof(ShowTitle), typeof(bool), typeof(EtherProgressBar), new PropertyMetadata(false, OnLabelsChanged));
 
-    /// <summary>Gets or sets whether the title label is shown.</summary>
+    /// <summary>Gets or sets whether the title label is shown. Registered default is false; the shipping style default is true.</summary>
     public bool ShowTitle
     {
         get => (bool)GetValue(ShowTitleProperty);
         set => SetValue(ShowTitleProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="ShowValue"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ShowValue"/> dependency property. Registered default is false; the shipping style default is true.</summary>
     public static readonly DependencyProperty ShowValueProperty = DependencyProperty.Register(
         nameof(ShowValue), typeof(bool), typeof(EtherProgressBar), new PropertyMetadata(false, OnLabelsChanged));
 
-    /// <summary>Gets or sets whether the value label is shown.</summary>
+    /// <summary>Gets or sets whether the value label is shown. Registered default is false; the shipping style default is true.</summary>
     public bool ShowValue
     {
         get => (bool)GetValue(ShowValueProperty);

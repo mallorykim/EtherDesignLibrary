@@ -38,6 +38,7 @@ Ether.DesignSystem.Controls.EtherInput.EtherInput() -> void
 Ether.DesignSystem.Controls.EtherIntelligenceButton
 Ether.DesignSystem.Controls.EtherIntelligenceButton.EtherIntelligenceButton() -> void
 Ether.DesignSystem.Controls.EtherMasthead
+Ether.DesignSystem.Controls.EtherMasthead.ActionInvoked -> System.EventHandler<Ether.DesignSystem.Controls.MastheadActionInvokedEventArgs!>?
 Ether.DesignSystem.Controls.EtherMasthead.EnableWindowCommands.get -> bool
 Ether.DesignSystem.Controls.EtherMasthead.EnableWindowCommands.set -> void
 Ether.DesignSystem.Controls.EtherMasthead.EtherMasthead() -> void
@@ -61,6 +62,13 @@ Ether.DesignSystem.Controls.EtherProgressBar.ValueContent.get -> object!
 Ether.DesignSystem.Controls.EtherProgressBar.ValueContent.set -> void
 Ether.DesignSystem.Controls.EtherRadioButton
 Ether.DesignSystem.Controls.EtherRadioButton.EtherRadioButton() -> void
+Ether.DesignSystem.Controls.MastheadAction
+Ether.DesignSystem.Controls.MastheadAction.Close = 2 -> Ether.DesignSystem.Controls.MastheadAction
+Ether.DesignSystem.Controls.MastheadAction.MaximizeRestore = 1 -> Ether.DesignSystem.Controls.MastheadAction
+Ether.DesignSystem.Controls.MastheadAction.Minimize = 0 -> Ether.DesignSystem.Controls.MastheadAction
+Ether.DesignSystem.Controls.MastheadActionInvokedEventArgs
+Ether.DesignSystem.Controls.MastheadActionInvokedEventArgs.Action.get -> Ether.DesignSystem.Controls.MastheadAction
+Ether.DesignSystem.Controls.MastheadActionInvokedEventArgs.MastheadActionInvokedEventArgs(Ether.DesignSystem.Controls.MastheadAction action) -> void
 Ether.DesignSystem.Controls.Resources.EtherScrollBarResources
 Ether.DesignSystem.Controls.Resources.EtherScrollBarResources.EtherScrollBarResources() -> void
 Ether.DesignSystem.Controls.Resources.EtherScrollBarResources.InitializeComponent() -> void
@@ -72,6 +80,16 @@ Ether.DesignSystem.Controls.EtherSegmentPanel.Spacing.get -> double
 Ether.DesignSystem.Controls.EtherSegmentPanel.Spacing.set -> void
 Ether.DesignSystem.Controls.EtherSegmentedControl
 Ether.DesignSystem.Controls.EtherSegmentedControl.EtherSegmentedControl() -> void
+Ether.DesignSystem.Controls.EtherSegmentedControl.DisplayMemberPath.get -> string?
+Ether.DesignSystem.Controls.EtherSegmentedControl.DisplayMemberPath.set -> void
+Ether.DesignSystem.Controls.EtherSegmentedControl.ItemTemplate.get -> Microsoft.UI.Xaml.DataTemplate?
+Ether.DesignSystem.Controls.EtherSegmentedControl.ItemTemplate.set -> void
+Ether.DesignSystem.Controls.EtherSegmentedControl.ItemsSource.get -> object?
+Ether.DesignSystem.Controls.EtherSegmentedControl.ItemsSource.set -> void
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedIndex.get -> int
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedIndex.set -> void
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedItem.get -> object?
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedItem.set -> void
 Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedValue.get -> object?
 Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedValue.set -> void
 Ether.DesignSystem.Controls.EtherSegmentedControl.SelectionChanged -> System.EventHandler<Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs!>?
@@ -92,6 +110,8 @@ Ether.DesignSystem.Controls.EtherSlider.ShowTitle.get -> bool
 Ether.DesignSystem.Controls.EtherSlider.ShowTitle.set -> void
 Ether.DesignSystem.Controls.EtherSlider.SnapToStops.get -> bool
 Ether.DesignSystem.Controls.EtherSlider.SnapToStops.set -> void
+Ether.DesignSystem.Controls.EtherSlider.StepFrequency.get -> double
+Ether.DesignSystem.Controls.EtherSlider.StepFrequency.set -> void
 Ether.DesignSystem.Controls.EtherSlider.Stops.get -> Microsoft.UI.Xaml.Media.DoubleCollection?
 Ether.DesignSystem.Controls.EtherSlider.Stops.set -> void
 Ether.DesignSystem.Controls.EtherSlider.Title.get -> string?
@@ -118,6 +138,8 @@ Ether.DesignSystem.Controls.EtherSteeringBar.SmallChange.get -> double
 Ether.DesignSystem.Controls.EtherSteeringBar.SmallChange.set -> void
 Ether.DesignSystem.Controls.EtherSteeringBar.SnapToStops.get -> bool
 Ether.DesignSystem.Controls.EtherSteeringBar.SnapToStops.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.StepFrequency.get -> double
+Ether.DesignSystem.Controls.EtherSteeringBar.StepFrequency.set -> void
 Ether.DesignSystem.Controls.EtherSteeringBar.Stops.get -> Microsoft.UI.Xaml.Media.DoubleCollection?
 Ether.DesignSystem.Controls.EtherSteeringBar.Stops.set -> void
 Ether.DesignSystem.Controls.EtherSteeringBar.Title.get -> object?
@@ -176,11 +198,17 @@ static readonly Ether.DesignSystem.Controls.EtherMasthead.ShowMenuIconProperty -
 static readonly Ether.DesignSystem.Controls.EtherMasthead.ShowSearchProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherMasthead.ShowSettingsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSegmentPanel.SpacingProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.DisplayMemberPathProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.ItemTemplateProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.ItemsSourceProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedIndexProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedItemProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSlider.LabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSlider.ShowLabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSlider.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSlider.SnapToStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSlider.StepFrequencyProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSlider.StopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSlider.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherProgressBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
@@ -195,6 +223,7 @@ static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ShowTitleProperty -
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.SmallChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.SnapToStopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.StepFrequencyProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.StopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!

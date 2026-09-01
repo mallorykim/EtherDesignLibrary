@@ -23,7 +23,9 @@ namespace Ether.DesignSystem.Controls;
 /// <c>ChevronStates</c>). Maximize/restore glyph swap uses <c>WindowStates</c>.
 /// Caption click handling stays code-driven. Gallery specimens set
 /// <see cref="EnableWindowCommands"/> to false and use an internal preview override for
-/// their static maximize/restore samples.
+/// their static maximize/restore samples. The menu, search, settings, and chevron icon slots
+/// are decorative affordances; place an interactive control beside the masthead for those
+/// actions.
 /// </remarks>
 [TemplatePart(Name = MenuIconSlotPart, Type = typeof(FrameworkElement))]
 [TemplatePart(Name = SearchIconSlotPart, Type = typeof(FrameworkElement))]
@@ -114,7 +116,10 @@ public sealed class EtherMasthead : Control
         ActualThemeChanged += EtherMasthead_ActualThemeChanged;
     }
 
-    /// <summary>Identifies the <see cref="ShowSettings"/> dependency property.</summary>
+    /// <summary>Raised before an enabled caption button invokes its host-window command.</summary>
+    public event EventHandler<MastheadActionInvokedEventArgs>? ActionInvoked;
+
+    /// <summary>Identifies the <see cref="ShowSettings"/> dependency property. Registered and effective default is true.</summary>
     public static readonly DependencyProperty ShowSettingsProperty =
         DependencyProperty.Register(
             nameof(ShowSettings),
@@ -129,7 +134,7 @@ public sealed class EtherMasthead : Control
         set => SetValue(ShowSettingsProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="ShowSearch"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ShowSearch"/> dependency property. Registered and effective default is false.</summary>
     public static readonly DependencyProperty ShowSearchProperty =
         DependencyProperty.Register(
             nameof(ShowSearch),
@@ -144,7 +149,7 @@ public sealed class EtherMasthead : Control
         set => SetValue(ShowSearchProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="ShowMenuIcon"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ShowMenuIcon"/> dependency property. Registered and effective default is false.</summary>
     public static readonly DependencyProperty ShowMenuIconProperty =
         DependencyProperty.Register(
             nameof(ShowMenuIcon),
@@ -159,7 +164,7 @@ public sealed class EtherMasthead : Control
         set => SetValue(ShowMenuIconProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="ShowChevron"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="ShowChevron"/> dependency property. Registered and effective default is false.</summary>
     public static readonly DependencyProperty ShowChevronProperty =
         DependencyProperty.Register(
             nameof(ShowChevron),
@@ -189,7 +194,7 @@ public sealed class EtherMasthead : Control
         set => SetValue(PreviewIsMaximizedProperty, value);
     }
 
-    /// <summary>Identifies the <see cref="EnableWindowCommands"/> dependency property.</summary>
+    /// <summary>Identifies the <see cref="EnableWindowCommands"/> dependency property. Registered and effective default is true.</summary>
     public static readonly DependencyProperty EnableWindowCommandsProperty =
         DependencyProperty.Register(
             nameof(EnableWindowCommands),
@@ -198,7 +203,7 @@ public sealed class EtherMasthead : Control
             new PropertyMetadata(true));
 
     /// <summary>
-    /// Gets or sets whether caption buttons invoke host window commands.
+    /// Gets or sets whether caption buttons invoke host window commands. Default is true.
     /// Gallery specimens set this to false so showcase clicks do not minimize
     /// or close the sandbox window.
     /// </summary>
@@ -535,6 +540,7 @@ public sealed class EtherMasthead : Control
             return;
         }
 
+        ActionInvoked?.Invoke(this, new MastheadActionInvokedEventArgs(MastheadAction.Minimize));
         GetPresenter()?.Minimize();
     }
 
@@ -551,12 +557,13 @@ public sealed class EtherMasthead : Control
         }
 
         var presenter = GetPresenter();
-        if (presenter is null)
-        {
-            return;
-        }
+        var isMaximized = PreviewIsMaximized ?? (presenter?.State == OverlappedPresenterState.Maximized);
+        ActionInvoked?.Invoke(this, new MastheadActionInvokedEventArgs(MastheadAction.MaximizeRestore));
 
-        if (presenter.State == OverlappedPresenterState.Maximized)
+        if (presenter is null)
+            return;
+
+        if (isMaximized)
         {
             presenter.Restore();
         }
@@ -575,6 +582,7 @@ public sealed class EtherMasthead : Control
             return;
         }
 
+        ActionInvoked?.Invoke(this, new MastheadActionInvokedEventArgs(MastheadAction.Close));
         CloseHostWindow();
     }
 

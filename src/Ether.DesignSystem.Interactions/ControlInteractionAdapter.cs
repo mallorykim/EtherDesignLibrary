@@ -53,6 +53,21 @@ public sealed class ControlInteractionAdapter
         return new Subscription(() => control.SelectionChanged -= handler);
     }
 
+    /// <summary>Observes the selected index and value of any WinUI selector.</summary>
+    public IDisposable ObserveSelection(Selector control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
+    {
+        ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
+        SelectionChangedEventHandler handler = (_, _) => Emit(
+            eventType,
+            context,
+            componentId,
+            new { control.SelectedIndex, SelectedValue = ToConsumableValue(control.SelectedValue) },
+            idempotencyKeyFactory);
+        control.SelectionChanged += handler;
+        return new Subscription(() => control.SelectionChanged -= handler);
+    }
+
     /// <summary>Observes a checkbox, radio button, or toggle-switch state.</summary>
     public IDisposable ObserveToggle(ToggleButton control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
     {
@@ -94,6 +109,21 @@ public sealed class ControlInteractionAdapter
                 idempotencyKeyFactory);
         control.SelectionChanged += handler;
         return new Subscription(() => control.SelectionChanged -= handler);
+    }
+
+    /// <summary>Observes an enabled Ether masthead caption action.</summary>
+    public IDisposable ObserveMasthead(EtherMasthead control, string eventType, InteractionContext context, string componentId, Func<string>? idempotencyKeyFactory = null)
+    {
+        ArgumentNullException.ThrowIfNull(control);
+        ValidateSubscriptionArguments(eventType, context, componentId);
+        EventHandler<MastheadActionInvokedEventArgs> handler = (_, args) => Emit(
+            eventType,
+            context,
+            componentId,
+            new { args.Action },
+            idempotencyKeyFactory);
+        control.ActionInvoked += handler;
+        return new Subscription(() => control.ActionInvoked -= handler);
     }
 
     /// <summary>Observes the stable range contract of an Ether steering bar.</summary>
