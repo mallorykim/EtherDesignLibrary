@@ -79,6 +79,7 @@ public sealed partial class EtherSlider : RangeBase
     private bool _pressedKnob;
     private bool _keyboardFocused;
     private bool _coercingValue;
+    private double? _coercionOriginalOldValue;
     private double _knobBaseX;
     private double _segmentStep = BarWidth + BarGap;
     private double _trackWidth = DefaultTrackWidth;
@@ -269,6 +270,7 @@ public sealed partial class EtherSlider : RangeBase
             var coerced = NormalizeInputValue(newValue);
             if (!AreClose(coerced, newValue))
             {
+                _coercionOriginalOldValue = oldValue;
                 _coercingValue = true;
                 try
                 {
@@ -277,20 +279,33 @@ public sealed partial class EtherSlider : RangeBase
                 finally
                 {
                     _coercingValue = false;
+                    _coercionOriginalOldValue = null;
                 }
 
                 return;
             }
         }
 
-        base.OnValueChanged(oldValue, newValue);
-        if (_bars.Length > 0)
-            UpdateTrackVisual();
-        else
-            UpdateBarLayout();
+        var eventOldValue = _coercingValue && _coercionOriginalOldValue is double originalOldValue
+            ? originalOldValue
+            : oldValue;
+        var clearCoercionOldValue = _coercingValue && _coercionOriginalOldValue.HasValue;
+        try
+        {
+            base.OnValueChanged(eventOldValue, newValue);
+            if (_bars.Length > 0)
+                UpdateTrackVisual();
+            else
+                UpdateBarLayout();
 
-        if (FrameworkElementAutomationPeer.FromElement(this) is EtherSliderAutomationPeer peer)
-            peer.RaiseValueChanged(oldValue, newValue);
+            if (FrameworkElementAutomationPeer.FromElement(this) is EtherSliderAutomationPeer peer)
+                peer.RaiseValueChanged(eventOldValue, newValue);
+        }
+        finally
+        {
+            if (clearCoercionOldValue)
+                _coercionOriginalOldValue = null;
+        }
     }
 
     /// <inheritdoc />
@@ -323,6 +338,7 @@ public sealed partial class EtherSlider : RangeBase
         _barCanvas.PointerReleased += Canvas_PointerReleased;
         _barCanvas.PointerCaptureLost += Canvas_PointerCaptureLost;
         _barCanvas.PointerExited += Canvas_PointerExited;
+        _barCanvas.PointerWheelChanged += Canvas_PointerWheelChanged;
     }
 
     private void DetachInteractionHandlers()
@@ -335,6 +351,7 @@ public sealed partial class EtherSlider : RangeBase
         _barCanvas.PointerReleased -= Canvas_PointerReleased;
         _barCanvas.PointerCaptureLost -= Canvas_PointerCaptureLost;
         _barCanvas.PointerExited -= Canvas_PointerExited;
+        _barCanvas.PointerWheelChanged -= Canvas_PointerWheelChanged;
     }
 
     internal bool CanInteract => IsEnabled;
@@ -591,6 +608,17 @@ public sealed partial class EtherSlider : RangeBase
         _hoveringKnob = false;
         if (_knob is not null)
             UpdateKnobVisual();
+    }
+
+    private void Canvas_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+    {
+        if (!CanInteract || _barCanvas is null)
+            return;
+
+        var delta = e.GetCurrentPoint(_barCanvas).Properties.MouseWheelDelta;
+        var step = Math.Max(SmallChange, 0d);
+        Value = Math.Clamp(Value + Math.Sign(delta) * step, RangeMinimum, RangeMaximum);
+        e.Handled = true;
     }
 
     private void OnGotFocus(object sender, RoutedEventArgs e)

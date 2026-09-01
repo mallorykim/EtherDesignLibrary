@@ -26,7 +26,7 @@ public sealed partial class EtherSlider
         public void SetValue(double value)
         {
             if (!OwnerControl.SetValueFromAutomation(value))
-                throw new InvalidOperationException("The slider cannot accept automation-driven value changes in its current state.");
+                throw new ElementNotEnabledException("The slider cannot accept automation-driven value changes in its current state.");
         }
 
         internal void RaiseValueChanged(double oldValue, double newValue)
@@ -34,6 +34,15 @@ public sealed partial class EtherSlider
 
         protected override string GetClassNameCore()
             => nameof(EtherSlider);
+
+        // Surface the slider's Title (its header) as the accessible name when the framework has
+        // no other name, matching stock Slider (Header labels the control) and the sibling
+        // EtherSteeringBar / EtherProgressBar peers, which also fall back to Title.
+        protected override string GetNameCore()
+        {
+            var baseName = base.GetNameCore();
+            return string.IsNullOrEmpty(baseName) ? OwnerControl.Title ?? string.Empty : baseName;
+        }
 
         protected override AutomationControlType GetAutomationControlTypeCore()
             => AutomationControlType.Slider;

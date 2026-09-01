@@ -213,7 +213,7 @@ public sealed class EtherSteeringBar : Control
     public double Value
     {
         get => (double)GetValue(ValueProperty);
-        set => SetValue(ValueProperty, NormalizeValue(value));
+        set => SetValue(ValueProperty, value);
     }
 
     /// <summary>Gets or sets Gallery-forced chrome.</summary>
@@ -343,22 +343,40 @@ public sealed class EtherSteeringBar : Control
     private static void OnRangePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (EtherSteeringBar)d;
-        // Bindings and UI Automation write through the dependency-property system, bypassing
-        // the Value CLR setter. Normalize that path as well so the value rendered by the track,
-        // emitted by ValueChanged, and consumed by an application adapter are always identical.
-        var candidate = e.Property == ValueProperty && e.NewValue is double proposedValue
-            ? proposedValue
-            : control.Value;
-        var normalizedValue = control.NormalizeValue(candidate);
-        if (!control._normalizingValue && !AreClose(candidate, normalizedValue))
+        if (e.Property == ValueProperty)
+        {
+            var normalizedValue = control.NormalizeValue((double)e.NewValue);
+            if (!control._normalizingValue && !AreClose(normalizedValue, control.Value))
+            {
+                control._normalizingValue = true;
+                control._valueBeforeNormalization = (double)e.OldValue;
+                try
+                {
+                    control.SetValue(ValueProperty, normalizedValue);
+                }
+                finally
+                {
+                    control._normalizingValue = false;
+                }
+
+                return;
+            }
+
+            control.UpdateVisuals();
+            control.OnValueChanged(
+                control._normalizingValue ? control._valueBeforeNormalization : (double)e.OldValue,
+                (double)e.NewValue);
+            return;
+        }
+
+        var normalizedCurrentValue = control.NormalizeValue(control.Value);
+        if (!control._normalizingValue && !AreClose(normalizedCurrentValue, control.Value))
         {
             control._normalizingValue = true;
-            control._valueBeforeNormalization = e.Property == ValueProperty && e.OldValue is double previousValue
-                ? previousValue
-                : control.Value;
+            control._valueBeforeNormalization = control.Value;
             try
             {
-                control.SetValue(ValueProperty, normalizedValue);
+                control.SetValue(ValueProperty, normalizedCurrentValue);
             }
             finally
             {
@@ -368,17 +386,7 @@ public sealed class EtherSteeringBar : Control
             return;
         }
 
-        if (e.Property == ValueProperty && e.OldValue is double oldValue && e.NewValue is double newValue)
-        {
-            control.UpdateVisuals();
-            control.OnValueChanged(
-                control._normalizingValue ? control._valueBeforeNormalization : oldValue,
-                newValue);
-        }
-        else
-        {
-            control.UpdateVisuals();
-        }
+        control.UpdateVisuals();
     }
 
     private static void OnLabelPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -395,6 +403,7 @@ public sealed class EtherSteeringBar : Control
         _interactionSurface.PointerMoved += InteractionSurface_PointerMoved;
         _interactionSurface.PointerReleased += InteractionSurface_PointerReleased;
         _interactionSurface.PointerCaptureLost += InteractionSurface_PointerCaptureLost;
+        _interactionSurface.PointerWheelChanged += InteractionSurface_PointerWheelChanged;
     }
 
     private void DetachInteractionHandlers()
@@ -408,6 +417,7 @@ public sealed class EtherSteeringBar : Control
         _interactionSurface.PointerMoved -= InteractionSurface_PointerMoved;
         _interactionSurface.PointerReleased -= InteractionSurface_PointerReleased;
         _interactionSurface.PointerCaptureLost -= InteractionSurface_PointerCaptureLost;
+        _interactionSurface.PointerWheelChanged -= InteractionSurface_PointerWheelChanged;
     }
 
     private bool HasForcedState => PreviewStatus != SteeringBarPreviewStatus.None;
@@ -842,6 +852,16 @@ public sealed class EtherSteeringBar : Control
         UpdateVisuals();
     }
 
+    private void InteractionSurface_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+    {
+        if (!CanInteract || _interactionSurface is null)
+            return;
+
+        var delta = e.GetCurrentPoint(_interactionSurface).Properties.MouseWheelDelta;
+        Value += Math.Sign(delta) * SmallChange;
+        e.Handled = true;
+    }
+
     private void ApplyThumbCardShadow(bool isDisabled = false)
     {
         if (_thumbHost is null)
@@ -888,7 +908,7 @@ public sealed class EtherSteeringBar : Control
         public void SetValue(double value)
         {
             if (!OwnerControl.SetValueFromAutomation(value))
-                throw new InvalidOperationException("The steering bar cannot accept automation-driven value changes in its current state.");
+                throw new ElementNotEnabledException("The steering bar cannot accept automation-driven value changes in its current state.");
         }
 
         internal void RaiseValueChanged(double oldValue, double newValue)
