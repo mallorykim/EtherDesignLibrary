@@ -171,6 +171,21 @@
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Unfocused"/>
+                    <VisualState x:Name="FocusedPressed">
+                        <VisualState.Setters>
+                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerFocused">
+                        <VisualState.Setters>
+                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="FocusedDropDown">
+                        <VisualState.Setters>
+                            <Setter Target="FocusRing.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
                 </VisualStateGroup>
                 <VisualStateGroup x:Name="DropDownStates">
                     <VisualState x:Name="Opened">

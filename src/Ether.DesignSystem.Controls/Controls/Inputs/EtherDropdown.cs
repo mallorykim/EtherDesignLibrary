@@ -32,6 +32,12 @@ namespace Ether.DesignSystem.Controls;
 /// </list>
 /// Native ComboBox drives CommonStates, FocusStates, and DropDownStates. Default visual
 /// setters live on <c>DefaultEtherDropdownStyle</c>.
+///
+/// SUPPORTED / NOT SUPPORTED (intentionally simplified — this is a compact, select-only dropdown):
+/// <see cref="ComboBox.PlaceholderText"/> IS honored (shown through TriggerText when nothing is
+/// selected). <see cref="ComboBox.IsEditable"/> is NOT supported (the template has no EditableText
+/// part, so setting it does nothing). The trigger shows text only (DisplayMemberPath / ToString),
+/// not a templated SelectionBoxItem — a rich <c>ItemTemplate</c> renders in the list but not in the trigger.
 /// </remarks>
 [TemplatePart(Name = LayoutRootPart, Type = typeof(Grid))]
 [TemplatePart(Name = StateFillPart, Type = typeof(Border))]
@@ -50,6 +56,9 @@ namespace Ether.DesignSystem.Controls;
 [TemplateVisualState(GroupName = CommonStatesGroup, Name = DisabledState)]
 [TemplateVisualState(GroupName = FocusStatesGroup, Name = FocusedState)]
 [TemplateVisualState(GroupName = FocusStatesGroup, Name = UnfocusedState)]
+[TemplateVisualState(GroupName = FocusStatesGroup, Name = FocusedPressedState)]
+[TemplateVisualState(GroupName = FocusStatesGroup, Name = PointerFocusedState)]
+[TemplateVisualState(GroupName = FocusStatesGroup, Name = FocusedDropDownState)]
 [TemplateVisualState(GroupName = DropDownStatesGroup, Name = OpenedState)]
 [TemplateVisualState(GroupName = DropDownStatesGroup, Name = ClosedState)]
 public sealed class EtherDropdown : ComboBox
@@ -73,6 +82,9 @@ public sealed class EtherDropdown : ComboBox
     private const string FocusStatesGroup = "FocusStates";
     private const string FocusedState = "Focused";
     private const string UnfocusedState = "Unfocused";
+    private const string FocusedPressedState = "FocusedPressed";
+    private const string PointerFocusedState = "PointerFocused";
+    private const string FocusedDropDownState = "FocusedDropDown";
     private const string DropDownStatesGroup = "DropDownStates";
     private const string OpenedState = "Opened";
     private const string ClosedState = "Closed";
@@ -96,6 +108,10 @@ public sealed class EtherDropdown : ComboBox
         DefaultStyleKey = typeof(EtherDropdown);
         SelectionChanged += (_, _) => UpdateTriggerText();
         SizeChanged += (_, _) => UpdateMenuLayout();
+
+        // The trigger is driven by TriggerText (the framework ContentPresenter is collapsed), so
+        // PlaceholderText has to be surfaced here; refresh the trigger when it changes.
+        RegisterPropertyChangedCallback(PlaceholderTextProperty, (_, _) => UpdateTriggerText());
 
         // Width is derived from the items, so it goes stale whenever they change. Items covers
         // both direct children and an ItemsSource projection; ItemsSource itself is watched
@@ -252,14 +268,17 @@ public sealed class EtherDropdown : ComboBox
 
     /// <summary>
     /// ComboBox clears both SelectionBoxItem and its "ContentPresenter" part while the menu is
-    /// open, so neither can drive the trigger's text. TriggerText is ours alone.
+    /// open, so neither can drive the trigger's text. TriggerText is ours alone. When nothing is
+    /// selected, fall back to <see cref="ComboBox.PlaceholderText"/> so the compact dropdown still
+    /// prompts (the stock ComboBox does this through a PlaceholderTextBlock part this template omits).
     /// </summary>
     private void UpdateTriggerText()
     {
         if (_triggerText is null)
             return;
 
-        _triggerText.Text = ResolveDisplayText(SelectedItem) ?? string.Empty;
+        var text = ResolveDisplayText(SelectedItem);
+        _triggerText.Text = string.IsNullOrEmpty(text) ? PlaceholderText ?? string.Empty : text;
     }
 
     protected override void OnDropDownOpened(object e)
