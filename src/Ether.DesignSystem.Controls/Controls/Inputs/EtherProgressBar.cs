@@ -15,6 +15,11 @@ namespace Ether.DesignSystem.Controls;
 /// The control derives from <see cref="RangeBase"/> to expose its familiar range properties,
 /// but its automation contract is read-only. Value changes update layout directly; the control
 /// deliberately has no animation, so reduced-motion handling is not applicable.
+///
+/// NOT SUPPORTED (intentionally simplified): this is determinate-only. Unlike the stock
+/// <c>ProgressBar</c> it has no indeterminate, error, or paused states — there is no
+/// <c>IsIndeterminate</c>, <c>ShowError</c>, or <c>ShowPaused</c> (the control does not derive
+/// from <c>ProgressBar</c>).
 /// </remarks>
 [TemplatePart(Name = LayoutRootPart, Type = typeof(Grid))]
 [TemplatePart(Name = FillColumnPart, Type = typeof(ColumnDefinition))]

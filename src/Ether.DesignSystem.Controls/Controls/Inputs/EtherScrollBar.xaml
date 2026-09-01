@@ -7,6 +7,11 @@
     does not match the design: it draws a #E6E6E6 track rectangle and stepper arrow
     glyphs (FontIcon "Arrow") at both ends, and a square 16 px #7A7A7A thumb.
 
+    NOT SUPPORTED (intentionally simplified): this is a persistent bar. The template
+    defines no CommonStates / ScrollingIndicatorStates / ConsciousStates groups, so the
+    bar does NOT auto-hide when idle, expand on hover, or fade when disabled — it stays a
+    constant 6 px overlay by design.
+
     KEY MEASUREMENTS
       Thickness   6 px (kept over Figma Default 8 px)
       Min length  60 px (content-proportional floor; Figma specimens are 150 px)

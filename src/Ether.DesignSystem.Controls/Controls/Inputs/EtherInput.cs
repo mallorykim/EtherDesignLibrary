@@ -9,9 +9,13 @@ namespace Ether.DesignSystem.Controls;
 /// </summary>
 /// <remarks>
 /// The control reuses native <see cref="TextBox"/> CommonStates (Normal, PointerOver,
-/// Focused, Disabled). It does not add a clear button, header/description slots, or
-/// animation APIs. Focus is the brand-blue border in CommonStates, not a FocusStates
+/// Focused, Disabled). Focus is the brand-blue border in CommonStates, not a FocusStates
 /// group.
+///
+/// NOT SUPPORTED (intentionally simplified; the template omits these parts, so the inherited
+/// TextBox members silently render nothing — do not expect them to work):
+/// the delete/clear (X) button; <see cref="TextBox.Header"/> / <c>HeaderTemplate</c>;
+/// <see cref="TextBox.Description"/>. Place a label/description alongside the control instead.
 /// </remarks>
 [TemplatePart(Name = LayoutRootPart, Type = typeof(Grid))]
 [TemplatePart(Name = BorderElementPart, Type = typeof(Border))]
