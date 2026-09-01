@@ -48,6 +48,7 @@
             <SolidColorBrush x:Key="EtherRadioButtonCircleFillHoverBrush" Color="{StaticResource AlphaGray90}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCircleFillPressedBrush" Color="{StaticResource AlphaGray20}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCircleStrokeBrush" Color="{StaticResource Gray400}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonFocusBrush" Color="{StaticResource AlphaBlack70}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCheckedFillDefaultBrush" Color="{StaticResource Blue500}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCheckedFillHoverBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCheckedFillPressedBrush" Color="{StaticResource Blue700}"/>
@@ -76,6 +77,7 @@
             <SolidColorBrush x:Key="EtherRadioButtonCircleFillHoverBrush" Color="{StaticResource AlphaGray15}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCircleFillPressedBrush" Color="{StaticResource AlphaGray25}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCircleStrokeBrush" Color="{StaticResource Gray500}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonFocusBrush" Color="{StaticResource AlphaWhite70}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCheckedFillDefaultBrush" Color="{StaticResource Blue500}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCheckedFillHoverBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCheckedFillPressedBrush" Color="{StaticResource Blue700}"/>
@@ -103,6 +105,7 @@
             <SolidColorBrush x:Key="EtherRadioButtonCircleFillHoverBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCircleFillPressedBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCircleStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherRadioButtonFocusBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCheckedFillDefaultBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCheckedFillHoverBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherRadioButtonCheckedFillPressedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
@@ -205,9 +208,9 @@
                     <!-- Indeterminate intentionally unstyled: a radio is never three-state. -->
                 </VisualStateGroup>
 
-                <!-- No FocusStates group: the spec defines no focus treatment, and a ring set
-                     outside the circle left a white page-gap that read as an unwanted halo.
-                     UseSystemFocusVisuals stays False. -->
+                <!-- Keyboard focus (a11y): the FocusRing below is shown/hidden from code-behind
+                     (OnGotFocus/OnLostFocus, keyboard focus only). Modern WinUI controls do not
+                     drive a FocusStates VSM group, so a visual-state group here would be dead. -->
 
             </VisualStateManager.VisualStateGroups>
 
@@ -262,6 +265,16 @@
                                  HorizontalAlignment="Center"
                                  VerticalAlignment="Center"/>
                     </Grid>
+
+                    <!-- Keyboard focus ring: hugs the 18x18 circle (inner edge meets the circle
+                         edge, so no page shows through => no white halo). Shown only when Focused. -->
+                    <Border x:Name="FocusRing"
+                            Margin="-2"
+                            BorderBrush="{ThemeResource EtherRadioButtonFocusBrush}"
+                            BorderThickness="2"
+                            CornerRadius="11"
+                            IsHitTestVisible="False"
+                            Visibility="Collapsed"/>
                 </Grid>
 
                 <ContentPresenter x:Name="Label"

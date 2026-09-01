@@ -44,6 +44,7 @@
             <SolidColorBrush x:Key="EtherCheckboxFillHoverBrush" Color="{StaticResource AlphaGray90}"/>
             <SolidColorBrush x:Key="EtherCheckboxFillPressedBrush" Color="{StaticResource AlphaGray20}"/>
             <SolidColorBrush x:Key="EtherCheckboxStrokeBrush" Color="{StaticResource Gray400}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFocusBrush" Color="{StaticResource AlphaBlack70}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillDefaultBrush" Color="{StaticResource Blue500}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillHoverBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillPressedBrush" Color="{StaticResource Blue700}"/>
@@ -60,6 +61,7 @@
             <SolidColorBrush x:Key="EtherCheckboxFillHoverBrush" Color="{StaticResource AlphaGray15}"/>
             <SolidColorBrush x:Key="EtherCheckboxFillPressedBrush" Color="{StaticResource AlphaGray25}"/>
             <SolidColorBrush x:Key="EtherCheckboxStrokeBrush" Color="{StaticResource Gray500}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFocusBrush" Color="{StaticResource AlphaWhite70}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillDefaultBrush" Color="{StaticResource Blue500}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillHoverBrush" Color="{StaticResource Blue600}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillPressedBrush" Color="{StaticResource Blue700}"/>
@@ -76,6 +78,7 @@
             <SolidColorBrush x:Key="EtherCheckboxFillHoverBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
             <SolidColorBrush x:Key="EtherCheckboxFillPressedBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
             <SolidColorBrush x:Key="EtherCheckboxStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherCheckboxFocusBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillDefaultBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillHoverBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="EtherCheckboxCheckedFillPressedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
@@ -165,9 +168,9 @@
                     <!-- Indeterminate intentionally unstyled: IsThreeState is False. -->
                 </VisualStateGroup>
 
-                <!-- No FocusStates group: the spec defines no focus treatment, and a ring set
-                     3 px outside the box left a white page-gap between the box and the ring
-                     that read as an unwanted white halo. UseSystemFocusVisuals stays False. -->
+                <!-- Keyboard focus (a11y): the FocusRing below is shown/hidden from code-behind
+                     (OnGotFocus/OnLostFocus, keyboard focus only). Modern WinUI controls do not
+                     drive a FocusStates VSM group, so a visual-state group here would be dead. -->
 
             </VisualStateManager.VisualStateGroups>
 
@@ -226,6 +229,16 @@
                                   Data="M1.5,5.5 L4.5,8.5 L9.5,2.5"/>
                         </Viewbox>
                     </Grid>
+
+                    <!-- Keyboard focus ring: hugs the 18x18 box (inner edge meets the box edge, so
+                         no page shows through => no white halo). Shown only in the Focused state. -->
+                    <Border x:Name="FocusRing"
+                            Margin="-2"
+                            BorderBrush="{ThemeResource EtherCheckboxFocusBrush}"
+                            BorderThickness="2"
+                            CornerRadius="6"
+                            IsHitTestVisible="False"
+                            Visibility="Collapsed"/>
                 </Grid>
 
                 <ContentPresenter x:Name="Label"

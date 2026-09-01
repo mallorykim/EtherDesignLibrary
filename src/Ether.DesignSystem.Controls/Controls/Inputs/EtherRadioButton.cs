@@ -68,7 +68,17 @@ public sealed class EtherRadioButton : RadioButton
         RegisterPropertyChangedCallback(ContentTemplateProperty, OnContentPresentationPropertyChanged);
         RegisterPropertyChangedCallback(ContentTemplateSelectorProperty, OnContentPresentationPropertyChanged);
         RegisterPropertyChangedCallback(IsThreeStateProperty, OnIsThreeStateChanged);
+        RegisterPropertyChangedCallback(IsCheckedProperty, OnIsCheckedChanged);
         UpdateUsesTextContentPath();
+    }
+
+    // Two-state by design. A null (indeterminate) IsChecked is reachable via a bool? binding
+    // regardless of IsThreeState; the default style has no Indeterminate visual, so coerce a null
+    // back to false so the control always renders a defined Unchecked/Checked face.
+    private void OnIsCheckedChanged(DependencyObject sender, DependencyProperty dp)
+    {
+        if (IsChecked is null)
+            IsChecked = false;
     }
 
     private void OnContentPresentationPropertyChanged(DependencyObject sender, DependencyProperty property)
@@ -82,21 +92,47 @@ public sealed class EtherRadioButton : RadioButton
     /// <summary>
     /// DefaultEtherRadioButtonStyle's CheckStates group only declares Unchecked and Checked
     /// (see the [TemplateVisualState] attributes above) - there is no Indeterminate visual.
-    /// Letting a consumer flip IsThreeState to true would not fail immediately; it would sit
-    /// quietly until IsChecked became null, at which point the control renders whichever of
-    /// Unchecked/Checked the state machine lands on - a wrong-but-plausible-looking state, not
-    /// a visible failure. Reject the misconfiguration here, at the moment it is introduced,
-    /// instead of leaving that trap for whoever hits a null IsChecked later.
+    /// This control is two-state by design, so silently coerce IsThreeState back to false.
+    /// (Throwing from a property-changed callback would surface as a XamlParseException / app
+    /// crash if a consumer set IsThreeState="True" in markup.) The companion OnIsCheckedChanged
+    /// coerces any null IsChecked to false, so no indeterminate state can strand the visual.
     /// </summary>
     private void OnIsThreeStateChanged(DependencyObject sender, DependencyProperty dp)
     {
-        if (!IsThreeState)
-            return;
+        if (IsThreeState)
+            SetValue(IsThreeStateProperty, false);
+    }
 
-        SetValue(IsThreeStateProperty, false);
-        throw new NotSupportedException(
-            $"{nameof(EtherRadioButton)} does not support IsThreeState=true: its default style has no " +
-            "Indeterminate visual, so IsChecked=null would render an untrustworthy Unchecked/Checked " +
-            "state instead of failing loudly. IsThreeState has been reset to false.");
+    private FrameworkElement? _focusRing;
+
+    /// <inheritdoc />
+    protected override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+        _focusRing = GetTemplateChild("FocusRing") as FrameworkElement;
+        UpdateFocusRing();
+    }
+
+    /// <inheritdoc />
+    protected override void OnGotFocus(RoutedEventArgs e)
+    {
+        base.OnGotFocus(e);
+        UpdateFocusRing();
+    }
+
+    /// <inheritdoc />
+    protected override void OnLostFocus(RoutedEventArgs e)
+    {
+        base.OnLostFocus(e);
+        UpdateFocusRing();
+    }
+
+    // Reveal the keyboard focus ring only for keyboard focus (not pointer/programmatic), matching
+    // the platform reveal-focus convention. Modern WinUI controls do not drive a FocusStates VSM
+    // group, so the ring is toggled here rather than through visual states.
+    private void UpdateFocusRing()
+    {
+        if (_focusRing is not null)
+            _focusRing.Visibility = FocusState == FocusState.Keyboard ? Visibility.Visible : Visibility.Collapsed;
     }
 }
