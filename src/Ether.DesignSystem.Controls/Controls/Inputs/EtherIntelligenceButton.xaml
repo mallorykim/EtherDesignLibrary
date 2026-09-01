@@ -8,7 +8,7 @@
       With icon (stack icon + label in a StackPanel as Content):
         <controls:EtherIntelligenceButton>
             <StackPanel Orientation="Horizontal" Spacing="4">
-                <Image Width="24" Height="24" Source="ms-appx:///Assets/Icons/Sparkles.png"/>
+                <Image Width="24" Height="24" Source="ms-appx:///Assets/Icons/Sparkles.svg"/>
                 <TextBlock Text="What's this mean?"
                            FontFamily="{StaticResource InterFont}"
                            FontSize="14" FontWeight="SemiBold"
@@ -215,6 +215,8 @@
                             </Image>
                             <ContentPresenter x:Name="Cp"
                                               Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                                               VerticalAlignment="Center"
                                               Foreground="{ThemeResource EtherIntelligenceButtonForegroundBrush}"
                                               FontFamily="{StaticResource InterFont}"
@@ -236,7 +238,6 @@
 
     <Style x:Key="DefaultEtherIntelligenceButtonStyle" TargetType="controls:EtherIntelligenceButton">
         <Setter Property="Padding"                    Value="8,8,12,8"/>
-        <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -57,6 +58,7 @@ public class EtherButton : Button
     private const string RightIconStatesGroup = "RightIconStates";
     private const string RightIconVisibleState = "RightIconVisible";
     private const string RightIconCollapsedState = "RightIconCollapsed";
+    private RoutedEventHandler? _resolveStyleOnLoaded;
 
     // Internal template state: explicit consumer templates/selectors always take precedence
     // over the built-in single-line string rendering path.
@@ -179,7 +181,43 @@ public class EtherButton : Button
 
         var style = ResolveNamedStyle(button, key);
         if (style is not null)
+        {
+            button.CancelDeferredStyleResolution();
             button.Style = style;
+            return;
+        }
+
+        if (button.IsLoaded)
+        {
+            Debug.WriteLine($"[EtherButton] Could not resolve style '{key}' for Variant/Size; ensure the Ether control resource dictionaries are merged into the application or an ancestor scope.");
+            return;
+        }
+
+        button.CancelDeferredStyleResolution();
+        RoutedEventHandler loadedHandler = null!;
+        loadedHandler = (_, _) =>
+        {
+            button.Loaded -= loadedHandler;
+            if (ReferenceEquals(button._resolveStyleOnLoaded, loadedHandler))
+                button._resolveStyleOnLoaded = null;
+
+            var loadedStyle = ResolveNamedStyle(button, key);
+            if (loadedStyle is not null)
+                button.Style = loadedStyle;
+            else
+                Debug.WriteLine($"[EtherButton] Could not resolve style '{key}' for Variant/Size; ensure the Ether control resource dictionaries are merged into the application or an ancestor scope.");
+        };
+        button._resolveStyleOnLoaded = loadedHandler;
+        button.Loaded += loadedHandler;
+    }
+
+    private void CancelDeferredStyleResolution()
+    {
+        if (_resolveStyleOnLoaded is null)
+            return;
+
+        Loaded -= _resolveStyleOnLoaded;
+        _resolveStyleOnLoaded = null;
     }
 
     /// <summary>
