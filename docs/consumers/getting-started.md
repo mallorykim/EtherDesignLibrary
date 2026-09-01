@@ -254,11 +254,9 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
 文件里确实没有消费这个属性；这张表也从同一份文件生成/校验，二者不会各写各的。
 
 这些属性目前**不会**在设置时抛异常或给出运行时提示——它们只是不显示内容，
-不是显示错误的内容（这点和上一轮 `IsThreeState` 不同：`IsThreeState=true`
-会让 `EtherCheckbox` / `EtherRadioButton` 渲染出一个看似合理但错误的
-Unchecked/Checked 状态，所以那次选择了拦截+抛异常；这一批属性设置后画面
-和不设置时完全一样，没有误导性的错误状态,因此选择了"文档 + 机器可校验门禁"
-而不是运行时拦截）。
+不是显示错误的内容。`EtherCheckbox` / `EtherRadioButton` 是有意设计的两态控件：
+`IsChecked=null` 会被强制为 `false`，`IsThreeState=true` 会被强制回 `false`；
+请不要依赖 Indeterminate 状态。下面的表只列出真正不支持或静默无效的继承属性。
 
 <!-- UNSUPPORTED-PROPERTIES:START -->
 | 控件 | 属性 | 继承自 | 替代做法 |
@@ -266,15 +264,12 @@ Unchecked/Checked 状态，所以那次选择了拦截+抛异常；这一批属�
 | `EtherDropdown` | `Header` | `ComboBox` | 用外部 `TextBlock` 或表单容器在控件上方放标签。 |
 | `EtherDropdown` | `HeaderTemplate` | `ComboBox` | 同 `Header`：标签内容放在控件外部构建。 |
 | `EtherDropdown` | `Description` | `ComboBox` | 在控件下方再放一个 `TextBlock` 作为说明文字。 |
-| `EtherDropdown` | `PlaceholderText` | `ComboBox` | `EtherDropdown` 始终通过 `TriggerText` 显示已选项，没有"未选中"占位态；请添加一个真实的占位 `ComboBoxItem`（如 `Content="请选择"`）并作为默认选中项。 |
-| `EtherDropdown` | `PlaceholderForeground` | `ComboBox` | 与 `PlaceholderText` 一致：没有占位视觉，此属性不适用。 |
+| `EtherDropdown` | `PlaceholderForeground` | `ComboBox` | `PlaceholderText` 可用于未选择状态；此颜色属性没有绑定到模板。需要固定占位颜色时，请使用外部占位视觉。 |
 | `EtherDropdown` | `Text` | `ComboBox` | `EtherDropdown` 是**选择型控件**（Figma 源没有可编辑组合框变体），不提供可编辑模式。需要自由文本输入请改用 `EtherInput`，或自行样式化原生可编辑 `ComboBox`。 |
 | `EtherDropdown` | `IsEditable` | `ComboBox` | 同 `Text`：设计上不支持可编辑模式。设为 `true` 不会让控件可输入——模板里没有 `ComboBox` 内部需要的 `"EditableText"` 部件，所以这个开关静默不生效。 |
 | `EtherInput` | `Header` | `TextBox` | 这是既有的设计决策（见 `EtherInput.cs` 备注："does not add ... header/description slots"），不是遗漏。请用外部标签/说明布局包裹 `EtherInput`。 |
 | `EtherInput` | `HeaderTemplate` | `TextBox` | 同 `Header`。 |
 | `EtherInput` | `Description` | `TextBox` | 同 `Header`：在控件下方另放一个 `TextBlock`。 |
-| `EtherSwitch` | `Header` | `ToggleSwitch` | `EtherSwitch` 是套在原生 `ToggleSwitch` 上的**键控样式**（`Style="{StaticResource EtherSwitch}"`），不是子类控件，没有 code-behind 可以拦截这次写入。请用外部标签布局代替 `Header`。 |
-| `EtherSwitch` | `HeaderTemplate` | `ToggleSwitch` | 同 `Header`。 |
 <!-- UNSUPPORTED-PROPERTIES:END -->
 
 > 说明：`ToggleSwitch` 在当前使用的 `Microsoft.WindowsAppSDK 2.3.1` 里**没有**
@@ -287,7 +282,7 @@ Unchecked/Checked 状态，所以那次选择了拦截+抛异常；这一批属�
   `Ether*` 控件。
 - Controls 与 Foundation 在当前 preview 发布线按同一版本使用；升级时应一起升级
   两者。Interaction 包也应与发布公告给出的版本组合保持一致。
-- 除上表这 12 个属性外，各控件还继承了大量 WinUI 基类属性。其中多数确实是
+- 除上表这 9 个属性外，各控件还继承了大量 WinUI 基类属性。其中多数确实是
   外观类属性（`Background` / `BorderBrush` / `BorderThickness` / `CornerRadius` /
   `Padding` / `Foreground` / `FontSize` 等）——这些是**设计系统故意不开放覆盖**
   的：控件模板固定引用设计令牌而非 `{TemplateBinding ...}`，为的是让所有消费方
@@ -443,6 +438,12 @@ Unchecked/Checked 状态，所以那次选择了拦截+抛异常；这一批属�
     <Border Width="400" Height="400"/>
 </ScrollViewer>
 ```
+
+> **persistent-only 模式**：这是常驻显示的滚动条——模板没有定义
+> `ScrollingIndicatorStates`/`NoIndicator` 等分组，因此不会像原生 `ScrollBar`
+> 那样闲置自动隐藏、hover 展开或禁用时淡出，始终以 6 px 覆盖层呈现
+> （`EtherScrollBar.xaml:10-13`）。如果应用需要 auto-hide / indicator 行为，
+> 不要依赖这份隐式样式——显式指定其他 `Style=`（原生默认样式或自定义样式）。
 
 ## 6. 版本纪律
 
