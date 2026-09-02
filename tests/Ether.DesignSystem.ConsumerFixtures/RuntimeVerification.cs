@@ -311,7 +311,13 @@ internal static partial class RuntimeVerification
 
     internal sealed record AutomationPatternVerification(string[] Patterns);
 
-    internal sealed record CommandVerification(string[] Controls);
+    internal sealed record CommandVerification(
+        string[] Controls,
+        int SegmentedControlSelectionCommandExecutionCount,
+        object? SegmentedControlSelectionCommandParameter,
+        int SegmentedControlProgrammaticSelectionExecutionCount,
+        bool SegmentedControlSelectionCommandParameterOverrideVerified,
+        bool SegmentedControlSelectionCommandCanExecuteGuardVerified);
 
     internal sealed record DataPathVerification(
         int TabCount,
@@ -462,7 +468,7 @@ internal static partial class RuntimeVerification
         var twoWayBindings = VerifyTwoWayBindings(themeRoot);
         var automationPatterns = VerifyAutomationPatterns(
             button, checkbox, radioButton, input, dropdown, segmentedControl, intelligenceButton, toggleSwitch, themeRoot);
-        var commands = VerifyCommands();
+        var commands = VerifyCommands(themeRoot);
         var dataPaths = VerifyDataPaths(themeRoot);
         var publicPropertyInventory = CapturePublicPropertyInventory();
         var publicPropertyCode = VerifyAllPublicPropertyCode(

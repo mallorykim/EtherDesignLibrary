@@ -371,7 +371,7 @@ internal static partial class RuntimeVerification
         public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private static CommandVerification VerifyCommands()
+    private static CommandVerification VerifyCommands(FrameworkElement themeRoot)
     {
         var verified = new List<string>();
         VerifyButtonCommand(new EtherButton(), "EtherButton", verified);
@@ -382,7 +382,94 @@ internal static partial class RuntimeVerification
         // Toggle pattern it structurally never provides (WinUI design; the same file already verifies
         // the radio via PatternInterface.SelectionItem). Drive it through its real UIA pattern instead.
         VerifySelectionItemCommand(new EtherRadioButton(), "EtherRadioButton", verified);
-        return new CommandVerification(verified.ToArray());
+
+        var segmentedControlCommand = VerifySegmentedControlSelectionCommand(themeRoot, verified);
+
+        return new CommandVerification(
+            verified.ToArray(),
+            segmentedControlCommand.ExecutionCount,
+            segmentedControlCommand.LastParameter,
+            segmentedControlCommand.ProgrammaticExecutionCount,
+            segmentedControlCommand.ParameterOverrideVerified,
+            segmentedControlCommand.CanExecuteGuardVerified);
+    }
+
+    // Command surface for EtherSegmentedControl.SelectionCommand (P3): assign a counting ICommand,
+    // simulate a USER segment pick (segment.IsChecked = true runs through the exact same
+    // OnSegmentChecked path a pointer/keyboard selection does - WireSegments hooks Checked, not a
+    // synthetic call), and assert it executes exactly once with the expected parameter. Then assert
+    // a PROGRAMMATIC SelectedIndex assignment produces zero additional executions - proving the
+    // command only fires for user-initiated selection, mirroring ButtonBase.Command semantics.
+    private static (int ExecutionCount, object? LastParameter, int ProgrammaticExecutionCount, bool ParameterOverrideVerified, bool CanExecuteGuardVerified)
+        VerifySegmentedControlSelectionCommand(FrameworkElement themeRoot, List<string> verified)
+    {
+        if (themeRoot is not Panel host)
+            throw new InvalidOperationException("Wave R2 SelectionCommand probes require a panel-based theme root.");
+
+        var scratch = new Canvas { Opacity = 0d, IsHitTestVisible = false };
+        host.Children.Add(scratch);
+        try
+        {
+            // 1) Default parameter = SelectedValue; fires exactly once on a user pick.
+            var command = new RecordingCommand();
+            var segmented = CreateStringSegmentedControl();
+            segmented.SelectionCommand = command;
+            scratch.Children.Add(segmented);
+
+            var segments = GetSegmentRadioButtons(segmented);
+            if (segments.Length != 2)
+                throw new InvalidOperationException("EtherSegmentedControl.SelectionCommand fixture did not generate the expected 2 ItemsSource segments.");
+
+            segments[1].IsChecked = true;
+            Assert(command.ExecutionCount == 1, $"EtherSegmentedControl.SelectionCommand did not execute exactly once on user selection (count was {command.ExecutionCount}).");
+            Assert(Equals(command.LastParameter, segmented.SelectedValue), "EtherSegmentedControl.SelectionCommand did not default its parameter to SelectedValue.");
+            var executionCount = command.ExecutionCount;
+            var lastParameter = command.LastParameter;
+
+            // 2) A programmatic SelectedIndex assignment must NOT fire the command again.
+            segmented.SelectedIndex = 0;
+            Assert(command.ExecutionCount == executionCount, $"EtherSegmentedControl.SelectionCommand incorrectly executed on a programmatic SelectedIndex assignment (count now {command.ExecutionCount}).");
+            var programmaticExecutionCount = command.ExecutionCount;
+
+            // 3) SelectionCommandParameter, when set, overrides SelectedValue.
+            var overrideCommand = new RecordingCommand();
+            var overrideSegmented = CreateStringSegmentedControl();
+            overrideSegmented.SelectionCommand = overrideCommand;
+            overrideSegmented.SelectionCommandParameter = "fixed-parameter";
+            scratch.Children.Add(overrideSegmented);
+            var overrideSegments = GetSegmentRadioButtons(overrideSegmented);
+            overrideSegments[1].IsChecked = true;
+            Assert(
+                overrideCommand.ExecutionCount == 1 && Equals(overrideCommand.LastParameter, "fixed-parameter"),
+                "EtherSegmentedControl.SelectionCommand did not prefer SelectionCommandParameter over SelectedValue when explicitly set.");
+
+            // 4) CanExecute guards execution, mirroring ButtonBase.Command semantics.
+            var blockedCommand = new BlockedCommand();
+            var blockedSegmented = CreateStringSegmentedControl();
+            blockedSegmented.SelectionCommand = blockedCommand;
+            scratch.Children.Add(blockedSegmented);
+            var blockedSegments = GetSegmentRadioButtons(blockedSegmented);
+            blockedSegments[1].IsChecked = true;
+            Assert(blockedCommand.ExecutionCount == 0, "EtherSegmentedControl.SelectionCommand executed despite CanExecute returning false.");
+
+            verified.Add("EtherSegmentedControl.SelectionCommand");
+            return (executionCount, lastParameter, programmaticExecutionCount, true, true);
+        }
+        finally
+        {
+            host.Children.Remove(scratch);
+        }
+    }
+
+    // A command whose CanExecute always refuses, proving EtherSegmentedControl.SelectionCommand
+    // honors the guard instead of executing unconditionally.
+    private sealed class BlockedCommand : ICommand
+    {
+        public int ExecutionCount { get; private set; }
+        public bool CanExecute(object? parameter) => false;
+        public event EventHandler? CanExecuteChanged;
+        public void Execute(object? parameter) => ExecutionCount++;
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private static void VerifyButtonCommand(Button control, string name, List<string> verified)

@@ -299,6 +299,8 @@ internal static partial class RuntimeVerification
         (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.DisplayMemberPath)) => "Label",
         (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.SelectedIndex)) => 0,
         (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.SelectedItem)) => "audit-b",
+        (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.SelectionCommand)) => new RecordingCommand(),
+        (nameof(EtherSegmentedControl), nameof(EtherSegmentedControl.SelectionCommandParameter)) => "audit-command-parameter",
         (nameof(EtherSlider), nameof(EtherSlider.ShowTitle)) => true,
         (nameof(EtherSlider), nameof(EtherSlider.Title)) => "Audit slider",
         (nameof(EtherSlider), nameof(EtherSlider.ShowLabels)) => true,
