@@ -275,6 +275,9 @@
         <Setter Property="Padding"                    Value="4"/>
         <Setter Property="Background"                 Value="{ThemeResource EtherSegmentedControlTrackBackgroundBrush}"/>
         <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+        <!-- Self-size vertically (like the other Ether controls' Center default) so the track keeps
+             its content height instead of stretching to fill a taller container / row. -->
+        <Setter Property="VerticalAlignment"          Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="IsTabStop"                  Value="False"/>

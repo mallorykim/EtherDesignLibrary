@@ -22,7 +22,14 @@ $configuration = 'Debug'
 $platform = 'x64'
 $tfm = 'net8.0-windows10.0.19041.0'
 $packageTfm = 'net8.0-windows10.0.19041'
-$packageVersion = '0.1.0-preview.1'
+# Single source of truth for the preview version: Directory.Build.props. Deriving it here (rather
+# than hardcoding) keeps this gate from drifting behind a version bump.
+$directoryBuildProps = Join-Path $repoRoot 'Directory.Build.props'
+if ((Get-Content -LiteralPath $directoryBuildProps -Raw) -match '<EtherDesignSystemPreviewVersion>([^<]+)</EtherDesignSystemPreviewVersion>') {
+    $packageVersion = $Matches[1].Trim()
+} else {
+    throw "Could not read EtherDesignSystemPreviewVersion from $directoryBuildProps."
+}
 $platformProperty = '-p:Platform=' + $platform
 
 function Stop-LeftoverUnpackagedFixture {
@@ -855,7 +862,7 @@ try {
     Assert-FileDoesNotContain $foundationAssetTarget 'ReferencePath' 'Foundation buildTransitive asset target'
     [xml]$controlsNuspec = Get-Content -LiteralPath (Join-Path $extractRoot 'Controls/Ether.DesignSystem.Controls.nuspec') -Raw
     $dependency = @($controlsNuspec.package.metadata.dependencies.group.dependency | Where-Object { $_.id -eq 'Ether.DesignSystem.Foundation' })
-    if ($dependency.Count -ne 1 -or $dependency[0].version -notmatch '0.1.0-preview.1') {
+    if ($dependency.Count -ne 1 -or $dependency[0].version -notmatch [regex]::Escape($packageVersion)) {
         throw 'Ether.DesignSystem.Controls does not declare the expected Ether.DesignSystem.Foundation preview dependency.'
     }
 
@@ -1099,7 +1106,7 @@ try {
                 $radioButton.twoStateCoercionVerified -ne $true -or
                 $null -eq $etherInput -or
                 $etherInput.defaultStyleResolved -ne $true -or
-                [double]$etherInput.defaultMinWidth -ne 130 -or
+                [double]$etherInput.defaultMinWidth -ne 0 -or
                 [double]$etherInput.defaultFontSize -ne 14 -or
                 $etherInput.defaultUseSystemFocusVisuals -ne $false -or
                 @($expectedInputTemplateParts | Where-Object { $_ -cnotin @($etherInput.templateParts) }).Count -ne 0 -or

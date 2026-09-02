@@ -21,9 +21,20 @@ internal static partial class RuntimeVerification
         defaultInput.UpdateLayout();
         input.UpdateLayout();
 
-        if (defaultInput.MinWidth != 130d || defaultInput.FontSize != 14d || defaultInput.UseSystemFocusVisuals || defaultInput.Template is null)
+        // The proof no longer overrides alignment/width, so the shipped width contract is directly
+        // assertable on this instance: no MinWidth floor (0), Left alignment from the style, and a
+        // 280 px default width produced by MeasureOverride while Width is Auto (DesiredSize.Width is
+        // the measured output, independent of arrange timing).
+        if (defaultInput.MinWidth != 0d
+            || defaultInput.HorizontalAlignment != HorizontalAlignment.Left
+            || Math.Abs(defaultInput.DesiredSize.Width - 280d) > 0.5
+            || defaultInput.FontSize != 14d
+            || defaultInput.UseSystemFocusVisuals
+            || defaultInput.Template is null)
         {
-            throw new InvalidOperationException("The keyed EtherInput style did not apply its default FontSize, UseSystemFocusVisuals=False setter, and template.");
+            throw new InvalidOperationException(
+                $"The keyed EtherInput style did not apply its default width contract (no MinWidth floor, 280 px default, Left): " +
+                $"MinWidth={defaultInput.MinWidth}, DesiredWidth={defaultInput.DesiredSize.Width}, HorizontalAlignment={defaultInput.HorizontalAlignment}.");
         }
 
         var layoutRoot = GetTemplatePart<Grid>(input, "LayoutRoot", nameof(EtherInput));

@@ -19,7 +19,13 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$packageVersion = '0.1.0-preview.1'
+# Single source of truth for the preview version: Directory.Build.props (no drift on a version bump).
+$directoryBuildProps = Join-Path $repoRoot 'Directory.Build.props'
+if ((Get-Content -LiteralPath $directoryBuildProps -Raw) -match '<EtherDesignSystemPreviewVersion>([^<]+)</EtherDesignSystemPreviewVersion>') {
+    $packageVersion = $Matches[1].Trim()
+} else {
+    throw "Could not read EtherDesignSystemPreviewVersion from $directoryBuildProps."
+}
 $windowsAppSdkVersion = '2.3.1'
 $platformProperty = '-p:Platform=x64'
 $artifactsRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot 'artifacts'))

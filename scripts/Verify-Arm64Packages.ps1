@@ -25,7 +25,13 @@ $feed = [System.IO.Path]::GetFullPath((Join-Path $artifactsRoot 'arm64-packages'
 $packageCache = Join-Path $feed 'packages'
 $configuration = 'Debug'
 $platform = 'arm64'
-$packageVersion = '0.1.0-preview.1'
+# Single source of truth for the preview version: Directory.Build.props (no drift on a version bump).
+$directoryBuildProps = Join-Path $repoRoot 'Directory.Build.props'
+if ((Get-Content -LiteralPath $directoryBuildProps -Raw) -match '<EtherDesignSystemPreviewVersion>([^<]+)</EtherDesignSystemPreviewVersion>') {
+    $packageVersion = $Matches[1].Trim()
+} else {
+    throw "Could not read EtherDesignSystemPreviewVersion from $directoryBuildProps."
+}
 $platformProperty = "-p:Platform=$platform"
 $fixtureNuGetConfig = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\NuGet.Config'
 $unpackagedProject = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures\Unpackaged\Ether.DesignSystem.ConsumerFixtures.Unpackaged.csproj'

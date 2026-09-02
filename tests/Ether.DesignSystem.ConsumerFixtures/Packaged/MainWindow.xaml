@@ -127,25 +127,26 @@
                     <Border Background="{ThemeResource background/surface}"
                             CornerRadius="{StaticResource radius/surface}"
                             Padding="24">
-                        <StackPanel Spacing="{StaticResource Spacing16}" MaxWidth="360" HorizontalAlignment="Left">
+                        <!-- Each control self-sizes via its own style (EtherInput -> 280 px Left,
+                             EtherDropdown -> hug-to-content Left), so no proof's captured width is
+                             coupled to a sibling's. Do NOT reintroduce a child-sized host (MaxWidth on a
+                             Left panel) with HorizontalAlignment="Stretch" children here: that made the
+                             input's width silently drive the dropdown's visual baseline. -->
+                        <StackPanel Spacing="{StaticResource Spacing16}" HorizontalAlignment="Left">
                             <controls:EtherInput x:Name="DefaultInputProof"
                                                  PlaceholderText="Default package input"
-                                                 HorizontalAlignment="Stretch"
                                                  AutomationProperties.Name="Default package input" />
                             <controls:EtherInput x:Name="InputProof"
                                                  PlaceholderText="Package input"
-                                                 HorizontalAlignment="Stretch"
                                                  AutomationProperties.Name="Package input" />
                             <controls:EtherDropdown x:Name="DefaultDropdownProof"
                                                     SelectedIndex="0"
-                                                    HorizontalAlignment="Stretch"
                                                     AutomationProperties.Name="Default package dropdown">
                                 <ComboBoxItem Content="10 Minutes"/>
                                 <ComboBoxItem Content="30 Minutes"/>
                             </controls:EtherDropdown>
                             <controls:EtherDropdown x:Name="DropdownProof"
                                                     SelectedIndex="0"
-                                                    HorizontalAlignment="Stretch"
                                                     AutomationProperties.Name="Package dropdown">
                                 <ComboBoxItem Content="10 Minutes"/>
                                 <ComboBoxItem Content="30 Minutes"/>
