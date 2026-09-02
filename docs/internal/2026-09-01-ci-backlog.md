@@ -48,6 +48,22 @@ after the L3 gates are green:
 - Verify package consumers / unsigned MSIX produce
 - Verify the gate manifest matches the workflow (anti-drift, R-02)
 
+## ConsumerFixtures runtime flakiness (separate from CI — Verify-ConsumerFixtures.ps1)
+- **Unpackaged asset StorageFile check is flaky/environmental.** `Verify-ConsumerFixtures.ps1`'s
+  "unpackaged runtime smoke fixture did not verify Foundation resources, assets, and theme
+  re-resolution" throws when the marker's `assets[].StorageFileResolved` is false —
+  `StorageFile.GetFileFromApplicationUriAsync("ms-appx:///…")` returns "Value does not fall within the
+  expected range." for the Foundation fonts + an SVG. Observed: **passed once** (the original
+  consumability green run 2026-09-01) then **failed on every subsequent run** — independent of the code
+  in those runs (it was already red before the DX-optimization commits and before the SegmentedControl
+  data-bound-chrome fix; neither touches Foundation assets). Note the marker's `svgImageLoaded:true` — the
+  assets DO load via `ms-appx`; only the lower-level `StorageFile` API resolution fails, which is a known
+  unreliable path for **unpackaged** WinAppSDK apps. To fix, make the fixture's asset check not depend on
+  `StorageFile.GetFileFromApplicationUriAsync` for the unpackaged run (the ms-appx load itself already
+  proves the asset), or run the check only in the packaged fixture. Do this as a deliberate fixture-
+  reliability change (not a silent weakening) — it currently masks true green for the whole runtime smoke
+  even when every component/behavior assertion passes (`outcome:"success"`).
+
 ## How to work this backlog
 Same discipline as the consumability skill: for each gate, read what it asserts, decide flavor (a)
 stale-expectation vs (b) real fix, fix the smallest correct thing, verify the single script locally
