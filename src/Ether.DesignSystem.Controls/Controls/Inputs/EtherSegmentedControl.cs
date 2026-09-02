@@ -301,13 +301,51 @@ public class EtherSegmentedControl : ContentControl
         var segment = new EtherSegmentRadioButton
         {
             Tag = item,
-            ContentTemplate = ItemTemplate
+            ContentTemplate = ItemTemplate,
+            Style = ResolveSegmentStyle(),
         };
 
         segment.Content = ItemTemplate is not null
             ? item
             : ResolveDisplayMember(item);
         return segment;
+    }
+
+    // ItemsSource-generated segments need the same EtherSegment chrome that inline call sites apply
+    // explicitly via Style="{StaticResource EtherSegment}". Resolve that keyed Style from the element
+    // resource scope (this control, up its parent chain, then Application), searching MergedDictionaries
+    // recursively - ResourceDictionary.TryGetValue does not descend merged dictionaries on its own (the
+    // same reason EtherTabItem.FindStyle recurses by hand). Done in code, with no default style / no
+    // XAML change, so it cannot perturb the control's XAML compilation.
+    private Style? ResolveSegmentStyle()
+    {
+        for (FrameworkElement? current = this; current is not null; current = current.Parent as FrameworkElement)
+        {
+            if (FindStyleInDictionary(current.Resources, "EtherSegment") is { } scoped)
+                return scoped;
+        }
+
+        if (Application.Current?.Resources is { } appResources &&
+            FindStyleInDictionary(appResources, "EtherSegment") is { } appStyle)
+        {
+            return appStyle;
+        }
+
+        return null;
+    }
+
+    private static Style? FindStyleInDictionary(ResourceDictionary dictionary, string key)
+    {
+        if (dictionary.TryGetValue(key, out var value) && value is Style style)
+            return style;
+
+        foreach (var merged in dictionary.MergedDictionaries)
+        {
+            if (FindStyleInDictionary(merged, key) is { } nested)
+                return nested;
+        }
+
+        return null;
     }
 
     private object? ResolveDisplayMember(object? item)

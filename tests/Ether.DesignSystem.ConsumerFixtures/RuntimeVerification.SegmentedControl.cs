@@ -50,6 +50,16 @@ internal static partial class RuntimeVerification
             }
         }
 
+        // Regression guard: ItemsSource-generated segments must carry the same keyed EtherSegment
+        // chrome that inline call sites apply explicitly. CreateGeneratedSegment resolves that Style
+        // in code (ResolveSegmentStyle); without it, data-bound segments render as bare radio buttons.
+        var dataBoundSegmentedControl = new EtherSegmentedControl { ItemsSource = new[] { "Gen-A", "Gen-B" } };
+        var generatedSegments = GetSegmentRadioButtons(dataBoundSegmentedControl);
+        if (generatedSegments.Length < 2 || generatedSegments[0].Style is null)
+        {
+            throw new InvalidOperationException("EtherSegmentedControl ItemsSource-generated segments did not receive the keyed EtherSegment chrome style; data-bound segments would render as bare radio buttons.");
+        }
+
         var selectionChanges = new List<SegmentedSelectionChangedEventArgs>();
         segmentedControl.SelectionChanged += (_, args) => selectionChanges.Add(args);
         var expectedSelectedValue = segments[^1].Content;
