@@ -19,7 +19,7 @@
   DP (`EtherSteeringBar.xaml.cs:163-166,250-254`), and `NormalizeValue` snaps input to it
   (step-relative rounding) whenever `SnapToStops` is off (`EtherSteeringBar.xaml.cs:468-474`);
   irregular `Stops` continue to take precedence when snapping is on.
-- **Consumability (A):** all 13 declared DPs (including the new `StepFrequency`) are in the generic
+- **Consumability (A):** all 14 declared DPs (including `ValueContentConverter`) are in the generic
   property fixture (`RuntimeVerification.PropertyConsumption.cs:270-281,309-320`), the public
   custom event args carry old/new doubles (`EtherSteeringBar.xaml.cs:32-48`), the adapter is
   exercised (`RuntimeVerification.PropertyConsumption.cs:379`), TwoWay `Value` is now proven
@@ -70,8 +70,8 @@
 ```
 Component: EtherSteeringBar (+ SteeringBarValueChangedEventArgs)
 Base control: Control   | Package: Ether.DesignSystem.Controls
-Declared DPs: 13  (Minimum, Maximum, Value, Stops, SnapToStops, StepFrequency, ShowStops,
-                   SmallChange, LargeChange, Title, ValueContent, ShowTitle, ShowValue)
+Declared DPs: 14  (Minimum, Maximum, Value, Stops, SnapToStops, StepFrequency, ShowStops,
+                   SmallChange, LargeChange, Title, ValueContent, ValueContentConverter, ShowTitle, ShowValue)
                    | inherited public surface: Control
 
 Rubric (declared DPs):

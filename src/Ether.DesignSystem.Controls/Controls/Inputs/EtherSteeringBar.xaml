@@ -199,7 +199,10 @@
                                               HorizontalAlignment="Left" FontFamily="{StaticResource InstrumentSans}"
                                               FontSize="{StaticResource Size14}" FontWeight="{StaticResource WeightSemibold}"
                                               Foreground="{ThemeResource EtherSteeringBarTitleForegroundBrush}"/>
-                            <ContentPresenter x:Name="ValueLabel" Content="{TemplateBinding ValueContent}"
+                            <!-- Content is code-driven (UpdateLabels -> GetEffectiveValueContent): ValueContent,
+                                 else ValueContentConverter, else the built-in percent. Do not add a
+                                 Content="{TemplateBinding ValueContent}" here — the code assignment overrides it. -->
+                            <ContentPresenter x:Name="ValueLabel"
                                               ContentTemplate="{StaticResource EtherSingleLineTextContentTemplate}"
                                               HorizontalAlignment="Right" FontFamily="{StaticResource InstrumentSans}"
                                               FontSize="{StaticResource Size14}" FontWeight="{StaticResource WeightSemibold}"

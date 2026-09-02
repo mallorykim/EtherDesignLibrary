@@ -18,7 +18,7 @@
   complete (`EtherProgressBar.cs:59-100`; `EtherProgressBar.xaml:68-112`). Indeterminate,
   error, and paused states are explicit exclusions because this type is not `ProgressBar`
   (`EtherProgressBar.cs:19-22`).
-- **Consumability (A):** four declared DPs and the range adapter are fixture-covered
+- **Consumability (A):** five declared DPs and the range adapter are fixture-covered
   (`RuntimeVerification.PropertyConsumption.cs:270-281,291-294,377`), read-only RangeValue automation is
   comprehensively asserted (`RuntimeVerification.ProgressBar.cs:65-138`), and strict R5
   documentation now passes: both identifier and wrapper XML docs state each registered/effective
@@ -61,7 +61,7 @@
 ```
 Component: EtherProgressBar
 Base control: RangeBase   | Package: Ether.DesignSystem.Controls
-Declared DPs: 4  (Title, ValueContent, ShowTitle, ShowValue)
+Declared DPs: 5  (Title, ValueContent, ValueContentConverter, ShowTitle, ShowValue)
                  | inherited public surface: RangeBase
 
 Rubric (declared DPs):

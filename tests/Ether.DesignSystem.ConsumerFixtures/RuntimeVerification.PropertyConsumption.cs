@@ -290,6 +290,7 @@ internal static partial class RuntimeVerification
         (nameof(EtherDropdown), nameof(EtherDropdown.MenuGap)) => 8d,
         (nameof(EtherProgressBar), nameof(EtherProgressBar.Title)) => "Audit progress",
         (nameof(EtherProgressBar), nameof(EtherProgressBar.ValueContent)) => "42%",
+        (nameof(EtherProgressBar), nameof(EtherProgressBar.ValueContentConverter)) => new RecordingValueConverter(),
         (nameof(EtherProgressBar), nameof(EtherProgressBar.ShowTitle)) => true,
         (nameof(EtherProgressBar), nameof(EtherProgressBar.ShowValue)) => true,
         (nameof(EtherSegmentPanel), nameof(EtherSegmentPanel.Spacing)) => 6d,
@@ -319,6 +320,7 @@ internal static partial class RuntimeVerification
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.LargeChange)) => 20d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Title)) => "Audit steering",
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ValueContent)) => "42%",
+        (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ValueContentConverter)) => new RecordingValueConverter(),
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ShowTitle)) => true,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ShowValue)) => true,
         (nameof(EtherMasthead), nameof(EtherMasthead.ShowSettings)) => false,
@@ -329,6 +331,17 @@ internal static partial class RuntimeVerification
         (nameof(EtherTabItem), nameof(EtherTabItem.Icon)) => "Home",
         _ => throw new InvalidOperationException($"No property-audit sample is registered for {type.Name}.{propertyName}."),
     };
+
+    // Sample IValueConverter for the ValueContentConverter DPs (EtherSteeringBar / EtherProgressBar):
+    // formats the value into "value·" so setting it is a distinct, non-null converter the audit can drive.
+    private sealed class RecordingValueConverter : Microsoft.UI.Xaml.Data.IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+            => $"{value}·";
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+            => throw new NotSupportedException();
+    }
 
     private static bool ValuesMatch(object? expected, object? actual)
     {

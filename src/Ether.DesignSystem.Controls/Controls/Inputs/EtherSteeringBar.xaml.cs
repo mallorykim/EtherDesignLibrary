@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Windows.System;
@@ -200,6 +201,11 @@ public sealed class EtherSteeringBar : Control
         DependencyProperty.Register(nameof(ShowValue), typeof(bool), typeof(EtherSteeringBar),
             new PropertyMetadata(false, OnLabelPropertyChanged));
 
+    /// <summary>Identifies the <see cref="ValueContentConverter"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
+    public static readonly DependencyProperty ValueContentConverterProperty =
+        DependencyProperty.Register(nameof(ValueContentConverter), typeof(IValueConverter), typeof(EtherSteeringBar),
+            new PropertyMetadata(null, OnLabelPropertyChanged));
+
     /// <summary>Gets or sets the inclusive lower bound of the range. Default is 0.</summary>
     public double Minimum
     {
@@ -300,6 +306,21 @@ public sealed class EtherSteeringBar : Control
     {
         get => (bool)GetValue(ShowValueProperty);
         set => SetValue(ShowValueProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets a converter that formats <see cref="Value"/> into the value label, used only while
+    /// <see cref="ValueContent"/> is unset. It keeps the label in sync with <see cref="Value"/> without
+    /// the consumer taking over the whole content slot. Modeled on <c>Slider.ThumbToolTipValueConverter</c>:
+    /// the converter's value is <see cref="Value"/> (boxed double) and its parameter is this control, so it
+    /// can read <see cref="Minimum"/>/<see cref="Maximum"/>. Registered and effective default is
+    /// <see langword="null"/>; when both this and <see cref="ValueContent"/> are unset, the control formats
+    /// <see cref="Value"/> as a percent of [<see cref="Minimum"/>, <see cref="Maximum"/>].
+    /// </summary>
+    public IValueConverter? ValueContentConverter
+    {
+        get => (IValueConverter?)GetValue(ValueContentConverterProperty);
+        set => SetValue(ValueContentConverterProperty, value);
     }
 
     /// <summary>
@@ -731,7 +752,35 @@ public sealed class EtherSteeringBar : Control
     }
 
     private object? GetEffectiveValueContent()
-        => ValueContent ?? $"{Math.Round(Value):0}%";
+    {
+        // Precedence: an explicit ValueContent is shown verbatim (the consumer owns the label);
+        // otherwise a ValueContentConverter formats the live Value; otherwise the built-in percent.
+        if (ValueContent is not null)
+            return ValueContent;
+
+        if (ValueContentConverter is { } converter)
+        {
+            try
+            {
+                return converter.Convert(Value, typeof(object), this, Language);
+            }
+            catch
+            {
+                // A consumer-supplied converter must never break the label or crash a DP callback;
+                // fall through to the built-in text if it throws.
+            }
+        }
+
+        return FormatBuiltInValue();
+    }
+
+    // Percent of the [Minimum, Maximum] range (not the raw value), so a non-default range reads correctly.
+    private string FormatBuiltInValue()
+    {
+        var span = RangeMaximum - RangeMinimum;
+        var percent = span <= 0d ? 0d : (Value - RangeMinimum) / span * 100d;
+        return $"{Math.Round(percent):0}%";
+    }
 
     private void UpdateVisuals()
     {

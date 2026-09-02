@@ -104,7 +104,9 @@
                                               HorizontalAlignment="Left" FontFamily="{StaticResource InstrumentSans}"
                                               FontSize="{StaticResource Size14}" FontWeight="{StaticResource WeightSemibold}"
                                               Foreground="{ThemeResource EtherProgressBarTitleForegroundBrush}"/>
-                            <ContentPresenter x:Name="ValueLabel" Content="{TemplateBinding ValueContent}"
+                            <!-- Content is code-driven (UpdateValueLabel -> GetEffectiveValueContent): ValueContent,
+                                 else ValueContentConverter, else empty. Do not template-bind ValueContent here. -->
+                            <ContentPresenter x:Name="ValueLabel"
                                               ContentTemplate="{StaticResource EtherSingleLineTextContentTemplate}"
                                               HorizontalAlignment="Right" FontFamily="{StaticResource InstrumentSans}"
                                               FontSize="{StaticResource Size14}" FontWeight="{StaticResource WeightSemibold}"

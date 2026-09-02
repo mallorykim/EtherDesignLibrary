@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 
 namespace Ether.DesignSystem.Controls;
 
@@ -47,6 +48,7 @@ public sealed class EtherProgressBar : RangeBase
 
     private ColumnDefinition? _fillColumn;
     private ColumnDefinition? _restColumn;
+    private ContentPresenter? _valueLabel;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EtherProgressBar"/> class.
@@ -69,13 +71,31 @@ public sealed class EtherProgressBar : RangeBase
 
     /// <summary>Identifies the <see cref="ValueContent"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
     public static readonly DependencyProperty ValueContentProperty = DependencyProperty.Register(
-        nameof(ValueContent), typeof(object), typeof(EtherProgressBar), new PropertyMetadata(null));
+        nameof(ValueContent), typeof(object), typeof(EtherProgressBar), new PropertyMetadata(null, OnValueLabelChanged));
 
     /// <summary>Gets or sets the content of the right-hand value label. Registered and effective default is <see langword="null"/>.</summary>
     public object ValueContent
     {
         get => GetValue(ValueContentProperty);
         set => SetValue(ValueContentProperty, value);
+    }
+
+    /// <summary>Identifies the <see cref="ValueContentConverter"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
+    public static readonly DependencyProperty ValueContentConverterProperty = DependencyProperty.Register(
+        nameof(ValueContentConverter), typeof(IValueConverter), typeof(EtherProgressBar), new PropertyMetadata(null, OnValueLabelChanged));
+
+    /// <summary>
+    /// Gets or sets a converter that formats <see cref="RangeBase.Value"/> into the value label, used only
+    /// while <see cref="ValueContent"/> is unset, so the label stays in sync with the value without the
+    /// consumer taking over the whole content slot. Modeled on <c>Slider.ThumbToolTipValueConverter</c>:
+    /// the converter's value is <see cref="RangeBase.Value"/> (boxed double) and its parameter is this
+    /// control (for range access). Registered and effective default is <see langword="null"/>; when both
+    /// this and <see cref="ValueContent"/> are unset, the value label is empty.
+    /// </summary>
+    public IValueConverter? ValueContentConverter
+    {
+        get => (IValueConverter?)GetValue(ValueContentConverterProperty);
+        set => SetValue(ValueContentConverterProperty, value);
     }
 
     /// <summary>Identifies the <see cref="ShowTitle"/> dependency property. Registered default is false; the shipping style default is true.</summary>
@@ -106,7 +126,9 @@ public sealed class EtherProgressBar : RangeBase
         base.OnApplyTemplate();
         _fillColumn = GetTemplateChild(FillColumnPart) as ColumnDefinition;
         _restColumn = GetTemplateChild(RestColumnPart) as ColumnDefinition;
+        _valueLabel = GetTemplateChild(ValueLabelPart) as ContentPresenter;
         UpdateFill();
+        UpdateValueLabel();
         UpdateLabelState();
     }
 
@@ -115,6 +137,7 @@ public sealed class EtherProgressBar : RangeBase
     {
         base.OnValueChanged(oldValue, newValue);
         UpdateFill();
+        UpdateValueLabel();
 
         if (FrameworkElementAutomationPeer.FromElement(this) is EtherProgressBarAutomationPeer peer)
         {
@@ -127,6 +150,7 @@ public sealed class EtherProgressBar : RangeBase
     {
         base.OnMinimumChanged(oldMinimum, newMinimum);
         UpdateFill();
+        UpdateValueLabel();
     }
 
     /// <inheritdoc />
@@ -134,6 +158,7 @@ public sealed class EtherProgressBar : RangeBase
     {
         base.OnMaximumChanged(oldMaximum, newMaximum);
         UpdateFill();
+        UpdateValueLabel();
     }
 
     /// <inheritdoc />
@@ -142,6 +167,37 @@ public sealed class EtherProgressBar : RangeBase
 
     private static void OnLabelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         => ((EtherProgressBar)d).UpdateLabelState();
+
+    private static void OnValueLabelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((EtherProgressBar)d).UpdateValueLabel();
+
+    private void UpdateValueLabel()
+    {
+        if (_valueLabel is not null)
+            _valueLabel.Content = GetEffectiveValueContent();
+    }
+
+    // Precedence: an explicit ValueContent is shown verbatim; otherwise a ValueContentConverter formats the
+    // live Value; otherwise the value label is empty (this control ships no built-in value text).
+    private object? GetEffectiveValueContent()
+    {
+        if (ValueContent is not null)
+            return ValueContent;
+
+        if (ValueContentConverter is { } converter)
+        {
+            try
+            {
+                return converter.Convert(Value, typeof(object), this, Language);
+            }
+            catch
+            {
+                // A consumer-supplied converter must never break the label or crash a DP callback.
+            }
+        }
+
+        return null;
+    }
 
     private void UpdateFill()
     {

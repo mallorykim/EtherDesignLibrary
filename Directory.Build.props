@@ -16,7 +16,7 @@
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <UseWinUI>true</UseWinUI>
     <!-- Foundation and Controls ship as a coordinated preview pair. -->
-    <EtherDesignSystemPreviewVersion>0.1.0-preview.4</EtherDesignSystemPreviewVersion>
+    <EtherDesignSystemPreviewVersion>0.1.0-preview.5</EtherDesignSystemPreviewVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

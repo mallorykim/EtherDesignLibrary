@@ -60,6 +60,8 @@ Ether.DesignSystem.Controls.EtherProgressBar.Title.get -> object!
 Ether.DesignSystem.Controls.EtherProgressBar.Title.set -> void
 Ether.DesignSystem.Controls.EtherProgressBar.ValueContent.get -> object!
 Ether.DesignSystem.Controls.EtherProgressBar.ValueContent.set -> void
+Ether.DesignSystem.Controls.EtherProgressBar.ValueContentConverter.get -> Microsoft.UI.Xaml.Data.IValueConverter?
+Ether.DesignSystem.Controls.EtherProgressBar.ValueContentConverter.set -> void
 Ether.DesignSystem.Controls.EtherRadioButton
 Ether.DesignSystem.Controls.EtherRadioButton.EtherRadioButton() -> void
 Ether.DesignSystem.Controls.MastheadAction
@@ -153,6 +155,8 @@ Ether.DesignSystem.Controls.EtherSteeringBar.Value.set -> void
 Ether.DesignSystem.Controls.EtherSteeringBar.ValueChanged -> System.EventHandler<Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs!>?
 Ether.DesignSystem.Controls.EtherSteeringBar.ValueContent.get -> object?
 Ether.DesignSystem.Controls.EtherSteeringBar.ValueContent.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.ValueContentConverter.get -> Microsoft.UI.Xaml.Data.IValueConverter?
+Ether.DesignSystem.Controls.EtherSteeringBar.ValueContentConverter.set -> void
 Ether.DesignSystem.Controls.EtherTabItem
 Ether.DesignSystem.Controls.EtherTabItem.EtherTabItem() -> void
 Ether.DesignSystem.Controls.EtherTabItem.Icon.get -> string?
@@ -221,6 +225,8 @@ static readonly Ether.DesignSystem.Controls.EtherProgressBar.ShowTitleProperty -
 static readonly Ether.DesignSystem.Controls.EtherProgressBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherProgressBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherProgressBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherProgressBar.ValueContentConverterProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ValueContentConverterProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.LargeChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.MaximumProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.MinimumProperty -> Microsoft.UI.Xaml.DependencyProperty!
