@@ -854,6 +854,13 @@
             <SolidColorBrush x:Key="background/overlay-scrim" Color="{ThemeResource SystemColorWindowColor}"/>
             <SolidColorBrush x:Key="background/overlay-hover" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="background/overlay-pressed" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <!-- Tab background tokens: parity with Light/Dark. In High Contrast the default tab has no
+                 fill; hover/pressed/selected map to the system Highlight, matching the overlay tokens
+                 above and the EtherTabNavigation control's High Contrast state brushes. -->
+            <SolidColorBrush x:Key="background/tabs/default" Color="Transparent"/>
+            <SolidColorBrush x:Key="background/tabs/selected" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="background/tabs/hover" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="background/tabs/pressed" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="background/glass-light" Color="{ThemeResource SystemColorWindowColor}"/>
             <SolidColorBrush x:Key="background/glass-dark" Color="{ThemeResource SystemColorWindowColor}"/>
             <SolidColorBrush x:Key="background/brand" Color="{ThemeResource SystemColorHighlightColor}"/>

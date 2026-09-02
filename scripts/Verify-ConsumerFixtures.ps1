@@ -1326,7 +1326,7 @@ try {
 
     $expectedTokenHashes = @{
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml' = 'd6ff0e5301b3672dbb492484c8d0ea584aca12be'
-        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = 'a9c32562daa26daa3ace3fe0d55478fe46b1d7ef'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = '7f717d918a48dee2a241f57ef975eaf0ddafddc3'
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherSpacing.xaml' = '5d631cd2ebde306d389a1fa8999000359441bcd2'
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml' = 'b24444567ee95467408e004fe7fab622eba79759'
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherIconGeometries.xaml' = '134c1667934376ba4943cf350b110a02607c81f4'
