@@ -279,17 +279,17 @@ state. The table below lists only inherited properties that are genuinely unsupp
 silently ineffective.
 
 <!-- UNSUPPORTED-PROPERTIES:START -->
-| 控件 | 属性 | 继承自 | 替代做法 |
+| Control | Property | Inherited from | Workaround |
 | --- | --- | --- | --- |
-| `EtherDropdown` | `Header` | `ComboBox` | 用外部 `TextBlock` 或表单容器在控件上方放标签。 |
-| `EtherDropdown` | `HeaderTemplate` | `ComboBox` | 同 `Header`：标签内容放在控件外部构建。 |
-| `EtherDropdown` | `Description` | `ComboBox` | 在控件下方再放一个 `TextBlock` 作为说明文字。 |
-| `EtherDropdown` | `PlaceholderForeground` | `ComboBox` | `PlaceholderText` 可用于未选择状态；此颜色属性没有绑定到模板。需要固定占位颜色时，请使用外部占位视觉。 |
-| `EtherDropdown` | `Text` | `ComboBox` | `EtherDropdown` 是**选择型控件**（Figma 源没有可编辑组合框变体），不提供可编辑模式。需要自由文本输入请改用 `EtherInput`，或自行样式化原生可编辑 `ComboBox`。 |
-| `EtherDropdown` | `IsEditable` | `ComboBox` | 同 `Text`：设计上不支持可编辑模式。设为 `true` 不会让控件可输入——模板里没有 `ComboBox` 内部需要的 `"EditableText"` 部件，所以这个开关静默不生效。 |
-| `EtherInput` | `Header` | `TextBox` | 这是既有的设计决策（见 `EtherInput.cs` 备注："does not add ... header/description slots"），不是遗漏。请用外部标签/说明布局包裹 `EtherInput`。 |
-| `EtherInput` | `HeaderTemplate` | `TextBox` | 同 `Header`。 |
-| `EtherInput` | `Description` | `TextBox` | 同 `Header`：在控件下方另放一个 `TextBlock`。 |
+| `EtherDropdown` | `Header` | `ComboBox` | Use an external `TextBlock` or form container to place a label above the control. |
+| `EtherDropdown` | `HeaderTemplate` | `ComboBox` | Same as `Header`: build the label content outside the control. |
+| `EtherDropdown` | `Description` | `ComboBox` | Place another `TextBlock` below the control as descriptive text. |
+| `EtherDropdown` | `PlaceholderForeground` | `ComboBox` | `PlaceholderText` can be used for the unselected state; this color property is not bound in the template. If you need a fixed placeholder color, use an external placeholder visual. |
+| `EtherDropdown` | `Text` | `ComboBox` | `EtherDropdown` is a **selection-type control** (the Figma source has no editable combo-box variant) and does not offer an editable mode. If you need free-text input, use `EtherInput` instead, or style a native editable `ComboBox` yourself. |
+| `EtherDropdown` | `IsEditable` | `ComboBox` | Same as `Text`: editable mode is not supported by design. Setting it to `true` will not make the control accept input — the template lacks the `"EditableText"` part that `ComboBox` internally requires, so this switch silently has no effect. |
+| `EtherInput` | `Header` | `TextBox` | This is an existing design decision (see the `EtherInput.cs` comment: "does not add ... header/description slots"), not an oversight. Wrap `EtherInput` with an external label/description layout. |
+| `EtherInput` | `HeaderTemplate` | `TextBox` | Same as `Header`. |
+| `EtherInput` | `Description` | `TextBox` | Same as `Header`: place another `TextBlock` below the control. |
 <!-- UNSUPPORTED-PROPERTIES:END -->
 
 > Note: `ToggleSwitch` in the currently used `Microsoft.WindowsAppSDK 2.3.1` **does not

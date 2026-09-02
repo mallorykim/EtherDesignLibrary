@@ -1,64 +1,64 @@
-# WinUI 3 设计组件：后端可监听与消费审核框架
+# WinUI 3 Design Components: Backend-Listenable and Consumable Audit Framework
 
-**状态：** 研究记录 / 审核基线  
-**日期：** 2026-08-29  
-**适用范围：** `Ether.DesignSystem.*` 中会触发或呈现业务交互的 WinUI 3 组件，以及使用这些组件的客户端应用和对应后端。
+**Status:** Research record / audit baseline
+**Date:** 2026-08-29
+**Scope:** WinUI 3 components in `Ether.DesignSystem.*` that trigger or present business interactions, and the client applications and corresponding backends that use these components.
 
-## 结论与边界
+## Conclusion and boundaries
 
-后端不能直接监听 WinUI 3 控件的本地 `Click`、依赖属性变更或 UI Automation 事件。它们只在客户端进程内有效。要让后端可靠消费用户操作，应用必须把控件交互转换为版本化的业务命令或事件，并通过受控的传输通道发送。
+A backend cannot directly listen to a WinUI 3 control's local `Click`, dependency-property changes, or UI Automation events. These are only valid within the client process. For a backend to reliably consume user actions, the application must convert control interactions into versioned business commands or events and send them through a controlled transport channel.
 
 ```text
-WinUI 3 控件
-  -> ViewModel ICommand / 语义事件
-  -> 客户端交互适配器（校验、追踪、离线队列）
+WinUI 3 control
+  -> ViewModel ICommand / semantic event
+  -> Client interaction adapter (validation, tracing, offline queue)
   -> API Gateway / Event Ingress
-  -> 后端命令处理器
-  -> 领域事件、下游消费者、审计与监控
+  -> Backend command handler
+  -> Domain events, downstream consumers, audit and monitoring
 ```
 
-设计系统组件只负责表现、可访问性与表达用户意图；业务规则、鉴权、网络、重试及事件投递属于应用层或基础设施层。
+Design-system components are responsible only for presentation, accessibility, and expressing user intent; business rules, authentication, networking, retries, and event delivery belong to the application layer or infrastructure layer.
 
-## 审核目标
+## Audit goals
 
-每一个会改变业务状态的组件交互都必须能追溯到：
+Every component interaction that changes business state must be traceable to:
 
-1. 唯一的语义命令或事件；
-2. 版本化、可验证的传输契约；
-3. 稳定的幂等键和关联 ID；
-4. 后端处理记录及可查询的最终结果；
-5. 面向用户的成功、失败或待同步状态。
+1. A unique semantic command or event;
+2. A versioned, verifiable transport contract;
+3. A stable idempotency key and correlation ID;
+4. A backend processing record and a queryable final result;
+5. A user-facing success, failure, or pending-sync state.
 
-## 组件层审核清单
+## Component-layer audit checklist
 
-| 审核域 | 准入要求 | 阻断问题 |
+| Audit domain | Admission requirement | Blocking issue |
 | --- | --- | --- |
-| 公共 API | 可绑定状态以 `DependencyProperty` 暴露；数据源支持 `INotifyPropertyChanged` 或等价通知 | 控件状态只能在 code-behind 中读取或修改 |
-| 用户意图 | 以 `ICommand` 或语义事件暴露动作，例如 `SubmitRequested`、`FilterApplied` | 仅暴露 `Click`、`PointerPressed` 等技术事件给业务层 |
-| 组件边界 | 控件不得直接引用业务 API、认证令牌或 `HttpClient` | 设计库内部发 HTTP 请求、写业务审计或决定业务重试 |
-| 状态机 | 明确定义 `Idle`、`Pending`、`Succeeded`、`Failed`、`OfflineQueued`，并防止重复提交 | 请求尚未确认即显示成功；可连续触发多次提交 |
-| UI 线程 | 后台回调通过 `DispatcherQueue` 更新 UI | 后台线程直接访问 `DependencyObject` |
-| 自动化与无障碍 | 有稳定的 `AutomationId`、键盘可达性和正确语义；新控件验证 AutomationPeer | 关键操作无法被辅助技术或自动化测试识别 |
+| Public API | Bindable state is exposed as a `DependencyProperty`; the data source supports `INotifyPropertyChanged` or an equivalent notification | Control state can only be read or modified in code-behind |
+| User intent | Actions are exposed as an `ICommand` or a semantic event, e.g. `SubmitRequested`, `FilterApplied` | Only technical events such as `Click`, `PointerPressed` are exposed to the business layer |
+| Component boundary | The control must not directly reference business APIs, auth tokens, or `HttpClient` | The design library internally makes HTTP requests, writes business audit records, or decides business retries |
+| State machine | Clearly defines `Idle`, `Pending`, `Succeeded`, `Failed`, `OfflineQueued`, and prevents duplicate submission | Shows success before the request is confirmed; multiple submissions can be triggered in a row |
+| UI thread | Background callbacks update the UI via `DispatcherQueue` | A background thread directly accesses a `DependencyObject` |
+| Automation and accessibility | Has a stable `AutomationId`, keyboard reachability, and correct semantics; new controls verify the AutomationPeer | Key actions cannot be recognized by assistive technology or automated tests |
 
-依赖属性与变更通知适合组件和 ViewModel 之间的数据绑定；命令适合把多个输入路径归一为一个业务动作。它们不是跨进程后端事件协议。
+Dependency properties and change notifications are suited to data binding between a component and a ViewModel; commands are suited to unifying multiple input paths into one business action. Neither is a cross-process backend event protocol.
 
-## 交互契约审核清单
+## Interaction contract audit checklist
 
-每个可消费交互都须在契约仓库登记以下内容：
+Every consumable interaction must register the following in the contract repository:
 
-| 字段 | 要求 |
+| Field | Requirement |
 | --- | --- |
-| `type` | 稳定、业务化的名称，例如 `order.submit.requested`，不包含控件或布局实现 |
-| `schemaVersion` | 单调递增的契约版本；破坏性变化新增版本或新事件类型 |
-| `eventId` | 客户端生成的唯一消息 ID，用于投递去重 |
-| `idempotencyKey` | 对同一业务操作稳定，用于后端避免重复写入 |
-| `correlationId` | 贯穿客户端日志、请求、服务端处理、下游事件与告警 |
-| `occurredAtUtc` | UTC ISO 8601 时间戳 |
-| 身份上下文 | 经认证的用户、租户与授权上下文；服务端仍须验证，不能信任客户端声明 |
-| `source` | 最小化的应用版本、页面和组件标识，用于诊断，不能代替业务数据 |
-| `data` | 最小必要业务载荷；禁止令牌、密码和不必要的个人数据 |
+| `type` | A stable, business-oriented name, e.g. `order.submit.requested`, containing no control or layout implementation details |
+| `schemaVersion` | A monotonically increasing contract version; a breaking change adds a new version or a new event type |
+| `eventId` | A client-generated unique message ID, used for delivery de-duplication |
+| `idempotencyKey` | Stable for the same business operation, used by the backend to avoid duplicate writes |
+| `correlationId` | Runs through client logs, requests, server-side processing, downstream events, and alerts |
+| `occurredAtUtc` | UTC ISO 8601 timestamp |
+| Identity context | Authenticated user, tenant, and authorization context; the server must still verify it and cannot trust the client's claim |
+| `source` | A minimal app version, page, and component identifier, used for diagnostics; cannot substitute for business data |
+| `data` | The minimal necessary business payload; tokens, passwords, and unnecessary personal data are prohibited |
 
-示例：
+Example:
 
 ```json
 {
@@ -80,94 +80,97 @@ WinUI 3 控件
 }
 ```
 
-## 后端消费与可靠性审核清单
+## Backend consumption and reliability audit checklist
 
-- 后端按 `eventId` 和业务幂等键去重，并持久化处理状态、结果和错误原因。
-- 客户端按“至少一次投递”设计：网络异常、重启和超时可能造成重复送达；消费者必须幂等。
-- 待发送交互使用持久化 outbox/离线队列；收到服务端成功确认前不得删除。
-- 重试仅用于瞬时故障，并应采用退避、抖动、超时与断路器。非幂等的 `POST`/写操作不能无条件重试。
-- 如果后端处理后还需通知 UI，使用独立的服务端通知契约，并定义重连、顺序、快照与回放规则；不得直接操纵控件。
-- 服务端必须重新执行认证、授权、租户隔离、输入校验和业务状态校验。
-- 审计日志脱敏，定义保留期限和访问控制；敏感数据不进入通用遥测。
+- The backend de-duplicates by `eventId` and the business idempotency key, and persists the processing status, result, and error reason.
+- The client is designed for "at-least-once delivery": network errors, restarts, and timeouts can cause duplicate delivery; consumers must be idempotent.
+- Pending interactions use a persistent outbox/offline queue; they must not be deleted before a successful server acknowledgment is received.
+- Retries are used only for transient failures, and should employ backoff, jitter, timeouts, and a circuit breaker. Non-idempotent `POST`/write operations must not be retried unconditionally.
+- If the UI still needs to be notified after backend processing, use a separate server-side notification contract, and define reconnection, ordering, snapshot, and replay rules; the backend must not directly manipulate controls.
+- The server must re-perform authentication, authorization, tenant isolation, input validation, and business state validation.
+- Audit logs are redacted, with defined retention periods and access control; sensitive data does not enter general-purpose telemetry.
 
-## 验收证据
+## Acceptance evidence
 
-审核项完成时应提供下列证据：
+The following evidence should be provided when an audit item is complete:
 
-1. **组件清单**：组件属性、命令、语义事件、状态机和 AutomationId。
-2. **交互映射表**：`用户动作 -> ViewModel 命令 -> API/事件 -> 后端处理器 -> UI 回执状态`。
-3. **契约仓库内容**：JSON Schema、OpenAPI 或 Protobuf；版本策略、示例、错误模型、所有者和消费者。
-4. **契约兼容性测试**：生产者与消费者的 Schema/消费者驱动契约测试。
-5. **端到端测试**：正常提交、断网恢复、超时、重复点击、重复送达、服务端拒绝、旧客户端与新后端兼容。
-6. **可观测性证据**：使用 `correlationId` 能查询一次交互从客户端到最终后端处理的完整链路。
+1. **Component inventory**: component properties, commands, semantic events, state machine, and AutomationId.
+2. **Interaction mapping table**: `user action -> ViewModel command -> API/event -> backend handler -> UI acknowledgment state`.
+3. **Contract repository contents**: JSON Schema, OpenAPI, or Protobuf; versioning policy, examples, error model, owners, and consumers.
+4. **Contract compatibility tests**: producer and consumer Schema/consumer-driven contract tests.
+5. **End-to-end tests**: normal submission, network-recovery, timeout, repeated clicks, duplicate delivery, server rejection, and compatibility between an old client and a new backend.
+6. **Observability evidence**: using `correlationId`, the complete chain of one interaction — from the client to the final backend processing — can be queried.
 
-> **2026-08-30 更新**：本节记录的是 2026-08-29 审核当时的状态。`EtherSegmentedTrack`
-> 已于提交 `af909c93`（"refactor(controls): tighten the published surface before
-> release"）删除（未被库或 Gallery 实际构造，只有本审核的验收代码构造它，且其名字与
-> 同名样式键冲突），受审类型数由 13 降为 12，属性总数与分类随之从
-> `1,501 / 482 / 37 / 946` 变为当前的 `1,388 / 视觉 445 / 语义 69 / 平台 874`（Ether 自
-> 有 DP 由 37 降为 35）。以下数字为历史记录，不代表当前状态；当前权威数字见
-> `scripts/Verify-ConsumerFixtures.ps1` 的 `$expectedWritablePublicProperties` /
+> **2026-08-30 update**: this section records the state at the time of the 2026-08-29 audit.
+> `EtherSegmentedTrack` was removed in commit `af909c93` ("refactor(controls): tighten the
+> published surface before release") — it was never actually constructed by the library or the
+> Gallery, only by this audit's acceptance code, and its name collided with a style key of the
+> same name — bringing the number of audited types down from 13 to 12, and the property totals
+> and categories down accordingly from `1,501 / 482 / 37 / 946` to the current
+> `1,388 / visual 445 / semantic 69 / platform 874` (Ether's own DPs down from 37 to 35). The
+> numbers below are a historical record and do not represent the current state; for the current
+> authoritative numbers see `$expectedWritablePublicProperties` /
 > `$expectedVisualPublicProperties` / `$expectedSemanticPublicProperties` /
-> `$expectedPlatformPublicProperties` 与 `docs/handoff/2026-08-29-winui3-full-property-audit-handoff.md` §13。
+> `$expectedPlatformPublicProperties` in `scripts/Verify-ConsumerFixtures.ps1` and §13 of
+> `docs/handoff/2026-08-29-winui3-full-property-audit-handoff.md`.
 
-## 全属性可消费验收边界（2026-08-29，历史记录，见上方更新说明）
+## Full-property consumable acceptance boundary (2026-08-29, historical record, see the update note above)
 
-“全属性”在 WinUI 3 中不能理解为把 `FrameworkElement`、`UIElement` 等祖先类型的全部布局与渲染属性都发送到后端；那既没有稳定的业务含义，也会把 UI 实现细节和潜在敏感内容带出客户端。本库采用以下可执行的边界：
+"Full-property" in WinUI 3 cannot be understood as sending all layout and rendering properties of ancestor types such as `FrameworkElement` and `UIElement` to the backend; that would have no stable business meaning and would also carry UI implementation details and potentially sensitive content outside the client. This library adopts the following actionable boundary:
 
-1. 每个 Ether 控件**自己声明**的公开依赖属性，都必须有标准的 DP 标识符和 CLR 包装器，并在纯 NuGet 消费者中完成 `SetValue -> CLR getter / GetValue -> RegisterPropertyChangedCallback -> JSON envelope` 验收。
-2. 每个继承 WinUI 控件的**业务状态**都使用对应的标准适配器验收：按钮动作、`Text`、选择、`IsChecked`、`IsOn` 及 `RangeBase.Value`。这保留 WinUI 的原生事件与绑定约定。
-3. 视觉/布局配置（例如图标、间距、标签集合）可通过 `ObserveProperty` 显式消费，但默认不作为业务遥测发送。适配器会将原生 UI 对象降为 JSON 安全值，避免跨进程序列化 UI 对象图。
-4. 新增 Ether 依赖属性而未登记运行时样例会使消费者验收失败；新增业务状态而未选择标准适配器或显式 `ObserveProperty` 也不准入。
+1. Every public dependency property **declared by the Ether control itself** must have a standard DP identifier and CLR wrapper, and complete `SetValue -> CLR getter / GetValue -> RegisterPropertyChangedCallback -> JSON envelope` acceptance in a pure NuGet consumer.
+2. Every **business state** inherited from a WinUI control is accepted using its corresponding standard adapter: button action, `Text`, selection, `IsChecked`, `IsOn`, and `RangeBase.Value`. This preserves WinUI's native event and binding conventions.
+3. Visual/layout configuration (e.g. icon, spacing, label collections) can be explicitly consumed via `ObserveProperty`, but is not sent as business telemetry by default. The adapter reduces native UI objects to JSON-safe values, avoiding cross-process serialization of UI object graphs.
+4. Adding a new Ether dependency property without registering a runtime sample fails consumer acceptance; adding a new business state without choosing a standard adapter or an explicit `ObserveProperty` is also not admitted.
 
-当前运行时基线从打包后的 `Ether.DesignSystem.Controls` 与 `Ether.DesignSystem.Interactions` 恢复（不使用项目引用），并强制验证：
+The current runtime baseline is restored from the packaged `Ether.DesignSystem.Controls` and `Ether.DesignSystem.Interactions` (not using project references), and enforces verification of:
 
-- **1,501** 个 Ether 控件公开可写属性：在真实类型上逐一 CLR getter/read 与 setter 调用；
-- **482** 个视觉属性：在附着到真实 WinUI 视觉树的独立标本上逐一变更、重新布局并通过 `RenderTargetBitmap` 渲染；每条都输出精确的像素、布局、可见性、组件 DP 或平台 CLR 视觉契约观测，不能把“单一样本位图未变”误报为像素差异；
-- **37** 个组件自有依赖属性：`SetValue`、CLR/`GetValue`、变更回调和 JSON 后端 envelope；
-- **12** 条标准 WinUI 交互适配器链，以及 Light/Dark/OS High Contrast、LTR/RTL、UIA、文本缩放、本地化和截图回归。
+- **1,501** Ether control public writable properties: CLR getter/read and setter calls one by one on the real types;
+- **482** visual properties: changed, re-laid-out, and rendered one by one via `RenderTargetBitmap` on standalone specimens attached to a real WinUI visual tree; each one outputs a precise pixel, layout, visibility, component-DP, or platform-CLR visual-contract observation, and must not misreport "a single sample bitmap unchanged" as a pixel difference;
+- **37** component-owned dependency properties: `SetValue`, CLR/`GetValue`, change callback, and JSON backend envelope;
+- **12** standard WinUI interaction adapter chains, plus Light/Dark/OS High Contrast, LTR/RTL, UIA, text scaling, localization, and screenshot regression.
 
-继承属性仍不默认发送为后端业务事件：视觉属性的“可渲染”验收与业务属性的“可消费事件”验收是两个明确、独立的门禁。兼容子类 `EtherSegmentedTrack` 没有独立模板契约，其继承属性按 `EtherSegmentedControl` 的规范模板渲染，同时仍会以自身实际类型完成公开属性代码调用。
+Inherited properties are still not sent as backend business events by default: visual properties' "renderable" acceptance and business properties' "consumable event" acceptance are two clear, independent gates. The compatibility subclass `EtherSegmentedTrack` has no independent template contract; its inherited properties render according to `EtherSegmentedControl`'s canonical template, while still completing public-property code calls against its own actual type.
 
-视觉属性的每条记录还必须落入一种精确方法：`pixel-difference`（位图变化）、`layout-difference`（实际尺寸/期望尺寸/原点变化）、`visibility-transition`、`ether-component-dp-contract`（组件 DP 的 `GetValue` 与后端 envelope 契约），或 `platform-clr-visual-contract`（WinUI 公开 CLR 视觉属性，如 `BackgroundSizing`，其 API 并不公开 `<Name>Property` 字段）。因此非 DP 平台属性不会被错误拒绝，DP 属性也不会被错误降级为普通 CLR 验证。
+Every record of a visual property must also fall into one precise method: `pixel-difference` (bitmap change), `layout-difference` (actual size/expected size/origin change), `visibility-transition`, `ether-component-dp-contract` (the component DP's `GetValue` and backend envelope contract), or `platform-clr-visual-contract` (a WinUI public CLR visual property, such as `BackgroundSizing`, whose API does not expose a `<Name>Property` field). This way, non-DP platform properties are not incorrectly rejected, and DP properties are not incorrectly downgraded to plain CLR verification.
 
-每次通过的消费者 Smoke 会在 `artifacts/audit-runs/consumer-runtime-evidence-<timestamp>/` 保留当次 JSON 结果、整页 Light/Dark/OS High Contrast PNG，以及 13 个受审控件各自的 Light/Dark 截图矩阵；下次运行虽会清理临时包目录，但不会清理这些审核工件。
+Every passing consumer Smoke run retains that run's JSON result, the full-page Light/Dark/OS High Contrast PNGs, and the Light/Dark screenshot matrix for each of the 13 audited controls under `artifacts/audit-runs/consumer-runtime-evidence-<timestamp>/`; the next run cleans up the temporary package directory but does not clean up these audit artifacts.
 
-## WinUI 3 官方约定基线
+## WinUI 3 official convention baseline
 
-- 自定义可绑定属性使用 `public static readonly DependencyProperty <Name>Property` 与同名 public CLR `GetValue/SetValue` 包装器。
-- 有默认模板的控件在构造函数设置 `DefaultStyleKey = typeof(ControlType)`；只有需要读取模板部件时才重写 `OnApplyTemplate`，并先调用 `base.OnApplyTemplate()`。
-- 模板部件与视觉状态以 `TemplatePart` / `TemplateVisualState` 声明；主题色使用资源，High Contrast 使用系统资源；非瞬时过渡显式声明 easing。
-- 仅供模板实现的支持类默认保持 `internal`；如 WinUI XAML 元数据解析要求 `public`，必须在 XML 文档中明确其模板支持用途和非设计系统 API 地位。
+- Custom bindable properties use `public static readonly DependencyProperty <Name>Property` together with a same-named public CLR `GetValue/SetValue` wrapper.
+- A control with a default template sets `DefaultStyleKey = typeof(ControlType)` in its constructor; `OnApplyTemplate` is overridden only when template parts need to be read, and `base.OnApplyTemplate()` is called first.
+- Template parts and visual states are declared with `TemplatePart` / `TemplateVisualState`; theme colors use resources, and High Contrast uses system resources; non-instant transitions explicitly declare an easing function.
+- Supporting classes used only for template implementation stay `internal` by default; if WinUI XAML metadata resolution requires `public`, the XML documentation must clearly state their template-support purpose and non-design-system-API status.
 
-这些约定由 `scripts/Verify-WinUiConventions.ps1` 自动执行，并与微软的 [自定义依赖属性](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/custom-dependency-properties)、[WinUI 3 模板控件](https://learn.microsoft.com/en-us/windows/apps/winui/winui3/xaml-templated-controls-csharp-winui-3) 和 [控件模板](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/xaml-control-templates) 文档对齐。
+These conventions are automatically enforced by `scripts/Verify-WinUiConventions.ps1`, and are aligned with Microsoft's [Custom dependency properties](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/custom-dependency-properties), [WinUI 3 templated controls](https://learn.microsoft.com/en-us/windows/apps/winui/winui3/xaml-templated-controls-csharp-winui-3), and [Control templates](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/xaml-control-templates) documentation.
 
-## WinUI 3 Gallery 对标门禁（2026-08-29）
+## WinUI 3 Gallery benchmarking gate (2026-08-29)
 
-Microsoft 的 WinUI 3 Gallery 是**平台控件的行为、样本架构与可访问性基准**，不是 Ether 视觉 token 的替代品。因此每个 Ether 控件须同时通过以下三层，任一层失败均不能标记为视觉验收通过：
+Microsoft's WinUI 3 Gallery is **the behavior, sample architecture, and accessibility benchmark for platform controls**, not a substitute for Ether's visual tokens. Therefore every Ether control must pass all three of the following layers simultaneously; failing any one layer means it cannot be marked as passing visual acceptance:
 
-| 层级 | 可执行要求 | 当前自动化证据 |
+| Layer | Actionable requirement | Current automated evidence |
 | --- | --- | --- |
-| 平台行为 | 使用官方 DP、模板、VisualState、UIA、键盘和 RTL 约定 | `Verify-WinUiConventions.ps1`、消费者运行时 UIA/RTL 验证 |
-| Gallery 样本架构 | 每个控件都有独立样本、明确的交互状态、AutomationProperties 和可读的 XAML/code-behind 示例 | Gallery 控件示例与本地化门禁 |
-| Ether 视觉规范 | LTR 内容顺序、RTL 镜像后的逻辑顺序、间距、主题、Disabled/Pressed/Hover 和高对比度均可见且可回归 | NuGet 消费者 Smoke 的 Light/Dark/High Contrast 截图和状态断言 |
+| Platform behavior | Uses official DP, template, VisualState, UIA, keyboard, and RTL conventions | `Verify-WinUiConventions.ps1`, consumer runtime UIA/RTL verification |
+| Gallery sample architecture | Every control has an independent sample, clear interaction states, AutomationProperties, and a readable XAML/code-behind example | Gallery control example and localization gate |
+| Ether visual spec | LTR content order, logical order after RTL mirroring, spacing, theme, Disabled/Pressed/Hover, and high contrast are all visible and regressable | Light/Dark/High Contrast screenshots and state assertions from the NuGet consumer Smoke |
 
-本轮发现并修复了分段控件的视觉顺序缺口：`EtherSegmentPanel` 现在按 `FlowDirection` 安排子项；消费者样本改为实际使用该面板；运行时断言 LTR 中第一个逻辑项在左、RTL 中第一个逻辑项在右。Smoke 根节点固定为 LTR，避免演示窗口被环境 RTL 隐式镜像；运行时测试仍会显式切换到 RTL 并恢复。
+This round found and fixed a visual-order gap in the segmented control: `EtherSegmentPanel` now arranges its children according to `FlowDirection`; the consumer sample was changed to actually use this panel; the runtime asserts that the first logical item is on the left in LTR and on the right in RTL. The Smoke root node is fixed to LTR to avoid the demo window being implicitly mirrored by the ambient RTL; the runtime tests still explicitly switch to RTL and restore afterward.
 
-后续新增或修改控件时，必须新增或更新三态（LTR、RTL、High Contrast）截图证据以及对应的布局/顺序断言。仅有全页 Smoke 截图而无控件级断言，不得判定为视觉对标完成。
+When a control is added or modified going forward, three-state (LTR, RTL, High Contrast) screenshot evidence and the corresponding layout/order assertions must be added or updated. A full-page Smoke screenshot alone, without control-level assertions, must not be judged as completing visual benchmarking.
 
-## 审核判定
+## Audit verdict
 
-任何一项业务变更交互若缺少语义命令、版本化契约、幂等处理、关联追踪或明确用户回执，应判定为 **不通过（阻断发布）**。视觉样式或 UI Automation 完整并不能弥补该缺口；UI Automation 主要服务于无障碍和 UI 自动化测试。
+Any business-changing interaction that lacks a semantic command, a versioned contract, idempotent handling, correlation tracking, or a clear user acknowledgment should be judged **FAIL (blocks release)**. Complete visual styling or UI Automation does not make up for this gap; UI Automation primarily serves accessibility and UI automated testing.
 
-## 参考资料
+## References
 
-- [Microsoft Learn：Dependency properties overview](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/dependency-properties-overview)
-- [Microsoft Learn：Events and routed events overview](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/events-and-routed-events-overview)
-- [Microsoft Learn：Windows data binding in depth](https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-in-depth)
-- [Microsoft Learn：Custom automation peers](https://learn.microsoft.com/en-us/windows/apps/design/accessibility/custom-automation-peers)
+- [Microsoft Learn: Dependency properties overview](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/dependency-properties-overview)
+- [Microsoft Learn: Events and routed events overview](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/events-and-routed-events-overview)
+- [Microsoft Learn: Windows data binding in depth](https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-in-depth)
+- [Microsoft Learn: Custom automation peers](https://learn.microsoft.com/en-us/windows/apps/design/accessibility/custom-automation-peers)
 - [Microsoft WinUI 3 Gallery source](https://github.com/microsoft/WinUI-Gallery)
 - [Microsoft WinUI Gallery keyboard accessibility samples](https://github.com/microsoft/WinUI-Gallery/blob/main/WinUIGallery/Samples/AccessibilityKeyboard/AccessibilityKeyboardPage.xaml)
-- [Microsoft Learn：Event-driven architecture style](https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/event-driven)
-- [Microsoft Learn：Build resilient HTTP apps](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience)
-- [Microsoft Learn：Transactional Outbox sample](https://learn.microsoft.com/en-us/samples/azure-samples/cosmos-db-design-patterns/transactional-outbox/)
+- [Microsoft Learn: Event-driven architecture style](https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/event-driven)
+- [Microsoft Learn: Build resilient HTTP apps](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience)
+- [Microsoft Learn: Transactional Outbox sample](https://learn.microsoft.com/en-us/samples/azure-samples/cosmos-db-design-patterns/transactional-outbox/)

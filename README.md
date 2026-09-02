@@ -29,7 +29,7 @@ dotnet add package Ether.DesignSystem.Interactions --version 0.1.0-preview.4
 ```
 
 These resolve only from the private GitHub Packages feed described in
-[§1 of the getting-started guide](docs/consumers/getting-started.md#1-配置-github-packages-访问) —
+[§1 of the getting-started guide](docs/consumers/getting-started.md#1-configuring-github-packages-access) —
 `dotnet add package` alone will not authenticate you against it.
 
 ## Hello button (quick-start)

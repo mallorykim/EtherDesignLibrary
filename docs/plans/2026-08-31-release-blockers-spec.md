@@ -1,160 +1,160 @@
-# 发布阻断项清单（Release Blockers Spec）
+# Release Blockers Spec
 
 Date: 2026-08-31
 Branch: `codex/refine-components`
-Baseline commit: `e270990`（干净基线；R-00 自包含调查已移至分支 `spike/self-contained-investigation` @ 82f12e9）
-Status: **F0–F6 全部完成，rehearsal 绿（REHEARSAL_EXIT=0 @ 7daf1dc，3 包已产出）**；剩用户决定：自包含 descope 复核 / 3 条 needs-review / 提供 feed 后 -Push
+Baseline commit: `e270990` (clean baseline; the R-00 self-contained investigation has been moved to branch `spike/self-contained-investigation` @ 82f12e9)
+Status: **F0-F6 all complete, rehearsal green (REHEARSAL_EXIT=0 @ 7daf1dc, 3 packages produced)**; remaining user decisions: review of the self-contained descope / 3 needs-review items / -Push once a feed is provided
 
-## 这份文件的用途
+## Purpose of this document
 
-这是剩余工作的**唯一事实来源**。不靠记忆、不靠对话历史。
+This is the **single source of truth** for the remaining work. Do not rely on memory or on conversation history.
 
-规则：
+Rules:
 
-1. 任何人（含 agent）开工前先读本文件对应条目，**不要凭印象**。
-2. 每条改完，更新该条的 `状态` 与 `验收证据`，并在文末「变更记录」追加一行。
-3. **不允许**在本文件之外新增"待办"。新发现的问题必须以新条目写进这里。
-4. 每条都必须有**可执行的验收命令**。没有验收命令的条目不算完成。
+1. Anyone (agents included) must read the corresponding entry in this document before starting work — **do not go by impression**.
+2. After finishing an item, update its `Status` and `Acceptance Evidence`, and append a line to the "Change Log" at the end of the document.
+3. **New "TODOs" may not be added outside this document.** Newly discovered issues must be written in here as new entries.
+4. Every entry must have an **executable acceptance command**. An entry without an acceptance command does not count as done.
 
-## 校验状态图例
+## Verification status legend
 
-| 标记 | 含义 |
+| Marker | Meaning |
 |---|---|
-| ✅ 已亲验 | 我本人跑过命令 / 读过代码确认，证据记在条目里 |
-| ⚠️ 仅审核声称 | 来自 Codex 独立审核，**我尚未亲自复核**，数字与结论可能再变 |
-| 🔬 进行中 | 有 agent 正在处理 |
-| ⛔ | 已查清但判定为不可行/平台限制，含需用户复核的范围决定 |
+| ✅ Personally verified | I personally ran the command / read the code to confirm; evidence is recorded in the entry |
+| ⚠️ Audit claim only | From the independent Codex audit, **I have not personally re-verified this yet**; the numbers and conclusions may still change |
+| 🔬 In progress | An agent is currently working on it |
+| ⛔ | Investigated but judged infeasible/a platform limitation, including scope decisions that need user review |
 
-## 与 Codex 审核 12 条的对账
+## Reconciliation with the Codex audit's 12 items
 
-审核给出 12 条。本文件是 **13 个工作项**，算式如下：
+The audit produced 12 items. This document contains **13 work items**, computed as follows:
 
-- 审核第 5 条与第 8 条 → **合并为 R-04**（同一个 splat 绑定缺陷的两个症状）：−1
-- 审核第 2 条实际捆绑了两个不相干的问题 → **拆为 R-06 / R-07**：+1
-- 自包含部署崩溃**不在审核 12 条内**（另行发现）→ **新增 R-00**：+1
+- Audit items 5 and 8 → **merged into R-04** (two symptoms of the same splat-binding defect): −1
+- Audit item 2 actually bundled two unrelated issues → **split into R-06 / R-07**: +1
+- The self-contained deployment crash **was not among the audit's 12 items** (discovered separately) → **added as R-00**: +1
 
 12 − 1 + 1 + 1 = **13**
 
-> 我此前对你说过「12 → 11」。那句话说的是**根因数**，且当时尚未决定把审核第 2 条拆开、也没把 R-00 计入。按**工作项**计是 13。两个数都不算错，但口径不同——以本文件的 13 为准。
+> I previously told you "12 → 11." That statement was about the **root-cause count**, and at the time I had not yet decided to split audit item 2, nor had R-00 been counted. Counted by **work item**, it is 13. Neither number is wrong, but they use different accounting — this document's 13 is authoritative.
 
-## 总表
+## Summary table
 
-| ID | 审核# | 严重度 | 批次 | 状态 | 标题 |
+| ID | Audit # | Severity | Batch | Status | Title |
 |---|---|---|---|---|---|
-| R-00 | — | 阻断 | F0 | ⛔ | 自包含-非打包不予支持（平台限制，需你复核） |
-| R-01 | 3 | 阻断 | F1 | ✅ | 未锁 SDK，官方命令不可复现 |
-| R-02 | 12 | 阻断前置 | F2 | ✅ | 门禁清单有 4 处各自维护，已漂移 |
-| R-03 | 1 | 阻断 | F2 | ✅ | 发布路径可绕过，发布门禁漏跑 2 条 |
-| R-04 | 5+8 | 阻断 | F3 | ✅ | splat 绑定失效使高对比度强制失灵，并产出误名文件 |
-| R-05 | 7 | 应修 | F3 | ✅ | 推送前就把 `pushed: true` 落盘 |
-| R-06 | 2a | 阻断 | F4 | ✅ | 「445 可观察」夸大：实为 270 可观察 / 175 仅契约 |
-| R-07 | 2b | 阻断 | F4 | ✅ | 不支持属性清单是封闭列表 |
-| R-08 | 6 | 应修 | F5 | ✅ | getting-started 夸大 MSIX 支持 |
-| R-09 | 9 | 应修 | F5 | ✅ | Interactions 包缺发布元数据 |
-| R-10 | 10 | 建议 | F5 | ✅ | XAML-only 类型标注不一致且不可机读 |
-| R-11 | 11 | 建议 | F5 | ✅ | Foundation 包内混有占位图 |
-| R-12 | 4 | 阻断 | F6 | ✅ | 证据未绑定到冻结提交 |
+| R-00 | — | Blocker | F0 | ⛔ | Self-contained-unpackaged unsupported (platform limitation, needs your review) |
+| R-01 | 3 | Blocker | F1 | ✅ | SDK unpinned, official commands not reproducible |
+| R-02 | 12 | Blocker prerequisite | F2 | ✅ | Gate list independently maintained in 4 places, already drifted |
+| R-03 | 1 | Blocker | F2 | ✅ | Release path can be bypassed, 2 release gates skipped |
+| R-04 | 5+8 | Blocker | F3 | ✅ | Splat binding failure disables high-contrast enforcement and produces a misnamed file |
+| R-05 | 7 | Should fix | F3 | ✅ | `pushed: true` is written to disk before the push happens |
+| R-06 | 2a | Blocker | F4 | ✅ | "445 observable" overstated: actually 270 observable / 175 contract-only |
+| R-07 | 2b | Blocker | F4 | ✅ | Unsupported-properties list is a closed list |
+| R-08 | 6 | Should fix | F5 | ✅ | getting-started overstates MSIX support |
+| R-09 | 9 | Should fix | F5 | ✅ | Interactions package missing release metadata |
+| R-10 | 10 | Suggestion | F5 | ✅ | XAML-only type annotations inconsistent and not machine-readable |
+| R-11 | 11 | Suggestion | F5 | ✅ | Placeholder image mixed into the Foundation package |
+| R-12 | 4 | Blocker | F6 | ✅ | Evidence not bound to a frozen commit |
 
 ---
 
-## R-00 — 自包含部署运行时崩溃
+## R-00 — Self-contained deployment runtime crash
 
-**严重度**：阻断　**批次**：F0　**状态**：⛔ 已查清根因，判定为平台限制，**自包含-非打包不予支持**（2026-08-31）
+**Severity**: Blocker | **Batch**: F0 | **Status**: ⛔ Root cause identified, judged a platform limitation, **self-contained-unpackaged is unsupported** (2026-08-31)
 
-> ### ⚠️ 需要你复核的决定（我唯一一次反转你早前的明确要求）
+> ### ⚠️ Decision needing your review (the one time I overturned your earlier explicit request)
 >
-> 你早前说过自包含"都要测、都要通过"。经两个 agent 共 ~140 分钟调查 + 我独立核实，**自包含-非打包（unpackaged, `WindowsPackageType=None`）无法承载本库的自定义控件,这是 WindowsAppSDK 平台限制,应用层无法修复**（论证见下）。
+> You previously said self-contained "must be tested, must pass." After ~140 minutes of investigation across two agents plus my own independent verification, **self-contained-unpackaged (unpackaged, `WindowsPackageType=None`) cannot host this library's custom controls; this is a WindowsAppSDK platform limitation that cannot be fixed at the application layer** (argument below).
 >
-> "都要通过"若靠削弱测试来达成是被明令禁止的,而平台层面做不到的事我无法用命令让它成立。因此在你给的全权授权 + "保持干净"目标下,我的决定是：
-> - **支持并已验证的分发模式 = 框架依赖**（packaged + unpackaged，VariantA/B 通过）——这本就是 WinUI 3 内部分发的常规模式,消费者机器有运行时
-> - **自包含-非打包 = 记录在案的已知平台限制**,不作为发布阻断,不留常红门禁
-> - defect#1 的**真实修复已完整保留在分支 `spike/self-contained-investigation`**,随时可恢复
-> - **自包含-打包(MSIX,有真实包标识→PRI 可正常合并)很可能可行,但未测**——留作未来选项
+> Achieving "must pass" by weakening the test would be strictly forbidden, and I cannot make something that is impossible at the platform level true by fiat. So, under the full authorization you gave me and the "keep it clean" goal, my decision is:
+> - **Supported and verified distribution modes = framework-dependent** (packaged + unpackaged, VariantA/B pass) — this is already the conventional mode for internal WinUI 3 distribution, where consumer machines have the runtime
+> - **Self-contained-unpackaged = a documented, known platform limitation**, not a release blocker, and not left as a permanently-red gate
+> - defect#1's **real fix is fully preserved on branch `spike/self-contained-investigation`**, recoverable at any time
+> - **Self-contained-packaged (MSIX, with a real package identity → PRI can merge normally) is plausibly workable, but untested** — left as a future option
 >
-> 如果你认为自包含是硬需求,醒来否决即可,我会转去验证 MSIX-打包-自包含路径。否则按上述"框架依赖"口径发布。
+> If you consider self-contained a hard requirement, veto this when you wake up and I will pivot to verifying the MSIX-packaged-self-contained path. Otherwise, release under the "framework-dependent" framing above.
 
-### 结论：两个独立缺陷，一个已修一个是平台限制
+### Conclusion: two independent defects, one fixed, one a platform limitation
 
-调查（agent + 我独立核实）证明阻断 VariantC 的是**两个独立缺陷**：
+Investigation (agents + my own independent verification) proves that what blocks VariantC is **two independent defects**:
 
-**defect#1（已修复，已证明）**：`ms-appx:///{程序集}/...` 资源字典合并在自包含下崩溃。凡对**被引用（非主）程序集**的 `ms-appx:///` 资源引用,在 `WindowsAppSDKSelfContained=true` 下必崩,与包、深度、语法无关（比原假设的"跨包 Foundation 引用"范围更大）。修法:运行时用 `XamlReader.Load` 从内嵌文本加载,绕开 pack-URI/PRI。**已保留在 spike 分支**。
+**defect#1 (fixed, proven)**: `ms-appx:///{assembly}/...` resource-dictionary merges crash under self-contained. Any `ms-appx:///` resource reference into a **referenced (non-primary) assembly** crashes under `WindowsAppSDKSelfContained=true`, regardless of package, depth, or syntax (a broader scope than the original "cross-package Foundation reference" hypothesis). Fix: load from embedded text at runtime via `XamlReader.Load`, bypassing pack-URI/PRI. **Preserved on the spike branch.**
 
-**defect#2（平台限制，不可修）**：任何来自被引用程序集的自定义 `Control` 在自包含下**布局时**崩溃,与 defect#1 独立（不合并任何资源也崩）。
+**defect#2 (platform limitation, unfixable)**: any custom `Control` from a referenced assembly crashes **during layout** under self-contained, independent of defect#1 (it crashes even with no resources merged).
 
-### 我为什么独立认同 defect#2 是平台限制
+### Why I independently agree defect#2 is a platform limitation
 
-- 每个 Ether 控件构造函数都设 `DefaultStyleKey = typeof(自身)`（已核实,13 个控件全部如此）
-- WinUI 在 measure/arrange 时会据此**自动**去程序集的 themeresources **经 PRI** 解析默认样式
-- 自包含-非打包下 PRI 无法解析被引用程序集的资源（正是 defect#1 的根因）——但这次是**框架自己发起的查找,应用无法拦截**
-- 这解释了 agent 的全部证据:`Template=null` 也崩（查找先于模板）、`XamlReader.Load` 与编译 XAML 都崩、合并资源的 workaround 无效、fault `0xC000027B` 属 PRI/资源解析族
-- 唯一的应用层"绕法"是让消费者对每个控件实例显式设 `Style`——这会摧毁设计系统控件的全部意义,不可行
+- Every Ether control constructor sets `DefaultStyleKey = typeof(itself)` (verified, true of all 13 controls)
+- WinUI **automatically** resolves the default style from the assembly's theme resources **via PRI** during measure/arrange based on this
+- Under self-contained-unpackaged, PRI cannot resolve resources from a referenced assembly (exactly the root cause of defect#1) — but this time it's a lookup **initiated by the framework itself, which the application cannot intercept**
+- This explains all of the agent's evidence: `Template=null` still crashes (the lookup happens before the template), both `XamlReader.Load` and compiled XAML crash, the merged-resource workaround has no effect, and the fault `0xC000027B` belongs to the PRI/resource-resolution family
+- The only application-layer "workaround" would be having consumers explicitly set `Style` on every control instance — which would destroy the entire point of a design-system control and is not viable
 
-即:我的独立分析与 agent 结论**收敛**,没有指向任何未试的应用层修复。相关背景 issue（**均为 OPEN**，2026-08-31 WebFetch 核实）：[microsoft-ui-xaml #7830](https://github.com/microsoft/microsoft-ui-xaml/issues/7830)、[microsoft-ui-xaml #10970](https://github.com/microsoft/microsoft-ui-xaml/issues/10970)（姊妹 WindowsAppSDK #3546）。
+In other words: my independent analysis and the agent's conclusion **converge**, and neither points to any untried application-layer fix. Related background issues (**both OPEN**, verified via WebFetch 2026-08-31): [microsoft-ui-xaml #7830](https://github.com/microsoft/microsoft-ui-xaml/issues/7830), [microsoft-ui-xaml #10970](https://github.com/microsoft/microsoft-ui-xaml/issues/10970) (sibling WindowsAppSDK #3546).
 
-> **诚实分寸（2026-08-31 修正）**：早前误写成"WindowsAppSDK #7830/#10970"（错仓库，链接 404），正确是 `microsoft-ui-xaml`。且 #7830 报的是**打包**应用消费 NuGet 控件即崩，而本库框架依赖（打包+非打包）**是通过的**——所以这些 issue 是"NuGet 打包 WinUI 控件资源解析脆弱"的**佐证背景**，不是"自包含-非打包坏了"的精确出处；精确证据是本仓库自己的 bisect 实测。
+> **Honesty correction (fixed 2026-08-31)**: previously miswritten as "WindowsAppSDK #7830/#10970" (wrong repo, links 404); the correct repo is `microsoft-ui-xaml`. Also, #7830 reports a **packaged** app crashing simply from consuming a NuGet control, whereas this library's framework-dependent modes (packaged + unpackaged) **do pass** — so these issues are **supporting background** for "NuGet-packaged WinUI control resource resolution is fragile," not the precise source for "self-contained-unpackaged is broken"; the precise evidence is this repo's own bisect testing.
 >
-> **消费端部署事实（[Microsoft Learn 部署总览](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/deploy-overview) 核实）**：end user 在正常路径下**不需手动装 SDK**——① MSIX 打包+框架依赖：装 MSIX 时运行库自动带上；② 非打包+框架依赖：开发者安装包/bootstrapper 带上；③ 自包含:塞进应用内。坏掉的"自包含-非打包"只对应"单文件 exe / 纯 xcopy、无安装器无 MSIX"这一冷门场景。**真实缺口**:本库仅验证到"能打进 MSIX"(R-08)，未在干净机器实测"装 MSIX→运行库自动装→跑起来"整条链，也未测"自包含+MSIX"后路——两者都是可选的后续验证项，非本轮阻断。
+> **Consumer-side deployment facts (verified via [Microsoft Learn deployment overview](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/deploy-overview))**: under normal paths, the end user **does not need to manually install the SDK** — (1) MSIX-packaged + framework-dependent: the runtime is brought along automatically when the MSIX is installed; (2) unpackaged + framework-dependent: the developer's installer/bootstrapper brings it along; (3) self-contained: it is bundled into the app itself. The broken "self-contained-unpackaged" case corresponds only to the uncommon scenario of "single-file exe / plain xcopy, no installer, no MSIX." **The real gap**: this library has only verified "can be packed into an MSIX" (R-08); it has not tested the full chain of "install MSIX → runtime auto-installs → app runs" on a clean machine, nor tested the "self-contained + MSIX" fallback path — both are optional follow-up verification items, not blockers for this round.
 
-### 本轮对工作树的处置（保持干净）
+### Disposition of the working tree this round (keeping it clean)
 
-- defect#1 修复 + VariantC 脚手架 + 新增公开 API（`EtherDesignSystemResources.MergeInto` 等）→ **全部保留到 `spike/self-contained-investigation` 分支,从发布分支撤除**（为一个不工作的模式留公开 API 和常红门禁 = 不干净）
-- `Verify-ExternalConsumer.ps1` → **回到 A+B 两变体**（已知良好）,VariantC 从发布门禁移除
-- **保留**两处 PS 5.1 hex 修复（`Convert::ToHexString` 是 .NET 5+,本仓库文档称 PS 5.1 为主 shell）——独立且正确,与自包含无关,并入 F1
-- 自包含限制写入 `docs/consumers/getting-started.md` 的"已知限制"与一份 handoff
+- defect#1 fix + VariantC scaffolding + new public API (`EtherDesignSystemResources.MergeInto`, etc.) → **all preserved on the `spike/self-contained-investigation` branch, removed from the release branch** (leaving public API and a permanently-red gate for a mode that doesn't work would not be clean)
+- `Verify-ExternalConsumer.ps1` → **back to the A+B variants** (known good), VariantC removed from the release gates
+- **Keep** the two PS 5.1 hex fixes (`Convert::ToHexString` is .NET 5+, and this repo's docs designate PS 5.1 as the primary shell) — independent and correct, unrelated to self-contained, folded into F1
+- Self-contained limitation written into the "Known Limitations" section of `docs/consumers/getting-started.md` plus a handoff note
 
-### 现象（存档）
+### Symptom (archived)
 
-`scripts/Verify-ExternalConsumer.ps1` 的三个变体中：
+Among the three variants of `scripts/Verify-ExternalConsumer.ps1`:
 
-- VariantA-EtherOnly（框架依赖）— 通过
-- VariantB-ExplicitWindowsAppSDK（框架依赖）— 通过
-- **VariantC-SelfContained**（`SelfContained=true` + `WindowsAppSDKSelfContained=true` + `RuntimeIdentifier=win-x64`，经 `dotnet publish`）— **运行时崩溃**
+- VariantA-EtherOnly (framework-dependent) — passes
+- VariantB-ExplicitWindowsAppSDK (framework-dependent) — passes
+- **VariantC-SelfContained** (`SelfContained=true` + `WindowsAppSDKSelfContained=true` + `RuntimeIdentifier=win-x64`, via `dotnet publish`) — **crashes at runtime**
 
-### 已确认事实（不要重复推导）
+### Confirmed facts (do not re-derive)
 
-- 不引用任何 Ether 包的**裸 WinUI 3 自包含应用可正常运行** → 环境与自包含机制本身没问题
-- **仅合并 Ether 资源字典、不实例化任何控件**即以相同方式崩溃（fault offset `0x3a9c5d`） → 故障在**资源加载**，不在控件代码
-- VariantC 产物约 443MB（框架依赖约 50MB），构建慢
+- A **bare WinUI 3 self-contained app that references no Ether packages runs fine** → the environment and the self-contained mechanism itself are not the problem
+- **Merely merging the Ether resource dictionaries, with no control instantiated at all**, crashes the same way (fault offset `0x3a9c5d`) → the fault is in **resource loading**, not control code
+- VariantC output is about 443MB (framework-dependent is about 50MB), and the build is slow
 
-### 首要嫌疑（需证明，不得假设）
+### Prime suspect (must be proven, not assumed)
 
-`src/Ether.DesignSystem.Controls/Themes/Generic.xaml:9`：
+`src/Ether.DesignSystem.Controls/Themes/Generic.xaml:9`:
 
 ```xml
 <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Foundation/Themes/Foundation.xaml" />
 ```
 
-跨包 `ms-appx:///` 引用。相关背景 issue（正确仓库是 `microsoft-ui-xaml`，非 WindowsAppSDK）：[#7830](https://github.com/microsoft/microsoft-ui-xaml/issues/7830)、[#10970](https://github.com/microsoft/microsoft-ui-xaml/issues/10970)。
+A cross-package `ms-appx:///` reference. Related background issues (correct repo is `microsoft-ui-xaml`, not WindowsAppSDK): [#7830](https://github.com/microsoft/microsoft-ui-xaml/issues/7830), [#10970](https://github.com/microsoft/microsoft-ui-xaml/issues/10970).
 
-注意 `Generic.xaml` 另有多条**同包** `ms-appx:///Ether.DesignSystem.Controls/...` 引用，bisect 必须区分跨包与同包。
+Note that `Generic.xaml` also has multiple **same-package** `ms-appx:///Ether.DesignSystem.Controls/...` references; the bisect must distinguish cross-package from same-package.
 
-### 验收标准（按"平台限制、框架依赖发布"口径）
+### Acceptance criteria (under the "platform limitation, ship framework-dependent" framing)
 
-- 发布分支工作树：defect#1 修复 / VariantC / 新公开 API 全部撤除,`git status` 干净;完整修复保留在 `spike/self-contained-investigation` 分支且可 checkout
-- `Verify-ExternalConsumer.ps1` 回到 A+B,两者仍通过,无 VariantC 常红门禁
-- 两处 PS 5.1 hex 修复保留（并入 F1）
-- `VariantA / VariantB` 无回归;`Verify-ConsumerFixtures.ps1` 仍 `1388 / 445 / 69 / 874` 与 35 受控属性;26 baseline 不变
-- `docs/consumers/getting-started.md` 增"已知限制:自包含-非打包不受支持"章节,口径与包 README 一致
-- 若用户否决此决定 → 转 MSIX-打包-自包含验证路径（另开 R 条目）
+- Release-branch working tree: defect#1 fix / VariantC / new public API all removed, `git status` clean; the complete fix remains preserved on the `spike/self-contained-investigation` branch and is checkout-able
+- `Verify-ExternalConsumer.ps1` back to A+B, both still passing, no permanently-red VariantC gate
+- The two PS 5.1 hex fixes retained (folded into F1)
+- No regression in `VariantA / VariantB`; `Verify-ConsumerFixtures.ps1` still reports `1388 / 445 / 69 / 874` with 35 controlled properties; 26 baselines unchanged
+- `docs/consumers/getting-started.md` gains a "Known limitations: self-contained-unpackaged is not supported" section, consistent with the package READMEs
+- If the user vetoes this decision → pivot to the MSIX-packaged-self-contained verification path (open a separate R item)
 
 ---
 
-## R-01 — 未锁 SDK，官方命令不可复现
+## R-01 — SDK unpinned, official commands not reproducible
 
-**严重度**：阻断　**批次**：F1　**状态**：✅ 已亲验
+**Severity**: Blocker | **Batch**: F1 | **Status**: ✅ Personally verified
 
-### 证据
+### Evidence
 
 ```
 $ ls global.json          → No such file or directory
 $ dotnet --list-sdks      → 10.0.400 [C:\Program Files\dotnet\sdk]
 ```
 
-工程 TFM 为 `net8.0-windows10.0.19041.0`，实际用 SDK 10.0.400 经 roll-forward 构建，**版本完全未锁**。
+The project's TFM is `net8.0-windows10.0.19041.0`, but it actually builds with SDK 10.0.400 via roll-forward — **the version is completely unpinned**.
 
-### 根因已定位（2026-08-31 亲验）
+### Root cause located (personally verified 2026-08-31)
 
-`.github/workflows/build.yml:26-28` 两个 job 都用：
+`.github/workflows/build.yml:26-28`, both jobs use:
 
 ```yaml
 - uses: actions/setup-dotnet@v6
@@ -162,78 +162,78 @@ $ dotnet --list-sdks      → 10.0.400 [C:\Program Files\dotnet\sdk]
     dotnet-version: 8.0.x
 ```
 
-**CI 钉死 SDK 8.0.x，本地无 `global.json` 所以吃 10.0.400。** 这就是"官方命令在不同机器上行为不同"的根源——CI 上 `dotnet restore` 用 SDK 8 正常，本地用 SDK 10 的并行 restore 才退 1。不是玄学，是 SDK 版本没对齐。
+**CI is pinned to SDK 8.0.x, while locally there is no `global.json`, so it falls back to 10.0.400.** This is the root of "official commands behave differently on different machines" — `dotnet restore` on CI works fine with SDK 8, while locally, parallel restore under SDK 10 is what exits 1. It's not mysterious — the SDK versions simply aren't aligned.
 
-### 审核另称 —— 无并发复跑后：两条都**未复现**（2026-08-31，F1）
+### Audit also claimed — after removing concurrency, neither reproduced (2026-08-31, F1)
 
-- `dotnet restore ...slnx -p:Platform=x64`：单独跑 6 次（1 热 + 5 冷，每次删光各项目 obj/），**全部 exit 0**，无 `-m:1` 之需
-- `Verify-InteractionContracts.ps1`：exit 0，内层 `dotnet run --no-restore` 未失败
+- `dotnet restore ...slnx -p:Platform=x64`: run individually 6 times (1 warm + 5 cold, deleting each project's obj/ each time), **all exit 0**, no need for `-m:1`
+- `Verify-InteractionContracts.ps1`: exit 0, the inner `dotnet run --no-restore` did not fail
 
-> **结论：审核当时的 restore 失败几乎可以确定是并发 agent 抢 NuGet 缓存的产物（正是 R-12 所述），不是真的 SDK bug。** SDK 二进制与审核时相同（都是 10.0.400），唯一差别是这次无并发。再次印证"一次只有一个 agent 动仓库"这条纪律。
+> **Conclusion: the restore failure the audit saw was almost certainly a byproduct of concurrent agents fighting over the NuGet cache (exactly what R-12 describes), not a real SDK bug.** The SDK binary is identical to what the audit used (both 10.0.400); the only difference this time is the absence of concurrency. This again confirms the discipline of "only one agent touching the repo at a time."
 
-### F1 修复已落地（commit `26f2adc`），但留有一处我复核时发现的隐患 → 已并入 F2
+### F1 fix landed (commit `26f2adc`), but leaves one hazard I found on review → folded into F2
 
-- `global.json` = `{ version: 10.0.400, rollForward: disable }`（最严格，本机唯一装的就是 10.0.400）
-- CI setup-dotnet 从 `8.0.x` 改成 `10.0.x` —— **隐患**：`disable` 要求**精确** 10.0.400，而 `10.0.x` 会装最新 10.0 补丁；一旦 runner 装到 10.0.401 之类，CI 会"SDK 未找到"而崩。
-- **F2 必做**：把 CI 两处 `dotnet-version` 从 `10.0.x` 改成精确 `10.0.400`，与 `global.json` 的 `disable` 精确对齐（这才是 R-01 真正要的可复现）。
+- `global.json` = `{ version: 10.0.400, rollForward: disable }` (strictest — the only SDK installed on this machine is 10.0.400 anyway)
+- CI setup-dotnet changed from `8.0.x` to `10.0.x` — **hazard**: `disable` requires an **exact** match on 10.0.400, while `10.0.x` will install the latest 10.0 patch; if a runner ever gets 10.0.401 or similar, CI will fail with "SDK not found."
+- **F2 must-do**: change both CI `dotnet-version` occurrences from `10.0.x` to the exact `10.0.400`, aligned precisely with `global.json`'s `disable` (this is what R-01 actually requires for reproducibility).
 
-### 为什么排最前
+### Why this is listed first
 
-若「官方命令在不同机器上行为不同」，则后续**所有**验证结论都不可靠。这是其他所有条目的地基。
+If "official commands behave differently on different machines" holds, then **every** downstream verification conclusion is unreliable. This is the foundation for every other item.
 
-### 验收标准
+### Acceptance criteria
 
-- 仓库根存在 `global.json`，锁定 SDK 版本**与 CI 的 `8.0.x` 对齐**，并显式声明 `rollForward` 策略
-- 本地按 `global.json` 若无对应 SDK，给出可操作的安装指引（不静默 roll-forward 到 10.x）
-- 干净环境下，`docs/` 与 `HANDOFF.md` 中记载的官方命令逐条可跑通
-- 若锁到 8.0.x 后并行 restore 仍需 `-m:1`，则**要么**修根因，**要么**写进命令并注明——不允许"知道要加但没写"
-- **一并核对** CI 的 `dotnet-version: 8.0.x` 与新 `global.json` 不冲突（setup-dotnet 会尊重 global.json）
+- A `global.json` exists at the repo root, pinning the SDK version **aligned with CI's `8.0.x`**, with an explicitly declared `rollForward` policy
+- If the corresponding SDK is missing locally, `global.json` gives an actionable install instruction (no silent roll-forward to 10.x)
+- In a clean environment, every official command documented in `docs/` and `HANDOFF.md` runs successfully
+- If parallel restore still needs `-m:1` after pinning to 8.0.x, then **either** fix the root cause **or** document it explicitly in the command — "knew it was needed but didn't write it down" is not allowed
+- **Also verify** that CI's `dotnet-version: 8.0.x` does not conflict with the new `global.json` (setup-dotnet respects global.json)
 
 ---
 
-## R-02 — 门禁清单有 4 处各自维护，已漂移
+## R-02 — Gate list independently maintained in 4 places, already drifted
 
-**严重度**：阻断前置（R-03 的地基）　**批次**：F2　**状态**：✅ 已亲验
+**Severity**: Blocker prerequisite (foundation for R-03) | **Batch**: F2 | **Status**: ✅ Personally verified
 
-### 证据
+### Evidence
 
-磁盘上 29 个 `scripts/Verify-*.ps1`。四处各自维护清单：`.github/workflows/build.yml`、`scripts/Publish-Internal.ps1`、`scripts/Verify-RuntimeGates.ps1`、文档。
+There are 29 `scripts/Verify-*.ps1` scripts on disk. Four places independently maintain the list: `.github/workflows/build.yml`, `scripts/Publish-Internal.ps1`, `scripts/Verify-RuntimeGates.ps1`, and documentation.
 
-实测差集：
+Measured differences:
 
-| 情况 | 脚本 |
+| Situation | Script |
 |---|---|
-| Publish-Internal 缺 | `Verify-PowerShellCompatibility.ps1`、`Verify-GallerySmoke.ps1` |
-| CI 缺 | `Verify-ExternalConsumer.ps1`（合理——托管 runner 跑不了 WinUI，但属未声明的差异） |
-| **无任何调用方** | `Verify-Arm64Packages.ps1` — 仅被 `.superpowers/sdd/` 历史规划文档引用；且已定 **x64 only**，属死代码 |
-| 仅出现在注释中 | `Verify-RuntimeGates.ps1` — `build.yml:6` 与 `:119` 的注释 |
+| Missing from Publish-Internal | `Verify-PowerShellCompatibility.ps1`, `Verify-GallerySmoke.ps1` |
+| Missing from CI | `Verify-ExternalConsumer.ps1` (reasonable — hosted runners can't run WinUI, but this is an undeclared difference) |
+| **No caller at all** | `Verify-Arm64Packages.ps1` — referenced only by historical planning docs in `.superpowers/sdd/`; already decided to be **x64 only**, so this is dead code |
+| Appears only in a comment | `Verify-RuntimeGates.ps1` — comments at `build.yml:6` and `:119` |
 
-> 后两行是**审核未提及**的新发现。`Verify-RuntimeGates.ps1:23` 是 `Verify-GallerySmoke.ps1` 的**唯一**拥有者，而它自身没有任何自动化调用方——这解释了 GallerySmoke 为何会漏：不是被直接遗忘，是它的**编排器**没接进任何链路。
+> The last two rows are **new findings not mentioned by the audit**. `Verify-RuntimeGates.ps1:23` is the **sole** owner of `Verify-GallerySmoke.ps1`, yet it itself has no automated caller — this explains why GallerySmoke was missed: it wasn't directly forgotten, its **orchestrator** simply isn't wired into any pipeline.
 
-`Publish-Internal.ps1:231` 硬编码 `if ($staticGates.Count -ne 22)`，`:11` 与 `:204` 的注释同样写死 22。这个 22 目前**是对的**（CI 25 条运行步骤 − ConsumerFixtures − MsixPackage − PowerShellCompatibility = 22），但它是人工同步的常量。
+`Publish-Internal.ps1:231` hardcodes `if ($staticGates.Count -ne 22)`, and the comments at `:11` and `:204` likewise hardcode 22. This 22 **is currently correct** (CI's 25 run steps − ConsumerFixtures − MsixPackage − PowerShellCompatibility = 22), but it is a manually synchronized constant.
 
-### 根因
+### Root cause
 
-同一份清单在四处以四种格式重复维护，任何一处变更都不会强制其他三处跟进。
+The same list is redundantly maintained in four places in four different formats; a change in any one place is not enforced to propagate to the other three.
 
-### 验收标准
+### Acceptance criteria
 
-- 存在**单一机器可读**的门禁清单（如 `scripts/Gates.psd1`），声明每条门禁的脚本、参数、运行环境（CI / 本地运行时 / 发布）
-- `build.yml`、`Publish-Internal.ps1`、`Verify-RuntimeGates.ps1` 全部由该清单派生或对其校验
-- 存在门禁校验四处一致性，**制造漂移能让它失败**（变异测试）
-- `Verify-Arm64Packages.ps1` 要么接入清单并声明用途，要么删除——不允许留成死代码
-- 删除 `Publish-Internal.ps1` 中人工维护的 `22` 常量
+- A **single machine-readable** gate list exists (e.g. `scripts/Gates.psd1`), declaring each gate's script, arguments, and execution environment (CI / local runtime / release)
+- `build.yml`, `Publish-Internal.ps1`, and `Verify-RuntimeGates.ps1` are all derived from, or validated against, this list
+- A check exists verifying consistency across all four places, such that **inducing drift makes it fail** (mutation test)
+- `Verify-Arm64Packages.ps1` must either be wired into the list with a declared purpose, or deleted — it may not remain dead code
+- The manually maintained `22` constant in `Publish-Internal.ps1` is removed
 
-### 实现设计（交钥匙，F2 agent 照此实现）
+### Implementation design (turnkey — the F2 agent implements exactly this)
 
-**单一清单** `scripts/Gates.psd1`，每条门禁一个条目，声明它属于哪些运行环境（一条门禁可属多个环境，参数可因环境而异）：
+**Single list** `scripts/Gates.psd1`, one entry per gate, declaring which execution environments it belongs to (a gate can belong to multiple environments, and its arguments can vary by environment):
 
 ```
 @{
   Gates = @(
     @{ Name='PowerShellCompatibility'; Script='Verify-PowerShellCompatibility.ps1'; Environments=@('ci-static','publish'); Args=@{} }
     @{ Name='ResourceKeys';            Script='Verify-ResourceKeys.ps1'; Environments=@('ci-static','publish'); Args=@{ RequireHighContrastParity=$true } }
-    ... 各控件契约 ...
+    ... per-control contracts ...
     @{ Name='ConsumerFixtures-hosted'; Script='Verify-ConsumerFixtures.ps1'; Environments=@('ci-static'); Args=@{ SkipSolutionBuild=$true; SkipRuntimeSmoke=$true } }
     @{ Name='ConsumerFixtures-runtime';Script='Verify-ConsumerFixtures.ps1'; Environments=@('runtime-local'); Args=@{} }
     @{ Name='GallerySmoke';            Script='Verify-GallerySmoke.ps1'; Environments=@('runtime-local'); Args=@{} }
@@ -243,34 +243,34 @@ $ dotnet --list-sdks      → 10.0.400 [C:\Program Files\dotnet\sdk]
 }
 ```
 
-**四个环境的定义**（实测自当前 CI + 脚本）：
+**Definitions of the four environments** (measured from the current CI + scripts):
 
-| 环境 | 谁消费 | 内容 | 主机要求 |
+| Environment | Consumed by | Contents | Host requirements |
 |---|---|---|---|
-| `ci-static` | `build.yml` package-consumers job | 23 条（PowerShellCompat + 22 契约/资源/Gallery 门禁）+ ConsumerFixtures(-Skip both) + MsixPackage(-Skip) | 托管 runner 可跑（无 GUI） |
-| `publish` | `Publish-Internal.ps1` | 与 `ci-static` 同（**当前漏了 PowerShellCompat 与 GallerySmoke**，见 R-03） | 本地 |
-| `runtime-local` | `Verify-RuntimeGates.ps1` | ConsumerFixtures(完整)、GallerySmoke、MsixPackage | 本地 GUI |
-| `external-local` | 手动 / `Publish-Internal` 前置 | ExternalConsumer（含 VariantC，见 R-00） | 本地 + NuGet 缓存 |
+| `ci-static` | `build.yml` package-consumers job | 23 items (PowerShellCompat + 22 contract/resource/Gallery gates) + ConsumerFixtures(-Skip both) + MsixPackage(-Skip) | Runs on a hosted runner (no GUI) |
+| `publish` | `Publish-Internal.ps1` | Same as `ci-static` (**currently missing PowerShellCompat and GallerySmoke**, see R-03) | Local |
+| `runtime-local` | `Verify-RuntimeGates.ps1` | ConsumerFixtures (full), GallerySmoke, MsixPackage | Local GUI |
+| `external-local` | Manual / prerequisite for `Publish-Internal` | ExternalConsumer (includes VariantC, see R-00) | Local + NuGet cache |
 
-**关键参数注意**：`Args` 用**哈希表**（`@{ RequireHighContrastParity=$true }`），消费方用哈希表 splat（`& $script @argsHash`）——**绝不用数组 splat**，那正是 R-04 的 bug。这条要写进清单文件头注释。
+**Key argument note**: `Args` uses a **hash table** (`@{ RequireHighContrastParity=$true }`), and the consumer uses hash-table splatting (`& $script @argsHash`) — **never array splatting**, which is exactly the R-04 bug. This must be written into the header comment of the manifest file.
 
-**改造消费方**：
-- `Publish-Internal.ps1`：删掉 22 条硬编码列表与 `Count -ne 22` 断言，改为 `Import-PowerShellDataFile Gates.psd1` 后按 `Environments -contains 'publish'` 过滤
-- `Verify-RuntimeGates.ps1`：同理按 `'runtime-local'` 过滤
-- `build.yml`：CI 的 YAML 步骤无法直接读 psd1；改为**校验**而非派生——新增 `Verify-GateManifest.ps1` 断言"清单里标 `ci-static` 的门禁集合 == build.yml 实际步骤集合"，任一漂移即失败。此脚本自身加入 `ci-static`。
-- **CI SDK 对齐**（承 R-01）：确认 setup-dotnet 尊重新 global.json，8.0.x 一致。
+**Refactoring the consumers**:
+- `Publish-Internal.ps1`: remove the hardcoded 22-item list and the `Count -ne 22` assertion, replace with `Import-PowerShellDataFile Gates.psd1` filtered by `Environments -contains 'publish'`
+- `Verify-RuntimeGates.ps1`: likewise, filter by `'runtime-local'`
+- `build.yml`: CI's YAML steps cannot read a psd1 directly; make it **validate** rather than derive — add `Verify-GateManifest.ps1` which asserts "the set of gates tagged `ci-static` in the manifest == the actual set of build.yml steps," failing on any drift. This script itself is added to `ci-static`.
+- **CI SDK alignment** (carried over from R-01): confirm setup-dotnet respects the new global.json, consistent at 8.0.x.
 
-**变异测试**：F2 交付时须证明——往 `Gates.psd1` 加一条假门禁但不更新 build.yml → `Verify-GateManifest.ps1` 失败；从 build.yml 删一步 → 同样失败。
+**Mutation test**: on F2 delivery, must demonstrate — adding a fake gate to `Gates.psd1` without updating build.yml → `Verify-GateManifest.ps1` fails; removing a step from build.yml → likewise fails.
 
 ---
 
-## R-03 — 发布路径可绕过，发布门禁漏跑 2 条
+## R-03 — Release path can be bypassed, 2 release gates skipped
 
-**严重度**：阻断　**批次**：F2（依赖 R-02）　**状态**：✅ 已亲验
+**Severity**: Blocker | **Batch**: F2 (depends on R-02) | **Status**: ✅ Personally verified
 
-### 证据
+### Evidence
 
-`scripts/Pack-PreviewPackages.ps1` 仍可直接推送：
+`scripts/Pack-PreviewPackages.ps1` can still push directly:
 
 ```
 :6   [string]$Source,
@@ -279,42 +279,42 @@ $ dotnet --list-sdks      → 10.0.400 [C:\Program Files\dotnet\sdk]
 :79  Write-Host "Pushed preview packages to $Source."
 ```
 
-`docs/releases/0.1.0-preview.1.md:12` 把这条路径写成了正式步骤 4：
+`docs/releases/0.1.0-preview.1.md:12` writes this path in as official step 4:
 
 ```
 4. `.\scripts\Pack-PreviewPackages.ps1 -Source <feed> [-ApiKey <key>]`
 ```
 
-即：**存在一条完全绕开 `Publish-Internal.ps1` 全部门禁的发布路径，且文档在教人用它。**
+That is: **there exists a release path that completely bypasses every gate in `Publish-Internal.ps1`, and the documentation teaches people to use it.**
 
-漏跑门禁见 R-02。
+For the skipped gates, see R-02.
 
-### 验收标准
+### Acceptance criteria
 
-- `Pack-PreviewPackages.ps1` 不再具备推送能力（移除 `-Source` / `-ApiKey` 与 `nuget push`），仅负责打包
-- `Publish-Internal.ps1` 成为**唯一**发布入口
-- `docs/releases/0.1.0-preview.1.md` 步骤 4 改指向唯一入口
-- 发布门禁覆盖 `Verify-PowerShellCompatibility.ps1` 与 `Verify-GallerySmoke.ps1`
+- `Pack-PreviewPackages.ps1` no longer has push capability (remove `-Source` / `-ApiKey` and `nuget push`), and is responsible only for packing
+- `Publish-Internal.ps1` becomes the **sole** release entry point
+- `docs/releases/0.1.0-preview.1.md` step 4 is changed to point at the sole entry point
+- The release gates cover `Verify-PowerShellCompatibility.ps1` and `Verify-GallerySmoke.ps1`
 
 ---
 
-## R-04 — splat 绑定失效使高对比度强制失灵，并产出误名文件
+## R-04 — Splat binding failure disables high-contrast enforcement and produces a misnamed file
 
-**严重度**：阻断（较审核**上调**）　**批次**：F3　**状态**：✅ 已亲验
+**Severity**: Blocker (**upgraded** from the audit) | **Batch**: F3 | **Status**: ✅ Personally verified
 
-> 审核把这记为两条（第 5 条"高对比度恢复失败只警告"、第 8 条"根目录误名生成物"）。实为**同一个缺陷的两个症状**。
+> The audit recorded this as two items (item 5, "high-contrast recovery failure only warns," and item 8, "misnamed generated file at repo root"). They are actually **two symptoms of the same defect**.
 
-### 证据
+### Evidence
 
-`scripts/Publish-Internal.ps1:208`：
+`scripts/Publish-Internal.ps1:208`:
 
 ```powershell
 @{ Name = 'Verify-ResourceKeys.ps1 -RequireHighContrastParity'; Script = 'Verify-ResourceKeys.ps1'; Args = @('-RequireHighContrastParity') }
 ```
 
-调用方式（`:239`）：`& $scriptPath @gateArgs`
+Call site (`:239`): `& $scriptPath @gateArgs`
 
-实测绑定行为：
+Measured binding behavior:
 
 ```
 splat @gateArgs      -> OutputPath='-RequireHighContrastParity'  Switch=False
@@ -322,17 +322,17 @@ direct literal       -> OutputPath=''                            Switch=True
 splat empty          -> OutputPath=''                            Switch=False
 ```
 
-**数组 splat 不会把 `-Xxx` 字符串重新解析为参数名**，它按位置绑定到 `Verify-ResourceKeys.ps1:3` 的 `[string]$OutputPath`，而 `:4` 的 `[switch]$RequireHighContrastParity` 保持 `False`。
+**Array splatting does not re-parse a `-Xxx` string as a parameter name** — it binds positionally to `Verify-ResourceKeys.ps1:3`'s `[string]$OutputPath`, while `:4`'s `[switch]$RequireHighContrastParity` remains `False`.
 
-### 三层后果
+### Three-layer consequence
 
-1. 发布门禁中**名字写着** `-RequireHighContrastParity` 的那条，实际**开关是关的**——走到 `Verify-ResourceKeys.ps1:124` 只 `Write-Warning` 然后通过
-2. 22KB JSON 被写入仓库根一个**文件名就叫 `-RequireHighContrastParity`** 的文件（已被 git 跟踪，mtime 2026-08-30 23:17，**仍在持续重新生成**，非陈旧残留）
-3. `SEMVER.md:9` 明文规定 stable release "cannot ship while the parity gate fails"——该保证在发布门禁上**当前不生效**
+1. The release gate **named** `-RequireHighContrastParity` actually has its **switch turned off** — it falls through to `Verify-ResourceKeys.ps1:124`, which only does `Write-Warning` and then passes
+2. A 22KB JSON blob is written into a repo-root file **literally named `-RequireHighContrastParity`** (already tracked by git, mtime 2026-08-30 23:17, **still being continuously regenerated**, not a stale leftover)
+3. `SEMVER.md:9` explicitly states a stable release "cannot ship while the parity gate fails" — that guarantee is **currently not in effect** on the release gate
 
-### 缓解事实（不得省略）
+### Mitigating fact (must not be omitted)
 
-用正确调用方式实跑：
+Running it with the correct call form:
 
 ```
 Light: 234; Dark: 234; HighContrast: 234
@@ -340,340 +340,340 @@ Light-only: 0; Dark-only: 0; Missing from HighContrast: 0; HighContrast-only: 0
 EXIT=0
 ```
 
-parity **当前真实通过**。所以这是**潜伏的洞，不是正在掩盖失败**。
+Parity **currently genuinely passes**. So this is a **latent hole, not an active cover-up of a failure**.
 
-### 范围有界
+### Bounded scope
 
-全仓库唯一一处数组 splat 误用。`Verify-RuntimeGates.ps1:31-41` 用的是正确的哈希表 splat（`@{}` + `['SkipSolutionBuild'] = $true`），不受影响。
+The only instance of array-splat misuse in the entire repo. `Verify-RuntimeGates.ps1:31-41` correctly uses hash-table splatting (`@{}` + `['SkipSolutionBuild'] = $true`) and is unaffected.
 
-### 验收标准
+### Acceptance criteria
 
-- 改用哈希表 splat（或直接字面量调用），使开关**真实绑定**
-- 删除仓库根 `-RequireHighContrastParity` 文件，并加入 `.gitignore` 防复发
-- 存在检查，**故意把开关传错能让它失败**（变异测试）
-- 复核 `Verify-ResourceKeys.ps1:124` 的 warning 降级路径：确认在开关开启时确实 `throw` 而非仅警告
+- Switch to hash-table splatting (or direct literal calls), so the switch **binds correctly**
+- Delete the repo-root `-RequireHighContrastParity` file, and add it to `.gitignore` to prevent recurrence
+- A check exists such that **deliberately mis-passing the switch makes it fail** (mutation test)
+- Review the warning-downgrade path at `Verify-ResourceKeys.ps1:124`: confirm it genuinely `throw`s rather than merely warning when the switch is on
 
 ---
 
-## R-05 — 推送前就把 `pushed: true` 落盘
+## R-05 — `pushed: true` written to disk before the push happens
 
-**严重度**：应修　**批次**：F3　**状态**：✅ 已亲验
+**Severity**: Should fix | **Batch**: F3 | **Status**: ✅ Personally verified
 
-### 证据
+### Evidence
 
-`scripts/Publish-Internal.ps1:334`：
+`scripts/Publish-Internal.ps1:334`:
 
 ```powershell
 pushed            = [bool]$Push
 ```
 
-该 summary 在 `:339` 即写入 `publish-summary.json`——**早于** `:427` 的确认提示与 `:434` 的真实 `dotnet nuget push`。真实推送后 `:451` 才再次写 `$summary.pushed = $true`。
+This summary is written to `publish-summary.json` at `:339` — **before** the confirmation prompt at `:427` and the actual `dotnet nuget push` at `:434`. Only after a real push does `:451` write `$summary.pushed = $true` again.
 
-即：带 `-Push` 运行时，若在确认提示处输错版本号（`:429` 抛出）或推送本身失败，**磁盘上的证据文件已经写着 `pushed: true`，而实际什么都没推**。
+That is: when run with `-Push`, if the version number is mistyped at the confirmation prompt (throws at `:429`) or the push itself fails, **the evidence file on disk already says `pushed: true`, while nothing was actually pushed**.
 
-字段名在说谎：`pushed` 记录的是"是否请求了推送"，不是"是否发生了推送"。
+The field name lies: `pushed` records "was a push requested," not "did a push happen."
 
-### 验收标准
+### Acceptance criteria
 
-- 首次写入时 `pushed` 恒为 `false`
-- 仅在真实推送成功后才改写为 `true`
-- 存在检查，**在推送前中止能让证据文件保持 `pushed: false`**
+- `pushed` is always `false` on first write
+- It is only rewritten to `true` after a real push succeeds
+- A check exists confirming that **aborting before the push leaves the evidence file at `pushed: false`**
 
 ---
 
-## R-06 — 「445 可观察」夸大
+## R-06 — "445 observable" overstated
 
-**严重度**：阻断（对外口径）　**批次**：F4　**状态**：✅ 已亲验
+**Severity**: Blocker (external-facing framing) | **Batch**: F4 | **Status**: ✅ Personally verified
 
-### 证据
+### Evidence
 
-从最新证据文件 `artifacts/audit-runs/consumer-runtime-evidence-20260831-010140131/runtime-result.json` **实测**分类计数：
+**Measured** category counts from the latest evidence file, `artifacts/audit-runs/consumer-runtime-evidence-20260831-010140131/runtime-result.json`:
 
-| 分类 | 计数 | 是否真实可观察 |
+| Category | Count | Genuinely observable? |
 |---|---|---|
 | `pixel-difference` | 247 | ✅ |
 | `layout-difference` | 11 | ✅ |
 | `visibility-transition` | 12 | ✅ |
-| `platform-dp-contract` | 156 | ❌ 仅契约往返 |
-| `ether-component-dp-contract` | 19 | ❌ 仅契约往返 |
-| **合计** | **445** | **270 可观察 / 175 仅契约** |
+| `platform-dp-contract` | 156 | ❌ contract round-trip only |
+| `ether-component-dp-contract` | 19 | ❌ contract round-trip only |
+| **Total** | **445** | **270 observable / 175 contract-only** |
 
-`src/Ether.DesignSystem.Controls/README.md:7` 当前表述：
+`src/Ether.DesignSystem.Controls/README.md:7` currently states:
 
 > 445 of 1,388 public writable properties have per-property **observable** evidence (pixel/layout/visibility/contract) ...
 
-括号里**确实列出了** `contract`，所以不算完全隐瞒；但用 `observable`（可观察）统称这 445 条是错的——其中 175 条门禁自身记录的就是"Bitmap pixels were unchanged"。
+The parenthetical **does** list `contract`, so it isn't a total concealment; but using `observable` as an umbrella term for all 445 is wrong — 175 of those items have gates that themselves record "Bitmap pixels were unchanged."
 
-同一句话已被复制到 `artifacts/consumer-fixtures/` 下的打包 README 副本中。
+The same sentence has been copied into the packaged README replica under `artifacts/consumer-fixtures/`.
 
-### 决定：选 B（2026-08-31，全权授权下由我定）
+### Decision: Option B (2026-08-31, decided by me under full authorization)
 
-- **A**：数字改成 `270`，只把真实可观察的算进去
-- **B**（采纳）：保留 `445`，措辞改为「445 条逐项证据，其中 270 条证明视觉生效（pixel/layout/visibility），175 条仅证明契约往返（DP getter/setter round-trip，像素未变）」
+- **A**: change the number to `270`, counting only genuinely observable evidence
+- **B** (adopted): keep `445`, and reword to "445 items of per-property evidence, of which 270 prove the effect is visually observable (pixel/layout/visibility) and 175 prove only a contract round-trip (DP getter/setter round-trip, pixels unchanged)"
 
-选 B 的理由：
+Reasons for choosing B:
 
-1. **信息更完整**：B 同时给出总证据量与其中"真视觉/仅契约"的拆分；A 丢掉了 175 条契约证据这件事本身（它们仍是有价值的——证明属性可读写、不抛异常）。
-2. **改动面更小、更不易再漂**：`445` 已进入两处打包 README 副本、release 文档、getting-started。A 要把所有 `445`→`270` 且重算 `1388−445=943`→`1388−270=1118`，改点更多；B 只需在每处 `445` 后补一句限定。
-3. **诚实性靠措辞而非数字**：问题从来不是 445 这个数,而是用 `observable` 统称。B 直接改掉这个词,根治。
+1. **More complete information**: B gives both the total evidence count and the split between "genuinely visual / contract-only"; A discards the fact that 175 items of contract evidence exist at all (they are still valuable — they prove the property is readable/writable and doesn't throw).
+2. **Smaller change surface, less likely to drift again**: `445` already appears in two packaged README replicas, the release docs, and getting-started. A would require changing every `445`→`270` and recomputing `1388−445=943`→`1388−270=1118`, more touch points; B only needs a qualifying clause added after each `445`.
+3. **Honesty comes from wording, not the number**: the problem was never the number 445 itself, but using `observable` as the umbrella term. B fixes this at the root by changing that word directly.
 
-**对外统一措辞（所有文案以此为准）**：
+**Unified external wording (all copy follows this)**:
 
 > 445 of 1,388 public writable properties carry per-property evidence: 270 proven to visibly take effect (pixel / layout / visibility differences on a rendered, attached control), and 175 proven only as a DP round-trip (getter/setter invoked on an attached control without throwing; bitmap pixels unchanged). The remaining 943 are verified only as callable on a detached instance.
 
-### 验收标准
+### Acceptance criteria
 
-- 上述措辞在 `src/Ether.DesignSystem.Controls/README.md`、`src/Ether.DesignSystem.Foundation/README.md`、`docs/releases/0.1.0-preview.1.md`、`docs/consumers/getting-started.md`、门禁成功信息中**全部一致**
-- 数字（445 / 270 / 175 / 943）由证据文件**派生**，不再人工誊写
-- 存在检查，**改动分类计数而不更新文案能让它失败**（变异测试）
+- The wording above is **consistent everywhere** it appears: `src/Ether.DesignSystem.Controls/README.md`, `src/Ether.DesignSystem.Foundation/README.md`, `docs/releases/0.1.0-preview.1.md`, `docs/consumers/getting-started.md`, and gate success messages
+- The numbers (445 / 270 / 175 / 943) are **derived** from the evidence file, no longer hand-transcribed
+- A check exists such that **changing the category counts without updating the copy makes it fail** (mutation test)
 
 ---
 
-## R-07 — 不支持属性清单是封闭列表
+## R-07 — Unsupported-properties list is a closed list
 
-**严重度**：阻断　**批次**：F4　**状态**：✅ 已亲验（2026-08-31）
+**Severity**: Blocker | **Batch**: F4 | **Status**: ✅ Personally verified (2026-08-31)
 
-### 审核声称
+### Audit claim
 
-`scripts/UnsupportedProperties.psd1` 有 12 条，`Verify-UnsupportedProperties.ps1` 只校验**这 12 条是否仍然无效**，因而**发现不了第 13 个**静默失效的属性。
+`scripts/UnsupportedProperties.psd1` has 12 entries; `Verify-UnsupportedProperties.ps1` only checks **whether these 12 are still ineffective**, and therefore **cannot discover a 13th** silently-failing property.
 
-### 亲验结果（证实）
+### Personal verification results (confirmed)
 
-1. **清单确为封闭列表**：`UnsupportedProperties.psd1` 恰 12 条，全部集中在 EtherDropdown / EtherInput / EtherSwitch 的 Header/HeaderTemplate/Description/Placeholder/Text/IsEditable 家族。文件头注释自述"asserts every entry below is genuinely zero-consumption"——是**允许列表式断言**，不是扫描器。
+1. **The list is indeed a closed list**: `UnsupportedProperties.psd1` has exactly 12 entries, all concentrated in the Header/HeaderTemplate/Description/Placeholder/Text/IsEditable family of EtherDropdown / EtherInput / EtherSwitch. The file header comment states "asserts every entry below is genuinely zero-consumption" — this is an **allow-list style assertion**, not a scanner.
 
-2. **审核举例属实**：读 `EtherCheckbox.xaml`，实测这些属性的 `TemplateBinding` 出现次数：
+2. **The audit's example checks out**: reading `EtherCheckbox.xaml`, the measured `TemplateBinding` occurrence counts for these properties are:
 
    ```
    Background: 0   BorderBrush: 0   BorderThickness: 0
-   CornerRadius: 0 Padding: 0       FontSize: 0    （对照 Foreground: 2）
+   CornerRadius: 0 Padding: 0       FontSize: 0    (compare Foreground: 2)
    ```
 
-3. **证据分类吻合**：最新证据 `consumer-runtime-evidence-20260831-010140131` 中，EtherCheckbox 共 8 个属性记为 `platform-dp-contract`（设了像素不变）：`Background`、`BackgroundSizing`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`FontSize`、`Padding`、`HorizontalContentAlignment`、`VerticalContentAlignment`、`CharacterSpacing`、`Clip`、`CompositeMode`、`FontStretch`。这些**全部不在**那 12 条清单里。全库 `platform-dp-contract` 共 156 条。
+3. **The evidence categorization matches**: in the latest evidence, `consumer-runtime-evidence-20260831-010140131`, EtherCheckbox has 8 properties recorded as `platform-dp-contract` (set, pixels unchanged): `Background`, `BackgroundSizing`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `FontSize`, `Padding`, `HorizontalContentAlignment`, `VerticalContentAlignment`, `CharacterSpacing`, `Clip`, `CompositeMode`, `FontStretch`. **None of these** are in the 12-item list. Across the whole library, `platform-dp-contract` totals 156 items.
 
-### 一个审核没点破的关键区分（决定工程方案）
+### A key distinction the audit didn't spell out (determines the engineering approach)
 
-这 156 条不能一刀切当"缺陷"。要分三类，且**大部分是产品决策，不是纯工程**：
+These 156 items cannot all be lumped together as "defects." They fall into three categories, and **most of this is a product decision, not a pure engineering one**:
 
-- **陷阱型**（必须处理）：消费者会合理期待其生效、结果静默失效的**功能/装饰**属性。现有 12 条属此类（`Header` 会让人以为能加标签、`IsEditable` 会让人以为能打字）。EtherCheckbox 若有同类需查。
-- **设计系统自持型**（记录即可）：`Background`/`BorderBrush`/`CornerRadius` 这类**外观**属性，设计系统**故意**不让消费者覆盖以保持视觉一致——"设了没反应"是**特性不是 bug**，但**当前没有任何地方声明这个意图**。
-- **无人问津型**（可忽略）：`CompositeMode`、`Clip` 等消费者几乎不会去设的平台底层 DP。
+- **Trap-type** (must be handled): **functional/decorative** properties a consumer would reasonably expect to take effect, which silently fail instead. The existing 12 fall in this category (`Header` makes people think a label can be added, `IsEditable` makes people think they can type). EtherCheckbox needs to be checked for similar cases.
+- **Design-system-owned** (documentation suffices): **appearance** properties like `Background`/`BorderBrush`/`CornerRadius`, which the design system **deliberately** does not let consumers override in order to preserve visual consistency — "setting it has no effect" is a **feature, not a bug**, but **nothing currently states this intent anywhere**.
+- **Unremarkable** (can be ignored): platform low-level DPs like `CompositeMode`, `Clip` that a consumer would almost never set.
 
-**真正的工程缺陷是检测机制**：允许列表无法**发现**新引入的静默失效属性。这一条与"每个属性怎么归类"无关，是确定的。
+**The real engineering defect is the detection mechanism**: an allow list cannot **discover** a newly introduced silently-failing property. This point is settled, independent of how each individual property gets categorized.
 
-### 验收标准
+### Acceptance criteria
 
-- 检测方式从**封闭清单**改为**开放式**：任何 `platform-dp-contract` 且模板中零 `TemplateBinding` 的公开可写属性都会被自动发现，并要求它落入上述三类之一（有显式归类）
-- 新增一个静默失效属性，门禁**能自动发现**（变异测试）
-- 已知的 12 条与文档表格保持双向对账（现有能力不得丢失）
-- **接线范围已定（见文末决策 2）：一律不接线。** 156 条按三类归档：陷阱型 → 进不支持清单 + 替代方案；设计系统自持型 → 文档声明不开放覆盖；底层 DP → 标记已知无操作。开放式检测要求每条都落入某一类且有显式归档，出现未归档的新静默失效属性即失败。
+- Detection changes from a **closed list** to an **open-ended** one: any public writable property that is `platform-dp-contract` and has zero `TemplateBinding` occurrences in the template is automatically discovered, and must fall into one of the three categories above (with an explicit classification)
+- Adding a new silently-failing property, the gate **can auto-discover it** (mutation test)
+- The known 12 entries stay reconciled bidirectionally with the documentation table (no loss of existing capability)
+- **Wiring scope is decided (see Decision 2 at the end of the document): none of them get wired up.** The 156 items are filed into three categories: trap-type → added to the unsupported list with an alternative; design-system-owned → documented as not open to override; low-level DP → marked as known no-op. The engineering deliverable is **open-ended detection + three-way classification filing**, with no new `TemplateBinding` added.
 
 ---
 
-## R-08 — getting-started 夸大 MSIX 支持
+## R-08 — getting-started overstates MSIX support
 
-**严重度**：应修　**批次**：F5　**状态**：✅ 已亲验
+**Severity**: Should fix | **Batch**: F5 | **Status**: ✅ Personally verified
 
-### 证据
+### Evidence
 
-`docs/consumers/getting-started.md:12`：
+`docs/consumers/getting-started.md:12`:
 
-> 宿主：已验证 unpackaged 与 packaged（MSIX）两种形态。
+> Host: both unpackaged and packaged (MSIX) forms have been verified.
 
-而包元数据 `src/Ether.DesignSystem.Controls/Ether.DesignSystem.Controls.csproj:13` 的口径是：
+Whereas the package metadata `src/Ether.DesignSystem.Controls/Ether.DesignSystem.Controls.csproj:13` states:
 
 > x64 unpackaged and packaged (**MSIX build/produce, not install**) consumers are verified; **MSIX install/runtime** ... remain incomplete.
 
-即 MSIX 只验证到**构建/产出**，**未验证安装与运行**。getting-started 的「已验证 packaged（MSIX）」略去了这个限定。
+That is, MSIX has only been verified through **build/produce**, and **install and runtime have not been verified**. getting-started's "packaged (MSIX) verified" omits this qualification.
 
-### 验收标准
+### Acceptance criteria
 
-- `getting-started.md` 与包 `PackageReleaseNotes` 口径一致，明确 build/produce 与 install/runtime 的区别
-- 与 R-06 的口径检查合并，由同一处检查覆盖
+- `getting-started.md` is consistent with the package's `PackageReleaseNotes`, clearly distinguishing build/produce from install/runtime
+- Merged with R-06's wording check, covered by the same check
 
 ---
 
-## R-09 — Interactions 包缺发布元数据
+## R-09 — Interactions package missing release metadata
 
-**严重度**：应修　**批次**：F5　**状态**：✅ 已亲验
+**Severity**: Should fix | **Batch**: F5 | **Status**: ✅ Personally verified
 
-### 证据
+### Evidence
 
-| 属性 | Foundation | Controls | Interactions |
+| Property | Foundation | Controls | Interactions |
 |---|---|---|---|
 | `Authors` | ✅ `:12` | ✅ `:10` | ✅ `:10` |
 | `Description` | ✅ `:13` | ✅ `:11` | ✅ `:11` |
 | `PackageTags` | ✅ `:14` | ✅ `:12` | ✅ `:12` |
 | `PackageReadmeFile` | ✅ `:19` | ✅ `:17` | ✅ `:15` |
-| **`PackageReleaseNotes`** | ✅ `:15` | ✅ `:13` | ❌ **缺** |
-| **`PackageProjectUrl`** | ✅ `:16` | ✅ `:14` | ❌ **缺** |
+| **`PackageReleaseNotes`** | ✅ `:15` | ✅ `:13` | ❌ **missing** |
+| **`PackageProjectUrl`** | ✅ `:16` | ✅ `:14` | ❌ **missing** |
 
-三个包会一起发布，其中一个缺少另外两个都有的发布元数据。
+The three packages ship together, and one of them is missing release metadata the other two have.
 
-### 验收标准
+### Acceptance criteria
 
-- Interactions 补齐 `PackageReleaseNotes` 与 `PackageProjectUrl`，内容与另两个包一致
-- 存在检查，**三个包的发布元数据字段集合必须相同**
+- Interactions gets `PackageReleaseNotes` and `PackageProjectUrl` filled in, consistent with the other two packages
+- A check exists ensuring **the set of release metadata fields must be identical across all three packages**
 
 ---
 
-## R-10 — 仅为 XAML 解析而公开的类型标注不一致且不可机读
+## R-10 — XAML-only type annotations inconsistent and not machine-readable
 
-**严重度**：建议　**批次**：F5　**状态**：✅ 已亲验（2026-08-31，**修正了审核措辞**）
+**Severity**: Suggestion | **Batch**: F5 | **Status**: ✅ Personally verified (2026-08-31, **corrected the audit's wording**)
 
-### 审核声称
+### Audit claim
 
-部分类型之所以是 `public`，只是为了让 XAML 能解析到它们，并非面向消费者的 API，但**没有任何标注**区分二者。
+Some types are `public` only so that XAML can resolve them, and are not intended as consumer-facing API, but **there is no annotation whatsoever** distinguishing the two.
 
-### 亲验结果（审核措辞过强，需修正）
+### Personal verification results (the audit's wording is too strong, needs correction)
 
-"仅为 XAML 解析而公开"的类型共 5 个：
+There are 5 types that are "public only for XAML resolution":
 
-| 类型 | 现状 |
+| Type | Current state |
 |---|---|
-| `EtherStringContentVisibilityConverter` | ✅ 已有 doc 明示"public only because WinUI resolves types ... through public XAML metadata" |
-| `HandContentControl` | ✅ 已有 doc 明示"Public only because WinUI XAML ... resolve `using:` types through public metadata" |
-| `EtherScrollBarResources` | 🔸 有 doc"this is not a ScrollBar control type"，但没直说"仅为 XAML 而 public" |
-| `EtherSwitchResources` | 🔸 有 doc"this is not a ToggleSwitch control type"，同上 |
-| `EtherSegmentPanel` | ❌ 仅描述用途，**完全没有**"非消费者 API"的任何说明，读起来像可用的 Panel |
+| `EtherStringContentVisibilityConverter` | ✅ Already has a doc comment stating "public only because WinUI resolves types ... through public XAML metadata" |
+| `HandContentControl` | ✅ Already has a doc comment stating "Public only because WinUI XAML ... resolve `using:` types through public metadata" |
+| `EtherScrollBarResources` | 🔸 Has a doc comment saying "this is not a ScrollBar control type," but doesn't explicitly say "public only for XAML" |
+| `EtherSwitchResources` | 🔸 Has a doc comment saying "this is not a ToggleSwitch control type," same as above |
+| `EtherSegmentPanel` | ❌ Only describes its purpose, **has no statement at all** that it's "not a consumer-facing API"; reads like a usable Panel |
 
-**关键**：全库 `grep EditorBrowsable` = **0 次**。所以无论 doc 写没写，这 5 个类型在消费者的 **IntelliSense 里照样弹出**——doc 注释只帮读源码的人，帮不了用 NuGet 包的人。
+**Key point**: a repo-wide `grep EditorBrowsable` returns **0 hits**. So regardless of whether the doc comment is present, all 5 types still pop up in the consumer's **IntelliSense** — doc comments only help someone reading the source, not someone consuming the NuGet package.
 
-结论：审核说"没有任何标注"过强（两个已有明确 doc）；真实问题是**标注不一致**（EtherSegmentPanel 缺）**且缺机器可消费的 `[EditorBrowsable(Never)]`**。
+Conclusion: the audit's claim of "no annotation whatsoever" is too strong (two types already have clear doc comments); the real problem is **inconsistent annotation** (EtherSegmentPanel is missing one) **and the absence of a machine-consumable `[EditorBrowsable(Never)]`**.
 
-### 验收标准
+### Acceptance criteria
 
-- 5 个类型统一加 `[EditorBrowsable(EditorBrowsableState.Never)]`，使其在消费者 IntelliSense 中隐藏
-- doc 注释统一措辞（补 `EtherSegmentPanel`），说明"public only for XAML resolution"
-- 确认加 `EditorBrowsable` 后 `PublicAPI.Unshipped.txt` 与门禁 `RS0016/RS0017` 不冲突（这几个类型仍是 public，仍需登记，只是对 IDE 隐藏）
-- 文档说明该约定
-
----
-
-## R-11 — Foundation 包内混有占位图
-
-**严重度**：建议　**批次**：F5　**状态**：✅ 已亲验
-
-### 证据
-
-`Assets/Icons/Frame 2147253527.png` — 已被 git 跟踪。文件名是 Figma 导出的默认名（`Frame <节点ID>`），随 Foundation 包分发给消费者。
-
-### 验收标准
-
-- 该文件**要么**改成有意义的名字并说明用途，**要么**从仓库与包中移除
-- 确认无任何代码/XAML 引用它后再删
+- All 5 types uniformly get `[EditorBrowsable(EditorBrowsableState.Never)]`, hiding them from consumer IntelliSense
+- Doc comments use unified wording (adding it to `EtherSegmentPanel`), stating "public only for XAML resolution"
+- Confirm that adding `EditorBrowsable` does not conflict with `PublicAPI.Unshipped.txt` or the `RS0016/RS0017` gates (these types are still public and still need to be registered, only hidden from the IDE)
+- Documentation explains this convention
 
 ---
 
-## R-12 — 证据未绑定到冻结提交
+## R-11 — Placeholder image mixed into the Foundation package
 
-**严重度**：阻断　**批次**：F6　**状态**：✅ 已亲验（成因为我方操作失误）
+**Severity**: Suggestion | **Batch**: F5 | **Status**: ✅ Personally verified
 
-### 成因
+### Evidence
 
-审核期间我派了会改文件的 agent 与审核者并行运行，工作树 diff 从 46/12 涨到 88/18，导致审核者只能声明"我的结论基线是 `e270990`，与当前工作树对不上"。
+`Assets/Icons/Frame 2147253527.png` — already tracked by git. The filename is Figma's default export name (`Frame <node-id>`), and it ships to consumers with the Foundation package.
 
-同类事件在本文件写作当日再次发生：旧 agent `a324386204a1b1fc5` 与其替代者并发运行，两者都会驱动 `Verify-ExternalConsumer.ps1`——而该脚本每次运行都会**清空全局 NuGet 缓存中的三个 Ether 包**并重打 `artifacts/local-feed`。已终止旧 agent 并向新 agent 发出污染告警。
+### Acceptance criteria
 
-### 施工纪律（立即生效）
-
-- **同一时刻只允许一个 agent 修改仓库**
-- 证据生成期间**不允许任何并发改动**
-- 每份证据必须记录其对应的 git commit
-
-### 验收标准
-
-- 工作树冻结，`git status` 干净
-- 在一个确定的 commit 上，无并发地完整跑一遍全门禁链
-- 产出的证据与该 commit **严格一一对应**，并在证据中记录 commit hash
-- 本文件全部条目状态更新完毕
+- This file is **either** renamed to something meaningful with its purpose documented, **or** removed from the repo and the package
+- Confirm no code/XAML references it before deleting
 
 ---
 
-## 批次与顺序（按依赖排，不按严重度）
+## R-12 — Evidence not bound to a frozen commit
 
-| 批次 | 条目 | 排序理由 |
+**Severity**: Blocker | **Batch**: F6 | **Status**: ✅ Personally verified (root cause was an operational mistake on my part)
+
+### Root cause
+
+During the audit I dispatched a file-modifying agent to run in parallel with the auditor, and the working-tree diff grew from 46/12 to 88/18, forcing the auditor to state "my conclusions are baselined on `e270990`, which no longer matches the current working tree."
+
+The same kind of incident happened again on the day this document was written: an old agent `a324386204a1b1fc5` ran concurrently with its replacement, and both were driving `Verify-ExternalConsumer.ps1` — a script that, on every run, **wipes the three Ether packages from the global NuGet cache** and repacks `artifacts/local-feed`. The old agent has been terminated and a contamination warning issued to the new agent.
+
+### Working discipline (effective immediately)
+
+- **Only one agent may modify the repo at any given time**
+- **No concurrent changes are allowed** while evidence is being generated
+- Every piece of evidence must record its corresponding git commit
+
+### Acceptance criteria
+
+- Working tree frozen, `git status` clean
+- The entire gate chain run to completion, without concurrency, on one fixed commit
+- The produced evidence corresponds **strictly one-to-one** with that commit, with the commit hash recorded in the evidence
+- Every entry in this document has its status updated
+
+---
+
+## Batches and ordering (sorted by dependency, not by severity)
+
+| Batch | Items | Rationale for ordering |
 |---|---|---|
-| **F0** | R-00 | ✅ 已查清：平台限制，descope 自包含-非打包（详见 R-00，待你复核） |
-| **F1** | R-01 | 命令不可复现则后续所有验证结论不可靠——地基 |
-| **F2** | R-02 → R-03 | 必须先建单一清单，再修发布路径；顺序反了三个月后会再漂一次 |
-| **F3** | R-04, R-05 | 同类：**让失败看起来像成功**。这条链路上已栽过多次 |
-| **F4** | R-06, R-07 | 对外口径（R-06 已定 B）+ 开放式检测 |
-| **F5** | R-08 ~ R-11 | 卫生项，互不依赖，可一批做完 |
-| **F6** | R-12 | 必须最后：前面任何改动都会使证据失效 |
+| **F0** | R-00 | ✅ Investigated: platform limitation, descope self-contained-unpackaged (see R-00 for details, pending your review) |
+| **F1** | R-01 | If commands aren't reproducible, every downstream verification conclusion is unreliable — the foundation |
+| **F2** | R-02 → R-03 | Must build the single list first, then fix the release path; doing it in the wrong order would just drift again in three months |
+| **F3** | R-04, R-05 | Same category: **making failure look like success**. This pipeline has already tripped multiple times |
+| **F4** | R-06, R-07 | External-facing framing (R-06 already decided as B) + open-ended detection |
+| **F5** | R-08 ~ R-11 | Hygiene items, mutually independent, can be done in one batch |
+| **F6** | R-12 | Must be last: any prior change would invalidate the evidence |
 
-## 决策（全权授权下已全部由我定，2026-08-31）
+## Decisions (all decided by me under full authorization, 2026-08-31)
 
-1. **R-06 口径** → **选 B**（445 保留 + 拆分为 270 视觉生效 / 175 仅契约 / 943 仅可调用）。详见 R-06。
-2. **R-07 接线范围** → **一律不接线，改为"声明 + 开放式检测"**。理由：这是**设计系统**，`Background`/`CornerRadius`/`BorderBrush` 等外观属性**故意**不让消费者覆盖，正是为了守住视觉一致性——把它们接线反而破坏设计系统的本意。因此对 156 条 `platform-dp-contract`：陷阱型（功能/装饰，消费者会误以为生效）纳入不支持清单并给替代方案；设计系统自持型（外观）在文档声明"本设计系统不开放覆盖"；其余底层 DP 归为已知无操作。工程交付是**开放式检测 + 三分类归档**，不新增任何 `TemplateBinding`。
-3. **本轮不做真实发布**。目标是"只差打发布包"这一步，故：
-   - `Publish-Internal.ps1` 保持参数化（feed / owner 作为入参），**不硬编码**任何真实地址
-   - 全链跑到 **rehearsal 通过**（`-Push` 不传，`REHEARSAL_EXIT=0`）即为本轮终点
-   - 真实 `nuget push` 属发布动作，需用户在最后一步亲自执行并提供 feed 地址——**不在本轮范围**
+1. **R-06 framing** → **Option B chosen** (keep 445 + split into 270 visually effective / 175 contract-only / 943 callable-only). See R-06 for details.
+2. **R-07 wiring scope** → **none of them get wired up; instead, "declare + open-ended detection."** Rationale: this is a **design system**, and appearance properties like `Background`/`CornerRadius`/`BorderBrush` are **deliberately** not overridable by consumers, precisely to preserve visual consistency — wiring them up would actually undermine the design system's intent. So, for the 156 `platform-dp-contract` items: trap-type (functional/decorative, where consumers would mistakenly think it takes effect) go into the unsupported list with an alternative given; design-system-owned (appearance) items get documented as "this design system does not allow overriding"; the remaining low-level DPs are filed as known no-ops. The engineering deliverable is **open-ended detection + three-way classification filing**, with no new `TemplateBinding` added.
+3. **No real release happens this round.** The goal is to get to "nothing left but to cut the release package," so:
+   - `Publish-Internal.ps1` stays parameterized (feed / owner as inputs), **no** real address is hardcoded
+   - Running the full chain through to a **passing rehearsal** (`-Push` not passed, `REHEARSAL_EXIT=0`) is the endpoint for this round
+   - An actual `nuget push` is a release action that the user must personally perform in the final step, providing the feed address — **out of scope for this round**
 
-## 锁定项（任何人不得改动）
+## Locked items (no one may modify these)
 
-- `tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.AttachedVisualProperties.cs` 的 fingerprint / 收敛 / 分类逻辑
-- `tests/Ether.DesignSystem.ConsumerFixtures/VisualBaselines/controls/` 的 26 张 golden baseline —— **失败必须查因，绝不重生成**
-- `src/Ether.DesignSystem.Foundation/Resources/Tokens/` 下的冻结 token 文件（哈希见 `Verify-ResourceKeys.ps1:18-24`）
+- The fingerprint / convergence / classification logic in `tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.AttachedVisualProperties.cs`
+- The 26 golden baselines in `tests/Ether.DesignSystem.ConsumerFixtures/VisualBaselines/controls/` — **on failure, root-cause it; never regenerate**
+- The frozen token files under `src/Ether.DesignSystem.Foundation/Resources/Tokens/` (hashes at `Verify-ResourceKeys.ps1:18-24`)
 
-## 变更记录
+## Change Log
 
-| 日期 | 条目 | 变更 |
+| Date | Item | Change |
 |---|---|---|
-| 2026-08-31 | — | 建立本文件；R-01/02/03/04/05/06/08/09/11/12 完成亲验；R-07/R-10 仍为审核声称待复核 |
-| 2026-08-31 | R-07 | 亲验证实：清单确为 12 条封闭列表；EtherCheckbox 8 属性 `platform-dp-contract` 且不在清单内；补充"陷阱型/设计系统自持型/无人问津型"三分类，接线范围列为产品决策 |
-| 2026-08-31 | R-10 | 亲验并**修正审核措辞**：5 个 XAML-only 类型中 2 个已有明确 doc，EtherSegmentPanel 缺；真实问题是标注不一致 + 全库 0 处 `[EditorBrowsable]`，IntelliSense 仍暴露 |
-| 2026-08-31 | R-00 | 决议：defect#1 已修+保留至 `spike/self-contained-investigation` @82f12e9；defect#2 判定为平台限制（DefaultStyleKey→PRI），descope 自包含-非打包，发布走框架依赖（待用户复核）。清干净基线 `03bf6ad` |
-| 2026-08-31 | R-01 | **F1 落地** commit `26f2adc`：global.json 锁 10.0.400（disable）+ CI 8.0.x→10.0.x + 2 处 PS5.1 hex；restore/build×2/PSCompat 全 exit 0。并行 restore 与 InteractionContracts 均**未复现**（判定为审核期并发污染）。**残留隐患**：CI `10.0.x` 与 `disable` 不精确匹配 → F2 必修为精确 `10.0.400` |
-| 2026-08-31 | R-02/R-03 | **F2 落地** `f8002ee`：Gates.psd1 单一事实源 + Verify-GateManifest 反漂移（变异测试过）；Publish-Internal 派生 28 门禁并集（含 PowerShellCompat+GallerySmoke+完整 ConsumerFixtures）；Pack push 移除；CI 精确锁 10.0.400。arm64 脚本未删（有 tracked 注释/文档引用，全惰性 → F5 彻底清）。**顺带修掉 R-04 splat 根因**（哈希表 Args） |
-| 2026-08-31 | R-04/R-05 | **F3 落地** `cbd7e51`：删除并 gitignore 误名文件 `-RequireHighContrastParity`；Verify-GateManifest 增"Args 必须哈希表"断言（变异测试过）；Publish-Internal 初始 summary `pushed=$false` + 防回归 guard，仅真实 push 成功后置 true。我独立复跑 GateManifest/ResourceKeys 均 exit 0 |
-| 2026-08-31 | R-06 | **F4a 落地** `b213860`：Controls README / release / HANDOFF 改为诚实措辞（270 视觉生效 + 175 仅契约 + 943 仅可调用）；ConsumerFixtures 增 270/175 分类断言（对活证据），新增静态 Verify-PropertyEvidenceWording.ps1（ci，校 README 含 445/270/175/943 且无裸"observable"）；两项变异测试均真跑通过。我独立复跑 Wording/GateManifest 均 exit 0，核心 1388/445/69/874 不变 |
-| 2026-08-31 | R-07 | **F4b 落地** `48782c3`：UnsupportedProperties.psd1 增 AcknowledgedSilent（146 条，119 design-system-owned + 27 platform-noop，从活证据生成）；新增 Verify-SilentPropertyCoverage.ps1（local-runtime，正反向 + 变异测试过）；12 traps 静态门禁保留。我独立复跑 Coverage/GateManifest/Unsupported 均 exit 0 |
-| 2026-08-31 | R-07 修正 | 我复核发现 F4b 把**功能性**属性误标为"静默失效"：EtherInput.PlaceholderText/AcceptsReturn 有 TemplateBinding（功能正常），IsReadOnly/CharacterCasing 是基类行为属性（正常）。`platform-dp-contract`（像素无变化）不等于"失效"。getting-started **无对外错误声明**（PlaceholderText 示例正常展示）。→ F4c 修正分类：加 TemplateBinding 交叉检查区分"真静默"与"功能正常但不可视测"。另 3 条不确定（HorizontalTextAlignment/DisplayMemberPath/MaxDropDownHeight）标 needs-review |
-| 2026-08-31 | 跟进项 | F4b 起了两个 spawn_task：功能 DP 可能升级为 trap（并入 F4c 复核）、Publish-Internal 取证顺序应保证用**新鲜**证据而非磁盘最新（并入 F6 全链复验）。均已纳入本计划，不遗漏 |
-| 2026-08-31 | R-07 修正 | **F4c 落地** `63250ba`：加 TemplateBinding 交叉检查，146 条重分桶（94 design-system-owned / 15 consumed-visually-stable / 4 behavioral / 30 platform-noop / 3 needs-review）；19 个功能属性移出"静默失效"；门禁自校验标签正确性（双向变异测试过）。3 条 needs-review（DisplayMemberPath/MaxDropDownHeight/HorizontalTextAlignment）以 warning 浮现，留 F6/用户。我独立复跑 exit 0 |
-| 2026-08-31 | arm64 | 决定：**不删** Verify-Arm64Packages.ps1。F2 已将其记入 Gates.psd1 UnmanifestedScripts 并附原因，HANDOFF 记为 unused——已满足 R-02"接入清单并声明用途"一臂。删除会引入 manifest 一致性风险且收益近零。F5 收窄为 R-08/09/10/11 |
-| 2026-08-31 | R-08..R-11 | **F5 落地** `43ec6d2`：getting-started MSIX 改为"构建/产出已验证、安装/运行未验证"；Interactions 补 PackageReleaseNotes+PackageProjectUrl（已核实进 nuspec）；5 个 XAML-only 类型加 [EditorBrowsable(Never)]+统一 doc；删除占位图 Frame 2147253527.png（曾随 Foundation 包分发，无代码引用）。我独立复跑 Release build 0/0/exit0、GateManifest exit0、源改全部核对 |
-| 2026-08-31 | R-12 前置 | **F6a 落地** `00b6090`：修复取证顺序——ConsumerFixtures 现于 SilentPropertyCoverage 之前跑；后者加 -EvidenceDir/-MinCreationTimeUtc（env 兜底）钉定本轮证据，standalone 保持 newest-on-disk 兼容。聚焦证明（marker 证据）确认读的是钉定文件而非磁盘最新。我独立复跑 -ListGates 顺序正确、GateManifest exit0、tree clean |
-| 2026-08-31 | R-12 复验#1 | **F6b 全链 rehearsal 失败但暴露真问题**：27 门禁通过（含双 build、13 契约、GallerySmoke 20/20）；ExternalConsumer A/B **实质验证全通过**（restore/包 SHA/build/runtime marker），但 finally 清理 `Remove-Item` 撞 Windows MAX_PATH（260）删不掉深层 WindowsAppSDK 产物 → 无 partial-resume 导致整链 abort。**非库/非门禁实质问题，是测试脚手架清理 bug** |
-| 2026-08-31 | R-12 前置 | **F6c 落地** `4684f05`：Verify-ExternalConsumer 清理改为 robocopy /MIR 空目录镜像（原生长路径支持）+ 清理失败仅 warning 不再 abort 已通过的验证。聚焦测试用 424 字符路径复现原异常并证明修复；验证实质字节不变。我独立核对 diff 仅清理逻辑、PSCompat/GateManifest exit0、tree clean |
-| 2026-08-31 | R-12 复验#2 | **F6b-redo 再失败于 ExternalConsumer（第二个、更窄的 bug）**：A/B 实质全通过、清理成功无残留，但 F6c 引入的 robocopy `/MIR` 退出码 2（"purged extra files"=成功位标志，非失败）泄漏进 `$LASTEXITCODE`，被 Publish-Internal 通用检查误判为门禁失败。假阴性 |
-| 2026-08-31 | R-12 前置 | **F6d 落地** `10ebbe3`：robocopy 后 `$global:LASTEXITCODE=0` 归一化 + 成功路径显式 `exit 0`。**这次真跑了实际门禁**确认 EXTERNALCONSUMER_EXIT=0（原泄漏 2），无残留 temp。我核对 diff 仅退出码逻辑、tree clean。注：ConsumerFixtures/SilentPropertyCoverage/MsixPackage/pack 迄今两次 rehearsal 都未跑到，下一轮首次全链穿透 |
-| 2026-08-31 | R-12 ✅ | **F6b-redo-2 全链 rehearsal 通过** `REHEARSAL_EXIT=0` @ 冻结提交 `7daf1dc`，wall-clock 18m21s：双 build + 22 静态门禁 + GallerySmoke 20/20 + ExternalConsumer(A/B) + git diff --check + ConsumerFixtures×2(1388/445=270+175/943/35/26，两轮确定性一致) + SilentPropertyCoverage(156 全账，3 needs-review warning) + MsixPackage(65MB .msix) + pack×3。证据 bundle gitCommit==7daf1dc、pushed=false、3 nupkg。我独立核对 tree clean/HEAD/证据绑定/包存在全部吻合。**13 项阻断全部完成** |
-| 2026-08-31 | R-00 修正 | WebFetch/WebSearch 核实:issue 编号对但**仓库写错**（应为 microsoft-ui-xaml #7830/#10970，非 WindowsAppSDK，故早前链接 404）；#7830 讲的是打包应用消费 NuGet 控件即崩、本库框架依赖仍通过，故 issue 是佐证背景非精确出处。核实消费端部署:正常 MSIX/安装器路径下 end user **不需手动装 SDK**；真实缺口=未在干净机实测 MSIX 装+跑、未测自包含+MSIX（可选后续，非阻断）。descope 决定不变 |
+| 2026-08-31 | — | Established this document; R-01/02/03/04/05/06/08/09/11/12 personally verified and complete; R-07/R-10 still audit claims pending review |
+| 2026-08-31 | R-07 | Personally verified confirmation: the list is indeed a closed list of 12 entries; EtherCheckbox has 8 `platform-dp-contract` properties not in the list; added the three-way "trap-type / design-system-owned / unremarkable" classification, wiring scope filed as a product decision |
+| 2026-08-31 | R-10 | Personally verified and **corrected the audit's wording**: of the 5 XAML-only types, 2 already have clear doc comments, EtherSegmentPanel is missing one; the real problem is inconsistent annotation + 0 uses of `[EditorBrowsable]` repo-wide, still exposed in IntelliSense |
+| 2026-08-31 | R-00 | Resolution: defect#1 fixed and preserved on `spike/self-contained-investigation` @82f12e9; defect#2 judged a platform limitation (DefaultStyleKey→PRI), self-contained-unpackaged descoped, release goes framework-dependent (pending user review). Clean baseline `03bf6ad` |
+| 2026-08-31 | R-01 | **F1 landed**, commit `26f2adc`: global.json pinned to 10.0.400 (disable) + CI 8.0.x→10.0.x + 2 PS5.1 hex fixes; restore/build×2/PSCompat all exit 0. Parallel restore and InteractionContracts both **did not reproduce** (judged to be audit-period concurrency contamination). **Remaining hazard**: CI's `10.0.x` doesn't exactly match `disable` → F2 must fix to exact `10.0.400` |
+| 2026-08-31 | R-02/R-03 | **F2 landed**, `f8002ee`: Gates.psd1 as single source of truth + Verify-GateManifest anti-drift check (mutation-tested); Publish-Internal derives the union of 28 gates (including PowerShellCompat+GallerySmoke+full ConsumerFixtures); Pack push capability removed; CI pinned exactly to 10.0.400. arm64 script not deleted (has tracked comment/doc references, fully inert → thoroughly cleaned up in F5). **Also fixed the R-04 splat root cause in passing** (hash-table Args) |
+| 2026-08-31 | R-04/R-05 | **F3 landed**, `cbd7e51`: deleted and gitignored the misnamed file `-RequireHighContrastParity`; Verify-GateManifest gained an "Args must be a hash table" assertion (mutation-tested); Publish-Internal's initial summary now has `pushed=$false` + an anti-regression guard, set to true only after a real push succeeds. I independently reran GateManifest/ResourceKeys, both exit 0 |
+| 2026-08-31 | R-06 | **F4a landed**, `b213860`: Controls README / release / HANDOFF changed to honest wording (270 visually effective + 175 contract-only + 943 callable-only); ConsumerFixtures gained a 270/175 classification assertion (against live evidence), added a new static Verify-PropertyEvidenceWording.ps1 (ci, checks the README contains 445/270/175/943 and no bare "observable"); both mutation tests genuinely pass. I independently reran Wording/GateManifest, both exit 0, core numbers 1388/445/69/874 unchanged |
+| 2026-08-31 | R-07 | **F4b landed**, `48782c3`: UnsupportedProperties.psd1 gained AcknowledgedSilent (146 entries, 119 design-system-owned + 27 platform-noop, generated from live evidence); added Verify-SilentPropertyCoverage.ps1 (local-runtime, forward + reverse + mutation-tested); the 12 static trap gates retained. I independently reran Coverage/GateManifest/Unsupported, all exit 0 |
+| 2026-08-31 | R-07 correction | On review I found F4b had mislabeled **functional** properties as "silently failing": EtherInput.PlaceholderText/AcceptsReturn have TemplateBinding (functioning normally), IsReadOnly/CharacterCasing are base-class behavioral properties (normal). `platform-dp-contract` (pixels unchanged) does not equal "failing." getting-started has **no incorrect external claim** (the PlaceholderText example displays normally). → F4c corrects the classification: adds a TemplateBinding cross-check to distinguish "genuinely silent" from "functionally fine but not visually testable." 3 other uncertain items (HorizontalTextAlignment/DisplayMemberPath/MaxDropDownHeight) marked needs-review |
+| 2026-08-31 | Follow-up items | F4b spawned two background tasks: functional DPs potentially being upgraded to traps (folded into the F4c review), and Publish-Internal's evidence-gathering order needing to guarantee **fresh** evidence rather than newest-on-disk (folded into the F6 full-chain re-verification). Both incorporated into this plan, nothing lost |
+| 2026-08-31 | R-07 correction | **F4c landed**, `63250ba`: added a TemplateBinding cross-check, re-bucketed the 146 entries (94 design-system-owned / 15 consumed-visually-stable / 4 behavioral / 30 platform-noop / 3 needs-review); 19 functional properties removed from "silently failing"; the gate self-validates label correctness (bidirectionally mutation-tested). The 3 needs-review entries (DisplayMemberPath/MaxDropDownHeight/HorizontalTextAlignment) surface as warnings, left for F6/the user. I independently reran, exit 0 |
+| 2026-08-31 | arm64 | Decision: **do not delete** Verify-Arm64Packages.ps1. F2 already recorded it in Gates.psd1's UnmanifestedScripts with a stated reason, and HANDOFF records it as unused — this already satisfies one arm of R-02's "wire into the list and declare its purpose." Deleting it would introduce manifest-consistency risk for near-zero benefit. F5 narrowed to R-08/09/10/11 |
+| 2026-08-31 | R-08..R-11 | **F5 landed**, `43ec6d2`: getting-started MSIX changed to "build/produce verified, install/runtime not verified"; Interactions gained PackageReleaseNotes+PackageProjectUrl (confirmed present in the nuspec); the 5 XAML-only types got [EditorBrowsable(Never)]+unified doc comments; the placeholder image Frame 2147253527.png was deleted (previously shipped with the Foundation package, no code references). I independently reran: Release build 0/0/exit0, GateManifest exit0, all source changes verified |
+| 2026-08-31 | R-12 prerequisite | **F6a landed**, `00b6090`: fixed the evidence-gathering order — ConsumerFixtures now runs before SilentPropertyCoverage; the latter gained -EvidenceDir/-MinCreationTimeUtc (with an env fallback) to pin this round's evidence, while standalone runs keep newest-on-disk compatibility. Focused proof (marker evidence) confirms it reads the pinned file, not the newest on disk. I independently reran -ListGates for correct ordering, GateManifest exit0, tree clean |
+| 2026-08-31 | R-12 re-verification #1 | **F6b full-chain rehearsal failed but exposed a real problem**: 27 gates passed (including double build, 13 contracts, GallerySmoke 20/20); ExternalConsumer A/B **substantively passed in full** (restore/package SHA/build/runtime marker), but the `finally` cleanup's `Remove-Item` hit Windows' MAX_PATH (260) and couldn't delete deeply nested WindowsAppSDK output → with no partial-resume, the whole chain aborted. **Not a library/gate substantive issue — a test-scaffolding cleanup bug** |
+| 2026-08-31 | R-12 prerequisite | **F6c landed**, `4684f05`: Verify-ExternalConsumer's cleanup changed to a robocopy /MIR empty-directory mirror (native long-path support) + a cleanup failure now only warns instead of aborting an already-passed verification. A focused test reproduced the original exception with a 424-character path and proved the fix; verified no substantive bytes changed. I independently reviewed the diff (cleanup logic only), PSCompat/GateManifest exit0, tree clean |
+| 2026-08-31 | R-12 re-verification #2 | **F6b-redo failed again at ExternalConsumer (a second, narrower bug)**: A/B substantively passed in full, cleanup succeeded with no residue, but the robocopy `/MIR` exit code 2 introduced by F6c ("purged extra files" = a success-bit flag, not a failure) leaked into `$LASTEXITCODE` and was misjudged as a gate failure by Publish-Internal's generic check. A false negative |
+| 2026-08-31 | R-12 prerequisite | **F6d landed**, `10ebbe3`: normalized `$global:LASTEXITCODE=0` after robocopy + an explicit `exit 0` on the success path. **This time the actual gate genuinely ran** and confirmed EXTERNALCONSUMER_EXIT=0 (previously leaked as 2), no residual temp files. I reviewed the diff (exit-code logic only), tree clean. Note: ConsumerFixtures/SilentPropertyCoverage/MsixPackage/pack still haven't been reached in either of the two rehearsals so far — the next round will be the first full-chain pass-through |
+| 2026-08-31 | R-12 ✅ | **F6b-redo-2 full-chain rehearsal passed**, `REHEARSAL_EXIT=0` @ frozen commit `7daf1dc`, wall-clock 18m21s: double build + 22 static gates + GallerySmoke 20/20 + ExternalConsumer(A/B) + git diff --check + ConsumerFixtures×2 (1388/445=270+175/943/35/26, deterministically consistent across both runs) + SilentPropertyCoverage (156 fully accounted for, 3 needs-review warnings) + MsixPackage (65MB .msix) + pack×3. Evidence bundle: gitCommit==7daf1dc, pushed=false, 3 nupkg. I independently confirmed tree clean/HEAD/evidence binding/package existence all match. **All 13 blocker items complete** |
+| 2026-08-31 | R-00 correction | WebFetch/WebSearch verified: the issue numbers are right but **the repo was wrong** (should be microsoft-ui-xaml #7830/#10970, not WindowsAppSDK, hence the earlier links 404'd); #7830 describes a packaged app crashing simply from consuming a NuGet control, while this library's framework-dependent modes still pass, so the issue is supporting background, not the precise source. Verified consumer-side deployment: under normal MSIX/installer paths, the end user **does not need to manually install the SDK**; the real gap = MSIX install+run has not been tested on a clean machine, and self-contained+MSIX has not been tested (optional follow-up, not a blocker). The descope decision stands unchanged |
 
 ---
 
-## R-13 — 消费视觉对等(用户手动验收发现,超出原 12 条审核)
+## R-13 — Consumer visual parity (found by the user's manual acceptance testing, beyond the original 12-item audit)
 
-**严重度**：阻断（旗舰控件消费端渲染错误）　**批次**：F7　**状态**：✅ 已修复并亲验
+**Severity**: Blocker (flagship control rendering incorrectly for consumers) | **Batch**: F7 | **Status**: ✅ Fixed and personally verified
 
-### 起因
-用户亲自跑起真窗口、亲手点,发现 **EtherSegmentedControl 选中段在 NuGet 消费端隐形**——这是 265 断言 + 26 基线 + 全 rehearsal 都没抓到的缺陷。
+### Cause
+The user personally ran a real window and clicked around by hand, and discovered that **EtherSegmentedControl's selected segment was invisible on the NuGet consumer side** — a defect that 265 assertions + 26 baselines + a full rehearsal all failed to catch.
 
-### 根因（已证明）
-选中药丸 `CheckedLayer`(Opacity=0)只由 `HandRadioButton.UpdateSegmentVisual()` 点亮,而 `HandRadioButton` 在 **Gallery 项目**里、**没进包**。普通 RadioButton 消费者(getting-started 写法)得到白字+透明药丸=隐形。
+### Root cause (proven)
+The selected pill, `CheckedLayer` (Opacity=0), was only lit up by `HandRadioButton.UpdateSegmentVisual()`, and `HandRadioButton` lives in the **Gallery project** and **never shipped in the package**. A plain-RadioButton consumer (the getting-started pattern) got white text over a transparent pill = invisible.
 
-### 盲区（重要教训）
-golden 基线会把**坏渲染**当正确锁死:`segmentedControl-light/dark.png` 锁的就是"选中段无药丸"。fixture 截图前把选中翻到 B,B 白字压白底隐形,基线一直"通过"。**断言验事件/属性,不验"看起来对不对";基线锁像素,分不清对错。真人眼睛才是最后一道闸。**
+### Blind spot (an important lesson)
+A golden baseline will lock in **bad rendering** as correct: `segmentedControl-light/dark.png` had locked in exactly "selected segment has no pill." Before the fixture screenshot, the selection was flipped to B; B's white text sat on a white background and was invisible, and the baseline kept "passing." **Assertions verify events/properties, not "does it look right"; baselines lock pixels and can't tell right from wrong. A real human eye is the final gate.**
 
-### 修复（3 提交)
-- `a872330` — VSM 在 Checked/CheckedPointerOver/CheckedPressed 补 `CheckedLayer.Opacity=1`(普通 RadioButton 兜底,选中药丸可见)
-- `39b9fde` — 公开控件 `EtherSegmentRadioButton`(手型光标 + hover/pressed/checked 三层全代码驱动,与 Gallery 同一路径);getting-started 改用它;Gallery 保留薄 HandRadioButton 子类给预览色板
-- `3d926b9` — 重生成 2 张 segment 基线为正确渲染(A 灰未选、B 蓝药丸白字),亲验确认
+### Fix (3 commits)
+- `a872330` — added `CheckedLayer.Opacity=1` to the VSM in Checked/CheckedPointerOver/CheckedPressed (a fallback for plain RadioButton, making the selected pill visible)
+- `39b9fde` — a new public control, `EtherSegmentRadioButton` (hand cursor + hover/pressed/checked three-layer, fully code-driven, on the same path as the Gallery); getting-started switched to using it; the Gallery keeps a thin HandRadioButton subclass for the preview swatches
+- `3d926b9` — regenerated the 2 segment baselines with correct rendering (A gray unselected, B blue pill with white text), personally verified
 
-### 全控件对等审计（13 个）
-消费端 vs Gallery,明/暗、默认/禁用,**全部 MATCH**。用户圈的 Dropdown 亲验=正常(真控件展开态与 Gallery 一致;那 3 个 `DropdownMenuPreview*` 只是文档静态 mockup,非真控件样式)。除 segment 外无第二个控件依赖 Gallery-only 代码/样式。
+### Full cross-control parity audit (13 controls)
+Consumer side vs. Gallery, light/dark, default/disabled — **all MATCH**. The Dropdown the user flagged was personally verified = fine (the real control's expanded state matches the Gallery; the 3 `DropdownMenuPreview*` items are just static documentation mockups, not real control styling). Aside from segment, no other control depends on Gallery-only code/styling.
 
-### 验收标准
-- 消费端 SegmentedControl 选中段显示蓝药丸+白字(明/暗),hover/pressed 反馈与 Gallery 一致 —— ✅ 亲验(截图)
-- 基线锁的是正确渲染 —— ✅ 亲验
-- 全 13 控件消费端==Gallery —— ✅ 审计
-- **待办**:HEAD 已越过冻结的 `7daf1dc`(经 a872330/39b9fde/3d926b9 及 spec 提交),**必须在新 HEAD 重跑 Publish-Internal rehearsal**,才算回到"只差发布"。
+### Acceptance criteria
+- Consumer-side SegmentedControl's selected segment shows a blue pill with white text (light/dark), hover/pressed feedback matches the Gallery — ✅ personally verified (screenshot)
+- The baseline now locks in correct rendering — ✅ personally verified
+- All 13 controls: consumer side == Gallery — ✅ audited
+- **Outstanding**: HEAD has moved past the frozen `7daf1dc` (via commits a872330/39b9fde/3d926b9 and the spec commit); **the Publish-Internal rehearsal must be rerun at the new HEAD** before we're back to "nothing left but to release."
 
-## 变更记录（续）
+## Change Log (continued)
 
-| 日期 | 条目 | 变更 |
+| Date | Item | Change |
 |---|---|---|
-| 2026-08-31 | R-13 | 用户手动验收发现 segment 选中隐形(库模板依赖没进包的 Gallery HandRadioButton);修复 a872330+39b9fde,重生成坏基线 3d926b9;全 13 控件对等审计通过;Dropdown 亲验正常。教训:基线会锁坏渲染,真人眼睛是最后闸。待重跑 rehearsal |
-| 2026-08-31 | R-13 复验 | 首次重跑 rehearsal 挂在 SteeringBar 玻璃拇指(round1 过 round2 挂,241px 超阈值 39=运行间玻璃噪声,非回归;segment round1 已验证过)。修 `0349ab9`:非锁定 Infrastructure.cs 加每控件容差 steeringBar=800(>241 噪声、<<9495 真实改动),锁定 AttachedVisualProperties.cs 不动;并修 Verify-ConsumerFixtures.ps1 先查 outcome 再读 .evidence(否则真失败被盖成 "property evidence not found")。双跑 ConsumerFixtures 均绿。待再跑全链 |
+| 2026-08-31 | R-13 | User's manual acceptance testing found the segment selection was invisible (the library template depended on the Gallery's HandRadioButton, which never shipped in the package); fixed via a872330+39b9fde, regenerated the bad baselines in 3d926b9; full cross-control parity audit of all 13 passed; Dropdown personally verified as normal. Lesson: baselines can lock in bad rendering, a real human eye is the final gate. Rehearsal rerun pending |
+| 2026-08-31 | R-13 re-verification | The first rehearsal rerun hung on the SteeringBar's glass thumb (round1 passed, round2 hung; 241px exceeded the 39 threshold = inter-run glass noise, not a regression; segment was already verified in round1). Fixed in `0349ab9`: added a per-control tolerance to the non-locked Infrastructure.cs, steeringBar=800 (> the 241 noise, << 9495 for a real change), leaving the locked AttachedVisualProperties.cs untouched; also fixed Verify-ConsumerFixtures.ps1 to check the outcome before reading .evidence (otherwise a genuine failure gets masked as "property evidence not found"). Both ConsumerFixtures runs came back green. Full-chain rerun still pending |

@@ -54,7 +54,7 @@ We split the verification of this into **two complementary reviews**. Read §1 f
 The user asked what this kind of review is named in industry. Precise names, so we can talk about
 it the same way the rest of the ecosystem does:
 
-### Review A — "可被消费性" → **API Consumability Review**
+### Review A — "consumability" → **API Consumability Review**
 Also called a **Public API Design Review** / **API surface review**, and — at the level of the
 whole hand-off experience — a **Developer Experience (DX) review**. On .NET it is governed by
 Microsoft's **Framework Design Guidelines** (Cwalina & Abrams) and, for any public-surface change,
@@ -74,7 +74,7 @@ The **backend hook** for the Event/Command contract already exists in this repo 
 outbox). Review A must confirm every control is reachable through that adapter *or* explains why it
 isn't.
 
-### Review B — "属性是否完整暴露 / 能否被全面引用" → **API Completeness Audit**
+### Review B — "are properties fully exposed / can they all be referenced" → **API Completeness Audit**
 Also called an **API Coverage Review**, an **API Parity Review** (parity against the control you
 reskin), or a **feature-/property-matrix audit**. It answers "complete *against what?*" with two
 baselines:
