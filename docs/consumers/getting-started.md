@@ -320,6 +320,30 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
                    AutomationProperties.Name="Secondary package button" />
 ```
 
+*(English from here — this three-part pattern is new in this pass; see §6 for the full MVVM
+write-up.)*
+
+**Bind data:** `Content`/`IsEnabled` are plain WinUI `ContentControl`/`Control` properties — a
+normal `{x:Bind}` at `Mode=OneWay` is enough; there is no user-editable "selection" state to push
+back:
+```xml
+<ether:EtherButton Content="{x:Bind ViewModel.SaveLabel, Mode=OneWay}"
+                   IsEnabled="{x:Bind ViewModel.CanSave, Mode=OneWay}"
+                   Style="{StaticResource EtherButtonPrimary}"/>
+```
+
+**Wire an action:** `EtherButton` is a `ButtonBase` subclass, so the native `Command`/
+`CommandParameter` pair works with no event glue:
+```xml
+<ether:EtherButton Content="Save"
+                   Command="{x:Bind ViewModel.SaveCommand}"
+                   CommandParameter="{x:Bind ViewModel.CurrentItem, Mode=OneWay}"
+                   Style="{StaticResource EtherButtonPrimary}"/>
+```
+Proven at `tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.R2.cs:388-398`
+(`VerifyButtonCommand`): `Command`/`CommandParameter` fire exactly once per click, with the
+expected parameter.
+
 **EtherProgressBar**（`Views/DataDisplay/ProgressBarPage.xaml`）：
 ```xml
 <ether:EtherProgressBar HorizontalAlignment="Stretch"
@@ -329,11 +353,44 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
                         AutomationProperties.Name="Package download progress" />
 ```
 
+**Bind data:** `Value`, `Title`, `ValueContent`, `ShowTitle`, `ShowValue` are all `OneWay`-friendly
+display properties (`EtherProgressBar.cs:60-93`):
+```xml
+<ether:EtherProgressBar Value="{x:Bind ViewModel.DownloadPercent, Mode=OneWay}"
+                        Title="{x:Bind ViewModel.DownloadLabel, Mode=OneWay}"
+                        ValueContent="{x:Bind ViewModel.DownloadPercentText, Mode=OneWay}"
+                        ShowTitle="True" ShowValue="True"
+                        HorizontalAlignment="Stretch"/>
+```
+
+**Wire an action:** none. `EtherProgressBar` is a read-only status indicator with no interaction
+surface — there is nothing to "wire".
+
 **EtherCheckbox**（`Views/Controls/CheckboxPage.xaml`）：
 ```xml
 <ether:EtherCheckbox Content="Package checkbox"
                      AutomationProperties.Name="Package checkbox" />
 ```
+
+**Bind data:** `IsChecked` is `bool?` and supports `TwoWay`. `EtherCheckbox` is deliberately
+two-state (§4.1: `null` coerces to `false`, `IsThreeState=true` is rejected), so bind a plain
+`bool` VM property unless you intentionally want to read the transient `null`:
+```xml
+<ether:EtherCheckbox Content="Send me updates"
+                     IsChecked="{x:Bind ViewModel.SubscribeToUpdates, Mode=TwoWay}"/>
+```
+Proven at `R2.cs:68-76` (`VerifyTwoWayBindings`).
+
+**Wire an action:** `EtherCheckbox` is a `ToggleButton`, so `Command`/`CommandParameter` fire on
+every check/uncheck, exactly like a native `CheckBox`:
+```xml
+<ether:EtherCheckbox Content="Send me updates"
+                     Command="{x:Bind ViewModel.ToggleSubscriptionCommand}"
+                     CommandParameter="{x:Bind ViewModel.SubscriptionId}"/>
+```
+Proven at `R2.cs:379, 400-412` (`VerifyToggleCommand`). Most apps only need one of `IsChecked`
+TwoWay or `Command` — add `Command` only when something besides the bound state (telemetry, a
+save) must run on toggle.
 
 **EtherRadioButton**（`Views/Controls/RadioButtonPage.xaml`）：
 ```xml
@@ -342,12 +399,50 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
                         AutomationProperties.Name="Package radio button" />
 ```
 
+**Bind data:** `IsChecked` TwoWay (same two-state coercion as `EtherCheckbox`) plus `GroupName` for
+mutual exclusion:
+```xml
+<ether:EtherRadioButton GroupName="delivery-speed" Content="Standard"
+                        IsChecked="{x:Bind ViewModel.IsStandardDelivery, Mode=TwoWay}"/>
+<ether:EtherRadioButton GroupName="delivery-speed" Content="Express"
+                        IsChecked="{x:Bind ViewModel.IsExpressDelivery, Mode=TwoWay}"/>
+```
+Proven at `R2.cs:78-86` (TwoWay) and group-name mutual exclusion (`RadioButtonVerification.
+GroupNameMutualExclusionVerified`).
+
+**Wire an action:** `EtherRadioButton`'s UIA actuation is `SelectionItem.Select()`, not `Toggle()`,
+but it still fires `Command`/`CommandParameter` once per selection:
+```xml
+<ether:EtherRadioButton GroupName="delivery-speed" Content="Express"
+                        Command="{x:Bind ViewModel.SelectDeliverySpeedCommand}"
+                        CommandParameter="Express"/>
+```
+Proven at `R2.cs:384, 419-431` (`VerifySelectionItemCommand`).
+
 **EtherInput**（`Views/Controls/InputPage.xaml`）：
 ```xml
 <ether:EtherInput PlaceholderText="Package input"
                   HorizontalAlignment="Stretch"
                   AutomationProperties.Name="Package input" />
 ```
+
+**Bind data:** `Text` is `string` and supports `TwoWay`:
+```xml
+<ether:EtherInput PlaceholderText="Search"
+                  Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay}"
+                  HorizontalAlignment="Stretch"/>
+```
+Proven at `R2.cs:88-96` (`VerifyTwoWayBindings`).
+
+**Wire an action:** `EtherInput` is a `TextBox` and has no `Command`; bind the native
+`TextChanged` event straight to a view-model method with `{x:Bind}` — no extra package required:
+```xml
+<ether:EtherInput PlaceholderText="Search"
+                  Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay}"
+                  TextChanged="{x:Bind ViewModel.OnQueryChanged}"/>
+```
+`OnQueryChanged` may take the standard `(object sender, TextChangedEventArgs e)` signature or no
+parameters at all — `{x:Bind}` supports both event-handler shapes.
 
 **EtherDropdown**（`Views/Controls/DropdownPage.xaml`）：
 ```xml
@@ -359,6 +454,28 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
     <ComboBoxItem Content="1 Hour"/>
 </ether:EtherDropdown>
 ```
+
+**Bind data:** `ItemsSource` plus `SelectedItem` or `SelectedValue` (+ `SelectedValuePath`), all
+`TwoWay`-capable — these are inherited `Selector`/`ComboBox` properties, not Ether-added ones:
+```xml
+<ether:EtherDropdown ItemsSource="{x:Bind ViewModel.DurationOptions}"
+                     DisplayMemberPath="Label"
+                     SelectedValuePath="Id"
+                     SelectedValue="{x:Bind ViewModel.SelectedDurationId, Mode=TwoWay}"
+                     HorizontalAlignment="Stretch"/>
+```
+Proven at `R2.cs:98-116` (`VerifyTwoWayBindings`, `SelectedItem`/`SelectedValue`). Configure
+`SelectedValuePath` (or a stable ID on the item model) before treating `SelectedValue` as a
+business identifier — see `src/Ether.DesignSystem.Interactions/README.md:9`.
+
+**Wire an action:** no `Command`; bind the native `SelectionChanged` event to a view-model method:
+```xml
+<ether:EtherDropdown ItemsSource="{x:Bind ViewModel.DurationOptions}"
+                     DisplayMemberPath="Label"
+                     SelectionChanged="{x:Bind ViewModel.OnDurationChanged}"/>
+```
+The trigger only ever shows plain text (`DisplayMemberPath`/`ToString()`); a rich `ItemTemplate`
+renders inside the open menu only, not on the closed trigger (`EtherDropdown.cs:42-43`).
 
 **EtherSegmentedControl**（`Views/Controls/SegmentedControlPage.xaml`）——段项推荐用
 `EtherSegmentRadioButton`（套用 `EtherSegment` 样式，放进 `EtherSegmentPanel`）：具备完整
@@ -378,11 +495,88 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
 ```
 普通 `RadioButton` 套用 `EtherSegment` 样式仍会显示选中态的药丸背景，但不会有 hover / pressed 反馈。
 
+**Bind data:** the data-driven contract — `ItemsSource` + `ItemTemplate`/`DisplayMemberPath` +
+`SelectedIndex`/`SelectedItem`/`SelectedValue` (all `TwoWay`-capable). Inline
+`EtherSegmentRadioButton` segments (above) remain fully supported and can be mixed across
+different instances:
+```xml
+<ether:EtherSegmentedControl AutomationProperties.Name="Time range"
+                             ItemsSource="{x:Bind ViewModel.Periods}"
+                             DisplayMemberPath="Label"
+                             SelectedItem="{x:Bind ViewModel.SelectedPeriod, Mode=TwoWay}"/>
+```
+Proven at `R2.cs:118-136` (TwoWay `SelectedValue`/`SelectedIndex`) and `R2.cs:213-224`
+(`VerifyDataPaths`: `ItemsSource` generates one `EtherSegmentRadioButton` per item,
+`DisplayMemberPath` shapes their content, and `SelectedItem`/`SelectedValue` stay synchronized).
+
+**Wire an action:** `SelectionChanged` fires on every selection change, programmatic or
+user-driven, and carries the old/new value:
+```xml
+<ether:EtherSegmentedControl ItemsSource="{x:Bind ViewModel.Periods}"
+                             DisplayMemberPath="Label"
+                             SelectionChanged="{x:Bind ViewModel.OnPeriodSelectionChanged}"/>
+```
+For the `ItemsSource`-generated path specifically (inline segments already had a native
+`RadioButton.Command`), an optional `SelectionCommand`/`SelectionCommandParameter` pair is also
+available, firing **only on user-initiated selection** — never on a programmatic
+`SelectedIndex`/`SelectedItem`/`SelectedValue` assignment:
+```xml
+<ether:EtherSegmentedControl ItemsSource="{x:Bind ViewModel.Periods}"
+                             DisplayMemberPath="Label"
+                             SelectionCommand="{x:Bind ViewModel.SelectPeriodCommand}"/>
+```
+`SelectionCommandParameter`, when set, is passed instead of `SelectedValue`; execution is guarded
+by `CanExecute`, mirroring `ButtonBase.Command` semantics (fires on the user's pick, not on a
+programmatic state assignment). Proven at
+`tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.R2.cs`
+(`VerifySegmentedControlSelectionCommand`): exactly one execution with the expected parameter on a
+user pick, zero additional executions on a programmatic `SelectedIndex` change, and zero
+executions when `CanExecute` returns `false`.
+
+**EtherTabNavigation**（`Views/Navigation/TabNavigationPage.xaml`）：
+```xml
+<ether:EtherTabNavigation SelectedIndex="0" AutomationProperties.Name="Package tab navigation">
+    <ether:EtherTabItem Content="Overview" Icon="Home"/>
+    <ether:EtherTabItem Content="Details" Icon="Document"/>
+    <ether:EtherTabItem Content="History" Icon="Clock"/>
+</ether:EtherTabNavigation>
+```
+
+**Bind data:** `ItemsSource` + `SelectedIndex`/`SelectedItem`, both `TwoWay`-capable —
+`EtherTabNavigation` is a thin `ListView` subclass, so these are the inherited `Selector`
+properties:
+```xml
+<ether:EtherTabNavigation ItemsSource="{x:Bind ViewModel.Sections}"
+                          SelectedIndex="{x:Bind ViewModel.SelectedSectionIndex, Mode=TwoWay}"/>
+```
+Proven at `R2.cs:168-186` (`SelectedIndex`/`SelectedItem` TwoWay) and `R2.cs:205-211`
+(`VerifyDataPaths`: `ItemsSource` drives item count and selection resolves to the right item).
+**Known limitation:** `Icon` is a per-container property on inline `EtherTabItem`
+(`EtherTabItem.cs:28-41`); the `ItemsSource`-generated path has no
+`PrepareContainerForItemOverride`, so data-bound tabs cannot show a per-item icon — use inline
+`EtherTabItem` if icons are required.
+
+**Wire an action:** no `Command`; bind the native `SelectionChanged` event:
+```xml
+<ether:EtherTabNavigation ItemsSource="{x:Bind ViewModel.Sections}"
+                          SelectionChanged="{x:Bind ViewModel.OnSectionSelectionChanged}"/>
+```
+
 **EtherIntelligenceButton**（`Views/Controls/IntelligenceButtonPage.xaml`）：
 ```xml
 <ether:EtherIntelligenceButton Content="Package intelligence"
                                AutomationProperties.Name="Package intelligence button"/>
 ```
+
+**Bind data:** same as `EtherButton` — `Content`/`IsEnabled`, `Mode=OneWay`.
+
+**Wire an action:** `EtherIntelligenceButton` is also a `ButtonBase`; `Command`/`CommandParameter`
+work identically:
+```xml
+<ether:EtherIntelligenceButton Content="Ask Ether"
+                               Command="{x:Bind ViewModel.AskCommand}"/>
+```
+Proven at `R2.cs:378, 388-398` (`VerifyButtonCommand`).
 
 **EtherSteeringBar**（`Views/Controls/SteeringBarPage.xaml`）：
 ```xml
@@ -393,11 +587,42 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
                         AutomationProperties.Name="Package steering bar"/>
 ```
 
+**Bind data:** `Value` TwoWay, plus `StepFrequency`, `Stops`, `SnapToStops` for stepped/snapped
+ranges:
+```xml
+<ether:EtherSteeringBar Value="{x:Bind ViewModel.Playback, Mode=TwoWay}"
+                        Title="Playback" ValueContent="{x:Bind ViewModel.PlaybackText, Mode=OneWay}"
+                        HorizontalAlignment="Stretch"/>
+```
+Proven at `R2.cs:138-146` (`VerifyTwoWayBindings`).
+
+**Wire an action:** `ValueChanged` — **it fires on every drag tick**, not once per commit, so it
+is a poor fit for an `ICommand` (this is why P3 did not add one here; see
+`EtherSteeringBar.xaml.cs:381-384, 476-487`). Debounce in the handler if you only care about the
+settled value:
+```xml
+<ether:EtherSteeringBar Value="{x:Bind ViewModel.Playback, Mode=TwoWay}"
+                        ValueChanged="{x:Bind ViewModel.OnPlaybackChanged}"/>
+```
+
 **EtherSlider**（`Views/Controls/SliderPage.xaml`）：
 ```xml
 <ether:EtherSlider HorizontalAlignment="Stretch"
                    Value="65"
                    AutomationProperties.Name="Package slider"/>
+```
+
+**Bind data:** `Value` TwoWay, plus `StepFrequency`, `Stops`, `SnapToStops`:
+```xml
+<ether:EtherSlider Value="{x:Bind ViewModel.Volume, Mode=TwoWay}"
+                   HorizontalAlignment="Stretch"/>
+```
+Same `RangeBase`-derived TwoWay contract as `EtherSteeringBar` (`R2.cs:138-146` pattern).
+
+**Wire an action:** `ValueChanged` — same every-tick caveat as `EtherSteeringBar` above:
+```xml
+<ether:EtherSlider Value="{x:Bind ViewModel.Volume, Mode=TwoWay}"
+                   ValueChanged="{x:Bind ViewModel.OnVolumeChanged}"/>
 ```
 
 **EtherMasthead**（`Views/Navigation/MastheadPage.xaml`）——`EnableWindowCommands="False"`
@@ -407,6 +632,23 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
                      AutomationProperties.Name="Package masthead"/>
 ```
 
+**Bind data:** `ShowSettings`/`ShowSearch`/`ShowMenuIcon`/`ShowChevron`/`EnableWindowCommands`, all
+`OneWay`:
+```xml
+<ether:EtherMasthead ShowSettings="{x:Bind ViewModel.CanConfigure, Mode=OneWay}"
+                     ShowSearch="True"
+                     AutomationProperties.Name="App masthead"/>
+```
+
+**Wire an action:** `ActionInvoked` reports which caption action fired
+(`MastheadAction.Minimize`/`MaximizeRestore`/`Close`); it fires **before** the host window command
+executes and cannot be cancelled (`EtherMasthead.xaml.cs:120, 543/561/585`):
+```xml
+<ether:EtherMasthead ActionInvoked="{x:Bind ViewModel.OnMastheadAction}"/>
+```
+The optional menu/settings/search icon slots are decorative only (no built-in click hook) — wire a
+real action via `ObserveMasthead` (§7 below) or your own icon overlay if you need one.
+
 **EtherSwitch**（`Views/Controls/ToggleSwitchPage.xaml`）——不是独立类型，是套在原生
 `ToggleSwitch` 上的样式：
 ```xml
@@ -415,6 +657,22 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
               OffContent="Off"
               OnContent="On"
               AutomationProperties.Name="Package toggle switch"/>
+```
+
+**Bind data:** `IsOn` TwoWay (native `ToggleSwitch` property; `EtherSwitch` is a keyed `Style`, not
+a type):
+```xml
+<ToggleSwitch Style="{StaticResource EtherSwitch}"
+              IsOn="{x:Bind ViewModel.NotificationsEnabled, Mode=TwoWay}"
+              OffContent="Off" OnContent="On"/>
+```
+Proven at `R2.cs:148-156` (`VerifyTwoWayBindings`).
+
+**Wire an action:** no `Command` on `ToggleSwitch`; bind the native `Toggled` event:
+```xml
+<ToggleSwitch Style="{StaticResource EtherSwitch}"
+              IsOn="{x:Bind ViewModel.NotificationsEnabled, Mode=TwoWay}"
+              Toggled="{x:Bind ViewModel.OnNotificationsToggled}"/>
 ```
 
 **EtherCard**（`Views/Surfaces/CardPage.xaml`）——同样不是独立类型，是套在
@@ -428,6 +686,11 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
 </Border>
 ```
 
+**Bind data / wire an action:** none. `EtherCard` is a set of keyed `Style`s on `Border`, not a
+type with its own dependency properties — put bound content (a title, body text, an icon) in the
+`Border`'s children the same way you would with a plain `Border`. There is no Ether-specific
+property to bind and no interaction surface to wire; a card is a static surface, not a control.
+
 **EtherScrollBar**（`Views/Foundations/ScrollBarPage.xaml`）——合并
 `DesignSystem.xaml` 后对原生 `ScrollBar`/`ScrollViewer` 隐式生效，不需要额外
 `Style=`：
@@ -439,13 +702,158 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
 </ScrollViewer>
 ```
 
+**Bind data / wire an action:** none. The style applies implicitly to native `ScrollBar`/
+`ScrollViewer` and adds no Ether-specific properties or events. If you need to observe scroll
+position, bind the native `ScrollViewer` APIs (`ViewChanged`, `VerticalOffset`, ...) directly —
+nothing here is Ether-owned.
+
 > **persistent-only 模式**：这是常驻显示的滚动条——模板没有定义
 > `ScrollingIndicatorStates`/`NoIndicator` 等分组，因此不会像原生 `ScrollBar`
 > 那样闲置自动隐藏、hover 展开或禁用时淡出，始终以 6 px 覆盖层呈现
 > （`EtherScrollBar.xaml:10-13`）。如果应用需要 auto-hide / indicator 行为，
 > 不要依赖这份隐式样式——显式指定其他 `Style=`（原生默认样式或自定义样式）。
 
-## 6. 版本纪律
+## 6. Binding to a view-model (MVVM patterns)
+
+*(This section, and §7 below, are in English — the rest of this document is Chinese for the
+internal team, but the patterns here are exactly what a consumer copies into their own
+view-model, so they are kept in the language the code itself uses.)*
+
+### 6.1 `x:Bind` TwoWay to an `INotifyPropertyChanged` view-model
+
+`x:Bind` defaults to `Mode=OneTime` — a very common WinUI mistake is binding an editable property
+without writing `Mode=TwoWay` and then wondering why user edits never reach the view-model. Every
+DP TwoWay contract quoted in §5 above is proven against exactly this view-model shape
+(`tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.R2.cs:17-45`, `TwoWayViewModel`):
+
+```csharp
+public sealed class MyPageViewModel : INotifyPropertyChanged
+{
+    private string _searchQuery = string.Empty;
+    public string SearchQuery
+    {
+        get => _searchQuery;
+        set { if (_searchQuery != value) { _searchQuery = value; OnPropertyChanged(); } }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}
+```
+
+```xml
+<ether:EtherInput Text="{x:Bind ViewModel.SearchQuery, Mode=TwoWay}"/>
+```
+
+### 6.2 Button-family `Command`/`CommandParameter`
+
+`EtherButton`, `EtherIntelligenceButton`, `EtherCheckbox`, `EtherRadioButton` — all four are
+proven end to end (`R2.cs:374-431`). See each control's entry in §5 above for the exact markup.
+
+### 6.3 Event → view-model method: `{x:Bind ViewModel.OnSomething}`
+
+For controls that expose an event but no `Command` (`EtherDropdown`, `EtherTabNavigation`,
+`EtherSlider`, `EtherSteeringBar`, `EtherSwitch`, `EtherInput`), binding the event straight to a
+view-model method with `{x:Bind}` is the WinUI-native answer — **no extra NuGet package
+required**. The handler may match the event's real signature or take no parameters:
+
+```xml
+<ether:EtherDropdown SelectionChanged="{x:Bind ViewModel.OnDurationChanged}"/>
+```
+
+```csharp
+public void OnDurationChanged(object sender, SelectionChangedEventArgs e) { /* ... */ }
+// or simply: public void OnDurationChanged() { /* ... */ }
+```
+
+### 6.4 `Microsoft.Xaml.Interactivity` as a consumer-side alternative
+
+If you prefer a Behaviors-style declarative binding instead of a code-behind event handler, the
+`Microsoft.Xaml.Interactivity` package (`EventTriggerBehavior` + `InvokeCommandAction`) is a
+well-known WinUI pattern:
+
+```xml
+<ether:EtherDropdown>
+    <interactivity:Interaction.Behaviors>
+        <interactivity:EventTriggerBehavior EventName="SelectionChanged">
+            <interactivity:InvokeCommandAction Command="{x:Bind ViewModel.DurationChangedCommand}"/>
+        </interactivity:EventTriggerBehavior>
+    </interactivity:Interaction.Behaviors>
+</ether:EtherDropdown>
+```
+
+**This is a consumer-side choice, not an Ether dependency.** `Microsoft.Xaml.Interactivity` is not
+referenced by `Directory.Packages.props` and no fixture in this repository exercises it — add it
+to your own application if you want this pattern, and verify it there. `CommunityToolkit.Mvvm`
+(`[ObservableProperty]`/`[RelayCommand]`) is a similarly common consumer-side choice for §6.1/§6.2's
+view-model boilerplate; the Ether packages depend on neither.
+
+### 6.5 `ItemsSource` — three proven paths, two honest limitations
+
+`EtherDropdown`, `EtherSegmentedControl`, and `EtherTabNavigation` all support a data-driven
+`ItemsSource` path (see each control's §5 entry above for markup and fixture references). Two
+limitations to know before relying on them:
+
+- **`EtherTabNavigation` data-bound tabs have no per-item icon.** `Icon` lives on the inline
+  `EtherTabItem` container (`EtherTabItem.cs:28-41`); the `ItemsSource` path generates plain
+  containers with no `PrepareContainerForItemOverride`, so it cannot populate one. Use inline
+  `EtherTabItem` if you need icons.
+- **`EtherDropdown`'s closed trigger only ever shows text.** `DisplayMemberPath`/`ToString()`
+  drives the trigger; a rich `ItemTemplate` only renders inside the open menu
+  (`EtherDropdown.cs:42-43`).
+
+### 6.6 Common pitfalls
+
+- `{Binding}` reads `DataContext`; `{x:Bind}` reads the page/control's own code-behind (or an
+  explicit `ViewModel...` path) at **compile time** — the two are not interchangeable without
+  adjusting the path.
+- A `DataTemplate` that uses `x:Bind` must declare `x:DataType`, or the compiler cannot resolve
+  the binding.
+- `EtherCheckbox.IsChecked`/`EtherRadioButton.IsChecked` are `bool?`, not `bool` — bind to a
+  `bool?` view-model property, or convert, if you also need to represent "unset".
+
+## 7. Interactions adapter (optional backend telemetry)
+
+This is a **separate, optional path** from the MVVM binding in §6 — use it only when you need to
+forward a control interaction to a backend outbox as a versioned event envelope, not as a
+replacement for ordinary data binding.
+
+`Ether.DesignSystem.Interactions`'s `ControlInteractionAdapter` wraps a control's native event in
+a JSON-safe `InteractionEvent` and raises `InteractionProduced`. Subscribe once per control
+instance and enqueue the envelope into your own durable outbox (an `IInteractionSink` or
+equivalent):
+
+```csharp
+using Ether.DesignSystem.Interactions;
+
+var adapter = new ControlInteractionAdapter();
+adapter.InteractionProduced += (_, args) =>
+{
+    // Write args.Interaction to your application's durable outbox; a backend adapter
+    // publishes it later using its own transport and authentication policy.
+    _ = outboxSink.EnqueueAsync(args.Interaction);
+};
+
+var context = new InteractionContext(CorrelationId: Guid.NewGuid().ToString(), Screen: "Orders");
+var subscription = adapter.ObserveButton(
+    saveButton, "order.save.requested", context, componentId: "orders.save-button");
+
+// Dispose the subscription (e.g. in Page.Unloaded) to detach the event handler.
+subscription.Dispose();
+```
+
+`ControlInteractionAdapter` exposes one `Observe*` method per control shape —
+`ObserveButton`/`ObserveToggle`/`ObserveSelection`/`ObserveDropdown`/`ObserveInput`/
+`ObserveSegmentedControl`/`ObserveSteeringBar`/`ObserveRange`/`ObserveMasthead`/`ObserveSwitch`,
+plus a generic `ObserveProperty` for one explicitly chosen dependency property
+(`src/Ether.DesignSystem.Interactions/ControlInteractionAdapter.cs:21-182`). Use business event
+names (`order.submit.requested`), not UI event names (`click`), and supply
+`idempotencyKeyFactory` for write operations so retries preserve one key. See
+`src/Ether.DesignSystem.Interactions/README.md` for the full contract, including the
+`SelectedValuePath` guidance for dropdowns.
+
+## 8. 版本纪律
 
 发布方必须让**任何内容变化**对应新的包版本，绝不复用已经打过或发布过的版本。
 NuGet 的缓存键是包 ID 加版本号；复用版本号会让消费者（以及验证设施）在

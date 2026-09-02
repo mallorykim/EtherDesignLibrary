@@ -39,8 +39,20 @@
   level: the host is confirmed to expose **no** host-level `Selection` provider (by design — it is
   a `ContentControl`, not a `Selector`), while each segment's `SelectionItem` pattern is asserted
   with `IsSelected` tracking `IsChecked` (`RuntimeVerification.R2.cs:339-359`).
+- **Consumability (A), C3 — closed this wave (DX optimization P3):** the `ItemsSource`-generated
+  path now has an action hook. `SelectionCommand`/`SelectionCommandParameter`
+  (`EtherSegmentedControl.cs:85-97,148-174`) fire only for a **user-initiated** pick — the path
+  through `OnSegmentChecked`/`ApplySelection`'s new `userInitiated` flag
+  (`EtherSegmentedControl.cs:421-465`) — never for a programmatic `SelectedIndex`/`SelectedItem`/
+  `SelectedValue` assignment or the `ItemsSource` rebuild's selection restore, and execution is
+  guarded by `CanExecute`. Proven at
+  `tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.R2.cs`
+  (`VerifySegmentedControlSelectionCommand`): exactly one execution with the expected parameter on
+  a user pick (defaulting to `SelectedValue`, overridable via `SelectionCommandParameter`), zero
+  additional executions on a programmatic `SelectedIndex` change, and zero executions when
+  `CanExecute` returns `false`.
 
-**Overall: consumer-ready.** Review B's C1 data-driven surface gap is closed (D1 additive contract shipped); all four of Review A's follow-ups are closed by the harness (`ETHER_CONSUMER_SMOKE` `outcome:"success"`).
+**Overall: consumer-ready.** Review B's C1 data-driven surface gap is closed (D1 additive contract shipped); all four of Review A's original follow-ups are closed by the harness, and the C3 "N/A" verdict is now closed too (`ETHER_CONSUMER_SMOKE` `outcome:"success"`).
 
 ---
 
@@ -85,8 +97,9 @@
 ```
 Component: EtherSegmentedControl (+ EtherSegmentPanel, EtherSegmentRadioButton, event args)
 Base control: ContentControl / Panel / RadioButton   | Package: Ether.DesignSystem.Controls
-Declared DPs: 7  (ItemsSource, ItemTemplate, DisplayMemberPath, SelectedIndex, SelectedItem,
-                  SelectedValue, EtherSegmentPanel.Spacing)
+Declared DPs: 9  (ItemsSource, ItemTemplate, DisplayMemberPath, SelectedIndex, SelectedItem,
+                  SelectedValue, SelectionCommand, SelectionCommandParameter,
+                  EtherSegmentPanel.Spacing)
                  | inherited public surface: ContentControl + RadioButton item surface
 
 Rubric (declared DPs):
@@ -114,8 +127,15 @@ Contracts:
   C2 Listenable + adapter ..... PASS  (public args/event + ObserveSegmentedControl,
                                        ControlInteractionAdapter.cs:98-112; exercised at
                                        PropertyConsumption.cs:371)
-  C3 Command .................. N/A   (host selection is state/event based; item command behavior
-                                       is inherited RadioButton behavior)
+  C3 Command .................. PASS  (closed this wave, DX optimization P3: SelectionCommand /
+                                       SelectionCommandParameter on the ItemsSource-generated path,
+                                       EtherSegmentedControl.cs:85-97,148-174; fires only on a
+                                       user-initiated pick via the OnSegmentChecked ->
+                                       ApplySelection(userInitiated) path,
+                                       EtherSegmentedControl.cs:421-465, guarded by CanExecute;
+                                       proven end to end by
+                                       VerifySegmentedControlSelectionCommand,
+                                       RuntimeVerification.R2.cs)
   C4 Automation peer/pattern .. PASS  (host correctly has NO Selection provider —confirmed absent,
                                        not merely unchecked, RuntimeVerification.R2.cs:339-341—
                                        and each generated/inline segment's SelectionItem pattern is
@@ -125,13 +145,22 @@ Contracts:
 Harness: covered? YES. EtherSegmentedControl/EtherSegmentPanel/EtherSegmentRadioButton are all in
          PublicPropertyInventoryTypes (PublicPropertyInventory.cs:41-43) and
          DeclaredPropertyOwnerTypes (PropertyConsumption.cs:270-281); adapter, TwoWay, data-path,
-         and automation fixtures all exist and are confirmed green
-         (PropertyConsumption.cs:371; RuntimeVerification.R2.cs:118-136,213-224,339-359). Runtime
-         marker ETHER_CONSUMER_SMOKE outcome:"success" includes "EtherSegmentedControl.SelectedValue"
-         and "EtherSegmentedControl.SelectedIndex" in twoWayBindings.Properties,
-         dataPaths.SegmentSelectionSynchronized:true, and
-         "EtherSegmentedControl.Segment[0].SelectionItem"/"[1]" in automationPatterns.Patterns
-         (artifacts/audit-runs/consumer-runtime-evidence-20260901-161450498/runtime-result.json).
+         command, and automation fixtures all exist and are confirmed green
+         (PropertyConsumption.cs:371; RuntimeVerification.R2.cs:118-136,213-224,339-359, and the
+         new VerifySegmentedControlSelectionCommand). Runtime marker ETHER_CONSUMER_SMOKE
+         outcome:"success" includes "EtherSegmentedControl.SelectedValue" and
+         "EtherSegmentedControl.SelectedIndex" in twoWayBindings.Properties,
+         dataPaths.SegmentSelectionSynchronized:true,
+         "EtherSegmentedControl.Segment[0].SelectionItem"/"[1]" in automationPatterns.Patterns, and
+         (once re-run after this wave) the new
+         commands.SegmentedControlSelectionCommandExecutionCount /
+         SegmentedControlSelectionCommandParameter /
+         SegmentedControlProgrammaticSelectionExecutionCount /
+         SegmentedControlSelectionCommandParameterOverrideVerified /
+         SegmentedControlSelectionCommandCanExecuteGuardVerified fields
+         (artifacts/audit-runs/consumer-runtime-evidence-20260901-161450498/runtime-result.json is
+         the pre-P3 baseline; a fresh run is required to attest the new fields — not yet re-run as
+         part of this edit-only pass).
 x64 build: green (Controls + Interactions + ConsumerFixtures, per the R2.11 runtime run recorded
            in docs/internal/consumability/_RUN-ON-DESKTOP.md).
 ```
