@@ -121,6 +121,7 @@ internal static partial class RuntimeVerification
         var displayMemberPathTriggerText = VerifyDisplayMemberPath(themeRoot);
         var (maxDropDownHeightConstrainsPopup, maxDropDownHeightSmallerCap, maxDropDownHeightLargerCap) =
             VerifyMaxDropDownHeightConstrainsPopup(themeRoot);
+        VerifyDropdownMenuPositionStableAcrossSelection(themeRoot);
 
         return new DropdownVerification(
             true,
@@ -213,6 +214,70 @@ internal static partial class RuntimeVerification
         probe.IsDropDownOpen = false;
         probe.UpdateLayout();
         return observed;
+    }
+
+    /// <summary>
+    /// Regression coverage for EtherDropdown popup placement. The stock ComboBox anchors its popup on
+    /// the <b>selected item</b>, so the popup's base vertical offset moves ~one row per selected index.
+    /// EtherDropdown.PositionMenu corrects that to the trigger with a RenderTransform, but only if it
+    /// measures the base <i>after</i> the framework has placed the popup for this open; that is why
+    /// EtherDropdown.OnDropDownOpened forces the placement pass to finish before PositionMenu runs.
+    /// Without it, re-opening after changing the selection dropped the menu ~30px x delta-index off the
+    /// trigger (it could cover the trigger). Opens an isolated probe at several SelectedIndex values and
+    /// asserts the popup keeps a constant offset from the trigger. Actually opens the popup (which runs
+    /// the framework's OnDropDownOpened override, unlike a VisualStateManager state); isolated invisible
+    /// scratch host, same pattern as VerifyMaxDropDownHeightConstrainsPopup.
+    /// </summary>
+    private static void VerifyDropdownMenuPositionStableAcrossSelection(FrameworkElement themeRoot)
+    {
+        if (themeRoot is not Panel hostPanel)
+        {
+            throw new InvalidOperationException("EtherDropdown menu-position probe requires a panel-based theme root to host an isolated scratch container.");
+        }
+
+        var scratch = new Canvas { Opacity = 0d, IsHitTestVisible = false };
+        hostPanel.Children.Add(scratch);
+        try
+        {
+            var probe = new EtherDropdown
+            {
+                ItemsSource = Enumerable.Range(0, 5).Select(index => $"Item {index}").ToArray(),
+            };
+            scratch.Children.Add(probe);
+            probe.ApplyTemplate();
+            probe.UpdateLayout();
+
+            var popupBorder = GetTemplatePart<Border>(probe, "PopupBorder", nameof(EtherDropdown));
+            var reference = probe.XamlRoot?.Content as FrameworkElement ?? hostPanel;
+
+            double? baseline = null;
+            foreach (var index in new[] { 0, 2, 4, 0, 3 })
+            {
+                probe.SelectedIndex = index;
+                probe.UpdateLayout();
+                probe.IsDropDownOpen = true;
+                probe.UpdateLayout();
+
+                var triggerBottom = probe.TransformToVisual(reference).TransformPoint(new Windows.Foundation.Point(0, 0)).Y + probe.ActualHeight;
+                var menuTop = popupBorder.TransformToVisual(reference).TransformPoint(new Windows.Foundation.Point(0, 0)).Y;
+                var offset = menuTop - triggerBottom;
+
+                probe.IsDropDownOpen = false;
+                probe.UpdateLayout();
+
+                baseline ??= offset;
+                if (Math.Abs(offset - baseline.Value) > 2d)
+                {
+                    throw new InvalidOperationException(
+                        $"EtherDropdown popup position drifted with the selection: SelectedIndex={index} placed the menu {offset:0.#} DIPs from the trigger vs {baseline.Value:0.#} DIPs for the first selection. The menu must anchor to the trigger regardless of the selected item - EtherDropdown.OnDropDownOpened must force the framework placement pass before PositionMenu measures.");
+                }
+            }
+        }
+        finally
+        {
+            scratch.Children.Clear();
+            hostPanel.Children.Remove(scratch);
+        }
     }
 
     /// <summary>
