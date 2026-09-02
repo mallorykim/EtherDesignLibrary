@@ -15,9 +15,9 @@
                                   x:Uid="GalleryViewsControlsInputPageOutput"
                                   OutputText="Text: —"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
+<!-- No Width set: exercises the shipping DefaultWidth (280 px). -->
 <controls:EtherInput x:Uid="GalleryViewsControlsInputPage141" x:Name="InteractiveInput"
                                      PlaceholderText="Enter text"
-                                     Width="280"
                                      AutomationProperties.Name="Interactive input"
                                      TextChanged="InteractiveInput_TextChanged"/>
             </views:ControlExample>

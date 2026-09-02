@@ -39,6 +39,7 @@ Assert-Contains $control 'DefaultStyleKey\s*=\s*typeof\(EtherInput\)' 'EtherInpu
 if ($control -match '(?m)^\s*(FontSize|Padding|MinWidth|MinHeight|UseSystemFocusVisuals)\s*=') {
     throw 'EtherInput constructor must not assign its default visual setters; the keyed style owns them.'
 }
+Assert-Contains $control 'protected override Size MeasureOverride' 'EtherInput MeasureOverride (produces the fixed default width and the Stretch-fill behavior)'
 foreach ($part in $templateParts) {
     Assert-Contains $control "TemplatePart\(Name = .*${part}" "EtherInput TemplatePart contract for $part"
 }
@@ -60,10 +61,20 @@ $implicitStyle = @($styles | Where-Object {
 if ($null -eq $implicitStyle) {
     throw 'EtherInput is missing its implicit style BasedOn DefaultEtherInputStyle.'
 }
-foreach ($setter in 'Foreground', 'SelectionHighlightColor', 'FontFamily', 'FontSize', 'FontWeight', 'Padding', 'MinWidth', 'MinHeight', 'CornerRadius', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
+foreach ($setter in 'Foreground', 'SelectionHighlightColor', 'FontFamily', 'FontSize', 'FontWeight', 'Padding', 'HorizontalAlignment', 'MinHeight', 'CornerRadius', 'UseSystemFocusVisuals', 'HighContrastAdjustment', 'Template') {
     if ($null -eq $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='$setter']")) {
         throw "DefaultEtherInputStyle is missing its $setter setter."
     }
+}
+
+# EtherInput ships NO MinWidth floor and defaults to a fixed 280 px, left-aligned; consumers opt
+# into fill via HorizontalAlignment="Stretch". Lock both halves of that contract here.
+$hAlignSetter = $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='HorizontalAlignment']")
+if ($hAlignSetter.GetAttribute('Value') -ne 'Left') {
+    throw 'DefaultEtherInputStyle HorizontalAlignment setter must be Left (fixed-width default; Stretch is the consumer opt-in to fill).'
+}
+if ($null -ne $keyedStyle.SelectSingleNode("./*[local-name()='Setter' and @Property='MinWidth']")) {
+    throw 'DefaultEtherInputStyle must not set MinWidth: EtherInput ships no min-width floor.'
 }
 
 $templates = @($xaml.SelectNodes("//*[local-name()='ControlTemplate']"))

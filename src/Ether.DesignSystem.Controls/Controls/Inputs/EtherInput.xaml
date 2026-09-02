@@ -161,9 +161,6 @@
         </Grid>
     </ControlTemplate>
 
-    <!-- Same-class precedent: EtherDropdown's Figma trigger floor is 130 px. -->
-    <x:Double x:Key="InputMinWidth">130</x:Double>
-
     <Style x:Key="DefaultEtherInputStyle" TargetType="controls:EtherInput">
         <Setter Property="Background" Value="{ThemeResource EtherInputFillDefaultBrush}"/>
         <Setter Property="BorderBrush" Value="{ThemeResource EtherInputBorderBrush}"/>
@@ -177,7 +174,10 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{StaticResource RadiusMd}"/>
         <Setter Property="BackgroundSizing" Value="InnerBorderEdge"/>
-        <Setter Property="MinWidth" Value="{StaticResource InputMinWidth}"/>
+        <!-- No MinWidth floor: the field can be sized freely (default 280 px comes from
+             DefaultWidth via MeasureOverride). Left-aligned so the untouched control reads as a
+             fixed-width field; consumers set HorizontalAlignment="Stretch" to fill the slot. -->
+        <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="MinHeight" Value="48"/>
         <Setter Property="TextWrapping" Value="NoWrap"/>
         <Setter Property="AcceptsReturn" Value="False"/>

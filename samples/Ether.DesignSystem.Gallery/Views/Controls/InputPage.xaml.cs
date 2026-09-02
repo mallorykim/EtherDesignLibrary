@@ -7,7 +7,9 @@ public sealed partial class InputPage : Page
 {
     public string SpecimenXaml { get; } =
         """
-        <controls:EtherInput PlaceholderText="Enter text" Width="280" />
+        <!-- Default width is 280 px. Set HorizontalAlignment="Stretch" to fill,
+             or Width="…" for a specific number. -->
+        <controls:EtherInput PlaceholderText="Enter text" />
         """;
 
     public InputPage()
