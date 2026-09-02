@@ -8,6 +8,9 @@
     <WindowsPackageType>MSIX</WindowsPackageType>
     <GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
     <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <!-- Test fixture: don't generate an MSIX symbol package. Avoids the benign
+         "mspdbcmf.exe could not be found" warning on CI runners without full MSVC tooling. -->
+    <AppxSymbolPackageEnabled>false</AppxSymbolPackageEnabled>
     <SelfContained>false</SelfContained>
     <IsPackable>false</IsPackable>
     <!-- MSIX tooling cannot parse the frozen comma-named font file names. -->

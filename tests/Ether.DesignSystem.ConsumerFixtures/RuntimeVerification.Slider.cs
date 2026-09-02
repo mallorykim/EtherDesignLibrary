@@ -1,3 +1,4 @@
+using System.Globalization;
 using Ether.DesignSystem.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -49,11 +50,11 @@ internal static partial class RuntimeVerification
         const int ExpectedMinBarCount = 8;
         const int ExpectedMaxBarCount = 512;
 
-        var overflowLabels = Enumerable.Range(0, ExpectedMaxLabelCount * 2).Select(i => i.ToString());
+        var overflowLabels = Enumerable.Range(0, ExpectedMaxLabelCount * 2).Select(i => i.ToString(CultureInfo.InvariantCulture));
         var renderedLabels = GetRenderedLabels(themeRoot, overflowLabels);
         if (renderedLabels.Length != ExpectedMaxLabelCount ||
             renderedLabels[0] != "0" ||
-            renderedLabels[^1] != (ExpectedMaxLabelCount - 1).ToString())
+            renderedLabels[^1] != (ExpectedMaxLabelCount - 1).ToString(CultureInfo.InvariantCulture))
         {
             throw new InvalidOperationException($"Expected EtherSlider to render at most {ExpectedMaxLabelCount} tick labels ('0'..'{ExpectedMaxLabelCount - 1}') when given {ExpectedMaxLabelCount * 2} Labels, but observed [{string.Join(", ", renderedLabels)}].");
         }

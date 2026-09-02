@@ -120,8 +120,9 @@ internal static partial class RuntimeVerification
             progressBar.Value = 65d;
             var observedAfterSecondChange = rangeValue.Value;
             valueChangeExercised = observedAfterFirstChange == 64d && observedAfterSecondChange == 65d;
-            valuePropertyChangedSubscribed = observedValueChangedValues.SequenceEqual(new[] { 64d, 65d }) &&
-                observedAutomationValues.SequenceEqual(new[] { 64d, 65d });
+            var expectedTrackedValues = new[] { 64d, 65d };
+            valuePropertyChangedSubscribed = observedValueChangedValues.SequenceEqual(expectedTrackedValues) &&
+                observedAutomationValues.SequenceEqual(expectedTrackedValues);
             if (!valueChangeExercised)
             {
                 throw new InvalidOperationException("The RangeValue provider from GetPattern did not track owner Value assignments.");

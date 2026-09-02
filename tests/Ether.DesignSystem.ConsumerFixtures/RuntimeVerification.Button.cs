@@ -1,3 +1,4 @@
+using System.Globalization;
 using Ether.DesignSystem.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -130,7 +131,7 @@ internal static partial class RuntimeVerification
             diag.Append(" explicitText visibility=").Append(textContent.Visibility)
                 .Append(" wrapping=").Append(textContent.TextWrapping)
                 .Append(" trimming=").Append(textContent.TextTrimming)
-                .Append(" text=").Append(textContent.Text is null ? "null" : "len" + textContent.Text.Length.ToString());
+                .Append(" text=").Append(textContent.Text is null ? "null" : "len" + textContent.Text.Length.ToString(CultureInfo.InvariantCulture));
             throw new InvalidOperationException("EtherButton string content did not receive CharacterEllipsis from the explicit single-line text path. " + diag);
         }
 
