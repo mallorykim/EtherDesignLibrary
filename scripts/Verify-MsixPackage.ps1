@@ -31,9 +31,8 @@ try {
         "-p:Platform=$platform",
         '-p:GenerateAppxPackageOnBuild=true',
         '-p:AppxPackageSigningEnabled=false',
-        # No symbol package for this test fixture: avoids the benign "mspdbcmf.exe could not be
-        # found" warning on CI runners without full MSVC tooling.
-        '-p:AppxSymbolPackageEnabled=false',
+        # Symbol-free fixture: the packaged .csproj drops .pdb payload so the WindowsAppSDK MSIX
+        # targets never look for mspdbcmf.exe (absent on CI runners without full MSVC tooling).
         '-p:EtherDesignSystemFoundationIncludeHostRootFonts=false'
     )
 

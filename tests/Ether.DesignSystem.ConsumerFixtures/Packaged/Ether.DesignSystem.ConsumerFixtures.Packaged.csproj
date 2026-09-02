@@ -8,8 +8,7 @@
     <WindowsPackageType>MSIX</WindowsPackageType>
     <GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
     <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
-    <!-- Test fixture: don't generate an MSIX symbol package. Avoids the benign
-         "mspdbcmf.exe could not be found" warning on CI runners without full MSVC tooling. -->
+    <!-- Test fixture: never emit an MSIX symbol (.appxsym) package. -->
     <AppxSymbolPackageEnabled>false</AppxSymbolPackageEnabled>
     <SelfContained>false</SelfContained>
     <IsPackable>false</IsPackable>
@@ -41,4 +40,20 @@
              Link="VisualBaselines\%(RecursiveDir)%(Filename)%(Extension)"
              CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
+  <!-- The WindowsAppSDK MSIX targets warn "mspdbcmf.exe could not be found. A symbols package
+       will not be generated" whenever the package payload contains .pdb files and the CI runner
+       lacks full MSVC tooling. AppxSymbolPackageEnabled=false does NOT gate that warning: it lives
+       in _EnsurePdbCmfExeFullPath, a DependsOnTargets dependency that runs regardless of whether a
+       symbol package is produced. The real switch is the @(PDBPayload) item, sourced from the .pdb
+       files in @(AppxPackagePayload). This throwaway fixture is produced but never installed or
+       debugged, so drop every .pdb from the payload before the recipe is calculated: @(PDBPayload)
+       stays empty, the warning's condition (@(PDBPayload) != '') is false, and the .msix is
+       unchanged (private symbols are excluded from the package by default anyway). -->
+  <Target Name="_EtherDropPdbPayloadForSymbolFreeFixture"
+          BeforeTargets="_CalculateInputsForGenerateAppxPackageRecipe">
+    <ItemGroup>
+      <AppxPackagePayload Remove="@(AppxPackagePayload)" Condition="'%(Extension)' == '.pdb'" />
+    </ItemGroup>
+  </Target>
 </Project>
