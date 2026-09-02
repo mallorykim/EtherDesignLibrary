@@ -1,5 +1,19 @@
 # CI backlog — pre-existing gate failures on `codex/refine-components`
 
+> ## ✅ RESOLVED — CI is fully green (2026-09-02)
+> All three jobs pass — `build (Debug)`, `build (Release)`, and `package-consumers` (every step:
+> the 12 L3 contract gates, interaction contracts, WinUI conventions, High Contrast pairing, Gallery
+> ControlExample + localization, property-evidence wording, package consumers, **unsigned MSIX produce**,
+> and the gate manifest). Green run:
+> [33588322534](https://github.com/yiqizhong/ether-lib/actions/runs/33588322534) on `42995db`.
+> The whole backlog below is cleared; sections are kept as a record of what each fix was and why.
+>
+> **Out of CI by design (unchanged residual):** the GUI runtime gates — Gallery Light/Dark 20/20 smoke
+> and the *packaged* consumer runtime markers — are owned by `scripts/Verify-RuntimeGates.ps1` on an
+> interactive Windows desktop (hosted runners can't launch WinUI), run before preview publish. CI proves
+> the MSIX package **produces**; it does not launch it. The unpackaged consumer runtime smoke is green
+> locally (`Verify-ConsumerFixtures.ps1` → `Consumer fixtures passed`).
+
 > **Context.** The branch was 73 commits ahead of `origin/main` and had **never run through CI**
 > until 2026-09-01. When first pushed, CI (`.github/workflows/build.yml`) surfaced a series of
 > pre-existing contract/anti-drift gate failures. These are **unrelated to the consumability review +
@@ -71,13 +85,16 @@ static-audit + fixture-pack job), so any step that shells out to dotnet must sel
 - **Verify package consumers** (`Verify-ConsumerFixtures.ps1 -SkipSolutionBuild -SkipRuntimeSmoke`) —
   self-restores each fixture against the freshly-packed local feed (line 870) and guards staleness with
   `Assert-RestoredControlsPackageMatchesLocalFeed` (872); expected green in CI.
-- **Verify unsigned MSIX produce** (`Verify-MsixPackage.ps1 -SkipSolutionBuild`) — **uncertain**. Fails
-  **locally** with `CS0246: EtherTabNavigation could not be found` in the Packaged fixture — the classic
-  NuGet *same-version-different-content* cache trap: the dev global cache holds a stale `0.1.0-preview.1`
-  Controls package from before `EtherTabNavigation` existed, and the MSIX build reuses it. A fresh CI
-  runner has an empty global cache and pulls the freshly-packed package from the local feed, so CI may
-  pass where local fails. **Pending CI confirmation** — this is the documented "sole residual
-  = packaged MSIX" blocker; do not chase the unreproducible-in-CI local cache artifact.
+- **Verify unsigned MSIX produce** (`Verify-MsixPackage.ps1 -SkipSolutionBuild`) — ✅ **green in CI**
+  (run 33588322534). It fails **locally** with `CS0246: EtherTabNavigation could not be found` in the
+  Packaged fixture — the classic NuGet *same-version-different-content* cache trap: a dev global cache
+  holds a stale `0.1.0-preview.1` Controls package from before `EtherTabNavigation` existed, and MSIX's
+  implicit restore (no `--packages` isolation, unlike ConsumerFixtures) reuses it. A fresh CI runner has
+  an empty global cache and pulls the freshly-packed package from the `ether-local` feed
+  (`NuGet.Config`), so CI passes. **Note (robustness, not blocking):** the gate is only hermetic because
+  the runner cache starts empty — on a warm/self-hosted runner it could regress the same way. A future
+  hardening could restore the Packaged fixture with `--packages <isolated cache>` like
+  `Verify-ConsumerFixtures.ps1` does, or clear the stale id first. Left as-is for now (not failing).
 - **Verify the gate manifest matches the workflow** (`Verify-GateManifest.ps1`, R-02) — static; green locally.
 
 ## ConsumerFixtures acceptance constants — RESOLVED (correcting an earlier mis-diagnosis)
