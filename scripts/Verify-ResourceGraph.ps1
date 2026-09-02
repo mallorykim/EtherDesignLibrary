@@ -91,6 +91,7 @@ Assert-SetEquals (Get-MergedDictionarySources $controlsGeneric) @('ms-appx:///Et
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSteeringBar.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSlider.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Navigation/EtherMasthead.xaml',
+    'ms-appx:///Ether.DesignSystem.Controls/Controls/Navigation/EtherTabNavigation.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSegmentedControl.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml',
