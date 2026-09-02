@@ -28,14 +28,14 @@
       Bind each RadioButton.Checked to a handler or use x:Bind to a ViewModel bool.
 
     KEY MEASUREMENTS (Figma: ursRC201v8IiVeafliI45F
-      selected 62110:23700 · Light track 62110:24735 · Dark 62110:24850)
-      Track     padding 4 · RadiusMd 8 · Light AlphaWhite40 · Dark AlphaBlack70
-      Segment   px=16 py=12 · RadiusSm 4 · min-height 33
+      Light track 62747:4466 · Dark track 62747:4564)
+      Track     padding 4 · RadiusSm 4 · Light Gray50 · Dark Gray750
+      Segment   px=20 py=4 · RadiusSm 4 · min-height 23 · gap 4 (EtherSegmentPanel.Spacing)
                 selected: Blue600 fill · Gray0 label
                 default: transparent · Light AlphaBlack70 / Dark AlphaWhite70
                 hover: AlphaBrand6 / Dark AlphaBrand10
                 pressed: AlphaBrand10 / Dark AlphaBrand16
-      Font      Instrument Sans SemiBold 12 px, centred
+      Font      Instrument Sans Medium 11 px, centred (Figma ramp "Micro/Regular (11)")
 
     Light/Dark component brushes bind Color to primitive StaticResources.
     High Contrast uses Windows SystemColor*.
@@ -63,7 +63,7 @@
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundPressedBrush" Color="{StaticResource AlphaBlack70}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{StaticResource AlphaBrand6}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{StaticResource AlphaBrand10}"/>
-            <SolidColorBrush x:Key="EtherSegmentedControlTrackBackgroundBrush" Color="{StaticResource AlphaWhite40}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlTrackBackgroundBrush" Color="{StaticResource Gray50}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="EtherSegmentedControlFocusStrokeBrush" Color="{StaticResource Blue500}"/>
@@ -74,7 +74,7 @@
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentForegroundPressedBrush" Color="{StaticResource AlphaWhite70}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentHoverBrush" Color="{StaticResource AlphaBrand10}"/>
             <SolidColorBrush x:Key="EtherSegmentedControlSegmentPressedBrush" Color="{StaticResource AlphaBrand16}"/>
-            <SolidColorBrush x:Key="EtherSegmentedControlTrackBackgroundBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherSegmentedControlTrackBackgroundBrush" Color="{StaticResource Gray750}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherSegmentedControlFocusStrokeBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
@@ -103,7 +103,7 @@
             <Border x:Name="TrackSurface"
                     Background="{TemplateBinding Background}"
                     Padding="{TemplateBinding Padding}"
-                    CornerRadius="{StaticResource RadiusMd}">
+                    CornerRadius="{StaticResource RadiusSm}">
                 <Grid>
                     <ContentPresenter Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -258,10 +258,10 @@
 
     <Style x:Key="EtherSegment" TargetType="RadioButton">
         <Setter Property="FontFamily"                 Value="{StaticResource InstrumentSans}"/>
-        <Setter Property="FontSize"                   Value="{StaticResource Size12}"/>
-        <Setter Property="FontWeight"                 Value="{StaticResource WeightSemibold}"/>
-        <Setter Property="Padding"                    Value="16,12"/>
-        <Setter Property="MinHeight"                  Value="33"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size11}"/>
+        <Setter Property="FontWeight"                 Value="{StaticResource WeightMedium}"/>
+        <Setter Property="Padding"                    Value="20,4"/>
+        <Setter Property="MinHeight"                  Value="23"/>
         <Setter Property="MinWidth"                   Value="0"/>
         <Setter Property="HorizontalAlignment"        Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>

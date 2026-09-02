@@ -135,15 +135,14 @@ foreach ($state in $segmentFocusStates) {
 }
 
 Assert-Contains $xamlRaw 'Color="\{StaticResource Blue600\}"' 'EtherSegmentedControl selected fill binds Blue600'
-Assert-Contains $xamlRaw 'Color="\{StaticResource AlphaWhite40\}"' 'EtherSegmentedControl Light track binds AlphaWhite40'
-Assert-Contains $xamlRaw 'Color="\{StaticResource AlphaBlack70\}"' 'EtherSegmentedControl Dark track binds AlphaBlack70'
-Assert-Contains $xamlRaw 'CornerRadius="\{StaticResource RadiusMd\}"' 'EtherSegmentedControl track uses RadiusMd'
-Assert-Contains $xamlRaw 'CornerRadius="\{StaticResource RadiusSm\}"' 'EtherSegmentedControl segment uses RadiusSm'
-Assert-Contains $xamlRaw 'Value="16,12"' 'EtherSegmentedControl segment padding matches Figma 16,12'
-Assert-Contains $xamlRaw 'Value="33"' 'EtherSegmentedControl segment min-height matches Figma 33'
+Assert-Contains $xamlRaw 'Color="\{StaticResource Gray50\}"' 'EtherSegmentedControl Light track binds Gray50'
+Assert-Contains $xamlRaw 'Color="\{StaticResource Gray750\}"' 'EtherSegmentedControl Dark track binds Gray750'
+Assert-Contains $xamlRaw 'CornerRadius="\{StaticResource RadiusSm\}"' 'EtherSegmentedControl track and segment use RadiusSm'
+Assert-Contains $xamlRaw 'Value="20,4"' 'EtherSegmentedControl segment padding matches Figma px=20 py=4'
+Assert-Contains $xamlRaw 'Value="23"' 'EtherSegmentedControl segment min-height matches Figma 23'
 Assert-Contains $xamlRaw 'Value="\{StaticResource InstrumentSans\}"' 'EtherSegmentedControl segment FontFamily is Instrument Sans'
-Assert-Contains $xamlRaw 'Value="\{StaticResource Size12\}"' 'EtherSegmentedControl segment FontSize is Size12'
-Assert-Contains $xamlRaw 'Value="\{StaticResource WeightSemibold\}"' 'EtherSegmentedControl segment FontWeight is WeightSemibold'
+Assert-Contains $xamlRaw 'Value="\{StaticResource Size11\}"' 'EtherSegmentedControl segment FontSize is Size11'
+Assert-Contains $xamlRaw 'Value="\{StaticResource WeightMedium\}"' 'EtherSegmentedControl segment FontWeight is WeightMedium'
 Assert-Contains $xamlRaw 'AutomationProperties.AccessibilityView="Raw"' 'EtherSegmentedControl content presenters mark content Raw like WinUI RadioButton'
 Assert-Contains $xamlRaw 'Value="Stretch"' 'EtherSegmentedControl stretches with the parent width'
 if ($xamlRaw -match 'radius/control') {
