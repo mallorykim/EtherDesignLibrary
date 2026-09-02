@@ -10,7 +10,7 @@ $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs
 $fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
-$expectedComponentKeys = 'EtherCheckboxCheckedFillDefaultBrush,EtherCheckboxCheckedFillHoverBrush,EtherCheckboxCheckedFillPressedBrush,EtherCheckboxCheckedStrokeBrush,EtherCheckboxDisabledCheckedFillBrush,EtherCheckboxDisabledGlyphBrush,EtherCheckboxDisabledUncheckedFillBrush,EtherCheckboxDisabledUncheckedStrokeBrush,EtherCheckboxFillDefaultBrush,EtherCheckboxFillHoverBrush,EtherCheckboxFillPressedBrush,EtherCheckboxGlyphBrush,EtherCheckboxLabelBrush,EtherCheckboxStrokeBrush'
+$expectedComponentKeys = 'EtherCheckboxCheckedFillDefaultBrush,EtherCheckboxCheckedFillHoverBrush,EtherCheckboxCheckedFillPressedBrush,EtherCheckboxCheckedStrokeBrush,EtherCheckboxDisabledCheckedFillBrush,EtherCheckboxDisabledGlyphBrush,EtherCheckboxDisabledUncheckedFillBrush,EtherCheckboxDisabledUncheckedStrokeBrush,EtherCheckboxFillDefaultBrush,EtherCheckboxFillHoverBrush,EtherCheckboxFillPressedBrush,EtherCheckboxFocusBrush,EtherCheckboxGlyphBrush,EtherCheckboxLabelBrush,EtherCheckboxStrokeBrush'
 $templateParts = @('LayoutRoot', 'UncheckedFill', 'UncheckedStroke', 'UncheckedFace', 'CheckedFace', 'CheckedFill', 'CheckedStroke', 'Glyph', 'Label')
 
 function Assert-Contains {

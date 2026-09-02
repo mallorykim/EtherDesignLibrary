@@ -356,10 +356,22 @@ public sealed class EtherSteeringBar : Control
     protected override AutomationPeer OnCreateAutomationPeer()
         => new EtherSteeringBarAutomationPeer(this);
 
+    // Bindings and UI Automation write through the dependency-property system (SetValue on
+    // Minimum/Maximum/Value/Stops/SnapToStops/StepFrequency), so this callback is the single
+    // choke point every external write passes through — there is no separate binding-path or
+    // automation-only code path to normalize. Any write that changes the effective range or step
+    // policy is checked against the current Value: if Value is no longer in normalized form
+    // (clamped to [Minimum, Maximum] and, per SnapToStops, either snapped to the nearest Stops
+    // entry or rounded to the nearest StepFrequency increment), a single corrective
+    // SetValue(ValueProperty, normalizedValue) is issued. The _normalizingValue guard prevents
+    // that corrective write from re-entering this callback, and OnValueChanged reports the
+    // pre-normalization value as OldValue so ValueChanged/RaiseValueChanged tell listeners what
+    // value was actually superseded rather than the transient out-of-range write.
     private static void OnRangePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (EtherSteeringBar)d;
-        if (e.Property == ValueProperty)
+        var candidate = e.Property == ValueProperty;
+        if (candidate)
         {
             var normalizedValue = control.NormalizeValue((double)e.NewValue);
             if (!control._normalizingValue && !AreClose(normalizedValue, control.Value))

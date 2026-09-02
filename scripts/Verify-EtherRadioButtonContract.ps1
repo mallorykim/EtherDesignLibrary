@@ -10,7 +10,7 @@ $xamlPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Controls\Controls\Inputs
 $fixtureDirectory = Join-Path $repoRoot 'tests\Ether.DesignSystem.ConsumerFixtures'
 $ciPath = Join-Path $repoRoot '.github\workflows\build.yml'
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
-$expectedComponentKeys = 'EtherRadioButtonCheckedFillDefaultBrush,EtherRadioButtonCheckedFillHoverBrush,EtherRadioButtonCheckedFillPressedBrush,EtherRadioButtonCheckedStrokeBrush,EtherRadioButtonCircleFillDefaultBrush,EtherRadioButtonCircleFillHoverBrush,EtherRadioButtonCircleFillPressedBrush,EtherRadioButtonCircleStrokeBrush,EtherRadioButtonDisabledCheckedDotBrush,EtherRadioButtonDisabledCheckedFillBrush,EtherRadioButtonDisabledUncheckedFillBrush,EtherRadioButtonDisabledUncheckedStrokeBrush,EtherRadioButtonInnerDotBrush,EtherRadioButtonLabelBrush'
+$expectedComponentKeys = 'EtherRadioButtonCheckedFillDefaultBrush,EtherRadioButtonCheckedFillHoverBrush,EtherRadioButtonCheckedFillPressedBrush,EtherRadioButtonCheckedStrokeBrush,EtherRadioButtonCircleFillDefaultBrush,EtherRadioButtonCircleFillHoverBrush,EtherRadioButtonCircleFillPressedBrush,EtherRadioButtonCircleStrokeBrush,EtherRadioButtonDisabledCheckedDotBrush,EtherRadioButtonDisabledCheckedFillBrush,EtherRadioButtonDisabledUncheckedFillBrush,EtherRadioButtonDisabledUncheckedStrokeBrush,EtherRadioButtonFocusBrush,EtherRadioButtonInnerDotBrush,EtherRadioButtonLabelBrush'
 $templateParts = @('LayoutRoot', 'UncheckedFill', 'UncheckedStroke', 'UncheckedFace', 'CheckedFace', 'CheckedFill', 'CheckedStroke', 'Dot', 'Label')
 
 function Assert-Contains {

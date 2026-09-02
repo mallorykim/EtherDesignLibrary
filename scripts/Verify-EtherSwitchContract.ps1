@@ -179,12 +179,15 @@ if ($null -eq $darkFill -or $darkFill.OuterXml -notmatch 'Gray25') {
     throw 'EtherSwitch Dark enabled Off knob fill must stay Gray25; only Disabled is dimmed.'
 }
 
-$offLabelIndex = $xamlText.IndexOf('x:Name="OffLabel"')
-$onLabelIndex = $xamlText.IndexOf('x:Name="OnLabel"')
-$switchAreaIndex = $xamlText.IndexOf('x:Name="SwitchArea"')
+# Skeleton-faithful WinUI ToggleSwitch part names (commit 4cdfe3e rebuilt on the official
+# template): the Off/On content presenters live in LabelsHost (Grid.Column 0) and the knob
+# area is SwitchAreaGrid (Grid.Column 2), so the labels sit to the left of the switch.
+$offLabelIndex = $xamlText.IndexOf('x:Name="OffContentPresenter"')
+$onLabelIndex = $xamlText.IndexOf('x:Name="OnContentPresenter"')
+$switchAreaIndex = $xamlText.IndexOf('x:Name="SwitchAreaGrid"')
 if ($offLabelIndex -lt 0 -or $onLabelIndex -lt 0 -or $switchAreaIndex -lt 0 -or
     $offLabelIndex -gt $switchAreaIndex -or $onLabelIndex -gt $switchAreaIndex) {
-    throw 'EtherSwitch OffLabel/OnLabel must sit to the left of SwitchArea.'
+    throw 'EtherSwitch OffContentPresenter/OnContentPresenter must sit to the left of SwitchAreaGrid.'
 }
 if ($namedTemplate.OuterXml -notmatch 'Width="22"' -or $namedTemplate.OuterXml -notmatch 'Height="14"') {
     throw 'EtherSwitch knob host must be 22x14 so the 2 px stroke sits outside the 18x10 fill.'
@@ -195,11 +198,11 @@ if ($namedTemplate.OuterXml -notmatch 'Width="18"' -or $namedTemplate.OuterXml -
 if ($namedTemplate.OuterXml -notmatch 'Margin="3,0,0,0"') {
     throw 'EtherSwitch knob host margin must be 3 so Off/On keep 3 px of track on each side.'
 }
-if ($namedTemplate.OuterXml -notmatch 'KnobTransform\.X"\s+Value="12"') {
-    throw 'EtherSwitch On travel must be 12 so the right inset matches the 3 px left host margin.'
+if ($namedTemplate.OuterXml -notmatch 'Storyboard\.TargetName="KnobTranslateTransform"[^>]*Storyboard\.TargetProperty="X"[^>]*To="12"') {
+    throw 'EtherSwitch On travel must animate KnobTranslateTransform.X to 12 so the right inset matches the 3 px left host margin.'
 }
-if ($namedTemplate.OuterXml -notmatch 'TrackOn\.Opacity"\s+Value="0\.4"' -or
-    $namedTemplate.OuterXml -notmatch 'OnLabel\.Opacity"\s+Value="0\.4"') {
+if ($namedTemplate.OuterXml -notmatch 'TrackVisuals\.Opacity"\s+Value="0\.4"' -or
+    $namedTemplate.OuterXml -notmatch 'LabelsHost\.Opacity"\s+Value="0\.4"') {
     throw 'EtherSwitch Disabled must fade the track and labels to 0.4 so On is not full-brightness.'
 }
 if ($namedTemplate.OuterXml -match 'SwitchContent\.Opacity"\s+Value="0\.') {
@@ -208,13 +211,13 @@ if ($namedTemplate.OuterXml -match 'SwitchContent\.Opacity"\s+Value="0\.') {
 if ($namedTemplate.OuterXml -match '<BitmapCache') {
     throw 'EtherSwitch must not BitmapCache SwitchContent; flatten-plus-parent-opacity still tints the On knob blue.'
 }
-if ($namedTemplate.OuterXml -notmatch 'Knob\.BorderBrush"\s+Value="\{ThemeResource EtherSwitchKnobDisabledStrokeBrush\}"') {
-    throw 'EtherSwitch Disabled must rebind Knob.BorderBrush so Dark Disabled is not a Gray0 ring.'
+if ($namedTemplate.OuterXml -notmatch 'KnobFrame\.BorderBrush"\s+Value="\{ThemeResource EtherSwitchKnobDisabledStrokeBrush\}"') {
+    throw 'EtherSwitch Disabled must rebind KnobFrame.BorderBrush so Dark Disabled is not a Gray0 ring.'
 }
-if ($namedTemplate.OuterXml -notmatch 'KnobFill\.Background"\s+Value="\{ThemeResource EtherSwitchKnobDisabledBrush\}"') {
+if ($namedTemplate.OuterXml -notmatch 'SwitchKnobOff\.Fill"\s+Value="\{ThemeResource EtherSwitchKnobDisabledBrush\}"') {
     throw 'EtherSwitch Disabled Off knob must use EtherSwitchKnobDisabledBrush (Light Gray50, Dark Gray500).'
 }
-if ($namedTemplate.OuterXml -notmatch 'KnobFillOn\.Background"\s+Value="\{ThemeResource EtherSwitchKnobDisabledBrush\}"') {
+if ($namedTemplate.OuterXml -notmatch 'SwitchKnobOn\.Background"\s+Value="\{ThemeResource EtherSwitchKnobDisabledBrush\}"') {
     throw 'EtherSwitch Disabled On knob must use EtherSwitchKnobDisabledBrush so it stays grey instead of picking up the blue track.'
 }
 

@@ -238,6 +238,11 @@
 
     <Style x:Key="DefaultEtherIntelligenceButtonStyle" TargetType="controls:EtherIntelligenceButton">
         <Setter Property="Padding"                    Value="8,8,12,8"/>
+        <!-- Matches the Cp ContentPresenter's own literal FontSize in
+             EtherIntelligenceButtonTemplate (Figma Inter SemiBold 14 px). The template does not
+             template-bind Cp.FontSize, so this setter documents the effective size without
+             changing rendering. -->
+        <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>

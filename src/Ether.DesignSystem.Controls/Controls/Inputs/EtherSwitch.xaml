@@ -1,6 +1,8 @@
 <!--
     Ether Design System Toggle Switch
 
+    Figma source: ursRC201v8IiVeafliI45F · Light Off/Default node 62138:28454
+
     This keyed style keeps the Microsoft.UI.Xaml ToggleSwitch template contract:
     its named parts, ToggleStates transitions, and native knob repositioning are
     intact. Ether only supplies the visual skin.
@@ -102,7 +104,7 @@
     <SolidColorBrush x:Key="EtherSwitchTransparentBrush" Color="Transparent" />
 
     <ControlTemplate x:Key="EtherSwitchTemplate" TargetType="ToggleSwitch">
-        <Grid Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+        <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal"><VisualState.Setters>

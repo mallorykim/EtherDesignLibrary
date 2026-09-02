@@ -168,6 +168,7 @@
                                  consumed here — swapping to those brushes would change the visual. -->
                             <Setter Target="Bg.Opacity" Value="0.4"/>
                             <Setter Target="Stroke.Opacity" Value="0.4"/>
+                            <Setter Target="FocusRing.Visibility" Value="Collapsed"/>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -305,6 +306,7 @@
                         <VisualState.Setters>
                             <Setter Target="Bg.Opacity" Value="0.4"/>
                             <Setter Target="Stroke.Opacity" Value="0.4"/>
+                            <Setter Target="FocusRing.Visibility" Value="Collapsed"/>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -435,6 +437,7 @@
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Target="Bg.Opacity" Value="0.4"/>
+                            <Setter Target="FocusRing.Visibility" Value="Collapsed"/>
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>

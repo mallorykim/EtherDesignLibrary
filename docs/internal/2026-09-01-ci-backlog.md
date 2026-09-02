@@ -18,19 +18,31 @@
 - **Resource-graph gate** — `Verify-ResourceGraph.ps1`'s expected Controls `Generic.xaml` merge list
   omitted `EtherTabNavigation.xaml`. Registered it. (commit `f2090ad`)
 
-## Open — L3 contract gates (6 failing, scoped locally 2026-09-01)
-Two flavors: **(a) stale gate expectation** (likely a list/key-set the gate hardcodes that drifted) vs.
-**(b) real template/style fix** (the control genuinely violates the asserted contract). Triage each
-before fixing; (b) items may carry a design decision.
+## RESOLVED — L3 contract gates (all 6 green, 2026-09-02)
+Each triaged **(a) stale gate expectation** vs. **(b) real template/style fix**, fixed the smallest
+correct thing, and re-verified the single script locally (exit 0). All 6 now pass.
 
-| Gate | Error | Likely flavor |
+| Gate | Flavor | Fix |
 | --- | --- | --- |
-| `Verify-EtherButtonContract.ps1:208` | "EtherButton Disabled state must collapse FocusRing." | (b) template — Disabled VSM needs `Target="FocusRing.Visibility" Value="Collapsed"` |
-| `Verify-EtherCheckboxContract.ps1` | "component resource keys differ from the expected lightweight key set." | (a) likely stale key-set |
-| `Verify-EtherRadioButtonContract.ps1` | "component resource keys differ from the expected lightweight key set." | (a) likely stale key-set |
-| `Verify-EtherIntelligenceButtonContract.ps1` | "DefaultEtherIntelligenceButtonStyle is missing its \<setter\>." | (a/b) triage the named setter |
-| `Verify-EtherSteeringBarContract.ps1` | "\<Description\> is missing required pattern '\<Pattern\>'." | (a/b) triage the pattern |
-| `Verify-EtherSwitchContract.ps1` | "EtherSwitch template is missing named part LayoutRoot." | (b) template part name |
+| `Verify-EtherButtonContract.ps1` | (b) template | Added `<Setter Target="FocusRing.Visibility" Value="Collapsed"/>` to all 3 Disabled VisualStates in `EtherButton.xaml` — the Disabled state genuinely left the focus ring visible. |
+| `Verify-EtherCheckboxContract.ps1` | (a) stale gate | Added `EtherCheckboxFocusBrush` to `$expectedComponentKeys` — the template already ships the key; the frozen list omitted it. |
+| `Verify-EtherRadioButtonContract.ps1` | (a) stale gate | Added `EtherRadioButtonFocusBrush` to `$expectedComponentKeys` — same drift as Checkbox. |
+| `Verify-EtherIntelligenceButtonContract.ps1` | (a/b) | Added `<Setter Property="FontSize" Value="{StaticResource Size14}"/>` to `DefaultEtherIntelligenceButtonStyle` — matches the template's hardcoded content-presenter FontSize, so **no visual change**; satisfies the gate's "style declares FontSize" contract. |
+| `Verify-EtherSteeringBarContract.ps1` | (a) gate wording | Added the value-normalization rationale comment + refactored `if (e.Property == ValueProperty)` into the named-candidate form the gate matches. **No behavior change** (reentrancy guard + `NormalizeValue` already present). |
+| `Verify-EtherSwitchContract.ps1` | (a) stale gate (whole tail) | The template was **rebuilt on the official WinUI ToggleSwitch skeleton** (commit `4cdfe3e`) adopting stock part names, but the gate (last touched `af909c9`, **before** the rebuild) still asserted a non-stock variant's phantom names. The `ConsumerFixtures` fixture already uses the stock names — the gate was the lone drifter. See the reconciliation below. |
+
+**EtherSwitch gate reconciliation (flavor (a), the big one).** Phantom gate name → real skeleton part:
+`OffLabel`→`OffContentPresenter`, `OnLabel`→`OnContentPresenter`, `SwitchArea`→`SwitchAreaGrid`,
+`KnobTransform.X` Setter→`KnobTranslateTransform.X` Storyboard `To="12"`, `TrackOn.Opacity`→`TrackVisuals.Opacity`,
+`OnLabel.Opacity`→`LabelsHost.Opacity`, `Knob.BorderBrush`→`KnobFrame.BorderBrush`,
+`KnobFill.Background`→`SwitchKnobOff.Fill`, `KnobFillOn.Background`→`SwitchKnobOn.Background`. Every
+check's **intent is preserved** (knob geometry 22×14 / 18×10, margin 3, On-travel 12, Disabled fades to
+0.4, Disabled knob brushes, no BitmapCache) — only the part names now match the skeleton the template +
+fixture actually use. Rewriting the template to the gate's names was rejected: it would violate AGENTS.md
+("keep the official skeleton") and break the documented off→on→off flicker fix (On-travel is a stock
+ToggleStates Storyboard, not a Setter). Two additive template touches also satisfy legit gate intents with
+no better reconciliation target: named the root `x:Name="LayoutRoot"` and cited Figma node `62138:28454`
+in the header (both harmless — an x:Name on a previously-unnamed root and a doc comment; no visual change).
 
 Passing L3 gates (for reference): Dropdown, Input, Masthead, ProgressBar, ScrollBar, SegmentedControl,
 Slider.
