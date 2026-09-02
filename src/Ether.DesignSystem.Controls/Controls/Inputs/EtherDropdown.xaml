@@ -312,7 +312,7 @@
                         CornerRadius="{StaticResource RadiusSm}"
                         Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
                         MinWidth="{StaticResource DropdownMinWidth}"
-                        Padding="{StaticResource Padding4}">
+                        Padding="4,0,4,0">
                     <ScrollViewer x:Name="ScrollViewer"
                                   VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled">
@@ -329,6 +329,12 @@
     <Style x:Key="EtherDropdownItem" TargetType="ComboBoxItem">
         <Setter Property="MinHeight" Value="26"/>
         <Setter Property="Padding" Value="6,0"/>
+        <!-- The 4px inter-item gap lives here (2px top + 2px bottom = 4px between rows) rather than
+             on the ItemsPanel's StackPanel.Spacing, because the stock ComboBox sizes its popup to the
+             sum of item heights INCLUDING margin but ignores panel spacing and the PopupBorder's own
+             padding. Moving the gap into the margin lets the popup hug all rows for a short menu with
+             no runtime resizing (which fights the stock arrangement and throws LayoutCycleException). -->
+        <Setter Property="Margin" Value="0,2,0,2"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
@@ -452,7 +458,9 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical" Spacing="{StaticResource Spacing4}"/>
+                    <!-- Spacing is 0: the inter-item gap is carried by each item's Margin (see the
+                         EtherDropdownItem style) so the stock ComboBox counts it when sizing the popup. -->
+                    <StackPanel Orientation="Vertical" Spacing="0"/>
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>

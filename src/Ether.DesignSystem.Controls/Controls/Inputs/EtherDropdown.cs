@@ -366,9 +366,12 @@ public sealed class EtherDropdown : ComboBox
     }
 
     /// <summary>
-    /// Height of the first <paramref name="count"/> items plus the gaps between them. Sums the
-    /// realised containers individually so items of differing heights stay exact; only the
-    /// not-yet-realised case falls back to assuming a uniform height.
+    /// Vertical pitch of the first <paramref name="count"/> items - each realised container's
+    /// ActualHeight plus its vertical Margin, which is where the inter-item gap now lives (the
+    /// ItemsPanel StackPanel has no Spacing) so the stock ComboBox counts it when sizing the popup.
+    /// Sums realised containers individually so items of differing heights stay exact; only the
+    /// not-yet-realised case falls back to a uniform probe height (its DesiredSize also includes the
+    /// margin). <paramref name="spacing"/> stays for any residual panel spacing but is 0 by default.
     /// </summary>
     private double MeasureVisibleItemsHeight(int count, double spacing)
     {
@@ -379,7 +382,7 @@ public sealed class EtherDropdown : ComboBox
         {
             if (ContainerFromIndex(index) is FrameworkElement { ActualHeight: > 0 } container)
             {
-                total += container.ActualHeight;
+                total += container.ActualHeight + container.Margin.Top + container.Margin.Bottom;
                 counted++;
             }
         }
