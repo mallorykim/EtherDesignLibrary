@@ -289,6 +289,9 @@
   <data name="GalleryViewsControlsButtonPage084.Content" xml:space="preserve">
     <value>Button</value>
   </data>
+  <data name="GalleryViewsControlsButtonPageCommandLabel.Text" xml:space="preserve">
+    <value>COMMAND (MVVM)</value>
+  </data>
   <data name="GalleryViewsControlsCheckboxPage085.Title" xml:space="preserve">
     <value>Checkbox</value>
   </data>
@@ -465,6 +468,9 @@
   </data>
   <data name="GalleryViewsControlsDropdownPage139.Content" xml:space="preserve">
     <value>10 Minutes</value>
+  </data>
+  <data name="GalleryViewsControlsDropdownPageDataBoundLabel.Text" xml:space="preserve">
+    <value>Data-bound (ItemsSource)</value>
   </data>
   <data name="GalleryViewsControlsInputPage140.Title" xml:space="preserve">
     <value>Input</value>
@@ -681,6 +687,9 @@
   </data>
   <data name="GalleryViewsControlsSegmentedControlPage205.Content" xml:space="preserve">
     <value>Pressed</value>
+  </data>
+  <data name="GalleryViewsControlsSegmentedControlPageDataBoundLabel.Text" xml:space="preserve">
+    <value>DATA-BOUND (ITEMSSOURCE)</value>
   </data>
   <data name="GalleryViewsControlsSliderPage206.Title" xml:space="preserve">
     <value>Slider</value>

@@ -41,12 +41,13 @@
                                   x:Uid="GalleryViewsControlsDropdownPageOutput"
                                   OutputText="Selected: 10 Minutes"
                                   SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
-                <controls:EtherDropdown
-                          x:Name="InteractiveDropdown"
-                          SelectedIndex="0"
-                          HorizontalAlignment="Left"
-                          AutomationProperties.Name="Interactive dropdown"
-                          SelectionChanged="InteractiveDropdown_SelectionChanged">
+                <StackPanel Spacing="16">
+                    <controls:EtherDropdown
+                              x:Name="InteractiveDropdown"
+                              SelectedIndex="0"
+                              HorizontalAlignment="Left"
+                              AutomationProperties.Name="Interactive dropdown"
+                              SelectionChanged="InteractiveDropdown_SelectionChanged">
 <ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage104" Content="10 Minutes"/>
 <ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage105" Content="30 Minutes"/>
 <ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage106" Content="1 Hour"/>
@@ -56,7 +57,20 @@
 <ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage110" Content="12 Hours"/>
 <ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage111" Content="1 Day"/>
 <ComboBoxItem x:Uid="GalleryViewsControlsDropdownPage112" Content="Never"/>
-                </controls:EtherDropdown>
+                    </controls:EtherDropdown>
+                    <StackPanel Spacing="8">
+<TextBlock x:Uid="GalleryViewsControlsDropdownPageDataBoundLabel" Text="Data-bound (ItemsSource)"
+                                   Style="{StaticResource micro/regular}"
+                                   Foreground="{ThemeResource TextTertiary}"/>
+                        <controls:EtherDropdown
+                                  HorizontalAlignment="Left"
+                                  AutomationProperties.Name="Data-bound dropdown"
+                                  ItemsSource="{x:Bind DurationOptions}"
+                                  DisplayMemberPath="Label"
+                                  SelectedValuePath="Id"
+                                  SelectedValue="{x:Bind SelectedDurationId, Mode=TwoWay}"/>
+                    </StackPanel>
+                </StackPanel>
             </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
 

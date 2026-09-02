@@ -139,6 +139,18 @@
                                          AutomationProperties.Name="Default style button"
                                          HorizontalContentAlignment="Center"/>
                 </StackPanel>
+
+                <StackPanel Spacing="8">
+<TextBlock x:Uid="GalleryViewsControlsButtonPageCommandLabel" Text="COMMAND (MVVM)"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherButton Content="Save"
+                                         Style="{StaticResource EtherButtonPrimary}"
+                                         Command="{x:Bind SaveCommand}"
+                                         CommandParameter="Save"
+                                         AutomationProperties.Name="Command-bound button"
+                                         HorizontalContentAlignment="Center"/>
+                </StackPanel>
             </StackPanel>
             </views:ControlExample>
         </views:ComponentPage.InteractiveContent>

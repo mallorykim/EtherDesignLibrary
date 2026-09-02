@@ -1,3 +1,4 @@
+using System.Windows.Input;
 using Ether.DesignSystem.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -12,10 +13,26 @@ public sealed partial class ButtonPage : Page
         """
         <controls:EtherButton Content="Button"
                               Style="{StaticResource EtherButtonPrimary}" />
+
+        <!-- Command (MVVM): -->
+        <controls:EtherButton Content="Save"
+                              Command="{x:Bind SaveCommand}"
+                              CommandParameter="Save" />
         """;
+
+    /// <summary>Demonstrates the button family's native <c>Command</c>/<c>CommandParameter</c>
+    /// path alongside the <c>Click=</c> examples above — a minimal hand-written <see cref="ICommand"/>,
+    /// no MVVM package required.</summary>
+    public ICommand SaveCommand { get; }
 
     public ButtonPage()
     {
+        SaveCommand = new DelegateCommand(parameter =>
+        {
+            if (LiveExample is not null)
+                LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Clicked", "Clicked: {0}", parameter ?? "Save");
+        });
+
         this.InitializeComponent();
         this.Loaded += (_, _) =>
         {
@@ -117,4 +134,18 @@ public sealed partial class ButtonPage : Page
 
         return new PathIcon { Data = geometry, Width = size, Height = size };
     }
+}
+
+/// <summary>Gallery-only minimal <see cref="ICommand"/> for the Button page's "COMMAND (MVVM)"
+/// specimen. Deliberately hand-written (no <c>CommunityToolkit.Mvvm</c> dependency) — the Gallery
+/// project has no MVVM package reference, matching the product's own zero-dependency stance.</summary>
+internal sealed class DelegateCommand(Action<object?> execute, Func<object?, bool>? canExecute = null) : ICommand
+{
+    public event EventHandler? CanExecuteChanged;
+
+    public bool CanExecute(object? parameter) => canExecute?.Invoke(parameter) ?? true;
+
+    public void Execute(object? parameter) => execute(parameter);
+
+    public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 }

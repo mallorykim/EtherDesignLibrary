@@ -91,6 +91,15 @@
                         </controls:EtherSegmentPanel>
                     </controls:EtherSegmentedControl>
                 </StackPanel>
+                <StackPanel Spacing="6">
+<TextBlock x:Uid="GalleryViewsControlsSegmentedControlPageDataBoundLabel" Text="DATA-BOUND (ITEMSSOURCE)"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherSegmentedControl AutomationProperties.Name="Data-bound segmented control"
+                                                    ItemsSource="{x:Bind Periods}"
+                                                    DisplayMemberPath="Label"
+                                                    SelectedItem="{x:Bind SelectedPeriod, Mode=TwoWay}"/>
+                </StackPanel>
             </StackPanel>
             </views:ControlExample>
         </views:ComponentPage.InteractiveContent>

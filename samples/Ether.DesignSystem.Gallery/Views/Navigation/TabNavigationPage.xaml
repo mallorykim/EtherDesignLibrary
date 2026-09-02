@@ -30,6 +30,12 @@
                             <controls:EtherTabItem Content="Overview"/><controls:EtherTabItem Content="Details"/><controls:EtherTabItem Content="History"/><controls:EtherTabItem Content="Activity"/><controls:EtherTabItem Content="Settings"/>
                         </controls:EtherTabNavigation>
                     </StackPanel>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="DATA-BOUND (ITEMSSOURCE) — no per-item Icon" Style="{StaticResource micro/semibold}" Foreground="{ThemeResource TextTertiary}"/>
+                        <controls:EtherTabNavigation ItemsSource="{x:Bind Sections}"
+                                                     SelectedIndex="{x:Bind SelectedSectionIndex, Mode=TwoWay}"
+                                                     AutomationProperties.Name="Data-bound tab navigation"/>
+                    </StackPanel>
                 </StackPanel>
             </views:ControlExample>
         </views:ComponentPage.InteractiveContent>
