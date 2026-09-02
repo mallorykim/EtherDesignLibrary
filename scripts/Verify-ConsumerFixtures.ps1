@@ -986,17 +986,17 @@ try {
                 'EtherDropdown.MaxVisibleItems', 'EtherDropdown.MenuGap',
                 'EtherProgressBar.ShowTitle', 'EtherProgressBar.ShowValue', 'EtherProgressBar.Title', 'EtherProgressBar.ValueContent',
                 'EtherSegmentPanel.Spacing',
-                'EtherSegmentedControl.DisplayMemberPath', 'EtherSegmentedControl.ItemTemplate', 'EtherSegmentedControl.ItemsSource', 'EtherSegmentedControl.SelectedIndex', 'EtherSegmentedControl.SelectedItem', 'EtherSegmentedControl.SelectedValue',
+                'EtherSegmentedControl.DisplayMemberPath', 'EtherSegmentedControl.ItemTemplate', 'EtherSegmentedControl.ItemsSource', 'EtherSegmentedControl.SelectedIndex', 'EtherSegmentedControl.SelectedItem', 'EtherSegmentedControl.SelectedValue', 'EtherSegmentedControl.SelectionCommand', 'EtherSegmentedControl.SelectionCommandParameter',
                 'EtherSlider.Labels', 'EtherSlider.ShowLabels', 'EtherSlider.ShowTitle', 'EtherSlider.SnapToStops', 'EtherSlider.StepFrequency', 'EtherSlider.Stops', 'EtherSlider.Title',
                 'EtherSteeringBar.LargeChange', 'EtherSteeringBar.Maximum', 'EtherSteeringBar.Minimum', 'EtherSteeringBar.ShowStops', 'EtherSteeringBar.ShowTitle', 'EtherSteeringBar.ShowValue', 'EtherSteeringBar.SmallChange', 'EtherSteeringBar.SnapToStops', 'EtherSteeringBar.StepFrequency', 'EtherSteeringBar.Stops', 'EtherSteeringBar.Title', 'EtherSteeringBar.Value', 'EtherSteeringBar.ValueContent',
                 'EtherMasthead.EnableWindowCommands', 'EtherMasthead.ShowChevron', 'EtherMasthead.ShowMenuIcon', 'EtherMasthead.ShowSearch', 'EtherMasthead.ShowSettings',
                 'EtherTabItem.Icon'
             )
-            $expectedInventoryPublicProperties = 1764
-            $expectedWritablePublicProperties = 1395
+            $expectedInventoryPublicProperties = 1766
+            $expectedWritablePublicProperties = 1397
             $expectedVisualPublicProperties = 555
             $expectedSemanticPublicProperties = 87
-            $expectedPlatformPublicProperties = 1122
+            $expectedPlatformPublicProperties = 1124
             $allowedVisualEvidenceMethods = @('pixel-difference', 'layout-difference', 'visibility-transition', 'platform-dp-contract', 'ether-component-dp-contract', 'platform-clr-visual-contract')
             # R-06: the 555 visual properties are not uniformly "observable" - split by Evidence.Method
             # into the subset that proved a visible effect (pixel/layout/visibility differences on a

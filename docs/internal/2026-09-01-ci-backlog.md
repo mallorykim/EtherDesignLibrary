@@ -48,21 +48,20 @@ after the L3 gates are green:
 - Verify package consumers / unsigned MSIX produce
 - Verify the gate manifest matches the workflow (anti-drift, R-02)
 
-## ConsumerFixtures runtime flakiness (separate from CI — Verify-ConsumerFixtures.ps1)
-- **Unpackaged asset StorageFile check is flaky/environmental.** `Verify-ConsumerFixtures.ps1`'s
-  "unpackaged runtime smoke fixture did not verify Foundation resources, assets, and theme
-  re-resolution" throws when the marker's `assets[].StorageFileResolved` is false —
-  `StorageFile.GetFileFromApplicationUriAsync("ms-appx:///…")` returns "Value does not fall within the
-  expected range." for the Foundation fonts + an SVG. Observed: **passed once** (the original
-  consumability green run 2026-09-01) then **failed on every subsequent run** — independent of the code
-  in those runs (it was already red before the DX-optimization commits and before the SegmentedControl
-  data-bound-chrome fix; neither touches Foundation assets). Note the marker's `svgImageLoaded:true` — the
-  assets DO load via `ms-appx`; only the lower-level `StorageFile` API resolution fails, which is a known
-  unreliable path for **unpackaged** WinAppSDK apps. To fix, make the fixture's asset check not depend on
-  `StorageFile.GetFileFromApplicationUriAsync` for the unpackaged run (the ms-appx load itself already
-  proves the asset), or run the check only in the packaged fixture. Do this as a deliberate fixture-
-  reliability change (not a silent weakening) — it currently masks true green for the whole runtime smoke
-  even when every component/behavior assertion passes (`outcome:"success"`).
+## ConsumerFixtures acceptance constants — RESOLVED (correcting an earlier mis-diagnosis)
+- The `Verify-ConsumerFixtures.ps1` throw "unpackaged runtime smoke fixture did not verify Foundation
+  resources, assets, and theme re-resolution" has a **misleadingly generic message**: its actual
+  condition (`:1215-1251`) gates on **acceptance-count constants** (`expectedConsumedProperties`,
+  inventory/writable/classification counts), **not** on `assets[].StorageFileResolved`. The real
+  blocker after the DX work was the P3 `EtherSegmentedControl.SelectionCommand` /
+  `SelectionCommandParameter` DPs (2 new public writable DPs) drifting the counts while the constants
+  weren't updated. Reconciled 2026-09-02 (expectedConsumedProperties +2, inventory 1764→1766, writable
+  1395→1397, platform 1122→1124) → `Consumer fixtures passed`. An earlier commit (`d8e07a1`) wrongly
+  blamed a "flaky asset StorageFile check"; that was a mis-read — `assets[].StorageFileResolved:false`
+  is **expected and tolerated** (the fixture's `AssertApplicationFileAsync` documents that unpackaged
+  hosts can't resolve ms-appx via `StorageFile`, and proves the asset via on-disk + XAML load instead;
+  `svgImageLoaded:true`). Lesson: read the *condition*, not the throw *message*; and when you add a DP
+  to an audited control, reconcile these constants.
 
 ## How to work this backlog
 Same discipline as the consumability skill: for each gate, read what it asserts, decide flavor (a)
