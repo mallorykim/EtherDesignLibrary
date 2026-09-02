@@ -93,6 +93,10 @@ Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedItem.set -> void
 Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedValue.get -> object?
 Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedValue.set -> void
 Ether.DesignSystem.Controls.EtherSegmentedControl.SelectionChanged -> System.EventHandler<Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs!>?
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectionCommand.get -> System.Windows.Input.ICommand?
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectionCommand.set -> void
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectionCommandParameter.get -> object?
+Ether.DesignSystem.Controls.EtherSegmentedControl.SelectionCommandParameter.set -> void
 Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs
 Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs.NewValue.get -> object?
 Ether.DesignSystem.Controls.SegmentedSelectionChangedEventArgs.OldValue.get -> object?
@@ -204,6 +208,8 @@ static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.ItemsSourcePro
 static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedIndexProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedItemProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.SelectedValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.SelectionCommandProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSegmentedControl.SelectionCommandParameterProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSlider.LabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSlider.ShowLabelsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSlider.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!

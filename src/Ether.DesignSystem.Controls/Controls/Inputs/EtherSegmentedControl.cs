@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
+using System.Windows.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -22,7 +23,12 @@ namespace Ether.DesignSystem.Controls;
 /// <see cref="SelectedValue"/> synchronized. Inline segments keep the existing
 /// <see cref="FrameworkElement.Tag"/>/Content value contract. Native radio grouping and
 /// <see cref="EtherSegmentRadioButton"/> layer opacity remain the interaction model; the
-/// host does not add visual-state groups.
+/// host does not add visual-state groups. An optional <see cref="SelectionCommand"/>
+/// gives the <see cref="ItemsSource"/>-generated path an action hook: it fires only for a
+/// user-initiated pick (never for a programmatic <see cref="SelectedIndex"/>/
+/// <see cref="SelectedItem"/>/<see cref="SelectedValue"/> assignment), mirroring how a
+/// <see cref="Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Command"/> fires on Click,
+/// not on a programmatic state change.
 /// </remarks>
 [TemplatePart(Name = TrackSurfacePartName, Type = typeof(Border))]
 public class EtherSegmentedControl : ContentControl
@@ -76,6 +82,20 @@ public class EtherSegmentedControl : ContentControl
         typeof(EtherSegmentedControl),
         new PropertyMetadata(null, OnSelectedValueChanged));
 
+    /// <summary>Identifies the <see cref="SelectionCommand"/> dependency property. Registered default is <see langword="null"/>.</summary>
+    public static readonly DependencyProperty SelectionCommandProperty = DependencyProperty.Register(
+        nameof(SelectionCommand),
+        typeof(ICommand),
+        typeof(EtherSegmentedControl),
+        new PropertyMetadata(null));
+
+    /// <summary>Identifies the <see cref="SelectionCommandParameter"/> dependency property. Registered default is <see langword="null"/>.</summary>
+    public static readonly DependencyProperty SelectionCommandParameterProperty = DependencyProperty.Register(
+        nameof(SelectionCommandParameter),
+        typeof(object),
+        typeof(EtherSegmentedControl),
+        new PropertyMetadata(null));
+
     /// <summary>Gets or sets the collection used to generate the segment items. Default is <see langword="null"/>; null selects the inline-content path.</summary>
     public object? ItemsSource
     {
@@ -123,6 +143,34 @@ public class EtherSegmentedControl : ContentControl
     {
         get => GetValue(SelectedValueProperty);
         set => SetValue(SelectedValueProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the command invoked when the <b>user</b> selects a segment. Default is
+    /// <see langword="null"/>. Fires only for a user-initiated pick (the segment's own
+    /// <see cref="Microsoft.UI.Xaml.Controls.Primitives.ToggleButton.Checked"/> event, the same
+    /// path a pointer click or keyboard selection drives) — never for a programmatic
+    /// <see cref="SelectedIndex"/>, <see cref="SelectedItem"/>, or <see cref="SelectedValue"/>
+    /// assignment, and never while a previous selection is still being synchronized. This
+    /// mirrors <see cref="Microsoft.UI.Xaml.Controls.Primitives.ButtonBase.Command"/>, which
+    /// fires on Click, not on a programmatic state change. Execution is guarded by
+    /// <see cref="ICommand.CanExecute(object?)"/>.
+    /// </summary>
+    public ICommand? SelectionCommand
+    {
+        get => (ICommand?)GetValue(SelectionCommandProperty);
+        set => SetValue(SelectionCommandProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the parameter passed to <see cref="SelectionCommand"/>. Default is
+    /// <see langword="null"/>, in which case the newly selected <see cref="SelectedValue"/> is
+    /// passed instead.
+    /// </summary>
+    public object? SelectionCommandParameter
+    {
+        get => GetValue(SelectionCommandParameterProperty);
+        set => SetValue(SelectionCommandParameterProperty, value);
     }
 
     /// <summary>Raised after the selected segment value changes.</summary>
@@ -373,13 +421,13 @@ public class EtherSegmentedControl : ContentControl
     private void OnSegmentChecked(object sender, RoutedEventArgs e)
     {
         if (!_synchronizingSelection && sender is RadioButton segment)
-            SetSelectedValueFromSegment(segment);
+            SetSelectedValueFromSegment(segment, userInitiated: true);
     }
 
-    private void SetSelectedValueFromSegment(RadioButton segment)
-        => ApplySelection(segment);
+    private void SetSelectedValueFromSegment(RadioButton segment, bool userInitiated = false)
+        => ApplySelection(segment, userInitiated);
 
-    private void ApplySelection(RadioButton? selected)
+    private void ApplySelection(RadioButton? selected, bool userInitiated = false)
     {
         var selectedIndex = selected is null ? -1 : _segments.IndexOf(selected);
         var selectedValue = selected is null ? null : GetSegmentValue(selected);
@@ -398,6 +446,22 @@ public class EtherSegmentedControl : ContentControl
         {
             _synchronizingSelection = false;
         }
+
+        // Only a real user pick (never a programmatic SelectedIndex/SelectedItem/SelectedValue
+        // assignment, and never the ItemsSource rebuild's selection restore) invokes the command -
+        // see the userInitiated=true call in OnSegmentChecked above, the sole caller that passes it.
+        if (userInitiated)
+            InvokeSelectionCommand(selectedValue);
+    }
+
+    private void InvokeSelectionCommand(object? selectedValue)
+    {
+        if (SelectionCommand is not { } command)
+            return;
+
+        var parameter = SelectionCommandParameter ?? selectedValue;
+        if (command.CanExecute(parameter))
+            command.Execute(parameter);
     }
 
     private void OnItemsSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
