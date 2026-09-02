@@ -79,8 +79,11 @@ weaken assertions), rebuild, rerun.
   Light/Dark/High-Contrast screenshot pass, ending in
   `{"marker":"ETHER_CONSUMER_SMOKE","outcome":"success", ...}`. This is the run every `✅` verdict
   in the 15 `docs/internal/consumability/*.md` reports and `_SUMMARY.md` cites.
-- Residual, named-not-hidden gaps (see `_SUMMARY.md` → "Residuals" for the authoritative list):
-  `EtherDropdown.MaxDropDownHeight` unresolved; `EtherScrollBar` RangeValue automation +
-  `Minimum`/`Maximum` round-trip unproven by a dedicated fixture; `EtherRadioButton` `GroupName`
-  multi-instance mutual exclusion unproven; `EtherMasthead` per-caption-button Invoke not
-  individually asserted for Minimize/Close; packaged MSIX parity not independently re-run this wave.
+- **Update (same date, later):** a follow-up edit-only session closed all four named residuals above
+  (`EtherDropdown.MaxDropDownHeight`, `EtherScrollBar` RangeValue/`Minimum`/`Maximum` round-trip,
+  `EtherRadioButton` `GroupName` mutual exclusion, `EtherMasthead` per-caption Invoke) with new fixture
+  assertions, and a subsequent `Verify-ConsumerFixtures.ps1` run confirmed all four hold at runtime
+  (`artifacts/consumer-fixtures/runtime-result-9a2b552efe3b4c8bb6c9280635e54b77.json`). See
+  `_SUMMARY.md` → "CLOSED — formerly named residuals" for the authoritative, evidence-cited list.
+  The only residual left is packaged MSIX parity, which was not independently re-run this wave (see
+  above).

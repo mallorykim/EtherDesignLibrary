@@ -1,7 +1,7 @@
 # Integrating the Ether Design System (Internal Teams)
 
 This document is for internal company WinUI 3 application teams. The current release line
-is the preview `0.1.0-preview.1`, distributed only through private GitHub Packages; do not
+is the preview `0.1.0-preview.4`, distributed only through private GitHub Packages; do not
 expose the package or PAT configuration in an external repository.
 
 ## Verified support scope
@@ -12,7 +12,7 @@ expose the package or PAT configuration in an external repository.
 - Hosting: both unpackaged and packaged (MSIX **build/output**) forms have been verified;
   MSIX **installation and runtime** have not yet been verified and remain incomplete.
 - Packages: `Ether.DesignSystem.Foundation`, `Ether.DesignSystem.Controls`, and
-  `Ether.DesignSystem.Interactions`, all currently at `0.1.0-preview.1`.
+  `Ether.DesignSystem.Interactions`, all currently at `0.1.0-preview.4`.
 
 External consumer verification has proven that referencing only the three Ether packages
 above is sufficient; you do **not** need to explicitly reference `Microsoft.WindowsAppSDK`
@@ -107,9 +107,9 @@ the following key configuration (keep any other settings the template already re
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ether.DesignSystem.Foundation" Version="0.1.0-preview.1" />
-    <PackageReference Include="Ether.DesignSystem.Controls" Version="0.1.0-preview.1" />
-    <PackageReference Include="Ether.DesignSystem.Interactions" Version="0.1.0-preview.1" />
+    <PackageReference Include="Ether.DesignSystem.Foundation" Version="0.1.0-preview.4" />
+    <PackageReference Include="Ether.DesignSystem.Controls" Version="0.1.0-preview.4" />
+    <PackageReference Include="Ether.DesignSystem.Interactions" Version="0.1.0-preview.4" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 </Project>
