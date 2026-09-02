@@ -287,6 +287,17 @@ public sealed class EtherDropdown : ComboBox
     protected override void OnDropDownOpened(object e)
     {
         base.OnDropDownOpened(e);
+
+        // ComboBox raises DropDownOpened BEFORE it lays the popup out for this open (its OnOpen
+        // path runs the open event, THEN UpdateLayout/ArrangePopup), and it anchors the popup on the
+        // *selected item* - so the popup's base vertical offset shifts by ~one row per selected index
+        // whenever the selection changed since the last open. Force that placement pass to finish now,
+        // so PositionMenu (below) measures THIS open's real placement instead of the previous open's
+        // and its RenderTransform correction stays exact. Without this, re-opening after changing the
+        // selection lands the menu ~30px x delta-index off (it can cover the trigger). Safe against
+        // LayoutCycleException: OnDropDownOpened runs outside any layout pass.
+        UpdateLayout();
+
         UpdateMenuLayout();
 
         if (_popup?.Child is FrameworkElement popupContent)
@@ -340,10 +351,9 @@ public sealed class EtherDropdown : ComboBox
             return;
         }
 
-        // Force layout so realised containers can be measured on this very open rather than
-        // only from the second one onwards.
-        _menuScrollViewer.UpdateLayout();
-
+        // Realised containers are measured directly; the layout pass that realises them is forced in
+        // OnDropDownOpened (open path) or has already run (the SizeChanged path fires after layout),
+        // so no local UpdateLayout is needed here.
         var spacing = (ItemsPanelRoot as StackPanel)?.Spacing ?? 0;
         var itemsHeight = MeasureVisibleItemsHeight(MaxVisibleItems, spacing);
         if (itemsHeight <= 0)

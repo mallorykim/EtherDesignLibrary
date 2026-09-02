@@ -555,6 +555,11 @@
         <Setter Property="BorderThickness"            Value="1"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
+        <!-- Restore the stock WinUI DefaultButtonStyle's VerticalAlignment=Center (Ether had dropped
+             it). Without it the button inherits Stretch and inflates past its 46px MinHeight when it
+             shares a horizontal container with a taller sibling (e.g. an EtherIntelligenceButton).
+             This is the control's alignment in its parent - distinct from the content alignment above. -->
+        <Setter Property="VerticalAlignment"          Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>
         <Setter Property="HighContrastAdjustment"     Value="None"/>
         <Setter Property="Template" Value="{StaticResource EtherButtonPrimaryTemplate}"/>

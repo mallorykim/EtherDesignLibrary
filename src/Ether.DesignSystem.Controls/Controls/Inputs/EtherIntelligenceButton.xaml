@@ -245,6 +245,9 @@
         <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
+        <!-- Restore the stock Button skeleton's VerticalAlignment=Center so this button keeps its own
+             (glow-padded) height in a stretching container instead of inflating. -->
+        <Setter Property="VerticalAlignment"          Value="Center"/>
         <Setter Property="UseSystemFocusVisuals"      Value="False"/>
         <Setter Property="HighContrastAdjustment"     Value="None"/>
         <Setter Property="Template" Value="{StaticResource EtherIntelligenceButtonTemplate}"/>
