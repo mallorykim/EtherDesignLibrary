@@ -42,7 +42,10 @@ if ($adapter -match 'HttpClient|HttpRequestMessage|Authorization|WebSocket|Grpc'
 }
 Assert-Contains $ci 'Verify-InteractionContracts\.ps1' 'CI wiring for interaction contract verifier'
 
-& dotnet run --project $testProjectPath --no-restore -p:Platform=x64
+# The CI package-consumers job runs on a fresh runner with no prior 'dotnet restore'
+# (it is a static-audit + fixture-pack job), so this must self-restore. A --no-restore
+# here fails with NETSDK1004 (missing project.assets.json) the moment CI reaches this step.
+& dotnet run --project $testProjectPath -p:Platform=x64
 if ($LASTEXITCODE -ne 0) {
     throw "Interaction contract smoke test failed with exit code $LASTEXITCODE."
 }

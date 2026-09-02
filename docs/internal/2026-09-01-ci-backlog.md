@@ -47,18 +47,31 @@ in the header (both harmless — an x:Name on a previously-unnamed root and a do
 Passing L3 gates (for reference): Dropdown, Input, Masthead, ProgressBar, ScrollBar, SegmentedControl,
 Slider.
 
-## Status-unknown — downstream `package-consumers` steps (not yet reached)
-CI stops at the first failure, so these have **not run** since the L3 gates above fail first. Re-check
-after the L3 gates are green:
-- Verify silently-ineffective public properties documented (`Verify-SilentPropertyCoverage.ps1`)
-- Verify backend-consumable interaction contracts
-- Verify WinUI 3 control conventions (`Verify-WinUiConventions.ps1`)
-- Verify High Contrast foreground/background pairing (`Verify-HighContrastPairing.ps1`)
-- Verify Gallery ControlExample + localization contracts (note: the DX P2 Gallery demos add new blocks —
-  re-run these after the DX work merges)
-- Verify property-evidence wording (R-06)
-- Verify package consumers / unsigned MSIX produce
-- Verify the gate manifest matches the workflow (anti-drift, R-02)
+## Downstream `package-consumers` steps — status after L3 went green (CI run 33586917387)
+With the L3 gates green in CI, the job advanced past them and exposed the **next latent failure**. The
+`package-consumers` job runs on a **fresh runner with NO `dotnet restore`/`build` step** (it is a
+static-audit + fixture-pack job), so any step that shells out to dotnet must self-restore.
+
+- **Verify silently-ineffective public properties** (`Verify-UnsupportedProperties.ps1`) — ✅ green in CI.
+- **Verify backend-consumable interaction contracts** (`Verify-InteractionContracts.ps1`) — ❌ was the
+  next CI failure: `NETSDK1004` (missing `project.assets.json` for `Interactions.ContractTests`). Its
+  `dotnet run … --no-restore` (line 45) assumed a prior restore that this job never does. **Fixed
+  2026-09-02**: dropped `--no-restore` so the smoke test self-restores. (Passed locally only because a
+  dev machine already has the assets file — a local-vs-CI gap; CI is authoritative here.)
+- **WinUiConventions / HighContrastPairing / GalleryControlExample / GalleryLocalization /
+  PropertyEvidenceWording / GateManifest** — all static file-read audits; green locally, no restore gap.
+  (The DX P2 Gallery ControlExample + localization gates pass — the new data-binding demo blocks conform.)
+- **Verify package consumers** (`Verify-ConsumerFixtures.ps1 -SkipSolutionBuild -SkipRuntimeSmoke`) —
+  self-restores each fixture against the freshly-packed local feed (line 870) and guards staleness with
+  `Assert-RestoredControlsPackageMatchesLocalFeed` (872); expected green in CI.
+- **Verify unsigned MSIX produce** (`Verify-MsixPackage.ps1 -SkipSolutionBuild`) — **uncertain**. Fails
+  **locally** with `CS0246: EtherTabNavigation could not be found` in the Packaged fixture — the classic
+  NuGet *same-version-different-content* cache trap: the dev global cache holds a stale `0.1.0-preview.1`
+  Controls package from before `EtherTabNavigation` existed, and the MSIX build reuses it. A fresh CI
+  runner has an empty global cache and pulls the freshly-packed package from the local feed, so CI may
+  pass where local fails. **Pending CI confirmation** — this is the documented "sole residual
+  = packaged MSIX" blocker; do not chase the unreproducible-in-CI local cache artifact.
+- **Verify the gate manifest matches the workflow** (`Verify-GateManifest.ps1`, R-02) — static; green locally.
 
 ## ConsumerFixtures acceptance constants — RESOLVED (correcting an earlier mis-diagnosis)
 - The `Verify-ConsumerFixtures.ps1` throw "unpackaged runtime smoke fixture did not verify Foundation
