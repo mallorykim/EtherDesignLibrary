@@ -142,7 +142,7 @@ Note: any new `Verify-*.ps1` must be registered in both `scripts/Gates.psd1` and
 - D: an additional **M**; recommend executing A/B under the manual rule first, and leaving D until after P2 (the Gallery examples themselves serve as a second living counterpart).
 
 ### 1.4 Decisions needing the user
-1. **Documentation language**: getting-started is in Chinese, while `docs/internal/2026-09-01-*` is in English. Recommendation: keep the consumer docs in Chinese (the readers are the internal team), with terminology left in English as-is.
+1. **Documentation language**: getting-started is in Chinese, while `docs/internal/2026-09-01-*` is in English. Recommendation: keep the consumer docs in Chinese (the readers are the internal team), with terminology left in English as-is. **[Superseded 2026-09-02: the repository was standardized on English; getting-started and every doc are now English (translated in c189b2b).]**
 2. **Whether to "designate" `CommunityToolkit.Mvvm`** as the VM pattern in the examples (`[ObservableProperty]`/`[RelayCommand]`).
    This affects only the consumer side, not the library itself; this repo's deepwiki guide already recommends it (`deepwiki/WinUI3-XAML-AI-Coding-Guide.md:708-714, 742`).
    Recommendation: use hand-written `INotifyPropertyChanged` in the primary examples (consistent with the fixtures, zero dependency), with the Toolkit-equivalent pattern noted as a sidebar.
@@ -318,7 +318,7 @@ the six keyed Styles are **retained** (they're already shipped API — removing 
 
 | # | Decision | Related item | Recommendation |
 | --- | --- | --- | --- |
-| D-1 | Keep consumer docs in Chinese? | P1 | Yes |
+| D-1 | Keep consumer docs in Chinese? | P1 | ~~Yes~~ — **Superseded 2026-09-02: repo standardized on English; all docs translated (c189b2b)** |
 | D-2 | Should examples recommend `CommunityToolkit.Mvvm`? | P1 | Hand-written INPC in the main line, Toolkit pattern as a sidebar |
 | D-3 | Add `Microsoft.Xaml.Interactivity` to the fixtures for proof? | P1 | No, document it as "consumer-opted-in" |
 | D-4 | Should Gallery adopt an MVVM package? | P2 | No |
