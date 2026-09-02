@@ -163,7 +163,11 @@ Use the newly public namespace in your page or window XAML:
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ether="using:Ether.DesignSystem.Controls"
     Title="Ether consumer">
-    <ScrollViewer>
+    <!-- IsTabStop="True" makes this ScrollViewer a focus target, so a click on empty space lands
+         focus here (invisibly) and blurs a focused EtherInput. Direct clicks on controls still
+         focus them. Without it, WinUI leaves focus on the input because a press on a non-focusable
+         panel has no focus target. See the "focused EtherInput doesn't blur" row in Troubleshooting. -->
+    <ScrollViewer IsTabStop="True" UseSystemFocusVisuals="False">
         <StackPanel Padding="24" Spacing="12">
             <ether:EtherButton
                 Variant="Tertiary"
@@ -243,6 +247,8 @@ dotnet build -c Debug -p:Platform=x64
 | After a repackage, the consumer still appears to run the old code; `restore` succeeds but the build reports errors such as an unresolved old namespace | NuGet caches by **package ID + version number**; reusing an already-published version silently hits the old package | The correct fix is to publish a new version and upgrade the version in `PackageReference`. For local troubleshooting only, you can locate the global directory with `dotnet nuget locals global-packages --list` and delete **only that package ID / old version's** directory; do not clear the entire NuGet cache. |
 | `XamlParseException`, or the `ms-appx:///Ether.DesignSystem.Controls/...` resource cannot be found | `DesignSystem.xaml` was not merged, or the URI is misspelled | Put both `XamlControlsResources` and `ms-appx:///Ether.DesignSystem.Controls/Themes/DesignSystem.xaml` into `App.xaml`'s `ResourceDictionary.MergedDictionaries`, then clean and rebuild. |
 | `WMC0001: Unknown type 'EtherButton'` | `xmlns` uses the wrong namespace, or the package did not restore correctly | Use `xmlns:ether="using:Ether.DesignSystem.Controls"`; confirm restore succeeded and the `Ether.DesignSystem.Controls` version is present in the assets file. |
+| A focused `EtherInput` doesn't blur when you click empty space (its focus border stays) | Standard WinUI `TextBox` behavior — this is **not** Ether-specific: a pointer press on a non-focusable panel (`Grid`/`Border`/`StackPanel`) has no focus target, so focus stays on the input | Make the host itself a focus target: add `IsTabStop="True" UseSystemFocusVisuals="False"` to the root `ScrollViewer` (or wrap content in a `ContentControl IsTabStop="True" UseSystemFocusVisuals="False"`), so a click on empty space lands focus there and blurs the input. Direct clicks on real controls still focus them; the only cost is one extra, invisible Tab stop. |
+| An `EtherButton` looks taller than expected when placed beside a taller control (e.g. an `EtherIntelligenceButton`) in the same horizontal row | A `StackPanel` sizes the row to its tallest child; the button's `VerticalAlignment` then decides whether it fills that height | Fixed in the control (it now carries `VerticalAlignment="Center"`), so upgrade to the latest package. If you pin an older version, set `VerticalAlignment="Center"` on the button, or keep the tall control in its own row. |
 | Restore succeeds, but the package installed is not the Ether package (e.g. a public nuget.org package with the same name, or the version content does not match expectations) | `nuget.config` has both the `github-ether` and `nuget.org` sources present; if either source fails to resolve or the search order behaves unexpectedly, NuGet may satisfy the same package ID from **the other source** | Check in `project.assets.json` or the restore log whether each Ether package ID actually resolved from the `github-ether` source (the `source` field); the long-term fix is to add [package source mapping](https://learn.microsoft.com/en-us/nuget/consume-packages/package-source-mapping) to `nuget.config`, explicitly pinning `Ether.DesignSystem.*` to `github-ether` and the remaining package IDs to `nuget.org`, to avoid one source unexpectedly satisfying the other source's package name. |
 
 ## 4. Known boundaries
