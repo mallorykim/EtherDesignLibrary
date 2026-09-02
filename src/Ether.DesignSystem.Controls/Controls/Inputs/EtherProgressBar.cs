@@ -90,7 +90,8 @@ public sealed class EtherProgressBar : RangeBase
     /// consumer taking over the whole content slot. Modeled on <c>Slider.ThumbToolTipValueConverter</c>:
     /// the converter's value is <see cref="RangeBase.Value"/> (boxed double) and its parameter is this
     /// control (for range access). Registered and effective default is <see langword="null"/>; when both
-    /// this and <see cref="ValueContent"/> are unset, the value label is empty.
+    /// this and <see cref="ValueContent"/> are unset, the control formats <see cref="RangeBase.Value"/> as a
+    /// percent of [<see cref="RangeBase.Minimum"/>, <see cref="RangeBase.Maximum"/>].
     /// </summary>
     public IValueConverter? ValueContentConverter
     {
@@ -178,7 +179,7 @@ public sealed class EtherProgressBar : RangeBase
     }
 
     // Precedence: an explicit ValueContent is shown verbatim; otherwise a ValueContentConverter formats the
-    // live Value; otherwise the value label is empty (this control ships no built-in value text).
+    // live Value; otherwise the built-in percent of the [Minimum, Maximum] range (matching EtherSteeringBar).
     private object? GetEffectiveValueContent()
     {
         if (ValueContent is not null)
@@ -196,7 +197,15 @@ public sealed class EtherProgressBar : RangeBase
             }
         }
 
-        return null;
+        return FormatBuiltInValue();
+    }
+
+    // Percent of the [Minimum, Maximum] range (not the raw value), consistent with EtherSteeringBar.
+    private string FormatBuiltInValue()
+    {
+        var span = Maximum - Minimum;
+        var percent = span <= 0d ? 0d : (Value - Minimum) / span * 100d;
+        return $"{Math.Round(percent):0}%";
     }
 
     private void UpdateFill()

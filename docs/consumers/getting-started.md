@@ -1,7 +1,7 @@
 # Integrating the Ether Design System (Internal Teams)
 
 This document is for internal company WinUI 3 application teams. The current release line
-is the preview `0.1.0-preview.5`, distributed only through private GitHub Packages; do not
+is the preview `0.1.0-preview.6`, distributed only through private GitHub Packages; do not
 expose the package or PAT configuration in an external repository.
 
 ## Verified support scope
@@ -12,7 +12,7 @@ expose the package or PAT configuration in an external repository.
 - Hosting: both unpackaged and packaged (MSIX **build/output**) forms have been verified;
   MSIX **installation and runtime** have not yet been verified and remain incomplete.
 - Packages: `Ether.DesignSystem.Foundation`, `Ether.DesignSystem.Controls`, and
-  `Ether.DesignSystem.Interactions`, all currently at `0.1.0-preview.5`.
+  `Ether.DesignSystem.Interactions`, all currently at `0.1.0-preview.6`.
 
 External consumer verification has proven that referencing only the three Ether packages
 above is sufficient; you do **not** need to explicitly reference `Microsoft.WindowsAppSDK`
@@ -107,9 +107,9 @@ the following key configuration (keep any other settings the template already re
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ether.DesignSystem.Foundation" Version="0.1.0-preview.5" />
-    <PackageReference Include="Ether.DesignSystem.Controls" Version="0.1.0-preview.5" />
-    <PackageReference Include="Ether.DesignSystem.Interactions" Version="0.1.0-preview.5" />
+    <PackageReference Include="Ether.DesignSystem.Foundation" Version="0.1.0-preview.6" />
+    <PackageReference Include="Ether.DesignSystem.Controls" Version="0.1.0-preview.6" />
+    <PackageReference Include="Ether.DesignSystem.Interactions" Version="0.1.0-preview.6" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 </Project>
@@ -371,12 +371,17 @@ expected parameter.
 
 **EtherProgressBar** (`Views/DataDisplay/ProgressBarPage.xaml`):
 ```xml
+<!-- Leave ValueContent unset for the built-in synced percent of [Minimum, Maximum]. -->
 <ether:EtherProgressBar HorizontalAlignment="Stretch"
                         Title="Package download"
-                        ValueContent="65%"
                         Value="65"
                         AutomationProperties.Name="Package download progress" />
 ```
+
+The value label follows the same order as `EtherSteeringBar`: an explicit `ValueContent` is shown
+verbatim (a static string does **not** track `Value`); otherwise a `ValueContentConverter`
+(`IValueConverter`) formats the live `Value`; otherwise the built-in percent. Prefer a
+`ValueContentConverter` over a static `ValueContent` when you want custom-but-synced text.
 
 **Bind data:** `Value`, `Title`, `ValueContent`, `ShowTitle`, `ShowValue` are all `OneWay`-friendly
 display properties (`EtherProgressBar.cs:60-93`):
@@ -607,15 +612,31 @@ Proven at `R2.cs:378, 388-398` (`VerifyButtonCommand`).
 
 **EtherSteeringBar** (`Views/Controls/SteeringBarPage.xaml`):
 ```xml
+<!-- Leave ValueContent unset: the value label shows the built-in percent of
+     [Minimum, Maximum] and stays in sync as Value changes. -->
 <ether:EtherSteeringBar HorizontalAlignment="Stretch"
                         Title="Package playback"
-                        ValueContent="65%"
                         Value="65"
                         AutomationProperties.Name="Package steering bar"/>
 ```
 
+**The value label** resolves in this order: an explicit `ValueContent` is shown **verbatim** (you own
+it — a static string like `ValueContent="65%"` will NOT track `Value`); otherwise a
+`ValueContentConverter` formats the live `Value`; otherwise the built-in percent. To customize the
+text while keeping it synced, set a `ValueContentConverter` (an `IValueConverter`), not a static
+`ValueContent` — this mirrors `Slider.ThumbToolTipValueConverter`. The converter's value is `Value`
+and its parameter is the control (so it can read `Minimum`/`Maximum`):
+```xml
+<Page.Resources><local:DecibelConverter x:Key="DecibelConverter"/></Page.Resources>
+...
+<ether:EtherSteeringBar Value="{x:Bind ViewModel.Playback, Mode=TwoWay}"
+                        ValueContentConverter="{StaticResource DecibelConverter}"
+                        HorizontalAlignment="Stretch"/>
+```
+
 **Bind data:** `Value` TwoWay, plus `StepFrequency`, `Stops`, `SnapToStops` for stepped/snapped
-ranges:
+ranges. If you want the label bound instead of converter-driven, bind `ValueContent` OneWay to a
+view-model text property that you update on `ValueChanged`:
 ```xml
 <ether:EtherSteeringBar Value="{x:Bind ViewModel.Playback, Mode=TwoWay}"
                         Title="Playback" ValueContent="{x:Bind ViewModel.PlaybackText, Mode=OneWay}"
