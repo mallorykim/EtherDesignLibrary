@@ -31,6 +31,9 @@ try {
         "-p:Platform=$platform",
         '-p:GenerateAppxPackageOnBuild=true',
         '-p:AppxPackageSigningEnabled=false',
+        # No symbol package for this test fixture: avoids the benign "mspdbcmf.exe could not be
+        # found" warning on CI runners without full MSVC tooling.
+        '-p:AppxSymbolPackageEnabled=false',
         '-p:EtherDesignSystemFoundationIncludeHostRootFonts=false'
     )
 
