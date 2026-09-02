@@ -1,50 +1,52 @@
-# 接入 Ether Design System（内部团队）
+# Integrating the Ether Design System (Internal Teams)
 
-本文面向公司内部 WinUI 3 应用团队。当前发布线为预览版
-`0.1.0-preview.1`，仅通过私有 GitHub Packages 分发；不要将包或 PAT
-配置公开到外部仓库。
+This document is for internal company WinUI 3 application teams. The current release line
+is the preview `0.1.0-preview.1`, distributed only through private GitHub Packages; do not
+expose the package or PAT configuration in an external repository.
 
-## 已验证的支持范围
+## Verified support scope
 
-- 目标框架：`net8.0-windows10.0.19041.0`
-- 最低 Windows 平台版本：`10.0.17763.0`
-- 架构：仅 `x64`
-- 宿主：已验证 unpackaged 与 packaged（MSIX **构建/产出**）两种形态；
-  MSIX 的**安装与运行时**尚未验证，仍不完整。
-- 包：`Ether.DesignSystem.Foundation`、`Ether.DesignSystem.Controls`、
-  `Ether.DesignSystem.Interactions`，当前均使用 `0.1.0-preview.1`。
+- Target framework: `net8.0-windows10.0.19041.0`
+- Minimum Windows platform version: `10.0.17763.0`
+- Architecture: `x64` only
+- Hosting: both unpackaged and packaged (MSIX **build/output**) forms have been verified;
+  MSIX **installation and runtime** have not yet been verified and remain incomplete.
+- Packages: `Ether.DesignSystem.Foundation`, `Ether.DesignSystem.Controls`, and
+  `Ether.DesignSystem.Interactions`, all currently at `0.1.0-preview.1`.
 
-外部消费者验证已证明：只显式引用上述三个 Ether 包即可；**不需要**为了
-使用 Ether 而额外显式引用 `Microsoft.WindowsAppSDK`。如果应用本身已经引用
-它，也受支持。
+External consumer verification has proven that referencing only the three Ether packages
+above is sufficient; you do **not** need to explicitly reference `Microsoft.WindowsAppSDK`
+just to use Ether. If your application already references it, that is also supported.
 
-## 1. 配置 GitHub Packages 访问
+## 1. Configuring GitHub Packages access
 
-### 创建并保管 PAT
+### Create and store a PAT
 
-GitHub Packages 即使在同一组织内也要求认证。为 restore 准备一个拥有
-`read:packages` 权限的 PAT，并将其作为秘密保管；不要把 PAT 明文写进仓库、
-`nuget.config` 或日志。
+GitHub Packages requires authentication even within the same organization. Prepare a PAT
+with `read:packages` permission for restore, and keep it as a secret; do not write the PAT
+in plaintext into the repository, `nuget.config`, or logs.
 
-以下是 GitHub classic PAT 的常用创建路径：GitHub **Settings** →
+The typical path to create a GitHub classic PAT is: GitHub **Settings** →
 **Developer settings** → **Personal access tokens** → **Tokens (classic)** →
-**Generate new token (classic)**，勾选 `read:packages`。若组织启用了 SSO，
-还需要按组织策略授权该 token。
+**Generate new token (classic)**, and check `read:packages`. If your organization has SSO
+enabled, you will also need to authorize the token according to your organization's policy.
 
-> 注意：仓库的外部消费者脚本验证了包 restore/build/runtime 与资源合并，
-> 但不会连接真实 GitHub Packages，也不会代替组织的 PAT 发放或 SSO 流程。上
-> 述 token 创建界面和 SSO 步骤需以贵组织当前 GitHub 策略为准。
+> Note: the repository's external-consumer script verifies package restore/build/runtime
+> and resource merging, but it does not connect to real GitHub Packages and does not
+> replace your organization's PAT issuance or SSO process. The token creation UI and SSO
+> steps above should follow your organization's current GitHub policy.
 
-在当前 PowerShell 会话中设置凭据（不要把真实 token 粘进脚本文件）：
+Set the credentials in the current PowerShell session (do not paste the real token into a
+script file):
 
 ```powershell
-$env:GITHUB_PACKAGES_USERNAME = '<你的 GitHub 用户名>'
-$env:GITHUB_PACKAGES_PAT = '<拥有 read:packages 的 PAT>'
+$env:GITHUB_PACKAGES_USERNAME = '<your GitHub username>'
+$env:GITHUB_PACKAGES_PAT = '<a PAT with read:packages>'
 ```
 
-在解决方案根目录创建或更新 `nuget.config`。将 `<PACKAGE_OWNER>` 替换为
-**发布这些包的 GitHub 组织或用户**，不是仓库名；请从发布公告或包管理员处
-获取准确值。
+Create or update `nuget.config` at the root of your solution. Replace `<PACKAGE_OWNER>`
+with **the GitHub organization or user that publishes these packages**, not the repository
+name; get the exact value from the release announcement or the package administrator.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -67,20 +69,23 @@ $env:GITHUB_PACKAGES_PAT = '<拥有 read:packages 的 PAT>'
 </configuration>
 ```
 
-`ClearTextPassword` 在这里保存的是环境变量引用，而不是 token 本身。不要将
-替换后的真实 PAT 提交到 Git。真实 GitHub feed、包所有者和组织认证尚未由本
-仓库的外部消费者脚本端到端演练；它使用本地 feed 验证包消费。因此首次接入应
-以发布团队提供的 owner 与组织认证要求为准。
+`ClearTextPassword` here holds an environment-variable reference, not the token itself. Do
+not commit the substituted, real PAT to Git. The real GitHub feed, package owner, and
+organization authentication have not yet been exercised end-to-end by this repository's
+external-consumer script; it verifies package consumption against a local feed instead. For
+your first integration, therefore, defer to the owner and organization authentication
+requirements provided by the publishing team.
 
-## 2. 最小 WinUI 3 应用
+## 2. A minimal WinUI 3 application
 
-以下项目属性、三包引用、`App.xaml` 资源合并和控件 XAML 均从
-[`scripts/Verify-ExternalConsumer.ps1`](../../scripts/Verify-ExternalConsumer.ps1)
-的成功变体 A 提炼。该变体以**仅三个 Ether 包**完成 restore、x64 build 和
-运行时标记验证。
+The project properties, three package references, `App.xaml` resource merging, and control
+XAML below are all distilled from the successful Variant A of
+[`scripts/Verify-ExternalConsumer.ps1`](../../scripts/Verify-ExternalConsumer.ps1). That
+variant completes restore, x64 build, and runtime marker verification using **only the three
+Ether packages**.
 
-从 WinUI 3 应用模板创建项目后，将项目文件调整为以下关键配置（保留模板已经
-需要的其他设置即可）：
+After creating a project from the WinUI 3 application template, adjust the project file to
+the following key configuration (keep any other settings the template already requires):
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -110,9 +115,9 @@ $env:GITHUB_PACKAGES_PAT = '<拥有 read:packages 的 PAT>'
 </Project>
 ```
 
-`UseWinUI` 和 `EnableMsixTooling` 是已验证消费者项目的一部分，即使该示例
-是 unpackaged 宿主也应保留。项目根目录的 `app.manifest` 可使用验证项目中
-的同款内容：
+`UseWinUI` and `EnableMsixTooling` are part of the verified consumer project and should be
+kept even though this example is an unpackaged host. The `app.manifest` at the project root
+can use the same content as the verification project:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -125,10 +130,11 @@ $env:GITHUB_PACKAGES_PAT = '<拥有 read:packages 的 PAT>'
 </assembly>
 ```
 
-### 必须合并资源字典
+### Resource dictionaries you must merge
 
-在 `App.xaml` 中合并 WinUI 标准资源和 Ether 的资源入口。漏掉第二项时，控件
-的样式、资源或打包资源路径不会被正确解析。
+Merge both the standard WinUI resources and Ether's resource entry point in `App.xaml`.
+Omitting the second one causes control styles, resources, or packaged resource paths to
+fail to resolve correctly.
 
 ```xml
 <Application
@@ -146,9 +152,9 @@ $env:GITHUB_PACKAGES_PAT = '<拥有 read:packages 的 PAT>'
 </Application>
 ```
 
-### 使用控件
+### Using the controls
 
-在页面或窗口 XAML 中使用新的公开命名空间：
+Use the newly public namespace in your page or window XAML:
 
 ```xml
 <Window
@@ -181,11 +187,12 @@ $env:GITHUB_PACKAGES_PAT = '<拥有 read:packages 的 PAT>'
 </Window>
 ```
 
-`xmlns:ether="using:Ether.DesignSystem.Controls"` 必须与上面的文本完全一致；
-不要使用旧的 `EtherSandbox.Controls` 命名空间。
+`xmlns:ether="using:Ether.DesignSystem.Controls"` must match the text above exactly; do not
+use the old `EtherSandbox.Controls` namespace.
 
-对应的最小启动代码如下。验证脚本使用相同的 `MainWindow` 创建与激活路径，
-只额外包裹了运行时结果标记逻辑。
+The corresponding minimal startup code is below. The verification script uses the same
+`MainWindow` creation and activation path, with only extra wrapping for runtime result
+marker logic.
 
 ```csharp
 // App.xaml.cs
@@ -219,44 +226,51 @@ public sealed partial class MainWindow : Window
 }
 ```
 
-然后执行：
+Then run:
 
 ```powershell
 dotnet restore --configfile .\nuget.config
 dotnet build -c Debug -p:Platform=x64
 ```
 
-## 3. 故障排查
+## 3. Troubleshooting
 
-| 症状 | 常见原因 | 处理方式 |
+| Symptom | Common cause | Resolution |
 | --- | --- | --- |
-| `401` / `403` | PAT 缺失、过期、没有 `read:packages`，或组织 SSO 未授权 | 重新设置环境变量，确认 PAT 的 `read:packages` 权限；若组织使用 SSO，请按组织要求授权 token。 |
-| `404` | GitHub Packages 源的 owner 段写错，或包 ID / 版本不存在 | 核对 `https://nuget.pkg.github.com/<PACKAGE_OWNER>/index.json` 中的 owner，以及三个包 ID 和发布版本。不要把仓库名填到 owner 位置。 |
-| `NU1301` | feed 无法访问：网络/代理策略阻断，或源地址错误 | 在浏览器或组织网络环境确认该 feed 可达；核对 `nuget.config` 的 URL、代理和证书策略，再重新 restore。 |
-| 重新打包后消费者仍像在用旧代码；`restore` 成功但 build 出现旧命名空间等错误 | NuGet 按 **包 ID + 版本号** 缓存；复用已发布的版本会静默命中旧包 | 正确处理是发布新版本，并在 `PackageReference` 中升级版本。仅用于本机排障时，可由 `dotnet nuget locals global-packages --list` 找到全局目录后，删除**仅该包 ID / 旧版本**的目录；不要清空整个 NuGet 缓存。 |
-| `XamlParseException`，或 `ms-appx:///Ether.DesignSystem.Controls/...` 资源找不到 | 未合并 `DesignSystem.xaml`，或 URI 拼写错误 | 将 `XamlControlsResources` 和 `ms-appx:///Ether.DesignSystem.Controls/Themes/DesignSystem.xaml` 一起放入 `App.xaml` 的 `ResourceDictionary.MergedDictionaries`，然后清理并重新 build。 |
-| `WMC0001: Unknown type 'EtherButton'` | `xmlns` 使用了错误命名空间，或包没有正确 restore | 使用 `xmlns:ether="using:Ether.DesignSystem.Controls"`；确认 restore 成功且 `Ether.DesignSystem.Controls` 的版本存在于 assets 文件。 |
-| restore 成功，但装到的不是 Ether 包（例如同名的公共 nuget.org 包，或版本内容对不上预期） | `nuget.config` 里 `github-ether` 与 `nuget.org` 两个源共存，任一源解析失败或搜索顺序意外时，NuGet 可能从**另一个源**满足同名包 ID | 在 `project.assets.json` 或 restore 日志中核对每个 Ether 包 ID 实际解析到的源（`source` 字段）是否为 `github-ether`；长期做法是给 `nuget.config` 加 [package source mapping](https://learn.microsoft.com/en-us/nuget/consume-packages/package-source-mapping)，把 `Ether.DesignSystem.*` 显式钉死到 `github-ether`，把其余包 ID 钉死到 `nuget.org`，避免任一源意外满足另一源的包名。 |
+| `401` / `403` | PAT is missing, expired, lacks `read:packages`, or organization SSO is not authorized | Reset the environment variables and confirm the PAT has `read:packages` permission; if your organization uses SSO, authorize the token per your organization's requirements. |
+| `404` | The owner segment of the GitHub Packages source is wrong, or the package ID / version does not exist | Verify the owner in `https://nuget.pkg.github.com/<PACKAGE_OWNER>/index.json`, as well as the three package IDs and published version. Do not put the repository name in the owner position. |
+| `NU1301` | The feed is unreachable: blocked by network/proxy policy, or the source URL is wrong | Confirm the feed is reachable from a browser or your organization's network environment; verify the URL, proxy, and certificate policy in `nuget.config`, then restore again. |
+| After a repackage, the consumer still appears to run the old code; `restore` succeeds but the build reports errors such as an unresolved old namespace | NuGet caches by **package ID + version number**; reusing an already-published version silently hits the old package | The correct fix is to publish a new version and upgrade the version in `PackageReference`. For local troubleshooting only, you can locate the global directory with `dotnet nuget locals global-packages --list` and delete **only that package ID / old version's** directory; do not clear the entire NuGet cache. |
+| `XamlParseException`, or the `ms-appx:///Ether.DesignSystem.Controls/...` resource cannot be found | `DesignSystem.xaml` was not merged, or the URI is misspelled | Put both `XamlControlsResources` and `ms-appx:///Ether.DesignSystem.Controls/Themes/DesignSystem.xaml` into `App.xaml`'s `ResourceDictionary.MergedDictionaries`, then clean and rebuild. |
+| `WMC0001: Unknown type 'EtherButton'` | `xmlns` uses the wrong namespace, or the package did not restore correctly | Use `xmlns:ether="using:Ether.DesignSystem.Controls"`; confirm restore succeeded and the `Ether.DesignSystem.Controls` version is present in the assets file. |
+| Restore succeeds, but the package installed is not the Ether package (e.g. a public nuget.org package with the same name, or the version content does not match expectations) | `nuget.config` has both the `github-ether` and `nuget.org` sources present; if either source fails to resolve or the search order behaves unexpectedly, NuGet may satisfy the same package ID from **the other source** | Check in `project.assets.json` or the restore log whether each Ether package ID actually resolved from the `github-ether` source (the `source` field); the long-term fix is to add [package source mapping](https://learn.microsoft.com/en-us/nuget/consume-packages/package-source-mapping) to `nuget.config`, explicitly pinning `Ether.DesignSystem.*` to `github-ether` and the remaining package IDs to `nuget.org`, to avoid one source unexpectedly satisfying the other source's package name. |
 
-## 4. 已知边界
+## 4. Known boundaries
 
-- 仅支持 `x64`。请将应用构建为 `x64`，不要把 x86 或 ARM64 当作受支持目标。
-- 当前版本是 preview，公开 API、样式和资源契约仍可能变化。升级前请阅读对应
-  发布说明并在应用中回归关键页面。
+- Only `x64` is supported. Build your application as `x64`; do not treat x86 or ARM64 as
+  supported targets.
+- The current version is a preview; the public API, styles, and resource contracts may still
+  change. Before upgrading, read the corresponding release notes and regression-test key
+  pages in your application.
 
-### 4.1 继承自基类、但 Ether 模板不消费的属性
+### 4.1 Properties inherited from the base class but not consumed by Ether templates
 
-下表里的属性都**继承自 WinUI 基类、对外公开、编译通过、运行不报错**——但
-Ether 的自定义模板完全不引用它们，所以设置之后**界面上什么也不会发生**（对
-`EtherDropdown.Text` / `IsEditable` 而言，是连功能也不会发生）。这不是文档
-单方面的说法：`scripts/Verify-UnsupportedProperties.ps1` 以
-`scripts/UnsupportedProperties.psd1`（唯一事实来源）为准，逐条断言对应模板
-文件里确实没有消费这个属性；这张表也从同一份文件生成/校验，二者不会各写各的。
+The properties in the table below are all **inherited from a WinUI base class, publicly
+exposed, compile cleanly, and run without error** — but Ether's custom templates do not
+reference them at all, so setting them **produces no visible effect on screen** (for
+`EtherDropdown.Text` / `IsEditable`, not even functionally). This is not a one-sided claim
+made only by the documentation: `scripts/Verify-UnsupportedProperties.ps1` treats
+`scripts/UnsupportedProperties.psd1` (the single source of truth) as authoritative and
+asserts, property by property, that the corresponding template file genuinely does not
+consume that property; this table is also generated from and validated against that same
+file, so the two can never drift apart.
 
-这些属性目前**不会**在设置时抛异常或给出运行时提示——它们只是不显示内容，
-不是显示错误的内容。`EtherCheckbox` / `EtherRadioButton` 是有意设计的两态控件：
-`IsChecked=null` 会被强制为 `false`，`IsThreeState=true` 会被强制回 `false`；
-请不要依赖 Indeterminate 状态。下面的表只列出真正不支持或静默无效的继承属性。
+These properties currently **do not** throw an exception or give a runtime warning when
+set — they simply display nothing, rather than displaying something wrong. `EtherCheckbox` /
+`EtherRadioButton` are deliberately two-state controls: `IsChecked=null` is coerced to
+`false`, and `IsThreeState=true` is coerced back to `false`; do not rely on an Indeterminate
+state. The table below lists only inherited properties that are genuinely unsupported or
+silently ineffective.
 
 <!-- UNSUPPORTED-PROPERTIES:START -->
 | 控件 | 属性 | 继承自 | 替代做法 |
@@ -272,46 +286,54 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
 | `EtherInput` | `Description` | `TextBox` | 同 `Header`：在控件下方另放一个 `TextBlock`。 |
 <!-- UNSUPPORTED-PROPERTIES:END -->
 
-> 说明：`ToggleSwitch` 在当前使用的 `Microsoft.WindowsAppSDK 2.3.1` 里**没有**
-> `Description` 属性（已用反射确认：`Microsoft.UI.Xaml.Controls.ToggleSwitch`
-> 只有 `Header` / `HeaderTemplate`，没有 `Description`），因此上表没有列出
-> `EtherSwitch.Description` 这一行——它连"存在但无效的属性"都不是，是根本不
-> 存在的属性。
-- `Ether.DesignSystem.Controls.Primitives.HandContentControl` 虽因 XAML 资源解析
-  而公开，但它是模板实现支撑类型，不是受支持的设计系统控件契约；请使用命名的
-  `Ether*` 控件。
-- Controls 与 Foundation 在当前 preview 发布线按同一版本使用；升级时应一起升级
-  两者。Interaction 包也应与发布公告给出的版本组合保持一致。
-- 除上表这 9 个属性外，各控件还继承了大量 WinUI 基类属性。其中多数确实是
-  外观类属性（`Background` / `BorderBrush` / `BorderThickness` / `CornerRadius` /
-  `Padding` / `Foreground` / `FontSize` 等）——这些是**设计系统故意不开放覆盖**
-  的：控件模板固定引用设计令牌而非 `{TemplateBinding ...}`，为的是让所有消费方
-  看到一致的视觉语言，"设置了没反应"是特性而不是遗漏。但**并非全部如此**：还有
-  一部分属性模板其实做了 `{TemplateBinding ...}`（只是画面探针在其测试条件下
-  没能测出像素差异——例如 `EtherInput.PlaceholderText` 只在控件为空且未获焦时
-  渲染），或由 WinUI 基类在模板之外自行处理（例如 `TextBox` 的 `AcceptsReturn`
-  / `IsReadOnly` / `CharacterCasing`）——这些属性其实是**生效的**，不应被当成
-  "不支持"。以上区分（连同少数确认无效的底层平台属性，如 `Clip` /
-  `CompositeMode`），完整登记在 `scripts/UnsupportedProperties.psd1` 的
-  `AcknowledgedSilent` 列表中，按 `design-system-owned`（确认未绑定，故意锁定）/
-  `consumed-visually-stable`（确认已绑定，只是探针未测出像素差异）/
-  `behavioral`（基类行为生效，不可用像素差异测试）/ `platform-noop`（底层平台
-  DP，无消费方期待）/ `needs-review`（尚不确定，待人工复核）五类归档，每条都附
-  `Reason`。`local-runtime` 门禁 `scripts/Verify-SilentPropertyCoverage.ps1` 针对
-  每次运行时证据自动双向核对（新出现的、未登记的静默失效属性会让门禁失败），
-  并额外做 `TemplateBinding` 交叉检查确保 `design-system-owned` /
-  `consumed-visually-stable` 的标签本身没有标错。
+> Note: `ToggleSwitch` in the currently used `Microsoft.WindowsAppSDK 2.3.1` **does not
+> have** a `Description` property (confirmed via reflection: `Microsoft.UI.Xaml.Controls.
+> ToggleSwitch` only has `Header` / `HeaderTemplate`, no `Description`), so the table above
+> does not list an `EtherSwitch.Description` row — it is not even an "existing but
+> ineffective property"; it is a property that does not exist at all.
+- `Ether.DesignSystem.Controls.Primitives.HandContentControl` is public because XAML
+  resource resolution requires it, but it is a supporting type for template implementation,
+  not a supported design-system control contract; use the named `Ether*` controls instead.
+- Controls and Foundation are used at the same version on the current preview release line;
+  upgrade both together. The Interactions package should also stay aligned with the version
+  combination given in the release announcement.
+- Beyond the 9 properties in the table above, each control also inherits a large number of
+  WinUI base-class properties. Most of these are indeed appearance-related properties
+  (`Background` / `BorderBrush` / `BorderThickness` / `CornerRadius` / `Padding` /
+  `Foreground` / `FontSize`, etc.) — the design system **deliberately does not allow these to
+  be overridden**: control templates reference design tokens directly instead of
+  `{TemplateBinding ...}`, so that every consumer sees a consistent visual language;
+  "setting it has no effect" is a feature, not an omission. But **that is not the whole
+  story**: some properties' templates actually do use `{TemplateBinding ...}` (the visual
+  probe simply failed to detect a pixel difference under its test conditions — for example,
+  `EtherInput.PlaceholderText` only renders when the control is empty and unfocused), or are
+  handled by the WinUI base class outside the template (for example `TextBox`'s
+  `AcceptsReturn` / `IsReadOnly` / `CharacterCasing`) — these properties actually **do take
+  effect** and should not be treated as "unsupported". This distinction (together with a
+  small number of confirmed-ineffective low-level platform properties, such as `Clip` /
+  `CompositeMode`) is fully recorded in the `AcknowledgedSilent` list of
+  `scripts/UnsupportedProperties.psd1`, filed into five categories — `design-system-owned`
+  (confirmed unbound, deliberately locked), `consumed-visually-stable` (confirmed bound, the
+  probe just did not detect a pixel difference), `behavioral` (base-class behavior takes
+  effect, cannot be tested by pixel difference), `platform-noop` (a low-level platform DP
+  with no consumer expectation), and `needs-review` (not yet certain, pending manual review)
+  — each with an attached `Reason`. The `local-runtime` gate
+  `scripts/Verify-SilentPropertyCoverage.ps1` automatically cross-checks every run's runtime
+  evidence in both directions (a newly appearing, unregistered silently-ineffective property
+  fails the gate), and additionally performs a `TemplateBinding` cross-check to make sure the
+  `design-system-owned` / `consumed-visually-stable` labels themselves are not mislabeled.
 
-## 5. 各控件标记参考
+## 5. Per-control markup reference
 
-下面每个控件给出一段可以直接复制的标记示例，取自
-[`tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml`](../../tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml)
-的 `*Proof` 元素——这些标记是仓库外消费者验证（A1/A4）实际运行过的形态，与
-`samples/Ether.DesignSystem.Gallery` 对应页面的写法一致。命名空间前缀在示例中
-省略，按第 2 节声明 `xmlns:ether="using:Ether.DesignSystem.Controls"` 后把
-`controls:` 换成你自己的前缀即可。
+Below, each control has a copy-paste-ready markup sample, taken from the `*Proof` elements
+in [`tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml`](../../tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml)
+— this is the exact markup shape actually exercised by the out-of-repo consumer verification
+(A1/A4), and it matches the corresponding page in `samples/Ether.DesignSystem.Gallery`. The
+namespace prefix is omitted in the samples; after declaring
+`xmlns:ether="using:Ether.DesignSystem.Controls"` per §2, just replace `controls:` with your
+own prefix.
 
-**EtherButton**（对应 Gallery `Views/Controls/ButtonPage.xaml`）：
+**EtherButton** (matches Gallery `Views/Controls/ButtonPage.xaml`):
 ```xml
 <ether:EtherButton Content="Package button"
                    AutomationProperties.Name="Package button" />
@@ -319,9 +341,6 @@ Ether 的自定义模板完全不引用它们，所以设置之后**界面上什
                    Content="Secondary package button"
                    AutomationProperties.Name="Secondary package button" />
 ```
-
-*(English from here — this three-part pattern is new in this pass; see §6 for the full MVVM
-write-up.)*
 
 **Bind data:** `Content`/`IsEnabled` are plain WinUI `ContentControl`/`Control` properties — a
 normal `{x:Bind}` at `Mode=OneWay` is enough; there is no user-editable "selection" state to push
@@ -344,7 +363,7 @@ Proven at `tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.R2.cs:3
 (`VerifyButtonCommand`): `Command`/`CommandParameter` fire exactly once per click, with the
 expected parameter.
 
-**EtherProgressBar**（`Views/DataDisplay/ProgressBarPage.xaml`）：
+**EtherProgressBar** (`Views/DataDisplay/ProgressBarPage.xaml`):
 ```xml
 <ether:EtherProgressBar HorizontalAlignment="Stretch"
                         Title="Package download"
@@ -366,7 +385,7 @@ display properties (`EtherProgressBar.cs:60-93`):
 **Wire an action:** none. `EtherProgressBar` is a read-only status indicator with no interaction
 surface — there is nothing to "wire".
 
-**EtherCheckbox**（`Views/Controls/CheckboxPage.xaml`）：
+**EtherCheckbox** (`Views/Controls/CheckboxPage.xaml`):
 ```xml
 <ether:EtherCheckbox Content="Package checkbox"
                      AutomationProperties.Name="Package checkbox" />
@@ -392,7 +411,7 @@ Proven at `R2.cs:379, 400-412` (`VerifyToggleCommand`). Most apps only need one 
 TwoWay or `Command` — add `Command` only when something besides the bound state (telemetry, a
 save) must run on toggle.
 
-**EtherRadioButton**（`Views/Controls/RadioButtonPage.xaml`）：
+**EtherRadioButton** (`Views/Controls/RadioButtonPage.xaml`):
 ```xml
 <ether:EtherRadioButton GroupName="package-radio"
                         Content="Package radio"
@@ -419,7 +438,7 @@ but it still fires `Command`/`CommandParameter` once per selection:
 ```
 Proven at `R2.cs:384, 419-431` (`VerifySelectionItemCommand`).
 
-**EtherInput**（`Views/Controls/InputPage.xaml`）：
+**EtherInput** (`Views/Controls/InputPage.xaml`):
 ```xml
 <ether:EtherInput PlaceholderText="Package input"
                   HorizontalAlignment="Stretch"
@@ -444,7 +463,7 @@ Proven at `R2.cs:88-96` (`VerifyTwoWayBindings`).
 `OnQueryChanged` may take the standard `(object sender, TextChangedEventArgs e)` signature or no
 parameters at all — `{x:Bind}` supports both event-handler shapes.
 
-**EtherDropdown**（`Views/Controls/DropdownPage.xaml`）：
+**EtherDropdown** (`Views/Controls/DropdownPage.xaml`):
 ```xml
 <ether:EtherDropdown SelectedIndex="0"
                      HorizontalAlignment="Stretch"
@@ -477,9 +496,10 @@ business identifier — see `src/Ether.DesignSystem.Interactions/README.md:9`.
 The trigger only ever shows plain text (`DisplayMemberPath`/`ToString()`); a rich `ItemTemplate`
 renders inside the open menu only, not on the closed trigger (`EtherDropdown.cs:42-43`).
 
-**EtherSegmentedControl**（`Views/Controls/SegmentedControlPage.xaml`）——段项推荐用
-`EtherSegmentRadioButton`（套用 `EtherSegment` 样式，放进 `EtherSegmentPanel`）：具备完整
-的 hover / pressed / checked 反馈，和 Gallery 效果一致：
+**EtherSegmentedControl** (`Views/Controls/SegmentedControlPage.xaml`) — the recommended
+segment item is `EtherSegmentRadioButton` (apply the `EtherSegment` style, inside an
+`EtherSegmentPanel`): it has full hover / pressed / checked feedback, matching the Gallery's
+behavior:
 ```xml
 <ether:EtherSegmentedControl AutomationProperties.Name="Package segmented control">
     <ether:EtherSegmentPanel>
@@ -493,7 +513,8 @@ renders inside the open menu only, not on the closed trigger (`EtherDropdown.cs:
     </ether:EtherSegmentPanel>
 </ether:EtherSegmentedControl>
 ```
-普通 `RadioButton` 套用 `EtherSegment` 样式仍会显示选中态的药丸背景，但不会有 hover / pressed 反馈。
+A plain `RadioButton` with the `EtherSegment` style applied still shows the pill background
+for the checked state, but has no hover / pressed feedback.
 
 **Bind data:** the data-driven contract — `ItemsSource` + `ItemTemplate`/`DisplayMemberPath` +
 `SelectedIndex`/`SelectedItem`/`SelectedValue` (all `TwoWay`-capable). Inline
@@ -533,7 +554,7 @@ programmatic state assignment). Proven at
 user pick, zero additional executions on a programmatic `SelectedIndex` change, and zero
 executions when `CanExecute` returns `false`.
 
-**EtherTabNavigation**（`Views/Navigation/TabNavigationPage.xaml`）：
+**EtherTabNavigation** (`Views/Navigation/TabNavigationPage.xaml`):
 ```xml
 <ether:EtherTabNavigation SelectedIndex="0" AutomationProperties.Name="Package tab navigation">
     <ether:EtherTabItem Content="Overview" Icon="Home"/>
@@ -562,7 +583,7 @@ Proven at `R2.cs:168-186` (`SelectedIndex`/`SelectedItem` TwoWay) and `R2.cs:205
                           SelectionChanged="{x:Bind ViewModel.OnSectionSelectionChanged}"/>
 ```
 
-**EtherIntelligenceButton**（`Views/Controls/IntelligenceButtonPage.xaml`）：
+**EtherIntelligenceButton** (`Views/Controls/IntelligenceButtonPage.xaml`):
 ```xml
 <ether:EtherIntelligenceButton Content="Package intelligence"
                                AutomationProperties.Name="Package intelligence button"/>
@@ -578,7 +599,7 @@ work identically:
 ```
 Proven at `R2.cs:378, 388-398` (`VerifyButtonCommand`).
 
-**EtherSteeringBar**（`Views/Controls/SteeringBarPage.xaml`）：
+**EtherSteeringBar** (`Views/Controls/SteeringBarPage.xaml`):
 ```xml
 <ether:EtherSteeringBar HorizontalAlignment="Stretch"
                         Title="Package playback"
@@ -605,7 +626,7 @@ settled value:
                         ValueChanged="{x:Bind ViewModel.OnPlaybackChanged}"/>
 ```
 
-**EtherSlider**（`Views/Controls/SliderPage.xaml`）：
+**EtherSlider** (`Views/Controls/SliderPage.xaml`):
 ```xml
 <ether:EtherSlider HorizontalAlignment="Stretch"
                    Value="65"
@@ -625,8 +646,9 @@ Same `RangeBase`-derived TwoWay contract as `EtherSteeringBar` (`R2.cs:138-146` 
                    ValueChanged="{x:Bind ViewModel.OnVolumeChanged}"/>
 ```
 
-**EtherMasthead**（`Views/Navigation/MastheadPage.xaml`）——`EnableWindowCommands="False"`
-是内嵌到普通面板中演示时的写法；真实标题栏用法保留默认值：
+**EtherMasthead** (`Views/Navigation/MastheadPage.xaml`) — `EnableWindowCommands="False"` is
+used here only to demo the control embedded in a plain panel; real title-bar usage should
+keep the default value:
 ```xml
 <ether:EtherMasthead EnableWindowCommands="False"
                      AutomationProperties.Name="Package masthead"/>
@@ -649,8 +671,8 @@ executes and cannot be cancelled (`EtherMasthead.xaml.cs:120, 543/561/585`):
 The optional menu/settings/search icon slots are decorative only (no built-in click hook) — wire a
 real action via `ObserveMasthead` (§7 below) or your own icon overlay if you need one.
 
-**EtherSwitch**（`Views/Controls/ToggleSwitchPage.xaml`）——不是独立类型，是套在原生
-`ToggleSwitch` 上的样式：
+**EtherSwitch** (`Views/Controls/ToggleSwitchPage.xaml`) — not a standalone type; it is a
+style applied on top of the native `ToggleSwitch`:
 ```xml
 <ToggleSwitch Style="{StaticResource EtherSwitch}"
               IsOn="True"
@@ -675,8 +697,8 @@ Proven at `R2.cs:148-156` (`VerifyTwoWayBindings`).
               Toggled="{x:Bind ViewModel.OnNotificationsToggled}"/>
 ```
 
-**EtherCard**（`Views/Surfaces/CardPage.xaml`）——同样不是独立类型，是套在
-`Border` 上的一组样式，`Normal`/`Intelligence`/`Callout` 三种：
+**EtherCard** (`Views/Surfaces/CardPage.xaml`) — likewise not a standalone type; it is a set
+of styles applied on top of `Border`, in three variants: `Normal`/`Intelligence`/`Callout`:
 ```xml
 <Border Style="{StaticResource EtherCardNormal}">
     <Border Style="{StaticResource EtherCardNormalBody}">
@@ -691,9 +713,9 @@ type with its own dependency properties — put bound content (a title, body tex
 `Border`'s children the same way you would with a plain `Border`. There is no Ether-specific
 property to bind and no interaction surface to wire; a card is a static surface, not a control.
 
-**EtherScrollBar**（`Views/Foundations/ScrollBarPage.xaml`）——合并
-`DesignSystem.xaml` 后对原生 `ScrollBar`/`ScrollViewer` 隐式生效，不需要额外
-`Style=`：
+**EtherScrollBar** (`Views/Foundations/ScrollBarPage.xaml`) — once `DesignSystem.xaml` is
+merged, this applies implicitly to the native `ScrollBar`/`ScrollViewer`; no extra `Style=`
+is needed:
 ```xml
 <ScrollViewer Width="240" Height="200"
               VerticalScrollBarVisibility="Visible"
@@ -707,17 +729,14 @@ property to bind and no interaction surface to wire; a card is a static surface,
 position, bind the native `ScrollViewer` APIs (`ViewChanged`, `VerticalOffset`, ...) directly —
 nothing here is Ether-owned.
 
-> **persistent-only 模式**：这是常驻显示的滚动条——模板没有定义
-> `ScrollingIndicatorStates`/`NoIndicator` 等分组，因此不会像原生 `ScrollBar`
-> 那样闲置自动隐藏、hover 展开或禁用时淡出，始终以 6 px 覆盖层呈现
-> （`EtherScrollBar.xaml:10-13`）。如果应用需要 auto-hide / indicator 行为，
-> 不要依赖这份隐式样式——显式指定其他 `Style=`（原生默认样式或自定义样式）。
+> **persistent-only mode**: this is an always-visible scrollbar — the template does not
+> define groups such as `ScrollingIndicatorStates`/`NoIndicator`, so it does not auto-hide
+> when idle, expand on hover, or fade out when disabled the way a native `ScrollBar` does; it
+> is always rendered as a 6 px overlay (`EtherScrollBar.xaml:10-13`). If your application
+> needs auto-hide / indicator behavior, do not rely on this implicit style — explicitly
+> specify a different `Style=` (the native default style, or a custom one).
 
 ## 6. Binding to a view-model (MVVM patterns)
-
-*(This section, and §7 below, are in English — the rest of this document is Chinese for the
-internal team, but the patterns here are exactly what a consumer copies into their own
-view-model, so they are kept in the language the code itself uses.)*
 
 ### 6.1 `x:Bind` TwoWay to an `INotifyPropertyChanged` view-model
 
@@ -853,24 +872,28 @@ names (`order.submit.requested`), not UI event names (`click`), and supply
 `src/Ether.DesignSystem.Interactions/README.md` for the full contract, including the
 `SelectedValuePath` guidance for dropdowns.
 
-## 8. 版本纪律
+## 8. Versioning discipline
 
-发布方必须让**任何内容变化**对应新的包版本，绝不复用已经打过或发布过的版本。
-NuGet 的缓存键是包 ID 加版本号；复用版本号会让消费者（以及验证设施）在
-`restore` 成功的情况下静默拿到旧 DLL。
+Publishers must ensure that **any content change** corresponds to a new package version, and
+must never reuse a version that has already been tagged or published. NuGet's cache key is
+package ID plus version number; reusing a version number causes consumers (and verification
+infrastructure) to silently receive the old DLL even though `restore` succeeds.
 
-消费者升级时，应更新 `PackageReference` 的版本并执行 restore，而不是把清空
-缓存当作正常升级手段。清理单个本地包目录仅是定位缓存问题的应急措施，不能替代
-正确的版本发布。
+When upgrading, consumers should update the `PackageReference` version and run restore,
+rather than treating clearing the cache as a normal upgrade mechanism. Deleting a single
+local package directory is only an emergency measure for pinpointing a caching problem — it
+is not a substitute for a proper version release.
 
-## 依据与待组织确认项
+## Evidence and items pending organizational confirmation
 
-- **已实测依据**：`scripts/Verify-ExternalConsumer.ps1` 的 Variant A 使用这里的
-  三包引用、`net8.0-windows10.0.19041.0`、`x64`、`UseWinUI`、
-  `EnableMsixTooling`、两项 `App.xaml` 合并以及
-  `using:Ether.DesignSystem.Controls`；其 restore、build 与运行时标记均通过。
-- **已实测兼容项**：同一脚本的 Variant B 额外显式引用
-  `Microsoft.WindowsAppSDK` 也通过，因此已有该引用的应用无需删除它。
-- **需组织确认**：GitHub Packages 的实际 `<PACKAGE_OWNER>`、PAT 发放渠道、
-  token 是否需要 SSO 授权及代理设置不在本仓库测试范围内。首次真实 feed 接入应
-  由发布团队提供这些值并完成一次 restore 验证。
+- **Verified by test**: Variant A of `scripts/Verify-ExternalConsumer.ps1` uses the three
+  package references, `net8.0-windows10.0.19041.0`, `x64`, `UseWinUI`,
+  `EnableMsixTooling`, the two `App.xaml` merges, and `using:Ether.DesignSystem.Controls`
+  documented here; its restore, build, and runtime marker all pass.
+- **Verified compatible**: Variant B of the same script, which additionally references
+  `Microsoft.WindowsAppSDK` explicitly, also passes; so applications that already have this
+  reference do not need to remove it.
+- **Needs organizational confirmation**: the actual `<PACKAGE_OWNER>` for GitHub Packages,
+  the PAT issuance channel, whether the token needs SSO authorization, and proxy settings
+  are outside this repository's test scope. For the first real-feed integration, the
+  publishing team should provide these values and complete one restore verification.
