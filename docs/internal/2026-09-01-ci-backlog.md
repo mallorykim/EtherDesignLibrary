@@ -58,9 +58,16 @@ static-audit + fixture-pack job), so any step that shells out to dotnet must sel
   `dotnet run … --no-restore` (line 45) assumed a prior restore that this job never does. **Fixed
   2026-09-02**: dropped `--no-restore` so the smoke test self-restores. (Passed locally only because a
   dev machine already has the assets file — a local-vs-CI gap; CI is authoritative here.)
-- **WinUiConventions / HighContrastPairing / GalleryControlExample / GalleryLocalization /
-  PropertyEvidenceWording / GateManifest** — all static file-read audits; green locally, no restore gap.
-  (The DX P2 Gallery ControlExample + localization gates pass — the new data-binding demo blocks conform.)
+- **WinUiConventions / HighContrastPairing / GalleryControlExample / PropertyEvidenceWording /
+  GateManifest** — static file-read audits; confirmed green in CI (through GalleryControlExample) and/or
+  re-verified locally with reliable individual exit codes.
+- **Verify Gallery localization contract** (`Verify-GalleryLocalization.ps1`) — ❌ was the next CI failure
+  after InteractionContracts: the recently-added TabNavigation Gallery page shipped without its resw
+  entries, so `name="GalleryViewsNavigationTabNavigationPage.Title"` (and `.Description`) were missing
+  from `Strings/en-US/Resources.resw`. **Fixed 2026-09-02**: added both entries, mirroring the page's own
+  inline fallback text (`Title="Tab Navigation"`, the single-selection-navigation description). Lesson:
+  a batched local preview reported this gate green falsely (unreliable `$?` capture) — re-run each gate
+  individually for a trustworthy signal, and trust CI over a batched local sweep.
 - **Verify package consumers** (`Verify-ConsumerFixtures.ps1 -SkipSolutionBuild -SkipRuntimeSmoke`) —
   self-restores each fixture against the freshly-packed local feed (line 870) and guards staleness with
   `Assert-RestoredControlsPackageMatchesLocalFeed` (872); expected green in CI.
