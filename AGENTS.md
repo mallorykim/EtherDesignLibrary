@@ -3,6 +3,28 @@
 > Instructions for any AI agent working in this repo (Claude Code, Codex, etc.).
 > These rules override default behavior. Follow them for every task.
 
+## ⚠️ Hard rule: never re-pack the same package version
+
+When packing the design-system NuGet packages (`Ether.DesignSystem.Foundation` / `.Controls` /
+`.Interactions`), **bump the version on every content change** — `0.1.0-preview.1` → `-preview.2`
+→ `-preview.3`, and so on. **Never re-pack a changed assembly under a version number that was
+already produced.** Treat a version, once packed, as immutable.
+
+**Why (verified 2026-09-02 — do not relearn this the hard way).** NuGet's *only* identity for a
+package is its version string, and both the global cache (`~/.nuget/packages`) and every consumer
+cache by that string. Re-pack the **same** version with new content and anyone who already restored
+the old build keeps getting the **stale API** from their cache — the new members are simply
+invisible to them. This bit a real third-party consumer during package verification: the XAML
+compiler rejected `EtherSegmentedControl.ItemsSource` / `SelectedIndex` / `SelectionCommand` and
+`EtherMasthead.ActionInvoked` with `WMC0011: Unknown member`, purely because a stale
+`0.1.0-preview.1` sat in the global cache while the current package had them. The same trap also
+silently blocks the unsigned-MSIX gate (`CS0246` for a control that exists).
+
+- **Publishing:** increment the version for every publish. A published/consumed version is frozen forever.
+- **Local verification with a fixed pre-release version:** clear the stale copies first —
+  `rm -rf ~/.nuget/packages/ether.designsystem.{controls,foundation,interactions}/<version>` — or
+  restore into an isolated `--packages` cache (the way `scripts/Verify-ConsumerFixtures.ps1` does).
+
 ## Core principle: Reuse the official WinUI skeleton — reskin, don't rewrite
 
 Every component in this library is a WinUI 3 control that should **behave identically to its
