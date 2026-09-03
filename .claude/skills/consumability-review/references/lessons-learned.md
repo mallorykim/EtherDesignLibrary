@@ -42,6 +42,28 @@ returns **null** (not empty) when nothing is selected → select something befor
 - **Product bug** or **golden-image truth** or **acceptance-criteria change**: STOP and surface it for
   a decision. Don't force-fix, don't fit the gate.
 
+## A green harness can still hide a real bug — run the external consumer for XAML paths
+`Verify-ConsumerFixtures.ps1` drives controls in **code** and sets state AFTER the control + its content
+already exist — so a control can be fully green there and still be broken for the pattern a real
+consumer actually writes: **a property set as a XAML attribute, applied BEFORE the content child**.
+`scripts/Verify-ExternalConsumer.ps1` is the truest consumer sim (`dotnet add package` + real XAML
+markup in MainWindow.xaml) and catches exactly this; it is **NOT in `.github/workflows/build.yml`**, so
+nothing runs it unless you do. Run it whenever the audit touches markup-set state. (It self-packs a
+fresh local feed, clears the global NuGet cache for the id, and hash-verifies the restored DLL, so it
+always tests current source — not a stale cached package.)
+
+Proven 2026-09-03: `<EtherSegmentedControl SelectedValue="beta">` was silently cleared to null — the
+attribute is applied before the panel child, so the property-changed callback fired with `_segments`
+empty, matched nothing, and `ApplySelection(null)` coerced the DP back to default. The green harness
+never saw it (it set selection in code, after content); it was pre-existing for weeks. Fix pattern:
+defer the selection apply while the items aren't realized, and let the wire-up re-apply the preserved
+value once they are.
+
+So for any selection / collection / ItemsControl-like control: add a fixture that sets the property
+**before** the content and asserts it round-trips (see `VerifyDataPaths`), AND run the external
+consumer. A green harness is only as good as the paths it exercises — name the coverage gap, don't
+trust the green.
+
 ## Process realities
 - **One failure per run.** The harness aborts at the first failure, so issues come out serially — a
   clean run can still hide the next problem behind the one you just fixed. Budget for a few cycles;

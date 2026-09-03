@@ -23,7 +23,10 @@ A property passes only if all hold. Inherited platform DPs inherit their pass; p
 
 ## Review A — per-control contracts (beyond individual properties)
 - **C1 — data/collection controls accept data**: `ItemsSource` + `DisplayMemberPath`/`DataTemplate` +
-  a selection API that round-trips.
+  a selection API that round-trips — and it must round-trip **both** ways: set in code after the content
+  exists AND set as a XAML attribute *before* the content child (the real consumer's markup order). The
+  latter is the easy one to miss; prove it with a fixture that sets the property before the content, and
+  run `Verify-ExternalConsumer.ps1` (see `lessons-learned.md`).
 - **C2 — interactions are listenable + backend-wireable**: raises a public event (native or custom),
   reachable through `ControlInteractionAdapter.Observe…` producing an `InteractionEvent` envelope.
 - **C3 — commands** where the base supports it (`Command`/`CommandParameter`).

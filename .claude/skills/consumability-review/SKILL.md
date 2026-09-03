@@ -73,6 +73,9 @@ the audit + remediation to green.
    reaches `{"marker":"ETHER_CONSUMER_SMOKE","outcome":"success"}`. The run mechanics, baseline-
    regeneration review, and acceptance-constant reconciliation are in `references/remediation-to-green.md`.
    **The gotchas that will otherwise cost you hours are in `references/lessons-learned.md` — read it.**
+   When the audit touches anything a consumer sets in **XAML markup** (selection, attribute-set state),
+   ALSO run `scripts/Verify-ExternalConsumer.ps1` — the ConsumerFixtures harness drives controls in code
+   and can be green while the real markup path is broken (see `lessons-learned.md`).
 
 5. **Commit** in logical groups when the user asks: product (`src/`), harness (`tests/` + `scripts/`
    + curated baselines), docs (`docs/`).
