@@ -251,6 +251,21 @@ internal static partial class RuntimeVerification
             preContentIndex.UpdateLayout();
             Assert(preContentIndex.SelectedIndex == 1 && Equals(preContentIndex.SelectedValue, "beta"), "EtherSegmentedControl discarded a SelectedIndex set before its inline content was assigned (XAML-attribute order).");
 
+            // Regression: a SelectedIndex set BEFORE the inline EtherTabItems (a XAML attribute ahead
+            // of the item children) must round-trip once the ListView has laid out. EtherTabNavigation
+            // is a bare ListView subclass with no custom selection code; verified 2026-09-03 that this
+            // resolves to 1 after a layout pass (the external consumer's Loaded+100ms window is simply
+            // too early for ListView inline-item selection realization - not a product defect).
+            var preInlineTab = new EtherTabNavigation();
+            preInlineTab.SelectedIndex = 1;
+            preInlineTab.Items.Add(new EtherTabItem { Content = "Home" });
+            preInlineTab.Items.Add(new EtherTabItem { Content = "Settings" });
+            preInlineTab.Items.Add(new EtherTabItem { Content = "About" });
+            scratch.Children.Add(preInlineTab);
+            preInlineTab.ApplyTemplate();
+            preInlineTab.UpdateLayout();
+            Assert(preInlineTab.SelectedIndex == 1, "EtherTabNavigation did not round-trip a SelectedIndex set before its inline items after layout.");
+
             return new DataPathVerification(
                 tabNavigation.Items.Count,
                 panel.Children.Count,

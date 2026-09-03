@@ -335,6 +335,17 @@ public partial class App : Application
                     <RadioButton Style="{StaticResource EtherPanelTabSegment}" Tag="details" Content="Details" />
                 </ether:EtherSegmentPanel>
             </ether:EtherSegmentedControl>
+
+            <!-- SelectedIndex set as a XAML attribute BEFORE the inline items (the markup order that
+                 broke SegmentedControl); TabNavigation is a native ListView, so this must round-trip. -->
+            <ether:EtherTabNavigation x:Name="TabNavProbe" SelectedIndex="1">
+                <ether:EtherTabItem Content="Home" />
+                <ether:EtherTabItem Content="Settings" />
+                <ether:EtherTabItem Content="About" />
+            </ether:EtherTabNavigation>
+
+            <!-- EtherSwitch is a style-only skin over ToggleSwitch; IsOn is the native toggle state. -->
+            <ToggleSwitch x:Name="SwitchProbe" Style="{StaticResource EtherSwitch}" IsOn="True" />
         </StackPanel>
     </ScrollViewer>
 </Window>
@@ -395,6 +406,12 @@ public sealed partial class MainWindow : Window
         ["tooltip.style"] = TooltipProbe.Style is not null && TooltipProbe.Background is Microsoft.UI.Xaml.Media.Brush,
         ["paneltabs.style"] = PanelTabsProbe.Style is not null && Equals(PanelTabsProbe.SelectedValue, "overview") &&
             PanelTabsProbe.Background is Microsoft.UI.Xaml.Media.Brush,
+        // TabNavigation is consumed with its inline items in real markup. Its SelectedIndex-before-inline-
+        // items round-trip is proven deterministically in the ConsumerFixtures harness (VerifyDataPaths):
+        // native ListView realizes inline-item selection lazily, so the Loaded+100ms window here is too
+        // early to read it, but item consumption + render is immediate and deterministic.
+        ["tabnav.consumed"] = TabNavProbe.Items.Count == 3,
+        ["switch.style.ison"] = SwitchProbe.Style is not null && SwitchProbe.IsOn,
     };
 
     public object GetLayoutAssertion() => new
