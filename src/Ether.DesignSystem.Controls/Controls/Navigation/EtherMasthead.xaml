@@ -7,6 +7,15 @@
     values live in EtherMasthead* Light/Dark/HighContrast dictionaries. The
     template does not use literal hex.
 
+    The three caption buttons carry Segoe Fluent Icons font glyphs as Content
+    (E921 minimize, E922 maximize, E923 restore, E8BB close). Their hover/pressed
+    washes are translucent (AlphaBlack10/AlphaBlack20 in Light, AlphaWhite10/
+    AlphaWhite20 in Dark) with RadiusMd rounded corners, and EtherMastheadCaptionButtonStyle's
+    own VisualStateManager recolors both the wash and the glyph directly.
+    The close button overrides only its wash to the design system's translucent-red
+    AlphaDanger12 (hover) / AlphaDanger16 (pressed) token, so it reads as destructive;
+    High Contrast keeps it on SystemColorHighlightColor like the other two.
+
     Optional icon visibility and the maximize/restore glyph swap are driven
     through VisualStateManager. Caption click handling stays code-driven so
     window chrome is not rewritten onto VSM.
@@ -26,8 +35,10 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="EtherMastheadCaptionHoverBrush" ResourceKey="ActionSecondaryBgHover" />
-            <StaticResource x:Key="EtherMastheadCaptionPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
+            <SolidColorBrush x:Key="EtherMastheadCaptionHoverBrush" Color="{StaticResource AlphaBlack10}" />
+            <SolidColorBrush x:Key="EtherMastheadCaptionPressedBrush" Color="{StaticResource AlphaBlack20}" />
+            <SolidColorBrush x:Key="EtherMastheadCloseHoverBrush" Color="{StaticResource AlphaDanger12}" />
+            <SolidColorBrush x:Key="EtherMastheadClosePressedBrush" Color="{StaticResource AlphaDanger16}" />
             <StaticResource x:Key="EtherMastheadFocusBrush" ResourceKey="border/focus" />
             <StaticResource x:Key="EtherMastheadIconForegroundBrush" ResourceKey="text/primary" />
             <!-- Same color as the default icon in Light/Dark: the caption button's Hover/Pressed
@@ -39,8 +50,10 @@
             <StaticResource x:Key="EtherMastheadIconForegroundPressedBrush" ResourceKey="text/primary" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <StaticResource x:Key="EtherMastheadCaptionHoverBrush" ResourceKey="ActionSecondaryBgHover" />
-            <StaticResource x:Key="EtherMastheadCaptionPressedBrush" ResourceKey="ActionSecondaryBgPressed" />
+            <SolidColorBrush x:Key="EtherMastheadCaptionHoverBrush" Color="{StaticResource AlphaWhite10}" />
+            <SolidColorBrush x:Key="EtherMastheadCaptionPressedBrush" Color="{StaticResource AlphaWhite20}" />
+            <SolidColorBrush x:Key="EtherMastheadCloseHoverBrush" Color="{StaticResource AlphaDanger12}" />
+            <SolidColorBrush x:Key="EtherMastheadClosePressedBrush" Color="{StaticResource AlphaDanger16}" />
             <StaticResource x:Key="EtherMastheadFocusBrush" ResourceKey="border/focus" />
             <StaticResource x:Key="EtherMastheadIconForegroundBrush" ResourceKey="text/primary" />
             <StaticResource x:Key="EtherMastheadIconForegroundHoverBrush" ResourceKey="text/primary" />
@@ -49,6 +62,8 @@
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherMastheadCaptionHoverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="EtherMastheadCaptionPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherMastheadCloseHoverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="EtherMastheadClosePressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="EtherMastheadFocusBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="EtherMastheadIconForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
             <!-- Paired with CaptionHoverBrush/CaptionPressedBrush above, which repaint as an opaque
@@ -61,8 +76,10 @@
     </ResourceDictionary.ThemeDictionaries>
 
     <Style x:Key="EtherMastheadCaptionButtonStyle" TargetType="controls:EtherButton">
-        <Setter Property="Width" Value="44"/>
-        <Setter Property="Height" Value="44"/>
+        <Setter Property="Width" Value="46"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="MinWidth" Value="46"/>
+        <Setter Property="MinHeight" Value="40"/>
         <Setter Property="Padding" Value="{StaticResource Padding0}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -79,11 +96,13 @@
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="Bg.Background" Value="{ThemeResource EtherMastheadCaptionHoverBrush}"/>
+                                        <Setter Target="Glyph.Foreground" Value="{ThemeResource EtherMastheadIconForegroundHoverBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
                                         <Setter Target="Bg.Background" Value="{ThemeResource EtherMastheadCaptionPressedBrush}"/>
+                                        <Setter Target="Glyph.Foreground" Value="{ThemeResource EtherMastheadIconForegroundPressedBrush}"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
@@ -105,11 +124,84 @@
 
                         <Border x:Name="Bg"
                                 Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="{StaticResource RadiusNone}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                                CornerRadius="{StaticResource RadiusMd}">
+                            <FontIcon x:Name="Glyph"
+                                      Glyph="{TemplateBinding Content}"
+                                      FontFamily="Segoe Fluent Icons"
+                                      FontSize="10"
+                                      Foreground="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      AutomationProperties.AccessibilityView="Raw"/>
+                        </Border>
+
+                        <Border x:Name="FocusRing"
+                                Margin="-3"
+                                BorderBrush="{ThemeResource EtherMastheadFocusBrush}"
+                                BorderThickness="2"
+                                CornerRadius="{StaticResource RadiusSm}"
+                                IsHitTestVisible="False"
+                                Visibility="Collapsed"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Destructive caption button: identical to EtherMastheadCaptionButtonStyle except the
+         hover/pressed wash uses the translucent-red EtherMastheadClose* brushes. Kept as a sibling
+         style (not a per-instance Resources override) so every wash brush stays a top-level
+         component theme key, per the masthead contract. -->
+    <Style x:Key="EtherMastheadCloseButtonStyle"
+           TargetType="controls:EtherButton"
+           BasedOn="{StaticResource EtherMastheadCaptionButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="Bg.Background" Value="{ThemeResource EtherMastheadCloseHoverBrush}"/>
+                                        <Setter Target="Glyph.Foreground" Value="{ThemeResource EtherMastheadIconForegroundHoverBrush}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="Bg.Background" Value="{ThemeResource EtherMastheadClosePressedBrush}"/>
+                                        <Setter Target="Glyph.Foreground" Value="{ThemeResource EtherMastheadIconForegroundPressedBrush}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="Bg.Opacity" Value="0.4"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Focused">
+                                    <VisualState.Setters>
+                                        <Setter Target="FocusRing.Visibility" Value="Visible"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Unfocused"/>
+                                <VisualState x:Name="PointerFocused"/>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <Border x:Name="Bg"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{StaticResource RadiusMd}">
+                            <FontIcon x:Name="Glyph"
+                                      Glyph="{TemplateBinding Content}"
+                                      FontFamily="Segoe Fluent Icons"
+                                      FontSize="10"
+                                      Foreground="{ThemeResource EtherMastheadIconForegroundBrush}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      AutomationProperties.AccessibilityView="Raw"/>
                         </Border>
 
                         <Border x:Name="FocusRing"
@@ -186,16 +278,10 @@
                                 </VisualState>
                             </VisualStateGroup>
                             <VisualStateGroup x:Name="WindowStates">
-                                <VisualState x:Name="WindowRestored">
-                                    <VisualState.Setters>
-                                        <Setter Target="MaximizeIcon.Visibility" Value="Visible"/>
-                                        <Setter Target="RestoreIcon.Visibility" Value="Collapsed"/>
-                                    </VisualState.Setters>
-                                </VisualState>
+                                <VisualState x:Name="WindowRestored"/>
                                 <VisualState x:Name="WindowMaximized">
                                     <VisualState.Setters>
-                                        <Setter Target="MaximizeIcon.Visibility" Value="Collapsed"/>
-                                        <Setter Target="RestoreIcon.Visibility" Value="Visible"/>
+                                        <Setter Target="MaximizeRestoreButton.Content" Value="&#xE923;"/>
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
@@ -260,104 +346,20 @@
 
                             <controls:EtherButton x:Name="MinimizeButton"
                                                   Style="{StaticResource EtherMastheadCaptionButtonStyle}"
-                                                  AutomationProperties.Name="Minimize window">
-                                <Grid>
-                                    <Rectangle x:Name="MinimizeIcon"
-                                               Width="{StaticResource Spacing12}"
-                                               Height="1"
-                                               Fill="{ThemeResource EtherMastheadIconForegroundBrush}"
-                                               RadiusX="0.5"
-                                               RadiusY="0.5"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
-                                </Grid>
-                            </controls:EtherButton>
+                                                  Content="&#xE921;"
+                                                  AutomationProperties.Name="Minimize window"/>
 
                             <controls:EtherButton x:Name="MaximizeRestoreButton"
                                                   Style="{StaticResource EtherMastheadCaptionButtonStyle}"
-                                                  AutomationProperties.Name="Maximize window">
-                                <Grid Width="{StaticResource Spacing10}"
-                                      Height="{StaticResource Spacing10}">
-                                    <Rectangle x:Name="MaximizeIcon"
-                                               Width="{StaticResource Spacing10}"
-                                               Height="{StaticResource Spacing10}"
-                                               Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
-                                               StrokeThickness="1"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
-                                    <Grid x:Name="RestoreIcon"
-                                          Width="{StaticResource Spacing10}"
-                                          Height="{StaticResource Spacing10}"
-                                          Visibility="Collapsed">
-                                        <Rectangle x:Name="RestoreIconBack"
-                                                   Width="7"
-                                                   Height="7"
-                                                   Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
-                                                   StrokeThickness="1"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Top"/>
-                                        <Rectangle x:Name="RestoreIconFront"
-                                                   Width="7"
-                                                   Height="7"
-                                                   Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
-                                                   StrokeThickness="1"
-                                                   HorizontalAlignment="Right"
-                                                   VerticalAlignment="Bottom"/>
-                                    </Grid>
-                                </Grid>
-                            </controls:EtherButton>
+                                                  Content="&#xE922;"
+                                                  AutomationProperties.Name="Maximize window"/>
 
                             <controls:EtherButton x:Name="CloseButton"
-                                                  Style="{StaticResource EtherMastheadCaptionButtonStyle}"
-                                                  AutomationProperties.Name="Close window">
-                                <Grid Width="{StaticResource Spacing10}"
-                                      Height="{StaticResource Spacing10}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center">
-                                    <Path x:Name="CloseIconStroke1"
-                                          Data="M 0 0 L 10 10"
-                                          Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
-                                          StrokeThickness="1"
-                                          StrokeStartLineCap="Square"
-                                          StrokeEndLineCap="Square"/>
-                                    <Path x:Name="CloseIconStroke2"
-                                          Data="M 10 0 L 0 10"
-                                          Stroke="{ThemeResource EtherMastheadIconForegroundBrush}"
-                                          StrokeThickness="1"
-                                          StrokeStartLineCap="Square"
-                                          StrokeEndLineCap="Square"/>
-                                </Grid>
-                            </controls:EtherButton>
+                                                  Style="{StaticResource EtherMastheadCloseButtonStyle}"
+                                                  Content="&#xE8BB;"
+                                                  AutomationProperties.Name="Close window"/>
 
                         </StackPanel>
-
-                        <!-- Theme-resolved color swatches, read from code-behind to recolor the
-                             caption icons above on pointer state. They exist because the icons are
-                             plain Shape content hosted through EtherMastheadCaptionButtonStyle's
-                             ContentPresenter: Shape.Fill/Stroke does not participate in WinUI's
-                             Foreground property-value-inheritance the way TextElement/Control
-                             Foreground does, and a VisualState.Setter can only reach named parts
-                             within the SAME ControlTemplate that declares the state — not into a
-                             sibling control's own template (EtherMastheadCaptionButtonStyle) or
-                             into that control's Content. Reading an already-resolved {ThemeResource}
-                             brush off a live element is the standard, theme-correct way to fetch a
-                             themed brush from code (see EtherMasthead.xaml.cs pointer handlers).
-                             NOTE: an earlier attempt replaced this with a pure-XAML
-                             Setter Target="Foreground" (no ElementName, intended to target the
-                             templated Button's own Foreground property) + an ElementName Binding
-                             on the icon Shapes. That compiled but threw a runtime
-                             COMException (0x800F1000) out of VisualStateManager.GoToState the
-                             moment the PointerOver state actually needed to apply, so it does not
-                             work in this WinUI 3 version — back to swatches + code-behind. -->
-                        <Rectangle x:Name="IconForegroundDefaultSwatch"
-                                   Width="0" Height="0" Opacity="0" IsHitTestVisible="False"
-                                   Fill="{ThemeResource EtherMastheadIconForegroundBrush}"/>
-                        <Rectangle x:Name="IconForegroundHoverSwatch"
-                                   Width="0" Height="0" Opacity="0" IsHitTestVisible="False"
-                                   Fill="{ThemeResource EtherMastheadIconForegroundHoverBrush}"/>
-                        <Rectangle x:Name="IconForegroundPressedSwatch"
-                                   Width="0" Height="0" Opacity="0" IsHitTestVisible="False"
-                                   Fill="{ThemeResource EtherMastheadIconForegroundPressedBrush}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

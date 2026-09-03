@@ -7,7 +7,7 @@
 
 <views:ComponentPage x:Uid="GalleryViewsNavigationMastheadPage282"
         Title="Masthead"
-        Description="Right-aligned masthead caption controls with 44 px hit targets for minimize, maximize/restore, and close."
+        Description="Right-aligned masthead caption controls with 46 x 40 px hit targets for minimize, maximize/restore, and close."
         StatesTitle="VISUAL STATES">
 
         <views:ComponentPage.InteractiveContent>

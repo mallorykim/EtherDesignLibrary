@@ -980,7 +980,7 @@
     <value>Masthead</value>
   </data>
   <data name="GalleryViewsNavigationMastheadPage282.Description" xml:space="preserve">
-    <value>Right-aligned masthead caption controls with 44 px hit targets for minimize, maximize/restore, and close.</value>
+    <value>Right-aligned masthead caption controls with 46 x 40 px hit targets for minimize, maximize/restore, and close.</value>
   </data>
   <data name="GalleryViewsNavigationMastheadPage282.StatesTitle" xml:space="preserve">
     <value>VISUAL STATES</value>

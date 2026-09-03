@@ -207,8 +207,8 @@ internal static partial class RuntimeVerification
         string DefaultAutomationName,
         string[] LightTemplateBrushColors,
         string[] DarkTemplateBrushColors,
-        string HoverThemeTrackingLightColor,
-        string HoverThemeTrackingDarkColor,
+        string CaptionGlyph,
+        bool CaptionPointerOverStateApplied,
         bool MinimizeButtonInvokeExposed,
         bool CloseButtonInvokeExposed);
 
