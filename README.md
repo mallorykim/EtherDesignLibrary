@@ -4,7 +4,7 @@ Ether is a preview WinUI 3 design system for internal applications: reusable con
 tokens, and an optional backend-telemetry adapter, all skinned from official WinUI control
 skeletons per this repo's [AGENTS.md](AGENTS.md) rule.
 
-> **Status:** preview (`0.1.0-preview.6`), distributed **internally only** through a private
+> **Status:** preview (`0.1.0-preview.7`), distributed **internally only** through a private
 > GitHub Packages feed — not nuget.org. `x64` only. See
 > [`docs/consumers/getting-started.md`](docs/consumers/getting-started.md) for full setup,
 > troubleshooting, and per-control reference; this file is a short map and quick-start.
@@ -23,9 +23,9 @@ should track the version combination announced with a given release.
 ## Install
 
 ```powershell
-dotnet add package Ether.DesignSystem.Foundation --version 0.1.0-preview.6
-dotnet add package Ether.DesignSystem.Controls --version 0.1.0-preview.6
-dotnet add package Ether.DesignSystem.Interactions --version 0.1.0-preview.6
+dotnet add package Ether.DesignSystem.Foundation --version 0.1.0-preview.7
+dotnet add package Ether.DesignSystem.Controls --version 0.1.0-preview.7
+dotnet add package Ether.DesignSystem.Interactions --version 0.1.0-preview.7
 ```
 
 These resolve only from the private GitHub Packages feed described in

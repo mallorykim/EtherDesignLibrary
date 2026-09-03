@@ -20,8 +20,8 @@
     <!-- Pin the exact preview version. Verify-ConsumerFixtures.ps1 (Assert-EtherPackageReferences)
          asserts this literal equals Directory.Build.props' EtherDesignSystemPreviewVersion, so a
          version bump that forgets this file fails the gate rather than drifting silently. -->
-    <PackageReference Include="Ether.DesignSystem.Controls" VersionOverride="0.1.0-preview.6" />
-    <PackageReference Include="Ether.DesignSystem.Interactions" VersionOverride="0.1.0-preview.6" />
+    <PackageReference Include="Ether.DesignSystem.Controls" VersionOverride="0.1.0-preview.7" />
+    <PackageReference Include="Ether.DesignSystem.Interactions" VersionOverride="0.1.0-preview.7" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
     <Manifest Include="$(ApplicationManifest)" />
