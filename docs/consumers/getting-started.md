@@ -600,6 +600,23 @@ Proven at `R2.cs:168-186` (`SelectedIndex`/`SelectedItem` TwoWay) and `R2.cs:205
                                AutomationProperties.Name="Package intelligence button"/>
 ```
 
+**Icons:** `LeftIcon` / `RightIcon` are strongly-typed `IconElement` slots, exactly like `EtherButton`.
+`LeftIcon` defaults to the built-in sparkles glyph; `RightIcon` defaults to none. Replace the leading
+icon, add a trailing one, or clear either with `{x:Null}`:
+```xml
+<!-- Keep the sparkles, add a trailing chevron -->
+<ether:EtherIntelligenceButton Content="Ask Ether">
+    <ether:EtherIntelligenceButton.RightIcon>
+        <FontIcon Glyph="&#xE76C;"/>
+    </ether:EtherIntelligenceButton.RightIcon>
+</ether:EtherIntelligenceButton>
+
+<!-- No leading icon at all -->
+<ether:EtherIntelligenceButton Content="Plain" LeftIcon="{x:Null}"/>
+```
+The slots collapse automatically when empty (driven by `LeftIconStates`/`RightIconStates`), so
+layout stays tight whether or not an icon is present.
+
 **Bind data:** same as `EtherButton` — `Content`/`IsEnabled`, `Mode=OneWay`.
 
 **Wire an action:** `EtherIntelligenceButton` is also a `ButtonBase`; `Command`/`CommandParameter`
