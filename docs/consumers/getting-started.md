@@ -180,7 +180,7 @@ Use the newly public namespace in your page or window XAML:
 
             <ether:EtherProgressBar
                 Minimum="0" Maximum="100" Value="65"
-                Title="Download" ValueContent="65%"
+                Title="Download"
                 ShowTitle="True" ShowValue="True" />
 
             <ether:EtherInput
@@ -371,24 +371,27 @@ expected parameter.
 
 **EtherProgressBar** (`Views/DataDisplay/ProgressBarPage.xaml`):
 ```xml
-<!-- Leave ValueContent unset for the built-in synced percent of [Minimum, Maximum]. -->
+<!-- Leave ValueFormat unset for the built-in synced percent of [Minimum, Maximum]. -->
 <ether:EtherProgressBar HorizontalAlignment="Stretch"
                         Title="Package download"
                         Value="65"
                         AutomationProperties.Name="Package download progress" />
 ```
 
-The value label follows the same order as `EtherSteeringBar`: an explicit `ValueContent` is shown
-verbatim (a static string does **not** track `Value`); otherwise a `ValueContentConverter`
-(`IValueConverter`) formats the live `Value`; otherwise the built-in percent. Prefer a
-`ValueContentConverter` over a static `ValueContent` when you want custom-but-synced text.
+The value label always reflects the live `Value` — there is no way to set a static string that
+desyncs from it. A consumer chooses whether to show it (`ShowValue`) and, optionally, how to format
+it: `ValueFormat`, a composite format string (for example `"{0:0}%"`) applied to `Value`; or a
+`ValueContentConverter` (`IValueConverter`) for full control, which takes precedence over
+`ValueFormat`. With neither set, the control formats `Value` as a percent of
+[`Minimum`, `Maximum`].
 
-**Bind data:** `Value`, `Title`, `ValueContent`, `ShowTitle`, `ShowValue` are all `OneWay`-friendly
-display properties (`EtherProgressBar.cs:60-93`):
+**Bind data:** `Value`, `Title`, `ShowTitle`, `ShowValue` are all `OneWay`-friendly display
+properties; `ValueFormat` is a composite format string, so set it once rather than binding it
+per-value (`EtherProgressBar.cs:60-93`):
 ```xml
 <ether:EtherProgressBar Value="{x:Bind ViewModel.DownloadPercent, Mode=OneWay}"
                         Title="{x:Bind ViewModel.DownloadLabel, Mode=OneWay}"
-                        ValueContent="{x:Bind ViewModel.DownloadPercentText, Mode=OneWay}"
+                        ValueFormat="{}{0:0}%"
                         ShowTitle="True" ShowValue="True"
                         HorizontalAlignment="Stretch"/>
 ```
@@ -629,7 +632,7 @@ Proven at `R2.cs:378, 388-398` (`VerifyButtonCommand`).
 
 **EtherSteeringBar** (`Views/Controls/SteeringBarPage.xaml`):
 ```xml
-<!-- Leave ValueContent unset: the value label shows the built-in percent of
+<!-- Leave ValueFormat unset: the value label shows the built-in percent of
      [Minimum, Maximum] and stays in sync as Value changes. -->
 <ether:EtherSteeringBar HorizontalAlignment="Stretch"
                         Title="Package playback"
@@ -637,12 +640,13 @@ Proven at `R2.cs:378, 388-398` (`VerifyButtonCommand`).
                         AutomationProperties.Name="Package steering bar"/>
 ```
 
-**The value label** resolves in this order: an explicit `ValueContent` is shown **verbatim** (you own
-it — a static string like `ValueContent="65%"` will NOT track `Value`); otherwise a
-`ValueContentConverter` formats the live `Value`; otherwise the built-in percent. To customize the
-text while keeping it synced, set a `ValueContentConverter` (an `IValueConverter`), not a static
-`ValueContent` — this mirrors `Slider.ThumbToolTipValueConverter`. The converter's value is `Value`
-and its parameter is the control (so it can read `Minimum`/`Maximum`):
+**The value label** always reflects the live `Value` — there is no way to set a static string that
+desyncs from it. It resolves in this order: a `ValueContentConverter` (an `IValueConverter`) formats
+the live `Value`, if set; otherwise `ValueFormat`, a composite format string (for example
+`"{0:0}%"`) applied to `Value`, if set; otherwise the built-in percent. To customize the text with
+full control (not just a format string), set a `ValueContentConverter` — this mirrors
+`Slider.ThumbToolTipValueConverter`. The converter's value is `Value` and its parameter is the
+control (so it can read `Minimum`/`Maximum`):
 ```xml
 <Page.Resources><local:DecibelConverter x:Key="DecibelConverter"/></Page.Resources>
 ...
@@ -652,11 +656,12 @@ and its parameter is the control (so it can read `Minimum`/`Maximum`):
 ```
 
 **Bind data:** `Value` TwoWay, plus `StepFrequency`, `Stops`, `SnapToStops` for stepped/snapped
-ranges. If you want the label bound instead of converter-driven, bind `ValueContent` OneWay to a
-view-model text property that you update on `ValueChanged`:
+ranges. If you just need custom units without a converter, set `ValueFormat` once — it is a
+composite format string, not a per-value binding target, so it needs no `ValueChanged` handler to
+stay in sync:
 ```xml
 <ether:EtherSteeringBar Value="{x:Bind ViewModel.Playback, Mode=TwoWay}"
-                        Title="Playback" ValueContent="{x:Bind ViewModel.PlaybackText, Mode=OneWay}"
+                        Title="Playback" ValueFormat="{}{0:0} dB"
                         HorizontalAlignment="Stretch"/>
 ```
 Proven at `R2.cs:138-146` (`VerifyTwoWayBindings`).

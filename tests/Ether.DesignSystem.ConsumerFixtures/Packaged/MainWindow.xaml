@@ -83,7 +83,7 @@
                             <controls:EtherProgressBar x:Name="ProgressBarProof"
                                                        HorizontalAlignment="Stretch"
                                                        Title="Package download"
-                                                       ValueContent="65%"
+                                                       ValueFormat="{}{0:0}%"
                                                        Value="65"
                                                        AutomationProperties.Name="Package download progress" />
                         </StackPanel>
@@ -216,7 +216,7 @@
                             <controls:EtherSteeringBar x:Name="SteeringBarProof"
                                                        HorizontalAlignment="Stretch"
                                                        Title="Package playback"
-                                                       ValueContent="65%"
+                                                       ValueFormat="{}{0:0}%"
                                                        Value="65"
                                                        AutomationProperties.Name="Package steering bar"/>
                             <controls:EtherSlider x:Name="DefaultSliderProof"

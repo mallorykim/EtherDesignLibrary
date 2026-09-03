@@ -40,7 +40,7 @@
 | `StepFrequency` | design | choose a uniform pointer/keyboard/automation snap step | now a public DP, default `1.0` `EtherSteeringBar.xaml.cs:163-166,250-254`; drives step-relative snapping in `NormalizeValue` `…xaml.cs:468-474` | ✔ DP + callback | ✅ **closed this wave** |
 | `Stops` / `SnapToStops` / `ShowStops` | design | provide irregular steps, snap, and show markers | DPs `EtherSteeringBar.xaml.cs:153-171,232-261`; normalization uses them `…xaml.cs:463-474` | ✔ DPs + callbacks | ✅ |
 | `MoveToPreviousStop` / `MoveToNextStop` | design | move programmatically between irregular stops | public methods `EtherSteeringBar.xaml.cs:529-577` | callable methods | ✅ |
-| `Title` / `ValueContent` | design | supply optional rich labels | object DPs `EtherSteeringBar.xaml.cs:183-191,277-289` | ✔ DPs + callbacks | ✅ |
+| `Title` / `ValueFormat` | design | supply optional title content / format the live value label | DPs `EtherSteeringBar.xaml.cs:183-191,277-289` | ✔ DPs + callbacks | ✅ |
 | `ShowTitle` / `ShowValue` | design | independently show labels | bool DPs `EtherSteeringBar.xaml.cs:193-201,291-303`; states in style `EtherSteeringBar.xaml:161-170` | ✔ DPs + callbacks | ✅ |
 | `ValueChanged` | design | listen to old/new value → backend | public event + public args `EtherSteeringBar.xaml.cs:32-48,130-131,476-487` | event + `ObserveSteeringBar` `ControlInteractionAdapter.cs:129-138` | ✅ |
 | `IsEnabled` | base | disable pointer/keyboard/automation edits | inherited; gates input and automation `EtherSteeringBar.xaml.cs:596-629` | ✔ DP | ✅ |
@@ -71,7 +71,7 @@
 Component: EtherSteeringBar (+ SteeringBarValueChangedEventArgs)
 Base control: Control   | Package: Ether.DesignSystem.Controls
 Declared DPs: 14  (Minimum, Maximum, Value, Stops, SnapToStops, StepFrequency, ShowStops,
-                   SmallChange, LargeChange, Title, ValueContent, ValueContentConverter, ShowTitle, ShowValue)
+                   SmallChange, LargeChange, Title, ValueFormat, ValueContentConverter, ShowTitle, ShowValue)
                    | inherited public surface: Control
 
 Rubric (declared DPs):

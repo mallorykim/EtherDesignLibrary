@@ -62,8 +62,8 @@ Ether.DesignSystem.Controls.EtherProgressBar.ShowValue.get -> bool
 Ether.DesignSystem.Controls.EtherProgressBar.ShowValue.set -> void
 Ether.DesignSystem.Controls.EtherProgressBar.Title.get -> object!
 Ether.DesignSystem.Controls.EtherProgressBar.Title.set -> void
-Ether.DesignSystem.Controls.EtherProgressBar.ValueContent.get -> object!
-Ether.DesignSystem.Controls.EtherProgressBar.ValueContent.set -> void
+Ether.DesignSystem.Controls.EtherProgressBar.ValueFormat.get -> string?
+Ether.DesignSystem.Controls.EtherProgressBar.ValueFormat.set -> void
 Ether.DesignSystem.Controls.EtherProgressBar.ValueContentConverter.get -> Microsoft.UI.Xaml.Data.IValueConverter?
 Ether.DesignSystem.Controls.EtherProgressBar.ValueContentConverter.set -> void
 Ether.DesignSystem.Controls.EtherRadioButton
@@ -157,8 +157,8 @@ Ether.DesignSystem.Controls.EtherSteeringBar.Title.set -> void
 Ether.DesignSystem.Controls.EtherSteeringBar.Value.get -> double
 Ether.DesignSystem.Controls.EtherSteeringBar.Value.set -> void
 Ether.DesignSystem.Controls.EtherSteeringBar.ValueChanged -> System.EventHandler<Ether.DesignSystem.Controls.SteeringBarValueChangedEventArgs!>?
-Ether.DesignSystem.Controls.EtherSteeringBar.ValueContent.get -> object?
-Ether.DesignSystem.Controls.EtherSteeringBar.ValueContent.set -> void
+Ether.DesignSystem.Controls.EtherSteeringBar.ValueFormat.get -> string?
+Ether.DesignSystem.Controls.EtherSteeringBar.ValueFormat.set -> void
 Ether.DesignSystem.Controls.EtherSteeringBar.ValueContentConverter.get -> Microsoft.UI.Xaml.Data.IValueConverter?
 Ether.DesignSystem.Controls.EtherSteeringBar.ValueContentConverter.set -> void
 Ether.DesignSystem.Controls.EtherTabItem
@@ -230,7 +230,7 @@ static readonly Ether.DesignSystem.Controls.EtherSlider.TitleProperty -> Microso
 static readonly Ether.DesignSystem.Controls.EtherProgressBar.ShowTitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherProgressBar.ShowValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherProgressBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly Ether.DesignSystem.Controls.EtherProgressBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherProgressBar.ValueFormatProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherProgressBar.ValueContentConverterProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ValueContentConverterProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.LargeChangeProperty -> Microsoft.UI.Xaml.DependencyProperty!
@@ -244,6 +244,6 @@ static readonly Ether.DesignSystem.Controls.EtherSteeringBar.SnapToStopsProperty
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.StepFrequencyProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.StopsProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.TitleProperty -> Microsoft.UI.Xaml.DependencyProperty!
-static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ValueContentProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ValueFormatProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherSteeringBar.ValueProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherTabItem.IconProperty -> Microsoft.UI.Xaml.DependencyProperty!

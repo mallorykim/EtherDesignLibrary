@@ -186,9 +186,9 @@ public sealed class EtherSteeringBar : Control
         DependencyProperty.Register(nameof(Title), typeof(object), typeof(EtherSteeringBar),
             new PropertyMetadata(null, OnLabelPropertyChanged));
 
-    /// <summary>Identifies the <see cref="ValueContent"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
-    public static readonly DependencyProperty ValueContentProperty =
-        DependencyProperty.Register(nameof(ValueContent), typeof(object), typeof(EtherSteeringBar),
+    /// <summary>Identifies the <see cref="ValueFormat"/> dependency property. Registered and effective default is <see langword="null"/>.</summary>
+    public static readonly DependencyProperty ValueFormatProperty =
+        DependencyProperty.Register(nameof(ValueFormat), typeof(string), typeof(EtherSteeringBar),
             new PropertyMetadata(null, OnLabelPropertyChanged));
 
     /// <summary>Identifies the <see cref="ShowTitle"/> dependency property. Registered default is false; the shipping style default is true.</summary>
@@ -287,11 +287,15 @@ public sealed class EtherSteeringBar : Control
         set => SetValue(TitleProperty, value);
     }
 
-    /// <summary>Gets or sets the content of the right-hand value label. Registered and effective default is <see langword="null"/>; when unset, the control formats <see cref="Value"/> as a percent.</summary>
-    public object? ValueContent
+    /// <summary>Gets or sets a composite format string (for example <c>"{0:0}%"</c>) applied to the live
+    /// <see cref="Value"/> for the right-hand value label. Default is <see langword="null"/>; when unset
+    /// (and no <see cref="ValueContentConverter"/>), the control formats <see cref="Value"/> as a percent
+    /// of [<see cref="Minimum"/>, <see cref="Maximum"/>]. The label always reflects the live Value - it
+    /// cannot be set to a static string that desyncs from it.</summary>
+    public string? ValueFormat
     {
-        get => GetValue(ValueContentProperty);
-        set => SetValue(ValueContentProperty, value);
+        get => (string?)GetValue(ValueFormatProperty);
+        set => SetValue(ValueFormatProperty, value);
     }
 
     /// <summary>Gets or sets whether the title label is shown. Registered default is false; the shipping style default is true.</summary>
@@ -309,12 +313,12 @@ public sealed class EtherSteeringBar : Control
     }
 
     /// <summary>
-    /// Gets or sets a converter that formats <see cref="Value"/> into the value label, used only while
-    /// <see cref="ValueContent"/> is unset. It keeps the label in sync with <see cref="Value"/> without
+    /// Gets or sets a converter that formats <see cref="Value"/> into the value label, taking precedence
+    /// over <see cref="ValueFormat"/>. It keeps the label in sync with <see cref="Value"/> without
     /// the consumer taking over the whole content slot. Modeled on <c>Slider.ThumbToolTipValueConverter</c>:
     /// the converter's value is <see cref="Value"/> (boxed double) and its parameter is this control, so it
     /// can read <see cref="Minimum"/>/<see cref="Maximum"/>. Registered and effective default is
-    /// <see langword="null"/>; when both this and <see cref="ValueContent"/> are unset, the control formats
+    /// <see langword="null"/>; when both this and <see cref="ValueFormat"/> are unset, the control formats
     /// <see cref="Value"/> as a percent of [<see cref="Minimum"/>, <see cref="Maximum"/>].
     /// </summary>
     public IValueConverter? ValueContentConverter
@@ -753,11 +757,10 @@ public sealed class EtherSteeringBar : Control
 
     private object? GetEffectiveValueContent()
     {
-        // Precedence: an explicit ValueContent is shown verbatim (the consumer owns the label);
-        // otherwise a ValueContentConverter formats the live Value; otherwise the built-in percent.
-        if (ValueContent is not null)
-            return ValueContent;
-
+        // The value label always reflects the live Value - a consumer only chooses HOW to format it,
+        // never a static string that could desync. Precedence: a ValueContentConverter (full control)
+        // formats the live Value; otherwise a ValueFormat composite string formats it; otherwise the
+        // built-in percent.
         if (ValueContentConverter is { } converter)
         {
             try
@@ -768,6 +771,18 @@ public sealed class EtherSteeringBar : Control
             {
                 // A consumer-supplied converter must never break the label or crash a DP callback;
                 // fall through to the built-in text if it throws.
+            }
+        }
+
+        if (!string.IsNullOrEmpty(ValueFormat))
+        {
+            try
+            {
+                return string.Format(System.Globalization.CultureInfo.CurrentCulture, ValueFormat, Value);
+            }
+            catch (FormatException)
+            {
+                // A malformed format string must not crash the label; fall through to the built-in.
             }
         }
 

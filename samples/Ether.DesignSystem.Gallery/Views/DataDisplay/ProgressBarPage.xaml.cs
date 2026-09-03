@@ -13,7 +13,6 @@ public sealed partial class ProgressBarPage : Page
     public string SpecimenXaml { get; } =
         """
         <controls:EtherProgressBar Title="Downloading"
-                                   ValueContent="0%"
                                    Maximum="100"
                                    Value="0" />
         """;
@@ -22,11 +21,11 @@ public sealed partial class ProgressBarPage : Page
     {
         this.InitializeComponent();
 
-        // The value label tracks Value, so it counts up in step with the fill.
+        // The value label always tracks Value on its own (built-in percent formatting), so it
+        // counts up in step with the fill without any code-behind assignment.
         SimBar.ValueChanged += (_, e) =>
         {
             var text = $"{(int)Math.Round(e.NewValue)}%";
-            SimBar.ValueContent = text;
             if (LiveExample is not null)
                 LiveExample.OutputText = GalleryStrings.Format("GalleryOutput.Value", "Value: {0}", text);
         };

@@ -35,7 +35,7 @@
 | `Minimum` / `Maximum` | base | set/bind progress range | inherited `RangeBase`; overrides update fill `EtherProgressBar.cs:125-136` | ✔ DPs | ✅ |
 | `Value` | base | bind backend progress | inherited; fill ratio consumes it `EtherProgressBar.cs:113-123,146-157` | ✔ DP + event | ✅ |
 | `ValueChanged` | base | observe data-driven progress → backend | inherited and preserved `EtherProgressBar.cs:113-123`; `ObserveRange` accepts it `ControlInteractionAdapter.cs:140-149` | event + adapter | ✅ |
-| `Title` / `ValueContent` | design | supply left/right label content | object DPs `EtherProgressBar.cs:60-79`; template presents both `EtherProgressBar.xaml:101-111` | ✔ DPs | ✅ |
+| `Title` / `ValueFormat` | design | supply left label content / format the live value label | DPs `EtherProgressBar.cs:60-79`; template presents both `EtherProgressBar.xaml:101-111` | ✔ DPs | ✅ |
 | `ShowTitle` / `ShowValue` | design | independently show/hide labels | bool DPs `EtherProgressBar.cs:82-100`; four states `EtherProgressBar.xaml:68-98` | ✔ DPs + callbacks | ✅ |
 | `IsIndeterminate` / error / paused states | design | show non-determinate or status variants | ✗; explicitly excluded by RangeBase lineage `EtherProgressBar.cs:19-22,34` | n/a | 🚫 use stock WinUI `ProgressBar` when those states are required; EtherProgressBar is determinate-only `EtherProgressBar.cs:11-22` |
 | `IsEnabled` | base | expose disabled platform state | inherited and base-handled; visual appearance intentionally unchanged `scripts/UnsupportedProperties.psd1:371` | ✔ DP | ✅ |
@@ -61,7 +61,7 @@
 ```
 Component: EtherProgressBar
 Base control: RangeBase   | Package: Ether.DesignSystem.Controls
-Declared DPs: 5  (Title, ValueContent, ValueContentConverter, ShowTitle, ShowValue)
+Declared DPs: 5  (Title, ValueFormat, ValueContentConverter, ShowTitle, ShowValue)
                  | inherited public surface: RangeBase
 
 Rubric (declared DPs):

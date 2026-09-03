@@ -178,7 +178,7 @@ internal static partial class RuntimeVerification
     //   - Every genuine small-but-real visual change measured (recolored/re-fonted/re-toggled
     //     text and glyphs: EtherCheckbox/EtherRadioButton Content/ContentTemplate/FontFamily/
     //     FontStyle/FontWeight, EtherMasthead.Opacity/IsEnabled/Scale, EtherSlider.Labels/
-    //     ShowLabels, EtherSteeringBar.Minimum/Title/ValueContent/FontStyle, ...) moved between 435
+    //     ShowLabels, EtherSteeringBar.Minimum/Title/ValueFormat/FontStyle, ...) moved between 435
     //     and 9708 individual BGRA8 bytes, but by only 2-5 levels per channel — these are subpixel
     //     antialiasing/gamma-blend shifts on small glyph regions, not the large flat-color repaints
     //     larger mutations produce (Background/BorderBrush recolors moved pixels by 60-255 levels).
@@ -666,7 +666,10 @@ internal static partial class RuntimeVerification
         if (property.Name == nameof(EtherSlider.Labels)) return new EtherSliderLabelCollection { "0", "50", "100" };
         if (property.Name == nameof(EtherSlider.Stops) || property.Name == nameof(EtherSteeringBar.Stops)) return new DoubleCollection { 0d, 50d, 100d };
         if (property.Name == nameof(EtherSlider.Title) || property.Name == nameof(EtherSteeringBar.Title) || property.Name == nameof(EtherProgressBar.Title)) return "Visual audit title";
-        if (property.Name == nameof(EtherSteeringBar.ValueContent) || property.Name == nameof(EtherProgressBar.ValueContent)) return "42%";
+        // A format visibly distinct from the built-in percent (e.g. "25%"), so mutating ValueFormat
+        // produces a real pixel change on the rendered label - ValueFormat is genuinely observable,
+        // and "{0:0}%" would coincidentally match the built-in output and read as contract-only.
+        if (property.Name == nameof(EtherSteeringBar.ValueFormat) || property.Name == nameof(EtherProgressBar.ValueFormat)) return "{0:0} pts";
         // EtherInput inherits TextBox.Header and HeaderTemplate, but EtherInput.xaml's
         // ControlTemplate contains neither a Header presenter nor a HeaderTemplate binding.
         // Do not manufacture pixels for those properties in this fixture: their unchanged bitmap

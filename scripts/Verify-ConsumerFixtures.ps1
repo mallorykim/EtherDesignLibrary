@@ -993,11 +993,11 @@ try {
             $expectedConsumedProperties = @(
                 'EtherButton.LeftIcon', 'EtherButton.RightIcon', 'EtherButton.Size', 'EtherButton.Variant',
                 'EtherDropdown.MaxVisibleItems', 'EtherDropdown.MenuGap',
-                'EtherProgressBar.ShowTitle', 'EtherProgressBar.ShowValue', 'EtherProgressBar.Title', 'EtherProgressBar.ValueContent', 'EtherProgressBar.ValueContentConverter',
+                'EtherProgressBar.ShowTitle', 'EtherProgressBar.ShowValue', 'EtherProgressBar.Title', 'EtherProgressBar.ValueFormat', 'EtherProgressBar.ValueContentConverter',
                 'EtherSegmentPanel.Spacing',
                 'EtherSegmentedControl.DisplayMemberPath', 'EtherSegmentedControl.ItemTemplate', 'EtherSegmentedControl.ItemsSource', 'EtherSegmentedControl.SelectedIndex', 'EtherSegmentedControl.SelectedItem', 'EtherSegmentedControl.SelectedValue', 'EtherSegmentedControl.SelectionCommand', 'EtherSegmentedControl.SelectionCommandParameter',
                 'EtherSlider.Labels', 'EtherSlider.ShowLabels', 'EtherSlider.ShowTitle', 'EtherSlider.SnapToStops', 'EtherSlider.StepFrequency', 'EtherSlider.Stops', 'EtherSlider.Title',
-                'EtherSteeringBar.LargeChange', 'EtherSteeringBar.Maximum', 'EtherSteeringBar.Minimum', 'EtherSteeringBar.ShowStops', 'EtherSteeringBar.ShowTitle', 'EtherSteeringBar.ShowValue', 'EtherSteeringBar.SmallChange', 'EtherSteeringBar.SnapToStops', 'EtherSteeringBar.StepFrequency', 'EtherSteeringBar.Stops', 'EtherSteeringBar.Title', 'EtherSteeringBar.Value', 'EtherSteeringBar.ValueContent', 'EtherSteeringBar.ValueContentConverter',
+                'EtherSteeringBar.LargeChange', 'EtherSteeringBar.Maximum', 'EtherSteeringBar.Minimum', 'EtherSteeringBar.ShowStops', 'EtherSteeringBar.ShowTitle', 'EtherSteeringBar.ShowValue', 'EtherSteeringBar.SmallChange', 'EtherSteeringBar.SnapToStops', 'EtherSteeringBar.StepFrequency', 'EtherSteeringBar.Stops', 'EtherSteeringBar.Title', 'EtherSteeringBar.Value', 'EtherSteeringBar.ValueFormat', 'EtherSteeringBar.ValueContentConverter',
                 'EtherMasthead.EnableWindowCommands', 'EtherMasthead.ShowChevron', 'EtherMasthead.ShowMenuIcon', 'EtherMasthead.ShowSearch', 'EtherMasthead.ShowSettings',
                 'EtherTabItem.Icon'
             )

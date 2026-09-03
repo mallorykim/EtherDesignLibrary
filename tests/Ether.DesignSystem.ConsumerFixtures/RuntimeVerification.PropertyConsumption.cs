@@ -289,7 +289,7 @@ internal static partial class RuntimeVerification
         (nameof(EtherDropdown), nameof(EtherDropdown.MaxVisibleItems)) => 4,
         (nameof(EtherDropdown), nameof(EtherDropdown.MenuGap)) => 8d,
         (nameof(EtherProgressBar), nameof(EtherProgressBar.Title)) => "Audit progress",
-        (nameof(EtherProgressBar), nameof(EtherProgressBar.ValueContent)) => "42%",
+        (nameof(EtherProgressBar), nameof(EtherProgressBar.ValueFormat)) => "{0:0}%",
         (nameof(EtherProgressBar), nameof(EtherProgressBar.ValueContentConverter)) => new RecordingValueConverter(),
         (nameof(EtherProgressBar), nameof(EtherProgressBar.ShowTitle)) => true,
         (nameof(EtherProgressBar), nameof(EtherProgressBar.ShowValue)) => true,
@@ -319,7 +319,7 @@ internal static partial class RuntimeVerification
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.SmallChange)) => 2d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.LargeChange)) => 20d,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.Title)) => "Audit steering",
-        (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ValueContent)) => "42%",
+        (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ValueFormat)) => "{0:0}%",
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ValueContentConverter)) => new RecordingValueConverter(),
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ShowTitle)) => true,
         (nameof(EtherSteeringBar), nameof(EtherSteeringBar.ShowValue)) => true,
@@ -388,12 +388,22 @@ internal static partial class RuntimeVerification
         intelligenceButton.IsHitTestVisible = true;
         intelligenceButton.IsTabStop = true;
         VerifyInteraction(adapter, produced, context, "intelligence.clicked", "intelligence", () => Invoke(intelligenceButton), sink => sink.ObserveButton(intelligenceButton, "intelligence.clicked", context, "intelligence")); verified++;
+        // These interaction probes are exercised on the SAME shared instances that get screenshotted
+        // later. Capture each canonical Value first and restore it afterwards - now that ValueFormat
+        // tracks the live Value, a leaked Value would render a wrong value label (and progress fill),
+        // which the old static ValueContent used to mask.
+        var progressBarCanonicalValue = progressBar.Value;
+        var steeringBarCanonicalValue = steeringBar.Value;
+        var sliderCanonicalValue = slider.Value;
         progressBar.Value = 0d;
         VerifyInteraction(adapter, produced, context, "progress.changed", "progress", () => progressBar.Value = 43d, sink => sink.ObserveRange(progressBar, "progress.changed", context, "progress")); verified++;
         steeringBar.Value = 0d;
         VerifyInteraction(adapter, produced, context, "steering.changed", "steering", () => steeringBar.Value = 43d, sink => sink.ObserveSteeringBar(steeringBar, "steering.changed", context, "steering")); verified++;
         slider.Value = 0d;
         VerifyInteraction(adapter, produced, context, "slider.changed", "slider", () => slider.Value = 43d, sink => sink.ObserveRange(slider, "slider.changed", context, "slider")); verified++;
+        progressBar.Value = progressBarCanonicalValue;
+        steeringBar.Value = steeringBarCanonicalValue;
+        slider.Value = sliderCanonicalValue;
         var tabNavigation = new EtherTabNavigation
         {
             ItemsSource = new[] { "Home", "Settings" },

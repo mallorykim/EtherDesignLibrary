@@ -278,7 +278,7 @@ public partial class App : Application
             <!-- Numeric + bool + string/object property conversion through XAML markup. -->
             <ether:EtherProgressBar x:Name="ProgressProbe"
                                     Minimum="0" Maximum="100" Value="65"
-                                    Title="Download" ValueContent="65%"
+                                    Title="Download"
                                     ShowTitle="True" ShowValue="True" />
 
             <!-- An Items collection and public numeric properties set in markup. -->
@@ -305,7 +305,7 @@ public partial class App : Application
             <ether:EtherSteeringBar x:Name="SteeringProbe"
                                     Minimum="0" Maximum="100" Value="75"
                                     SmallChange="5" LargeChange="25"
-                                    Title="Playback" ValueContent="75%"
+                                    Title="Playback"
                                     ShowTitle="True" ShowValue="True" ShowStops="True" SnapToStops="True">
                 <ether:EtherSteeringBar.Stops><media:DoubleCollection>0,25,50,75,100</media:DoubleCollection></ether:EtherSteeringBar.Stops>
             </ether:EtherSteeringBar>
@@ -386,7 +386,7 @@ public sealed partial class MainWindow : Window
             ButtonProbe.Size == EtherButtonSize.Small &&
             Equals(ButtonProbe.Content, "Hello from external XAML") && ButtonProbe.LeftIcon is SymbolIcon,
         ["progress.numeric.bool.object"] = ProgressProbe.Minimum == 0 && ProgressProbe.Maximum == 100 &&
-            ProgressProbe.Value == 65 && Equals(ProgressProbe.Title, "Download") && Equals(ProgressProbe.ValueContent, "65%") &&
+            ProgressProbe.Value == 65 && Equals(ProgressProbe.Title, "Download") &&
             ProgressProbe.ShowTitle && ProgressProbe.ShowValue,
         ["dropdown.items.numeric"] = DropdownProbe.SelectedIndex == 1 && DropdownProbe.MaxVisibleItems == 2 &&
             DropdownProbe.MenuGap == 8 && DropdownProbe.Items.Count == 2,
@@ -397,7 +397,7 @@ public sealed partial class MainWindow : Window
         ["steering.collection.numeric.bool"] = SteeringProbe.Minimum == 0 && SteeringProbe.Maximum == 100 && SteeringProbe.Value == 75 &&
             SteeringProbe.SmallChange == 5 && SteeringProbe.LargeChange == 25 &&
             SteeringProbe.ShowTitle && SteeringProbe.ShowValue && SteeringProbe.ShowStops && SteeringProbe.SnapToStops &&
-            Equals(SteeringProbe.Title, "Playback") && Equals(SteeringProbe.ValueContent, "75%") && SteeringProbe.Stops is { Count: 5 },
+            Equals(SteeringProbe.Title, "Playback") && SteeringProbe.Stops is { Count: 5 },
         ["masthead.bool"] = !MastheadProbe.EnableWindowCommands && !MastheadProbe.ShowSettings && MastheadProbe.ShowSearch &&
             !MastheadProbe.ShowMenuIcon && MastheadProbe.ShowChevron,
         ["inherited.controls"] = InputProbe.Text == "External text" && CheckboxProbe.IsChecked == true &&

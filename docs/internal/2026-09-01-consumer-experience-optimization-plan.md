@@ -100,7 +100,7 @@ the troubleshooting table (§3, `:231-239`), the unsupported-properties registry
 | EtherTabNavigation (**new entry**) | `ItemsSource` + `SelectedIndex`/`SelectedItem` TwoWay | `SelectionChanged` (the standard `Selector` event) | `R2.cs:168-186, 205-211` |
 | EtherSlider / EtherSteeringBar | `Value` TwoWay, `StepFrequency`, `Stops`+`SnapToStops` | `ValueChanged`; **note that this fires on every drag tick** | `R2.cs:138-146`; `EtherSteeringBar.xaml.cs:381-384, 476-487` |
 | EtherSwitch (Style) | `IsOn` TwoWay | `Toggled` | `R2.cs:148-156` |
-| EtherProgressBar | `Value`/`Title`/`ValueContent`/`ShowTitle`/`ShowValue` OneWay | None (read-only display) | `EtherProgressBar.cs:60-93` |
+| EtherProgressBar | `Value`/`Title`/`ValueFormat`/`ShowTitle`/`ShowValue` OneWay | None (read-only display) | `EtherProgressBar.cs:60-93` |
 | EtherMasthead | `ShowSettings`/`ShowSearch`/`ShowMenuIcon`/`ShowChevron`/`EnableWindowCommands` | `ActionInvoked` (the `MastheadAction` enum); icon slots are decorative (D2 🚫) | `EtherMasthead.xaml.cs:120-214, 543/561/585` |
 | EtherCard / EtherScrollBar (Style) | No Ether properties | None | See P4-A |
 

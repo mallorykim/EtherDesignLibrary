@@ -59,7 +59,7 @@ internal static partial class RuntimeVerification
         "PlaceholderForeground", "PlaceholderText", "RenderTransform", "RightIcon", "Rotation", "Scale", "SelectedIndex",
         "SelectedItem", "SelectedValue", "ShowChevron", "ShowLabels", "ShowMenuIcon", "ShowSearch",
         "ShowSettings", "ShowStops", "ShowTitle", "ShowValue", "Size", "SnapToStops", "Spacing", "Stops", "EnableWindowCommands",
-        "Text", "TextAlignment", "TextWrapping", "Title", "Value", "ValueContent", "Variant", "VerticalAlignment",
+        "Text", "TextAlignment", "TextWrapping", "Title", "Value", "ValueFormat", "Variant", "VerticalAlignment",
         "VerticalContentAlignment", "Visibility", "Width"
     ];
 
