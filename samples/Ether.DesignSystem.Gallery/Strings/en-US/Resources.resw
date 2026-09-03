@@ -1004,13 +1004,13 @@
     <value>NORMAL</value>
   </data>
   <data name="GalleryViewsSurfacesCardPage288.Text" xml:space="preserve">
-    <value>Card</value>
+    <value>Title</value>
   </data>
   <data name="GalleryViewsSurfacesCardPage289.Text" xml:space="preserve">
     <value>INTELLIGENCE</value>
   </data>
   <data name="GalleryViewsSurfacesCardPage290.Text" xml:space="preserve">
-    <value>Card</value>
+    <value>Title</value>
   </data>
   <data name="GalleryViewsSurfacesCardPage291.Text" xml:space="preserve">
     <value>CALLOUT</value>
@@ -1019,7 +1019,7 @@
     <value>Intelligence Insight</value>
   </data>
   <data name="GalleryViewsSurfacesCardPage293.Text" xml:space="preserve">
-    <value>Card</value>
+    <value>Title</value>
   </data>
   <data name="GalleryViewsControlsRadioButtonPage190.Title" xml:space="preserve">
     <value>Radio Button</value>

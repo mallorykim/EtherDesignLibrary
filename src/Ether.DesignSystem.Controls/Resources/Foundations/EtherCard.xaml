@@ -1,50 +1,18 @@
 <!--
-    EtherCard.xaml = Ether Design System � Content Card (3 types)
-    ==============================================================
+    EtherCard.xaml - Ether Design System content cards (three types)
+    Figma source: ursRC201v8IiVeafliI45F, node 62085:2873 (was 58074:1903).
 
-    USAGE
-      Normal card (standard content surface):
-        <Border Style="{StaticResource EtherCardNormal}">
-            [ your content here ]
-        </Border>
+    NORMAL: background = background/card-body (white in Light), 2px border/default,
+    corner radius 8.
 
-      Intelligence card (AI=powered content, dark background):
-        <Border Style="{StaticResource EtherCardIntelligence}">
-            [ content on dark bg ]
-        </Border>
+    INTELLIGENCE: background = background/card-intelligence, 1px blue-to-purple gradient border,
+    corner radius 8.
+    NOTE: Figma also shows a soft inset white glow, intentionally omitted because WinUI has no native
+    inset-glow primitive; it can be added later via Composition if required.
 
-      Callout Wrapper (Intelligence Insight = gradient border + header + inner card):
-        Paste the EtherCalloutWrapper block from the EXAMPLE STRUCTURE below.
-        It is a composite = not a single Style = because it wraps a visible header
-        bar and an inner card body in one unit.
-
-    THREE TYPES (Figma source: ursRC201v8IiVeafliI45F � node 58074:1903)
-
-      NORMAL
-        Background    BackgroundSurfaceRaised (#FFF5F7F8 L / #FF1E2025 D)
-        Border        2 px BorderDefault
-        CornerRadius  8 (radius/control)
-        Size          390�220 min (content stretches)
-
-      INTELLIGENCE
-        Background    BackgroundCardIntelligence (#FF000000 = mode=invariant)
-        Border        2 px AiAccentPurple
-        CornerRadius  8 (radius/control)
-        Size          390�220 min
-
-      CALLOUT WRAPPER
-        Outer shell   gradient border shell (intelligence gradient) � radius 10
-        Header strip  px=12, py=8 � label "Intelligence Insight" 12px Instrument Sans SemiBold
-                      white text + right=arrow icon
-        Inner body    BackgroundCanvas � radius 8 � size 390�220
-
-    TOKENS
-      Normal bg:       BackgroundSurfaceRaised  (ThemeResource)
-      Normal border:   BorderDefault            (ThemeResource)
-      Intel bg:        BackgroundCardIntelligence (StaticResource)
-      Intel border:    AiAccentPurple           (ThemeResource)
-      Label (insight): TextOnStaticDark (always white = use literal White)
-      Insight label:   Instrument Sans SemiBold 12 px
+    CALLOUT: iridescent gradient shell (radius 10, 2px inset via padding) plus an
+    "Intelligence Insight" header (Instrument Sans SemiBold 12, white) with a right arrow icon,
+    and white body (radius 8, padding 20).
 -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -52,35 +20,52 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="EtherCardBodyFill" ResourceKey="BackgroundSurfaceRaised"/>
-            <StaticResource x:Key="EtherCardShellFill" ResourceKey="BackgroundCardIntelligence"/>
+            <StaticResource x:Key="EtherCardBodyFill" ResourceKey="background/card-body"/>
+            <StaticResource x:Key="EtherCardShellFill" ResourceKey="background/card-intelligence"/>
+            <StaticResource x:Key="EtherCardNormalBorderBrush" ResourceKey="border/default"/>
             <StaticResource x:Key="EtherCardIntelligenceOutlineBrush" ResourceKey="AiAccentPurple"/>
+            <LinearGradientBrush x:Key="EtherCardIntelligenceBorderGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#0D62FF" Offset="0"/>
+                <GradientStop Color="#7A2BFF" Offset="0.5"/>
+                <GradientStop Color="#BB00FF" Offset="1"/>
+            </LinearGradientBrush>
             <LinearGradientBrush x:Key="EtherCardCalloutOuterGradient"
-                                 StartPoint="0.366,1" EndPoint="0.634,0">
-                <GradientStop Color="#141414" Offset="0.66111"/>
-                <GradientStop Color="#3B6FC7" Offset="0.68456"/>
-                <GradientStop Color="#0EB2FF" Offset="0.84627"/>
-                <GradientStop Color="#0015FF" Offset="0.88997"/>
-                <GradientStop Color="#141414" Offset="0.91688"/>
+                                 StartPoint="0.27,1" EndPoint="0.73,0">
+                <GradientStop Color="#141414" Offset="0.737"/>
+                <GradientStop Color="#3B6FC7" Offset="0.757"/>
+                <GradientStop Color="#0EB2FF" Offset="0.894"/>
+                <GradientStop Color="#0015FF" Offset="0.931"/>
+                <GradientStop Color="#141414" Offset="0.954"/>
             </LinearGradientBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
-            <StaticResource x:Key="EtherCardBodyFill" ResourceKey="BackgroundSurfaceRaised"/>
-            <StaticResource x:Key="EtherCardShellFill" ResourceKey="BackgroundCardIntelligence"/>
+            <StaticResource x:Key="EtherCardBodyFill" ResourceKey="background/card-body"/>
+            <StaticResource x:Key="EtherCardShellFill" ResourceKey="background/card-intelligence"/>
+            <StaticResource x:Key="EtherCardNormalBorderBrush" ResourceKey="border/default"/>
             <StaticResource x:Key="EtherCardIntelligenceOutlineBrush" ResourceKey="AiAccentPurple"/>
+            <LinearGradientBrush x:Key="EtherCardIntelligenceBorderGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#0D62FF" Offset="0"/>
+                <GradientStop Color="#7A2BFF" Offset="0.5"/>
+                <GradientStop Color="#BB00FF" Offset="1"/>
+            </LinearGradientBrush>
             <LinearGradientBrush x:Key="EtherCardCalloutOuterGradient"
-                                 StartPoint="0.366,1" EndPoint="0.634,0">
-                <GradientStop Color="#141414" Offset="0.66111"/>
-                <GradientStop Color="#3B6FC7" Offset="0.68456"/>
-                <GradientStop Color="#0EB2FF" Offset="0.84627"/>
-                <GradientStop Color="#0015FF" Offset="0.88997"/>
-                <GradientStop Color="#141414" Offset="0.91688"/>
+                                 StartPoint="0.416,1" EndPoint="0.584,0">
+                <GradientStop Color="#EFEFEF" Offset="0.737"/>
+                <GradientStop Color="#A6C7FF" Offset="0.757"/>
+                <GradientStop Color="#5ECCFF" Offset="0.894"/>
+                <GradientStop Color="#99A2FF" Offset="0.931"/>
+                <GradientStop Color="#EFEFEF" Offset="0.954"/>
             </LinearGradientBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="EtherCardBodyFill" Color="{ThemeResource SystemColorWindowColor}"/>
             <SolidColorBrush x:Key="EtherCardShellFill" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="EtherCardNormalBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
             <SolidColorBrush x:Key="EtherCardIntelligenceOutlineBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <LinearGradientBrush x:Key="EtherCardIntelligenceBorderGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="{ThemeResource SystemColorHighlightColor}" Offset="0"/>
+                <GradientStop Color="{ThemeResource SystemColorHighlightColor}" Offset="1"/>
+            </LinearGradientBrush>
             <LinearGradientBrush x:Key="EtherCardCalloutOuterGradient"
                                  StartPoint="0.366,1" EndPoint="0.634,0">
                 <GradientStop Color="{ThemeResource SystemColorHighlightColor}" Offset="0"/>
@@ -93,18 +78,16 @@
          NORMAL CARD
     ======================================= -->
     <Style x:Key="EtherCardNormal" TargetType="Border">
-        <Setter Property="Background"      Value="Transparent"/>
-        <Setter Property="BorderBrush"     Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CornerRadius"    Value="10"/>
+        <Setter Property="Background"      Value="{ThemeResource EtherCardNormalBorderBrush}"/>
+        <Setter Property="CornerRadius"    Value="{StaticResource RadiusMd}"/>
         <Setter Property="MinWidth"        Value="392"/>
         <Setter Property="MinHeight"       Value="172"/>
-        <Setter Property="Padding"         Value="{StaticResource Padding0}"/>
+        <Setter Property="Padding"         Value="2"/>
     </Style>
 
     <Style x:Key="EtherCardNormalBody" TargetType="Border">
         <Setter Property="Background"      Value="{ThemeResource EtherCardBodyFill}"/>
-        <Setter Property="CornerRadius"    Value="{StaticResource RadiusMd}"/>
+        <Setter Property="CornerRadius"    Value="6"/>
         <Setter Property="MinHeight"       Value="168"/>
         <Setter Property="Padding"         Value="{StaticResource Padding20}"/>
     </Style>
@@ -113,21 +96,17 @@
          INTELLIGENCE CARD
     ======================================= -->
     <Style x:Key="EtherCardIntelligence" TargetType="Border">
-        <Setter Property="Background"      Value="{ThemeResource EtherCardShellFill}"/>
-        <Setter Property="BorderBrush"     Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CornerRadius"    Value="10"/>
+        <Setter Property="Background"      Value="{ThemeResource EtherCardIntelligenceBorderGradient}"/>
+        <Setter Property="CornerRadius"    Value="{StaticResource RadiusMd}"/>
         <Setter Property="MinWidth"        Value="392"/>
         <Setter Property="MinHeight"       Value="130"/>
-        <Setter Property="Padding"         Value="0"/>
+        <Setter Property="Padding"         Value="1"/>
     </Style>
 
     <Style x:Key="EtherCardIntelligenceBody" TargetType="Border">
         <Setter Property="Background"      Value="{ThemeResource EtherCardShellFill}"/>
-        <Setter Property="BorderBrush"     Value="{ThemeResource EtherCardIntelligenceOutlineBrush}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius"    Value="{StaticResource RadiusMd}"/>
-        <Setter Property="MinHeight"       Value="130"/>
+        <Setter Property="CornerRadius"    Value="7"/>
+        <Setter Property="MinHeight"       Value="128"/>
         <Setter Property="Padding"         Value="{StaticResource Padding20}"/>
     </Style>
 
