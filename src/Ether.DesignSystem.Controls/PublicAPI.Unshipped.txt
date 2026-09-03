@@ -37,6 +37,10 @@ Ether.DesignSystem.Controls.EtherInput
 Ether.DesignSystem.Controls.EtherInput.EtherInput() -> void
 Ether.DesignSystem.Controls.EtherIntelligenceButton
 Ether.DesignSystem.Controls.EtherIntelligenceButton.EtherIntelligenceButton() -> void
+Ether.DesignSystem.Controls.EtherIntelligenceButton.LeftIcon.get -> Microsoft.UI.Xaml.Controls.IconElement?
+Ether.DesignSystem.Controls.EtherIntelligenceButton.LeftIcon.set -> void
+Ether.DesignSystem.Controls.EtherIntelligenceButton.RightIcon.get -> Microsoft.UI.Xaml.Controls.IconElement?
+Ether.DesignSystem.Controls.EtherIntelligenceButton.RightIcon.set -> void
 Ether.DesignSystem.Controls.EtherMasthead
 Ether.DesignSystem.Controls.EtherMasthead.ActionInvoked -> System.EventHandler<Ether.DesignSystem.Controls.MastheadActionInvokedEventArgs!>?
 Ether.DesignSystem.Controls.EtherMasthead.EnableWindowCommands.get -> bool
@@ -196,6 +200,8 @@ virtual Ether.DesignSystem.Controls.EtherSegmentRadioButton.IsPointerOverEffecti
 virtual Ether.DesignSystem.Controls.EtherSegmentRadioButton.IsPressedEffective.get -> bool
 static readonly Ether.DesignSystem.Controls.EtherButton.RightIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherButton.LeftIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherIntelligenceButton.LeftIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
+static readonly Ether.DesignSystem.Controls.EtherIntelligenceButton.RightIconProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherButton.SizeProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherButton.VariantProperty -> Microsoft.UI.Xaml.DependencyProperty!
 static readonly Ether.DesignSystem.Controls.EtherDropdown.MaxVisibleItemsProperty -> Microsoft.UI.Xaml.DependencyProperty!

@@ -3,19 +3,19 @@
     ===============================================================================
 
     USAGE
-      <controls:EtherIntelligenceButton Content="What's this mean?"/>
+      Default (sparkles + label):
+        <controls:EtherIntelligenceButton Content="What's this mean?"/>
 
-      With icon (stack icon + label in a StackPanel as Content):
-        <controls:EtherIntelligenceButton>
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <Image Width="24" Height="24" Source="ms-appx:///Assets/Icons/Sparkles.svg"/>
-                <TextBlock Text="What's this mean?"
-                           FontFamily="{StaticResource InterFont}"
-                           FontSize="14" FontWeight="SemiBold"
-                           Foreground="{ThemeResource EtherIntelligenceButtonForegroundBrush}"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
+      Replace or clear the leading icon, add a trailing icon (LeftIcon/RightIcon are
+      strongly-typed IconElement slots, exactly like EtherButton; LeftIcon defaults to
+      the sparkles glyph):
+        <controls:EtherIntelligenceButton Content="Summarize">
+            <controls:EtherIntelligenceButton.LeftIcon>
+                <FontIcon Glyph="&#xE945;"/>
+            </controls:EtherIntelligenceButton.LeftIcon>
         </controls:EtherIntelligenceButton>
+
+        <controls:EtherIntelligenceButton Content="No icon" LeftIcon="{x:Null}"/>
 
     VISUAL (Figma node 60438:579)
       Background   EtherIntelligenceButtonBackgroundBrush (BackgroundCanvas)
@@ -24,7 +24,7 @@
                    (component brushes; High Contrast uses SystemColor*)
       CornerRadius 12 (radius/control-lg)
       Padding      pl=8 pr=12 py=8 gap=4
-      Font         Inter SemiBold 14 px (InterFont)
+      Font         Roboto SemiBold 14 px (RobotoFont)
       Text colour  EtherIntelligenceButtonForegroundBrush (TextSecondary)
       Icon         24×24 sparkles icon (Phosphor / custom)
 
@@ -36,7 +36,7 @@
     KEY MEASUREMENTS (Figma source: ursRC201v8IiVeafliI45F · node 1212:4940)
       Padding     pl=8, pr=12, py=8 · gap between icon and text = 4
       Icon        24×24
-      Label       Inter SemiBold 14 px · TextSecondary
+      Label       Roboto SemiBold 14 px · TextSecondary
       CornerRadius 12 (radius/control-lg)
 
     DefaultEtherIntelligenceButtonStyle owns the default setters; the implicit
@@ -160,6 +160,30 @@
                     <VisualState x:Name="Unfocused"/>
                     <VisualState x:Name="PointerFocused"/>
                 </VisualStateGroup>
+                <VisualStateGroup x:Name="LeftIconStates">
+                    <VisualState x:Name="LeftIconVisible">
+                        <VisualState.Setters>
+                            <Setter Target="LeftIcon.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="LeftIconCollapsed">
+                        <VisualState.Setters>
+                            <Setter Target="LeftIcon.Visibility" Value="Collapsed"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="RightIconStates">
+                    <VisualState x:Name="RightIconVisible">
+                        <VisualState.Setters>
+                            <Setter Target="RightIcon.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="RightIconCollapsed">
+                        <VisualState.Setters>
+                            <Setter Target="RightIcon.Visibility" Value="Collapsed"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
 
             <!-- Figma's 0,2,4 brand-blue at 50% drop shadow, approximated with
@@ -207,21 +231,40 @@
                                     Spacing="{StaticResource Spacing4}"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <Image Width="{StaticResource Spacing24}" Height="{StaticResource Spacing24}" Stretch="Uniform"
-                                   AutomationProperties.AccessibilityView="Raw">
-                                <Image.Source>
-                                    <SvgImageSource UriSource="ms-appx:///Assets/Icons/Sparkles.svg"/>
-                                </Image.Source>
-                            </Image>
+                            <ContentPresenter x:Name="LeftIcon"
+                                              Content="{TemplateBinding LeftIcon}"
+                                              Visibility="Collapsed"
+                                              Foreground="{ThemeResource EtherIntelligenceButtonForegroundBrush}"
+                                              HorizontalAlignment="Center"
+                                              HorizontalContentAlignment="Center"
+                                              VerticalAlignment="Center"/>
                             <ContentPresenter x:Name="Cp"
                                               Content="{TemplateBinding Content}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}"
                                               ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                              Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=False}"
                                               VerticalAlignment="Center"
                                               Foreground="{ThemeResource EtherIntelligenceButtonForegroundBrush}"
-                                              FontFamily="{StaticResource InterFont}"
+                                              FontFamily="{StaticResource RobotoFont}"
                                               FontSize="{StaticResource Size14}"
                                               FontWeight="{StaticResource WeightSemibold}"/>
+                            <TextBlock x:Name="TextContent"
+                                       Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Visibility="{Binding UsesTextContentPath, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
+                                       Foreground="{ThemeResource EtherIntelligenceButtonForegroundBrush}"
+                                       FontFamily="{StaticResource RobotoFont}"
+                                       FontSize="{StaticResource Size14}"
+                                       FontWeight="{StaticResource WeightSemibold}"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="NoWrap"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <ContentPresenter x:Name="RightIcon"
+                                              Content="{TemplateBinding RightIcon}"
+                                              Visibility="Collapsed"
+                                              Foreground="{ThemeResource EtherIntelligenceButtonForegroundBrush}"
+                                              HorizontalAlignment="Center"
+                                              HorizontalContentAlignment="Center"
+                                              VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -239,7 +282,7 @@
     <Style x:Key="DefaultEtherIntelligenceButtonStyle" TargetType="controls:EtherIntelligenceButton">
         <Setter Property="Padding"                    Value="8,8,12,8"/>
         <!-- Matches the Cp ContentPresenter's own literal FontSize in
-             EtherIntelligenceButtonTemplate (Figma Inter SemiBold 14 px). The template does not
+             EtherIntelligenceButtonTemplate (Figma Roboto SemiBold 14 px). The template does not
              template-bind Cp.FontSize, so this setter documents the effective size without
              changing rendering. -->
         <Setter Property="FontSize"                   Value="{StaticResource Size14}"/>
