@@ -339,6 +339,11 @@ namespace prefix is omitted in the samples; after declaring
 `xmlns:ether="using:Ether.DesignSystem.Controls"` per §2, just replace `controls:` with your
 own prefix.
 
+> **Want the full picture for one control?** Each control also has a dedicated guide —
+> overview, the complete consumer API (Ether-specific *and* inherited members), binding/wiring, and
+> what the design system owns — under [`docs/consumers/components/`](components/README.md). This
+> section stays as the quick copy-paste markup reference.
+
 **EtherButton** (matches Gallery `Views/Controls/ButtonPage.xaml`):
 ```xml
 <ether:EtherButton Content="Package button"

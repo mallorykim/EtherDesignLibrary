@@ -61,6 +61,9 @@ action, are in the getting-started guide linked below.
 
 ## Where to go next
 
+- [`docs/consumers/components/`](docs/consumers/components/README.md) — **per-component usage
+  guides**: one page per control with its complete consumer API (Ether-specific + inherited),
+  copy-paste markup, binding/wiring, and what the design system owns. Start here to use a control.
 - [`docs/consumers/getting-started.md`](docs/consumers/getting-started.md) — full consumer guide:
   GitHub Packages access, a minimal WinUI 3 app, troubleshooting, known boundaries, a
   copy-paste "appearance → bind data → wire an action" reference for all 17 controls, MVVM
