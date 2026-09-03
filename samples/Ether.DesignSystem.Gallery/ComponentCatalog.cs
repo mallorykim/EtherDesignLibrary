@@ -75,6 +75,7 @@ public static class ComponentCatalog
         new CatalogCategory("Surfaces", new[]
         {
             new ComponentEntry("Card", typeof(CardPage), IsUpdated: true),
+            new ComponentEntry("Tooltip", typeof(TooltipPage), IsUpdated: true),
         }),
         new CatalogCategory("Navigation", new[]
         {

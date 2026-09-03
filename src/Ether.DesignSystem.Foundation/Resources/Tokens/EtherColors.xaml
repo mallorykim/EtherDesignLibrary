@@ -702,8 +702,8 @@
             <SolidColorBrush x:Key="steering/background/track" Color="{StaticResource Gray600}"/>
             <SolidColorBrush x:Key="steering/background/knob" Color="{StaticResource Gray700}"/>
 
-            <!-- Tooltip -->
-            <SolidColorBrush x:Key="tooltip/text" Color="{StaticResource Gray0}"/>
+            <!-- Tooltip (Dark: light surface-inverse fill, so the text is the dark inverse) -->
+            <SolidColorBrush x:Key="tooltip/text" Color="{StaticResource Gray1000}"/>
 
             <!-- Tooltip / Stroke -->
             <SolidColorBrush x:Key="tooltip/stroke/default" Color="{StaticResource Gray150}"/>

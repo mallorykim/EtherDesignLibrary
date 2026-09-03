@@ -22,6 +22,7 @@
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Resources/Foundations/EtherCard.xaml" />
+        <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Resources/Foundations/EtherTooltip.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherIntelligenceButton.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

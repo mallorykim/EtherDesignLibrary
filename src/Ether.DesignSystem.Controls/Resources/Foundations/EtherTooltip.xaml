@@ -1,0 +1,81 @@
+<!--
+    EtherTooltip.xaml - Ether Design System · Tooltip (static UI sample)
+    ═══════════════════════════════════════════════════════════════════════
+
+    WHAT THIS IS
+      A pure visual style - no behavior. It is a keyed Border Style that paints
+      the tooltip surface (inverse fill + 2 px stroke + rounded corners). Drop a
+      Border with this Style anywhere you want the tooltip look; put your text
+      inside it. It carries no hover/dismiss/placement logic - it is just XAML,
+      meant to stand in for a tooltip's appearance.
+
+    USAGE
+        <Border Style="{StaticResource EtherTooltip}">
+            <TextBlock Text="Tooltip"
+                       Style="{StaticResource body/s-regular}"
+                       Foreground="{ThemeResource EtherTooltipForegroundBrush}"
+                       TextWrapping="Wrap"/>
+        </Border>
+
+    KEY MEASUREMENTS (Figma: ursRC201v8IiVeafliI45F
+      Light 62149:577 · Dark 62149:852)
+      Surface   inverse of the page: Light Gray1000 (#000) · Dark Gray0 (#fff)
+      Stroke    2 px · Light Gray600 (#414553) · Dark Gray150 (#dfe7ed)
+      Text      inverse: Light Gray0 (#fff) · Dark Gray1000 (#000)
+      Radius    RadiusMd 8 (outer stroke) · Padding 16,8 · MaxWidth 240
+      Text      body/s-regular style (Inter Regular 12, the DS body font) - set it on
+                the TextBlock plus TextWrapping=Wrap so long copy wraps at MaxWidth
+                (Figma tags this "Body/S Regular (12)")
+
+    CORNER SEAM
+      A single Border with a 2 px stroke would leave a faint gap at the four
+      corners where the inner fill (radius 8-2=6) meets the stroke. BackgroundSizing
+      = OuterBorderEdge extends the fill out to the OUTER edge (radius 8), tucking it
+      under the stroke: the fill corner reads larger, the stroke corner stays 8, and
+      the seam is gone.
+
+    Light/Dark component brushes bind Color to primitive StaticResources.
+    High Contrast uses Windows SystemColor*.
+
+    LOCATION
+      Foundation-level skin merged from the Controls Generic.xaml entry point,
+      beside EtherCard.xaml.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="EtherTooltipBackgroundBrush" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="EtherTooltipForegroundBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherTooltipStrokeBrush"     Color="{StaticResource Gray600}"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="EtherTooltipBackgroundBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherTooltipForegroundBrush" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="EtherTooltipStrokeBrush"     Color="{StaticResource Gray150}"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="EtherTooltipBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="EtherTooltipForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherTooltipStrokeBrush"     Color="{ThemeResource SystemColorWindowTextColor}"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <!-- Static tooltip surface. No template, no states - just the painted chrome. -->
+    <Style x:Key="EtherTooltip" TargetType="Border">
+        <Setter Property="Background"          Value="{ThemeResource EtherTooltipBackgroundBrush}"/>
+        <Setter Property="BorderBrush"         Value="{ThemeResource EtherTooltipStrokeBrush}"/>
+        <Setter Property="BorderThickness"     Value="2"/>
+        <Setter Property="CornerRadius"        Value="{StaticResource RadiusMd}"/>
+        <!-- Fill reaches the outer edge (under the stroke): closes the corner seam. -->
+        <Setter Property="BackgroundSizing"    Value="OuterBorderEdge"/>
+        <Setter Property="Padding"             Value="16,8"/>
+        <!-- Cap width so long copy wraps (pair with TextWrapping=Wrap on the text). -->
+        <Setter Property="MaxWidth"            Value="240"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment"   Value="Top"/>
+    </Style>
+
+</ResourceDictionary>

@@ -69,7 +69,7 @@ try {
         $expectedRoundPageCount = @($result.pageTypes).Count
         if ($result.marker -ne 'ETHER_GALLERY_SMOKE' -or
             $result.outcome -ne 'success' -or
-            $expectedRoundPageCount -ne 20 -or
+            $expectedRoundPageCount -ne 21 -or
             $rounds.Count -ne 2 -or
             $lightRound.Count -ne 1 -or
             $darkRound.Count -ne 1 -or
