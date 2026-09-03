@@ -1,5 +1,9 @@
 # Lessons learned & gotchas (read before touching the runtime harness)
 
+> For the layer *above* this — the `Publish-Internal` release gate chain (DPI determinism flake,
+> `SilentPropertyCoverage` accounting drift, reskin ripples across CI gates, and a pre-flight
+> checklist) — see the repo-root [`LESSONS.md`](../../../../LESSONS.md).
+
 These cost us real serial-failure cycles. Each cycle is a ~8–15 min build+run and the harness aborts
 at the first failing assertion, so an avoidable mistake here is expensive.
 

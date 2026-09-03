@@ -25,6 +25,17 @@ silently blocks the unsigned-MSIX gate (`CS0246` for a control that exists).
   `rm -rf ~/.nuget/packages/ether.designsystem.{controls,foundation,interactions}/<version>` — or
   restore into an isolated `--packages` cache (the way `scripts/Verify-ConsumerFixtures.ps1` does).
 
+## Release & verification gates — read the lessons first
+
+Before running `scripts/Publish-Internal.ps1`, and after **any** reskin, token/font edit, new
+component, or new public dependency property, read **[LESSONS.md](LESSONS.md)**. It records the
+release-gate pitfalls that only surface at rehearsal time — the DPI determinism flake, the
+`SilentPropertyCoverage` accounting drift, and the reskin ripples across otherwise-unrelated CI
+gates — each with a fix and a pre-flight checklist so they do not recur. These gates are **not run
+by hosted CI**, so a fully green PR can still fail the release rehearsal. Runtime-harness gotchas
+(WinUI UIA patterns, shared-fixture state, external-consumer XAML paths) live in
+[`.claude/skills/consumability-review/references/lessons-learned.md`](.claude/skills/consumability-review/references/lessons-learned.md).
+
 ## Core principle: Reuse the official WinUI skeleton — reskin, don't rewrite
 
 Every component in this library is a WinUI 3 control that should **behave identically to its
