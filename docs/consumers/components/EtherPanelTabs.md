@@ -27,9 +27,9 @@ near-black/near-white selected pill instead of the brand-blue one. Same selectio
 Identical to [EtherSegmentedControl](EtherSegmentedControl.md): `ItemsSource` / `ItemTemplate` /
 `DisplayMemberPath` / `SelectedIndex` / `SelectedItem` / `SelectedValue` (all TwoWay-capable),
 `SelectionChanged`, and the user-initiated-only `SelectionCommand` / `SelectionCommandParameter`
-pair. See that page for the selection/command semantics, which apply here unchanged. The visual difference
-is the two style keys: `EtherPanelTabs` on the host and `EtherPanelTabSegment` on each **inline**
-segment.
+pair. See that page for the selection/command semantics, which apply here unchanged. `EtherSegmentPanel.Spacing` (a `double`, default `4`) sets the inter-segment gap. The visual
+difference is the two style keys: `EtherPanelTabs` on the host and `EtherPanelTabSegment` on each
+**inline** segment.
 
 > **Data-driven segments do not get the panel-tab skin.** `ItemsSource`-generated segments are always
 > created with the built-in `EtherSegment` style (the blue segmented-control skin) — the generator
@@ -42,4 +42,4 @@ segment.
 
 The panel-tab skin (track, pill) is fixed by the two styles. Appearance is design-system-owned
 exactly as on `EtherSegmentedControl` — most overrides have no effect, a few *are* honored; see
-[getting-started §4](../getting-started.md#4-known-boundaries) for the authoritative per-property list.
+[getting-started §4](../getting-started.md#4-known-boundaries) for the boundary rules plus the trap-property list.

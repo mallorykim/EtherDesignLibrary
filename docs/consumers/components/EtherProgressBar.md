@@ -39,6 +39,7 @@ system bakes the logic in; you only choose whether to show it and, optionally, h
 |--------|------|--------------|
 | `Value` | `double` | Current progress; the label tracks it live. |
 | `Minimum` / `Maximum` | `double` | Range bounds. |
+| `ValueChanged` | event | Fires when `Value` changes (user or code); observable via the Interactions `ObserveRange` adapter. |
 
 ## Bind & wire
 
@@ -53,7 +54,7 @@ composite format string — set it once, don't bind it per value:
                         HorizontalAlignment="Stretch"/>
 ```
 
-**Wire an action:** none. This is a status indicator with no interaction surface.
+**Wire an action:** none — no user interaction. You *can* observe programmatic progress changes via the inherited `ValueChanged` event (or the Interactions `ObserveRange` adapter).
 
 **Determinate only.** `EtherProgressBar` has no `IsIndeterminate`, error, or paused states — for a
 looping/indeterminate bar use the stock WinUI `ProgressBar`. A `ValueContentConverter` receives the
@@ -66,6 +67,6 @@ The design system provides this control's intended look. Standard appearance pro
 three groups, and which group a given property is in varies by property: some are **template-bound**,
 so overriding them *does* take effect (but departs from the design language); some are **locked**, so
 setting them has no effect; and a few inherited ones are **silent traps** that look settable but do
-nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the
-authoritative, gate-checked per-property breakdown. Prefer the control's intended options over ad-hoc
+nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the gate-checked
+boundary rules plus the trap-property list. Prefer the control's intended options over ad-hoc
 appearance overrides to stay on-brand.

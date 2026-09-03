@@ -26,8 +26,8 @@ free-text/editable mode. Selection binding uses the inherited `Selector`/`ComboB
 
 | Member | Type | What it does |
 |--------|------|--------------|
-| `MaxVisibleItems` | `int` | Cap on rows shown before the popup scrolls. |
-| `MenuGap` | `double` | Gap between the trigger and the open popup. |
+| `MaxVisibleItems` | `int` | Cap on rows shown before the popup scrolls (effective default `6`). |
+| `MenuGap` | `double` | Gap between the trigger and the open popup (effective default `Spacing4`). |
 
 **Standard WinUI members you'll use (inherited):**
 
@@ -38,6 +38,8 @@ free-text/editable mode. Selection binding uses the inherited `Selector`/`ComboB
 | `SelectedValuePath` / `DisplayMemberPath` | `string` | Value/display projections. |
 | `PlaceholderText` | `string` | Shown on the trigger while nothing is selected. |
 | `MaxDropDownHeight` | `double` | Inherited, and it works — composed with `MaxVisibleItems` as an additional pixel ceiling on the popup. |
+| `IsDropDownOpen` | `bool` | Open/close the popup; `DropDownOpened`/`DropDownClosed` events fire with it. |
+| `ItemTemplateSelector` | — | Per-item template selection (open menu only). |
 | `SelectionChanged` | event | Fires on selection change (no `Command`). |
 
 ## Bind & wire
@@ -70,7 +72,7 @@ Setting these has no effect (the control has no editable text part / header slot
 
 | Property | Instead |
 |----------|---------|
-| `IsEditable`, `Text` | Selection-only — no typing. For free text, use [EtherInput](EtherInput.md) or a plain styled `ComboBox`. |
+| `IsEditable`, `Text`, `TextSubmitted` | Selection-only — no editable-text part, so these do nothing. For free text use [EtherInput](EtherInput.md) or a plain styled `ComboBox`; observe picks with `SelectionChanged`. |
 | `Header`, `HeaderTemplate` | Build the label markup outside the control (a `TextBlock` above it). |
 | `Description` | Place a second `TextBlock` below the control. |
 | `PlaceholderForeground` | `PlaceholderText` itself works; its color is not template-bound — use an external placeholder treatment if the color must be controlled. |
@@ -81,6 +83,6 @@ The design system provides this control's intended look. Standard appearance pro
 three groups, and which group a given property is in varies by property: some are **template-bound**,
 so overriding them *does* take effect (but departs from the design language); some are **locked**, so
 setting them has no effect; and a few inherited ones are **silent traps** that look settable but do
-nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the
-authoritative, gate-checked per-property breakdown. Prefer the control's intended options over ad-hoc
+nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the gate-checked
+boundary rules plus the trap-property list. Prefer the control's intended options over ad-hoc
 appearance overrides to stay on-brand.

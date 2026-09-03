@@ -25,7 +25,7 @@ A single-select radio button. Reskins WinUI's `RadioButton`. Same two-state coer
 | `IsChecked` | `bool?` | Selected state (TwoWay). Two-state: `null` coerces to `false`. |
 | `GroupName` | `string` | Radios sharing a `GroupName` are mutually exclusive. |
 | `Content` | `object` | Label. |
-| `Command` / `CommandParameter` | `ICommand` / `object` | Fires once per selection. |
+| `Command` / `CommandParameter` | `ICommand` / `object` | Fires on user **activation** (including activating an already-selected radio), **not** on a programmatic/bound `IsChecked` change. |
 
 ## Bind & wire
 
@@ -41,7 +41,8 @@ A single-select radio button. Reskins WinUI's `RadioButton`. Same two-state coer
 Proven at `RuntimeVerification.R2.cs:78-86` (TwoWay) and group-name mutual exclusion
 (`RadioButtonVerification.GroupNameMutualExclusionVerified`).
 
-`Command`/`CommandParameter` fire once per selection:
+`Command`/`CommandParameter` fire on user activation (a radio can be activated again while already
+selected), not on a programmatic `IsChecked` change:
 
 ```xml
 <ether:EtherRadioButton GroupName="delivery-speed" Content="Express"
@@ -57,6 +58,6 @@ The design system provides this control's intended look. Standard appearance pro
 three groups, and which group a given property is in varies by property: some are **template-bound**,
 so overriding them *does* take effect (but departs from the design language); some are **locked**, so
 setting them has no effect; and a few inherited ones are **silent traps** that look settable but do
-nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the
-authoritative, gate-checked per-property breakdown. Prefer the control's intended options over ad-hoc
+nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the gate-checked
+boundary rules plus the trap-property list. Prefer the control's intended options over ad-hoc
 appearance overrides to stay on-brand.

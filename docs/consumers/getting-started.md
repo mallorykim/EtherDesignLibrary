@@ -812,9 +812,12 @@ brand-blue one:
 `ItemsSource`/`ItemTemplate`/`DisplayMemberPath`/`SelectedIndex`/`SelectedItem`/`SelectedValue`
 (all `TwoWay`-capable), `SelectionChanged`, and the user-initiated-only `SelectionCommand`/
 `SelectionCommandParameter` pair. Swapping `Style="{StaticResource EtherPanelTabs}"` on the host
-and `Style="{StaticResource EtherPanelTabSegment}"` on each segment for `EtherSegmentedControl`'s
-defaults is the only difference — see the `EtherSegmentedControl` entry above for the
-data-driven and `SelectionCommand` markup, which applies here unchanged.
+and `Style="{StaticResource EtherPanelTabSegment}"` on each **inline** segment for
+`EtherSegmentedControl`'s defaults is the visual difference; the selection/command contract is
+shared. **Note:** `ItemsSource`-generated segments are always created with the built-in `EtherSegment`
+(blue) style — the generator has no per-item style hook — so a data-driven Panel Tabs renders with
+the segmented-control skin, not the panel-tab one. Author inline `EtherSegmentRadioButton`s with
+`EtherPanelTabSegment` for the panel-tab look.
 
 **EtherScrollBar** (`Views/Foundations/ScrollBarPage.xaml`) — once `DesignSystem.xaml` is
 merged, this applies implicitly to the native `ScrollBar`/`ScrollViewer`; no extra `Style=`

@@ -61,6 +61,15 @@ Data-driven — bind a collection and a selection:
 `GroupName`, and the native `Command`/`CommandParameter`. Wrap the segments in an
 `EtherSegmentPanel` (its `Spacing` property, a `double`, default `4`, sets the inter-segment gap).
 
+`EtherSegmentRadioButton` is also designed to be **subclassed**: it exposes the protected part-name
+constants `HoverLayerPartName`/`PressedLayerPartName`/`CheckedLayerPartName`, the virtual
+`IsPointerOverEffective`/`IsPressedEffective`, and `UpdateSegmentVisual()` for a custom segment
+visual.
+
+> **Accessibility:** the host is a `ContentControl`, not a `Selector`, so it exposes **no** host-level
+> UIA Selection provider. Automation clients read selection from each `EtherSegmentRadioButton`'s
+> `SelectionItem` pattern, not from the control.
+
 ## Bind & wire
 
 `ItemsSource` + `DisplayMemberPath`/`ItemTemplate` + `SelectedIndex`/`SelectedItem`/`SelectedValue`
@@ -99,8 +108,7 @@ zero when `CanExecute` is `false`.
 The design system provides the segmented-control look (the selected pill). Standard appearance
 properties vary — some are **template-bound** (overriding works but departs from the design
 language), some are **locked**, and a few are **silent traps** — so use
-[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property
-breakdown rather than assuming.
+[getting-started §4](../getting-started.md#4-known-boundaries) as the boundary rules plus the trap-property list rather than assuming.
 
 ## Related
 

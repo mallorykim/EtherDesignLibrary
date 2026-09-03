@@ -1,8 +1,8 @@
 # EtherCheckbox
 
 A two-state checkbox. Reskins WinUI's `CheckBox` (a `ToggleButton`). Deliberately **two-state only**
-— it is not three-state; setting `IsThreeState=true` is rejected and a `null` `IsChecked` coerces to
-`false`.
+— it is not three-state; `IsThreeState=true` is silently coerced back to `false` (no exception), and a
+`null` `IsChecked` coerces to `false`.
 
 - **Type:** `Ether.DesignSystem.Controls.EtherCheckbox` (real control)
 - **Base:** `Microsoft.UI.Xaml.Controls.CheckBox`
@@ -23,7 +23,7 @@ A two-state checkbox. Reskins WinUI's `CheckBox` (a `ToggleButton`). Deliberatel
 |--------|------|--------------|
 | `IsChecked` | `bool?` | Checked state (TwoWay). Two-state: `null` coerces to `false`. |
 | `Content` | `object` | Label. |
-| `Command` / `CommandParameter` | `ICommand` / `object` | Fires on every check/uncheck. |
+| `Command` / `CommandParameter` | `ICommand` / `object` | Fires on user **activation** (a click/toggle), **not** on a programmatic/bound `IsChecked` change. Use `Checked`/`Unchecked` to observe every state change. |
 | `Checked` / `Unchecked` | events | Code-behind alternatives to `Command`. |
 
 ## Bind & wire
@@ -37,7 +37,8 @@ Bind a plain `bool` VM property TwoWay (only read the transient `null` if you de
 
 Proven at `RuntimeVerification.R2.cs:68-76` (`VerifyTwoWayBindings`).
 
-As a `ToggleButton`, `Command`/`CommandParameter` fire on every toggle. Most apps need only one of
+As a `ToggleButton`, `Command`/`CommandParameter` fire on user activation (not on a programmatic
+`IsChecked` change). Most apps need only one of
 `IsChecked` TwoWay **or** `Command` — add `Command` only when something besides the bound state
 (telemetry, a save) must run on toggle:
 
@@ -55,5 +56,4 @@ The design system provides this control's look. Standard appearance properties v
 some are **template-bound** (overriding works but departs from the design language), some are
 **locked** (no effect), and a few inherited ones are **silent traps**. `IsThreeState` is locked —
 this control is two-state (`IsChecked=null` coerces to `false`). See
-[getting-started §4](../getting-started.md#4-known-boundaries) for the authoritative per-property
-breakdown.
+[getting-started §4](../getting-started.md#4-known-boundaries) for the boundary rules plus the trap-property list.

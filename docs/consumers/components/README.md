@@ -22,7 +22,7 @@ below assumes you have declared `xmlns:ether="using:Ether.DesignSystem.Controls"
 - **Appearance & overrides** — how appearance properties behave: some are template-bound (overriding
   works but departs from the design language), some are locked (no effect), and a few inherited ones
   are silent traps. Each page points to [getting-started §4](../getting-started.md#4-known-boundaries),
-  the authoritative per-property breakdown.
+  the boundary rules plus the trap-property list.
 
 ## Controls
 

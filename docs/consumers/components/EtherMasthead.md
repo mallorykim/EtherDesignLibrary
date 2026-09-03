@@ -22,11 +22,9 @@ affordances (menu, search, settings, chevron).
 
 | Member | Type | What it does |
 |--------|------|--------------|
-| `EnableWindowCommands` | `bool` | Enable the minimize/maximize/close caption buttons. |
-| `ShowChevron` | `bool` | Show the chevron affordance. |
-| `ShowMenuIcon` | `bool` | Show the menu icon. |
-| `ShowSearch` | `bool` | Show the search affordance. |
-| `ShowSettings` | `bool` | Show the settings affordance. |
+| `EnableWindowCommands` | `bool` | Default `true`. Whether the caption buttons **invoke host window commands** (and whether `ActionInvoked` fires). It does **not** hide or disable the buttons — when `false` they are still shown, but clicking them does nothing. |
+| `ShowSettings` | `bool` | Show the settings affordance (default `true`). |
+| `ShowSearch` / `ShowMenuIcon` / `ShowChevron` | `bool` | Show each affordance (default `false`). |
 | `ActionInvoked` | event `MastheadActionInvokedEventArgs` | Reports which caption action fired (`Action`: `MastheadAction.Minimize`/`MaximizeRestore`/`Close`). |
 
 ## Bind & wire
@@ -58,6 +56,6 @@ The design system provides this control's intended look. Standard appearance pro
 three groups, and which group a given property is in varies by property: some are **template-bound**,
 so overriding them *does* take effect (but departs from the design language); some are **locked**, so
 setting them has no effect; and a few inherited ones are **silent traps** that look settable but do
-nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the
-authoritative, gate-checked per-property breakdown. Prefer the control's intended options over ad-hoc
+nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the gate-checked
+boundary rules plus the trap-property list. Prefer the control's intended options over ad-hoc
 appearance overrides to stay on-brand.

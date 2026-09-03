@@ -1,6 +1,6 @@
 # EtherInput
 
-A single-line text field. Reskins WinUI's `TextBox`, so `Text`, typing behavior, and accessibility
+A single-line text field **by default** (inherited multiline settings like `AcceptsReturn`/`TextWrapping` still work). Reskins WinUI's `TextBox`, so `Text`, typing behavior, and accessibility
 are the platform's. By deliberate design it has **no built-in header/description slots** — lay those
 out yourself.
 
@@ -69,5 +69,4 @@ appearance properties are **template-bound** and *do* take effect (for example `
 `HorizontalTextAlignment`, and `HorizontalContentAlignment`), and base-`TextBox` behaviors work
 (`IsReadOnly`, `AcceptsReturn`, `CharacterCasing`). Some appearance properties are **locked**, and the
 `Header`/`HeaderTemplate`/`Description` slots are dropped (see above). Use
-[getting-started §4](../getting-started.md#4-known-boundaries) for the authoritative per-property
-breakdown.
+[getting-started §4](../getting-started.md#4-known-boundaries) for the boundary rules plus the trap-property list.

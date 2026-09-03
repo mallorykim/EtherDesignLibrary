@@ -19,9 +19,10 @@ always-visible 6 px overlay (persistent-only).
 
 ## Consumer API
 
-None. The style applies implicitly and adds no Ether-specific properties or events. To observe
-scroll position, bind the native `ScrollViewer` APIs (`ViewChanged`, `VerticalOffset`, …) directly —
-nothing here is Ether-owned.
+No Ether-specific members. Inside a `ScrollViewer` (above), observe scroll position via the native
+`ScrollViewer` APIs (`ViewChanged`, `VerticalOffset`, …). If you place a **styled `ScrollBar`
+directly**, its inherited `RangeBase` surface works — `Minimum`, `Maximum`, `Value`, `ValueChanged`,
+`Orientation` (and the Interactions `ObserveRange` adapter). Nothing here is Ether-owned.
 
 ## Persistent-only — important limitation
 

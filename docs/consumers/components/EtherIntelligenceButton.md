@@ -59,6 +59,6 @@ The design system provides this control's intended look. Standard appearance pro
 three groups, and which group a given property is in varies by property: some are **template-bound**,
 so overriding them *does* take effect (but departs from the design language); some are **locked**, so
 setting them has no effect; and a few inherited ones are **silent traps** that look settable but do
-nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the
-authoritative, gate-checked per-property breakdown. Prefer the control's intended options over ad-hoc
+nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the gate-checked
+boundary rules plus the trap-property list. Prefer the control's intended options over ad-hoc
 appearance overrides to stay on-brand.

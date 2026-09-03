@@ -33,7 +33,12 @@ A horizontal tab strip. A thin `ListView` subclass, so selection binding uses th
 |--------|------|--------------|
 | `ItemsSource` | `object` | Bound tab collection. |
 | `SelectedIndex` / `SelectedItem` | — | Selection (TwoWay-capable). `SelectedItem` is the `EtherTabItem` container for inline tabs, but the bound **model** for `ItemsSource` tabs. |
+| `SelectedValue` / `SelectedValuePath` | — | Stable model-key selection (TwoWay). |
+| `SelectionMode` | `ListViewSelectionMode` | Ships as `Single`. |
+| `ItemTemplate` / `ItemTemplateSelector` | — | Template data-bound tabs (icons still need inline `EtherTabItem`). |
 | `SelectionChanged` | event | Fires on selection change (no `Command`). |
+
+Per-item `EtherTabItem` also exposes the inherited `IsSelected` and `IsEnabled`.
 
 ## Bind & wire
 
@@ -61,5 +66,4 @@ No `Command`; bind the native `SelectionChanged`:
 The design system provides the tab-strip look. Standard appearance properties on the strip and each
 `EtherTabItem` vary — some are **template-bound** (overriding works but departs from the design
 language), some are **locked**, and a few are **silent traps** — so use
-[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property
-breakdown.
+[getting-started §4](../getting-started.md#4-known-boundaries) as the boundary rules plus the trap-property list.

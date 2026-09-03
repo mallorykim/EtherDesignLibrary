@@ -93,11 +93,12 @@ expected parameter.
 
 ## Appearance & overrides
 
-`EtherButton`'s look comes from `Variant`/`Size`. Most standard appearance properties — `Background`,
-`BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding`, `Foreground`, `FontSize`, `FontWeight`,
-and both `*ContentAlignment`s — are actually **template-bound**, so overriding them *does* take
-effect; it just departs from the variant look, so prefer `Variant`/`Size`. A few are genuinely
-**locked** (no effect): `CharacterSpacing`, `FontStretch` (and low-level
-`BackgroundSizing`/`CompositeMode`). See
-[getting-started §4](../getting-started.md#4-known-boundaries) for the authoritative per-property
-breakdown.
+`EtherButton`'s look comes from `Variant`/`Size`, and **which overrides take effect depends on the
+variant**. The **Primary** template template-binds `Background`, `BorderBrush`, `CornerRadius`,
+`Padding`, `Foreground`, `FontSize`, `FontWeight`, and alignment — overriding those works (but
+departs from the look). The **Secondary**/**Tertiary** templates hard-code most of those (background,
+radius, foreground, fonts) to their variant tokens, so only a few (`Padding`, alignment, `FontSize`;
+`BorderThickness` on Secondary) respond to an override. `CharacterSpacing`/`FontStretch` and
+low-level `BackgroundSizing`/`CompositeMode` are always inert. Prefer `Variant`/`Size` over ad-hoc
+overrides. See
+[getting-started §4](../getting-started.md#4-known-boundaries) for the boundary rules plus the trap-property list.
