@@ -401,8 +401,8 @@ per-value (`EtherProgressBar.cs:60-93`):
                         HorizontalAlignment="Stretch"/>
 ```
 
-**Wire an action:** none. `EtherProgressBar` is a read-only status indicator with no interaction
-surface — there is nothing to "wire".
+**Wire an action:** none — no user interaction. You *can* observe code/binding-driven progress
+changes via the inherited `ValueChanged` event (or the Interactions `ObserveRange` adapter).
 
 **EtherCheckbox** (`Views/Controls/CheckboxPage.xaml`):
 ```xml
@@ -767,8 +767,8 @@ of styles applied on top of `Border`, in three variants: `Normal`/`Intelligence`
 ```
 
 **Bind data / wire an action:** none. `EtherCard` is a set of keyed `Style`s on `Border`, not a
-type with its own dependency properties — put bound content (a title, body text, an icon) in the
-`Border`'s children the same way you would with a plain `Border`. There is no Ether-specific
+type with its own dependency properties — put bound content in the
+`Border`'s single `Child` (wrap multiple elements in a panel) the same way you would with a plain `Border`. There is no Ether-specific
 property to bind and no interaction surface to wire; a card is a static surface, not a control.
 
 **EtherTooltip** (`Views/Surfaces/TooltipPage.xaml`) — likewise not a standalone type; it is a
@@ -784,7 +784,7 @@ light, light on dark):
 ```
 
 **Bind data / wire an action:** none. `EtherTooltip` is a keyed `Style` on `Border`, not a type
-with its own dependency properties — `MaxWidth="240"` is baked into the `Border` style, while the
+with its own dependency properties — `MaxWidth="240"`, `BorderThickness="2"`, and `HorizontalAlignment="Left"`/`VerticalAlignment="Top"` (so it hugs its content rather than stretching) are baked into the `Border` style, while the
 child `TextBlock`'s `body/s-regular` style, `EtherTooltipForegroundBrush` foreground, and
 `TextWrapping="Wrap"` are markup you apply, so pair the `TextBlock`'s `Text` with `TextWrapping="Wrap"` the way the
 sample above does and longer copy wraps on its own. There is no Ether-specific property to bind

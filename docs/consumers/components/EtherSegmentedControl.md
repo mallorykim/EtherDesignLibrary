@@ -49,7 +49,7 @@ Data-driven — bind a collection and a selection:
 | `DisplayMemberPath` | `string?` | Property path used to render each generated segment's content. |
 | `ItemTemplate` | `DataTemplate?` | Template for each generated segment (alternative to `DisplayMemberPath`). Applies to **non-string** model items only; a string `ItemsSource` bypasses it and renders the raw string. |
 | `SelectedIndex` | `int` | Selected position; `TwoWay`-capable. |
-| `SelectedItem` | `object?` | Selected data item; `TwoWay`-capable. |
+| `SelectedItem` | `object?` | `TwoWay`-capable. For **inline** segments this holds the same computed value as `SelectedValue` (`Tag` ?? `Content`), **not** the `EtherSegmentRadioButton` container; for **generated** segments it is the source item. |
 | `SelectedValue` | `object?` | Selected value; `TwoWay`-capable. For **inline** segments it is the segment's `Tag` (falling back to `Content`); for **generated** segments it is the source item. There is no `SelectedValuePath`. |
 | `SelectionChanged` | event `SegmentedSelectionChangedEventArgs` | Fires on **every** selection change (user or programmatic); carries `OldValue`/`NewValue`. |
 | `SelectionCommand` | `ICommand?` | Fires **only on user-initiated** selection (never on a programmatic `Selected*` assignment). Guarded by `CanExecute`. |

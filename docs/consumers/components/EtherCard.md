@@ -23,7 +23,7 @@ static surface, not a control.
 ## Consumer API
 
 None. `EtherCard` is a set of keyed `Style`s on `Border`, with no Ether-specific properties and no
-interaction surface. Put your content (title, body, icon) in the `Border`'s children exactly as you
+interaction surface. Put your content in the `Border`'s single `Child` (wrap multiple elements in a panel), exactly as you
 would with a plain `Border`, and bind that content normally.
 
 Pick the variant by choosing the outer style key — `EtherCardNormal`, `EtherCardIntelligence`, or

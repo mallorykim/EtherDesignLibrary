@@ -40,8 +40,9 @@ difference is the two style keys: `EtherPanelTabs` on the host and `EtherPanelTa
 > resource (based on `EtherPanelTabSegment`) in the control's/page's `Resources` so generated segments
 > pick up the panel-tab skin.
 
-## Design-system-owned
+## Appearance & overrides
 
-The panel-tab skin (track, pill) is fixed by the two styles. Appearance is design-system-owned
-exactly as on `EtherSegmentedControl` — most overrides have no effect, a few *are* honored; see
+The panel-tab skin (track, pill) is fixed by the two styles. Because this *is* `EtherSegmentedControl`,
+appearance behaves exactly as there — some properties are template-bound (overriding works but
+departs from the design language), some are locked, and a few are silent traps; see
 [getting-started §4](../getting-started.md#4-known-boundaries) for the boundary rules plus the trap-property list.
