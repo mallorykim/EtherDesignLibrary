@@ -49,6 +49,11 @@ standard `Value`/`Minimum`/`Maximum` contract.
                    HorizontalAlignment="Stretch"/>
 ```
 
+**Label / stop notes:** at most 11 custom `Labels` render; empty `Labels` auto-generate; labels are
+UI-only; an empty `Stops` can be inferred from the labels; `SnapToStops` wins over `StepFrequency`; a
+non-positive `StepFrequency` disables uniform snapping; and `FormatValue` returns a current-culture,
+rounded whole number.
+
 **Wire an action:** `ValueChanged` fires on **every tick** (same caveat as `EtherSteeringBar`) —
 debounce if you only care about the settled value:
 
@@ -57,11 +62,12 @@ debounce if you only care about the settled value:
                    ValueChanged="{x:Bind ViewModel.OnVolumeChanged}"/>
 ```
 
-## Design-system-owned appearance
+## Appearance & overrides
 
-The design system owns this control's look. Most standard appearance properties — background,
-borders, corner radius, colors, most typography, padding, content alignment — are
-**design-system-owned**: setting them typically has no visible effect, by design, so every consuming
-app stays consistent. A few *are* honored by the template, and which ones varies by control — so
-treat [getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative
-per-property list (inert vs. consumed), not this summary.
+The design system provides this control's intended look. Standard appearance properties fall into
+three groups, and which group a given property is in varies by property: some are **template-bound**,
+so overriding them *does* take effect (but departs from the design language); some are **locked**, so
+setting them has no effect; and a few inherited ones are **silent traps** that look settable but do
+nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the
+authoritative, gate-checked per-property breakdown. Prefer the control's intended options over ad-hoc
+appearance overrides to stay on-brand.

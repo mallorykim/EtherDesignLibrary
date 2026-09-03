@@ -15,14 +15,19 @@ below assumes you have declared `xmlns:ether="using:Ether.DesignSystem.Controls"
 
 - **Use it** — the exact markup shape the out-of-repo consumer test exercises; copy it.
 - **Consumer API** — the members Ether *adds* and the standard WinUI members that work normally (one
-  or two tables; some controls add nothing of their own). If a member isn't listed, assume the design
-  system owns it (see the last section).
+  or two tables; some controls add nothing of their own). A member not listed here is *not*
+  automatically inert — an inherited property may be overridable, locked, or a silent trap; check
+  [getting-started §4](../getting-started.md#4-known-boundaries).
 - **Bind & wire** — the proven MVVM/`x:Bind`/`Command` paths, with the fixture that proves each.
-- **Design-system-owned** — appearance the design system owns. Setting most of these has no effect
-  (a few properties *are* honored; each page points to the authoritative per-property list). It's not
-  an error — it keeps every consuming app visually consistent.
+- **Appearance & overrides** — how appearance properties behave: some are template-bound (overriding
+  works but departs from the design language), some are locked (no effect), and a few inherited ones
+  are silent traps. Each page points to [getting-started §4](../getting-started.md#4-known-boundaries),
+  the authoritative per-property breakdown.
 
 ## Controls
+
+> Grouping below is a reading aid; the canonical taxonomy (11 Controls + 2 Surfaces + 3 Navigation +
+> 1 Data Display) lives in `samples/Ether.DesignSystem.Gallery/ComponentCatalog.cs`.
 
 ### Actions
 - [EtherButton](EtherButton.md) — primary/secondary/tertiary button with optional icon slots.
@@ -54,7 +59,9 @@ below assumes you have declared `xmlns:ether="using:Ether.DesignSystem.Controls"
 Some entries are **real Ether types** (a C# class you place as `<ether:EtherButton .../>`); others
 are **style-only resources** — a keyed `Style` you apply to an existing control
 (`<ToggleSwitch Style="{StaticResource EtherSwitch}"/>`), with no new type. Each page says which it
-is at the top. Style-only ones (Card, Tooltip, PanelTabs, Switch, ScrollBar) expose the underlying
+is at the top. A couple of public types are template-implementation only, not consumer controls: `HandContentControl`
+and `EtherStringContentVisibilityConverter` (its `ConvertBack` throws). Use the named `Ether*`
+controls instead. Style-only ones (Card, Tooltip, PanelTabs, Switch, ScrollBar) expose the underlying
 control's own API — the design system only changes their skin. For most of them the underlying
 control is a stock WinUI one; for **PanelTabs** it is the Ether type `EtherSegmentedControl` (styled
 with `EtherPanelTabs`/`EtherPanelTabSegment`).

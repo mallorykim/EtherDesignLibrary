@@ -49,11 +49,11 @@ As a `ToggleButton`, `Command`/`CommandParameter` fire on every toggle. Most app
 
 Proven at `R2.cs:379, 400-412` (`VerifyToggleCommand`).
 
-## Design-system-owned appearance
+## Appearance & overrides
 
-The design system owns this control's look. Most standard appearance properties — background,
-borders, corner radius, colors, most typography, padding, content alignment — are
-**design-system-owned**: setting them typically has no visible effect. `IsThreeState` is also inert
-(this control is two-state). A few appearance properties *are* honored by the template — treat
-[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property list
-(inert vs. consumed), not this summary.
+The design system provides this control's look. Standard appearance properties vary by property:
+some are **template-bound** (overriding works but departs from the design language), some are
+**locked** (no effect), and a few inherited ones are **silent traps**. `IsThreeState` is locked —
+this control is two-state (`IsChecked=null` coerces to `false`). See
+[getting-started §4](../getting-started.md#4-known-boundaries) for the authoritative per-property
+breakdown.

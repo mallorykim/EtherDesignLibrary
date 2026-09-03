@@ -28,9 +28,13 @@ would with a plain `Border`, and bind that content normally.
 
 Pick the variant by choosing the outer style key — `EtherCardNormal`, `EtherCardIntelligence`, or
 `EtherCardCalloutShell` — with its matching `…Body` inner style (see the Gallery
-`Views/Surfaces/CardPage.xaml`).
+`Views/Surfaces/CardPage.xaml`). The `Callout` variant is a composite (an outer shell plus a separate
+header region and `EtherCardCalloutBody`), so copy its Gallery markup rather than the simple
+Normal shell+body shown above.
 
-## Design-system-owned
+## Appearance & overrides
 
-The card's chrome (surface color, radius, elevation, insets) is fixed by the style. There is nothing
-to override — to change the look, choose a different variant or don't use the style.
+Every card value comes from ordinary `Style` setters, so you *can* locally override a property on the
+`Border` and it takes effect — but that departs from the design treatment, so prefer choosing a
+variant. Each outer style also imposes a **minimum size** that affects layout: `EtherCardNormal`
+392x172, `EtherCardIntelligence` 392x130, `EtherCardCalloutShell` 394x206 (DIPs).

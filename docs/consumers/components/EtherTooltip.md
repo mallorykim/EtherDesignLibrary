@@ -20,14 +20,17 @@ keyed `Style` on `Border`. This is a **visual surface only**, not the WinUI `Too
 
 ## Consumer API
 
-None. `MaxWidth="240"` and the `body/s-regular` text style are baked into the style; pair the
-`TextBlock`'s `Text` with `TextWrapping="Wrap"` (as above) and longer copy wraps on its own. There
-is no Ether-specific property to bind and no interaction to wire.
+None. The `EtherTooltip` style sets only the `Border` chrome (inverse surface, radius, padding, and
+`MaxWidth="240"`). It does **not** style the child: the `body/s-regular` text style,
+`EtherTooltipForegroundBrush`, and `TextWrapping="Wrap"` shown above are **required markup you apply
+to the child `TextBlock`**, not baked into the style. There is no Ether-specific property to bind and
+no interaction to wire.
 
 If you need actual hover-triggered tooltip behavior, use WinUI's `ToolTipService` and place this
 styled `Border` (or its content) as the tooltip's content.
 
-## Design-system-owned
+## Appearance & overrides
 
-The tooltip chrome (inverse surface, radius, padding, max width, text style) is fixed by the style —
-there is nothing to override.
+The `Border` chrome (inverse surface, radius, padding, `MaxWidth`) comes from the style; the child
+`TextBlock`'s typography is yours to set (use `body/s-regular` + `EtherTooltipForegroundBrush` to
+match the design). You *can* override the `Border` properties, but that departs from the design.

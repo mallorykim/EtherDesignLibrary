@@ -29,7 +29,8 @@ nothing here is Ether-owned.
 > `ScrollingIndicatorStates`/`NoIndicator` groups, so it does **not** auto-hide when idle, expand on
 > hover, or fade when disabled the way a native `ScrollBar` does — it is always rendered as a 6 px
 > overlay. If your app needs auto-hide / consciousness-of-idle behavior, **do not rely on this
-> implicit style** — set an explicit `Style=` (the native default, or your own).
+> implicit style** — set an explicit `Style=` (the native default, or your own). The template also omits **stepper
+> arrows**; if you need line-up/line-down arrow buttons, use a different explicit style.
 
 ## Design-system-owned
 

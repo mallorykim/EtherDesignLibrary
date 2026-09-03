@@ -37,6 +37,7 @@ free-text/editable mode. Selection binding uses the inherited `Selector`/`ComboB
 | `SelectedItem` / `SelectedIndex` / `SelectedValue` | — | Selection (TwoWay-capable). |
 | `SelectedValuePath` / `DisplayMemberPath` | `string` | Value/display projections. |
 | `PlaceholderText` | `string` | Shown on the trigger while nothing is selected. |
+| `MaxDropDownHeight` | `double` | Inherited, and it works — composed with `MaxVisibleItems` as an additional pixel ceiling on the popup. |
 | `SelectionChanged` | event | Fires on selection change (no `Command`). |
 
 ## Bind & wire
@@ -74,11 +75,12 @@ Setting these has no effect (the control has no editable text part / header slot
 | `Description` | Place a second `TextBlock` below the control. |
 | `PlaceholderForeground` | `PlaceholderText` itself works; its color is not template-bound — use an external placeholder treatment if the color must be controlled. |
 
-## Design-system-owned appearance
+## Appearance & overrides
 
-The design system owns this control's look. Most standard appearance properties — background,
-borders, corner radius, colors, most typography, padding, content alignment — are
-**design-system-owned**: setting them typically has no visible effect, by design, so every consuming
-app stays consistent. A few *are* honored by the template, and which ones varies by control — so
-treat [getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative
-per-property list (inert vs. consumed), not this summary.
+The design system provides this control's intended look. Standard appearance properties fall into
+three groups, and which group a given property is in varies by property: some are **template-bound**,
+so overriding them *does* take effect (but departs from the design language); some are **locked**, so
+setting them has no effect; and a few inherited ones are **silent traps** that look settable but do
+nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the
+authoritative, gate-checked per-property breakdown. Prefer the control's intended options over ad-hoc
+appearance overrides to stay on-brand.

@@ -27,11 +27,16 @@ near-black/near-white selected pill instead of the brand-blue one. Same selectio
 Identical to [EtherSegmentedControl](EtherSegmentedControl.md): `ItemsSource` / `ItemTemplate` /
 `DisplayMemberPath` / `SelectedIndex` / `SelectedItem` / `SelectedValue` (all TwoWay-capable),
 `SelectionChanged`, and the user-initiated-only `SelectionCommand` / `SelectionCommandParameter`
-pair. See that page for the data-driven and command markup, which applies here unchanged.
+pair. See that page for the selection/command semantics, which apply here unchanged. The visual difference
+is the two style keys: `EtherPanelTabs` on the host and `EtherPanelTabSegment` on each **inline**
+segment.
 
-The **only** difference is the two style keys: `EtherPanelTabs` on the host and
-`EtherPanelTabSegment` on each segment (instead of `EtherSegmentedControl`'s defaults /
-`EtherSegment`).
+> **Data-driven segments do not get the panel-tab skin.** `ItemsSource`-generated segments are always
+> created with the built-in `EtherSegment` style (the blue segmented-control skin) — the generator
+> hard-codes it and has no per-item style hook. So for Panel Tabs, author **inline**
+> `EtherSegmentRadioButton`s with `Style="{StaticResource EtherPanelTabSegment}"` (as above). Data
+> binding still works, but data-driven Panel Tab segments render with the default segmented-control
+> skin, not the panel-tab one.
 
 ## Design-system-owned
 

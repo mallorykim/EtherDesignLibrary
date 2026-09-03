@@ -722,8 +722,9 @@ executes and cannot be cancelled (`EtherMasthead.xaml.cs:120, 543/561/585`):
 ```xml
 <ether:EtherMasthead ActionInvoked="{x:Bind ViewModel.OnMastheadAction}"/>
 ```
-The optional menu/settings/search icon slots are decorative only (no built-in click hook) — wire a
-real action via `ObserveMasthead` (§7 below) or your own icon overlay if you need one.
+The optional menu/settings/search/chevron icon slots are decorative only (no built-in click hook);
+`ObserveMasthead` observes only the caption buttons (`ActionInvoked`), not these slots — place your
+own interactive control beside the masthead if one of them needs to act.
 
 **EtherSwitch** (`Views/Controls/ToggleSwitchPage.xaml`) — not a standalone type; it is a
 style applied on top of the native `ToggleSwitch`:
@@ -780,8 +781,9 @@ light, light on dark):
 ```
 
 **Bind data / wire an action:** none. `EtherTooltip` is a keyed `Style` on `Border`, not a type
-with its own dependency properties — `MaxWidth="240"` and the `body/s-regular` text style are
-baked into the style, so pair the `TextBlock`'s `Text` with `TextWrapping="Wrap"` the way the
+with its own dependency properties — `MaxWidth="240"` is baked into the `Border` style, while the
+child `TextBlock`'s `body/s-regular` style, `EtherTooltipForegroundBrush` foreground, and
+`TextWrapping="Wrap"` are markup you apply, so pair the `TextBlock`'s `Text` with `TextWrapping="Wrap"` the way the
 sample above does and longer copy wraps on its own. There is no Ether-specific property to bind
 and no interaction surface to wire; this is a static visual surface, not the WinUI `ToolTip`/
 `ToolTipService` — it carries no hover/dismiss/placement behavior of its own.

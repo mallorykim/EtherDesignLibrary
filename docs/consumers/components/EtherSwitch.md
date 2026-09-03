@@ -27,6 +27,11 @@ Standard `ToggleSwitch` members (there is no Ether-specific API):
 | `OnContent` / `OffContent` | `object` | Labels for each state. |
 | `Toggled` | event | Fires on toggle. |
 
+## Not honored
+
+The `EtherSwitch` style collapses the `Header`/`HeaderTemplate` slot (permanently) — setting them
+has no effect. Use an external label layout, as with `EtherInput`/`EtherDropdown`.
+
 ## Bind & wire
 
 ```xml

@@ -26,10 +26,12 @@ system bakes the logic in; you only choose whether to show it and, optionally, h
 | Member | Type | Default | What it does |
 |--------|------|---------|--------------|
 | `Title` | `object` | `null` | Optional label above the bar. |
-| `ShowTitle` | `bool` | — | Show/hide the title. |
-| `ShowValue` | `bool` | — | Show/hide the value label. |
+| `ShowTitle` | `bool` | `true`* | Show/hide the title. |
+| `ShowValue` | `bool` | `true`* | Show/hide the value label. |
 | `ValueFormat` | `string?` | `null` | Composite format string applied to `Value`, e.g. `"{0:0}%"`. With this unset (and no converter), the label is the built-in percent of `[Minimum, Maximum]`. |
 | `ValueContentConverter` | `IValueConverter?` | `null` | Full control over the label text; takes precedence over `ValueFormat`. |
+
+*Registered DP default is `false`; the shipping style sets both to `true`.
 
 **Standard `RangeBase` members you'll use (inherited):**
 
@@ -53,11 +55,17 @@ composite format string — set it once, don't bind it per value:
 
 **Wire an action:** none. This is a status indicator with no interaction surface.
 
-## Design-system-owned appearance
+**Determinate only.** `EtherProgressBar` has no `IsIndeterminate`, error, or paused states — for a
+looping/indeterminate bar use the stock WinUI `ProgressBar`. A `ValueContentConverter` receives the
+boxed `Value` as its value and the `EtherProgressBar` itself as its parameter, so it can read
+`Minimum`/`Maximum`.
 
-The design system owns this control's look. Most standard appearance properties — background,
-borders, corner radius, colors, most typography, padding, content alignment — are
-**design-system-owned**: setting them typically has no visible effect, by design, so every consuming
-app stays consistent. A few *are* honored by the template, and which ones varies by control — so
-treat [getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative
-per-property list (inert vs. consumed), not this summary.
+## Appearance & overrides
+
+The design system provides this control's intended look. Standard appearance properties fall into
+three groups, and which group a given property is in varies by property: some are **template-bound**,
+so overriding them *does* take effect (but departs from the design language); some are **locked**, so
+setting them has no effect; and a few inherited ones are **silent traps** that look settable but do
+nothing. Rather than guess, use [getting-started §4](../getting-started.md#4-known-boundaries) — the
+authoritative, gate-checked per-property breakdown. Prefer the control's intended options over ad-hoc
+appearance overrides to stay on-brand.

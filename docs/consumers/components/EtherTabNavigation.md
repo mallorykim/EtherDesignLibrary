@@ -24,7 +24,7 @@ A horizontal tab strip. A thin `ListView` subclass, so selection binding uses th
 
 | Member | Type | What it does |
 |--------|------|--------------|
-| `Icon` | `string?` | Per-tab icon key. **Inline `EtherTabItem` only** (see the limitation below). |
+| `Icon` | `string?` | Per-tab icon **key from the Ether icon library** (e.g. `Home`). An unknown name silently collapses the slot; arbitrary `IconElement`s are not supported. Inline `EtherTabItem` only (see the limitation below). |
 | `Content` | `object` | Tab label. |
 
 **`EtherTabNavigation` — standard `ListView`/`Selector` members you'll use:**
@@ -32,7 +32,7 @@ A horizontal tab strip. A thin `ListView` subclass, so selection binding uses th
 | Member | Type | What it does |
 |--------|------|--------------|
 | `ItemsSource` | `object` | Bound tab collection. |
-| `SelectedIndex` / `SelectedItem` | — | Selection (TwoWay-capable). |
+| `SelectedIndex` / `SelectedItem` | — | Selection (TwoWay-capable). `SelectedItem` is the `EtherTabItem` container for inline tabs, but the bound **model** for `ItemsSource` tabs. |
 | `SelectionChanged` | event | Fires on selection change (no `Command`). |
 
 ## Bind & wire
@@ -56,10 +56,10 @@ No `Command`; bind the native `SelectionChanged`:
 > `ItemsSource`-generated path has no `PrepareContainerForItemOverride`, so **data-bound tabs cannot
 > show a per-item icon** — use inline `EtherTabItem` if icons are required.
 
-## Design-system-owned appearance
+## Appearance & overrides
 
-The design system owns the look of the tab strip and each `EtherTabItem`. Most standard appearance
-properties are **design-system-owned** and have no visible effect when set; a few *are* honored by
-the template (some fonts, content alignment, and the item padding) — treat
-[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property list
-(inert vs. consumed), not this summary.
+The design system provides the tab-strip look. Standard appearance properties on the strip and each
+`EtherTabItem` vary — some are **template-bound** (overriding works but departs from the design
+language), some are **locked**, and a few are **silent traps** — so use
+[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property
+breakdown.

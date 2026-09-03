@@ -1,6 +1,7 @@
 # EtherSegmentedControl
 
-A horizontal single-select control — a row of segments where exactly one is selected. Supports two
+A horizontal single-select control — a row of segments where at most one is selected (none until a
+segment is checked or a selection is set; `SelectedIndex` starts at `-1`). Supports two
 authoring styles: **inline** segments (`EtherSegmentRadioButton`s you write by hand) or a
 **data-driven** contract (`ItemsSource` + a `Selected*` property), and the two can be mixed across
 instances.
@@ -49,7 +50,7 @@ Data-driven — bind a collection and a selection:
 | `ItemTemplate` | `DataTemplate?` | Template for each generated segment (alternative to `DisplayMemberPath`). |
 | `SelectedIndex` | `int` | Selected position; `TwoWay`-capable. |
 | `SelectedItem` | `object?` | Selected data item; `TwoWay`-capable. |
-| `SelectedValue` | `object?` | Selected value; `TwoWay`-capable. |
+| `SelectedValue` | `object?` | Selected value; `TwoWay`-capable. For **inline** segments it is the segment's `Tag` (falling back to `Content`); for **generated** segments it is the source item. There is no `SelectedValuePath`. |
 | `SelectionChanged` | event `SegmentedSelectionChangedEventArgs` | Fires on **every** selection change (user or programmatic); carries `OldValue`/`NewValue`. |
 | `SelectionCommand` | `ICommand?` | Fires **only on user-initiated** selection (never on a programmatic `Selected*` assignment). Guarded by `CanExecute`. |
 | `SelectionCommandParameter` | `object?` | Passed to `SelectionCommand` instead of `SelectedValue` when set. |
@@ -58,7 +59,7 @@ Data-driven — bind a collection and a selection:
 
 **Segment item — `EtherSegmentRadioButton`** (inherits `RadioButton`): use `Content`, `IsChecked`,
 `GroupName`, and the native `Command`/`CommandParameter`. Wrap the segments in an
-`EtherSegmentPanel` (its `Spacing` property, a `double`, sets the inter-segment gap).
+`EtherSegmentPanel` (its `Spacing` property, a `double`, default `4`, sets the inter-segment gap).
 
 ## Bind & wire
 
@@ -93,13 +94,13 @@ zero when `CanExecute` is `false`.
 > control defers and re-applies the value once its items exist (fixed in `preview.7`). You do not
 > need to set the initial selection in code-behind.
 
-## Design-system-owned appearance
+## Appearance & overrides
 
-The design system owns the look of `EtherSegmentedControl` and `EtherSegmentRadioButton` — the
-selected-pill styling is fixed. Most standard appearance properties are **design-system-owned** and
-have no visible effect when set; a few *are* honored by the template, and which ones varies — treat
-[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property list
-(inert vs. consumed), not this summary.
+The design system provides the segmented-control look (the selected pill). Standard appearance
+properties vary — some are **template-bound** (overriding works but departs from the design
+language), some are **locked**, and a few are **silent traps** — so use
+[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property
+breakdown rather than assuming.
 
 ## Related
 

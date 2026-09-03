@@ -20,15 +20,17 @@ optional leading/trailing icon slots.
                    AutomationProperties.Name="Secondary package button" />
 ```
 
-The default (no `Style`) is the **primary, large** button. Pick a variant/size either with a keyed
-`Style` or with the `Variant`/`Size` properties — they are equivalent:
+A bare button (no `Style`, no `Variant`/`Size`) renders as **primary, large** — that look comes from
+the default style. To change it, use **either** a keyed `Style` **or** the `Variant`/`Size` pair, not
+both on the same element (whichever is assigned last wins). The `Variant`/`Size` route needs **both**
+set — setting only one does nothing (they resolve a style only as a pair):
 
 ```xml
 <!-- style keys -->
 <ether:EtherButton Style="{StaticResource EtherButtonTertiary}" Content="Tertiary" />
 <ether:EtherButton Style="{StaticResource EtherButtonSecondarySmall}" Content="Small secondary" />
 
-<!-- or properties -->
+<!-- or BOTH properties together -->
 <ether:EtherButton Variant="Tertiary" Size="Small" Content="Same result" />
 ```
 
@@ -48,8 +50,8 @@ Icon slots take any `IconElement` (e.g. `FontIcon`, `PathIcon`, `SymbolIcon`):
 
 | Member | Type | Default | What it does |
 |--------|------|---------|--------------|
-| `Variant` | `EtherButtonVariant?` | `Primary` | Visual emphasis: `Primary`, `Secondary`, `Tertiary`. Equivalent to the `EtherButton{Primary,Secondary,Tertiary}` style keys. |
-| `Size` | `EtherButtonSize?` | `Large` | `Large` or `Small`. Equivalent to the `…Small` style keys. |
+| `Variant` | `EtherButtonVariant?` | `null` (Primary via default style) | Visual emphasis: `Primary`, `Secondary`, `Tertiary`. Set together with `Size` to resolve a style; equivalent to the `EtherButton{Primary,Secondary,Tertiary}` style keys. |
+| `Size` | `EtherButtonSize?` | `null` (Large via default style) | `Large` or `Small`. Only takes effect when `Variant` is also set. Equivalent to the `…Small` style keys. |
 | `LeftIcon` | `IconElement?` | `null` | Leading icon, rendered before the content. |
 | `RightIcon` | `IconElement?` | `null` | Trailing icon, rendered after the content. |
 
@@ -89,11 +91,13 @@ Proven at `tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.R2.cs`
 (`VerifyButtonCommand`): `Command`/`CommandParameter` fire exactly once per click, with the
 expected parameter.
 
-## Design-system-owned appearance
+## Appearance & overrides
 
-The design system owns the button's look. Most standard appearance properties — background, borders,
-corner radius, colors, most typography, padding, content alignment — are **design-system-owned**:
-setting them typically has no visible effect, by design. Choose the emphasis and size with
-`Variant`/`Size` instead. A few appearance properties *are* honored by the template — treat
-[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property list
-(inert vs. consumed), not this summary.
+`EtherButton`'s look comes from `Variant`/`Size`. Most standard appearance properties — `Background`,
+`BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding`, `Foreground`, `FontSize`, `FontWeight`,
+and both `*ContentAlignment`s — are actually **template-bound**, so overriding them *does* take
+effect; it just departs from the variant look, so prefer `Variant`/`Size`. A few are genuinely
+**locked** (no effect): `CharacterSpacing`, `FontStretch` (and low-level
+`BackgroundSizing`/`CompositeMode`). See
+[getting-started §4](../getting-started.md#4-known-boundaries) for the authoritative per-property
+breakdown.
