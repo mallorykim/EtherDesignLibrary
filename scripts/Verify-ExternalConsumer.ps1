@@ -349,7 +349,7 @@ public sealed partial class MainWindow : Window
 
     public IReadOnlyList<string> GetResolvedResourceKeys()
     {
-        var expected = new[] { "Spacing8", "InterFont", "InstrumentSans", "IconAddCir", "DefaultEtherButtonStyle", "DefaultEtherSliderStyle" };
+        var expected = new[] { "Spacing8", "RobotoFont", "InstrumentSans", "IconAddCir", "DefaultEtherButtonStyle", "DefaultEtherSliderStyle" };
         return expected.Where(key => Application.Current.Resources.TryGetValue(key, out _)).ToArray();
     }
 
@@ -399,7 +399,7 @@ function Assert-RuntimeMarker {
     }
 
     $marker = Get-Content -LiteralPath $MarkerPath -Raw | ConvertFrom-Json
-    $expectedResources = @('Spacing8', 'InterFont', 'InstrumentSans', 'IconAddCir', 'DefaultEtherButtonStyle', 'DefaultEtherSliderStyle')
+    $expectedResources = @('Spacing8', 'RobotoFont', 'InstrumentSans', 'IconAddCir', 'DefaultEtherButtonStyle', 'DefaultEtherSliderStyle')
     $missingResources = @($expectedResources | Where-Object { $_ -cnotin @($marker.resourceKeys) })
     $failedProperties = @($marker.xamlProperties.PSObject.Properties | Where-Object { $_.Value -ne $true })
     $missingAssemblies = @('Ether.DesignSystem.Foundation', 'Ether.DesignSystem.Controls', 'Ether.DesignSystem.Interactions' |

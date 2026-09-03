@@ -93,9 +93,11 @@ Assert-SetEquals (Get-MergedDictionarySources $controlsGeneric) @('ms-appx:///Et
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Navigation/EtherMasthead.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Navigation/EtherTabNavigation.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSegmentedControl.xaml',
+    'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherPanelTabs.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Resources/Foundations/EtherCard.xaml',
+    'ms-appx:///Ether.DesignSystem.Controls/Resources/Foundations/EtherTooltip.xaml',
     'ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherIntelligenceButton.xaml') 'Controls Generic.xaml'
 Assert-CompiledDictionary $controlsGeneric 'EtherScrollBarResources' 'Controls Generic.xaml'
 Assert-CompiledDictionary $controlsGeneric 'EtherSwitchResources' 'Controls Generic.xaml'

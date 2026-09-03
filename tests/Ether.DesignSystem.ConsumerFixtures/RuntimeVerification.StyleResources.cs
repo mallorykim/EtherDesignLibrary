@@ -20,6 +20,10 @@ internal static partial class RuntimeVerification
         "EtherCardCalloutBody",
     ];
 
+    private static readonly string[] TooltipStyleKeys = [ "EtherTooltip" ];
+
+    private static readonly string[] PanelTabsStyleKeys = [ "EtherPanelTabs", "EtherPanelTabSegment" ];
+
     private static async Task<StyleResourceVerification> VerifyStyleResourcesAsync(FrameworkElement themeRoot)
     {
         if (themeRoot is not Panel host)
@@ -37,6 +41,21 @@ internal static partial class RuntimeVerification
         if (scrollStyle is null || scrollStyle.TargetType != typeof(ScrollBar))
             throw new InvalidOperationException("The implicit EtherScrollBar style did not resolve as a ScrollBar-targeted style.");
 
+        var tooltipStyle = FindApplicationResource("EtherTooltip") as Style;
+        if (tooltipStyle is null || tooltipStyle.TargetType != typeof(Border))
+            throw new InvalidOperationException("The EtherTooltip style did not resolve as a Border-targeted style.");
+
+        var panelTabsStyle = FindApplicationResource("EtherPanelTabs") as Style;
+        if (panelTabsStyle is null || panelTabsStyle.TargetType != typeof(EtherSegmentedControl))
+            throw new InvalidOperationException("The EtherPanelTabs style did not resolve as an EtherSegmentedControl-targeted style.");
+
+        var panelTabSegmentStyle = FindApplicationResource("EtherPanelTabSegment") as Style;
+        if (panelTabSegmentStyle is null || panelTabSegmentStyle.TargetType != typeof(RadioButton))
+            throw new InvalidOperationException("The EtherPanelTabSegment style did not resolve as a RadioButton-targeted style.");
+
+        Assert(panelTabSegmentStyle.Setters.OfType<Setter>().Any(s => s.Property == Control.TemplateProperty),
+            "EtherPanelTabSegment style did not carry a Template setter.");
+
         var scratch = new Canvas { Opacity = 0d, IsHitTestVisible = false };
         host.Children.Add(scratch);
         try
@@ -49,6 +68,10 @@ internal static partial class RuntimeVerification
             var scrollBar = new ScrollBar { Style = scrollStyle, Orientation = Orientation.Vertical, Maximum = 100, ViewportSize = 20 };
             scratch.Children.Add(switchControl);
             scratch.Children.Add(scrollBar);
+            var tooltip = new Border { Style = tooltipStyle };
+            var panelTabsHost = new EtherSegmentedControl { Style = panelTabsStyle };
+            scratch.Children.Add(tooltip);
+            scratch.Children.Add(panelTabsHost);
             await WaitForAppliedThemeAsync(themeRoot, ElementTheme.Light);
             foreach (var border in cardBorders)
             {
@@ -62,6 +85,12 @@ internal static partial class RuntimeVerification
             GetTemplatePart<Rectangle>(switchControl, "OuterBorder", "EtherSwitch style fixture");
             GetTemplatePart<Grid>(scrollBar, "VerticalRoot", "EtherScrollBar style fixture");
             GetTemplatePart<Thumb>(scrollBar, "VerticalThumb", "EtherScrollBar style fixture");
+            tooltip.UpdateLayout();
+            panelTabsHost.UpdateLayout();
+            Assert(tooltip.Background is Brush, "EtherTooltip style did not apply its themed Background brush.");
+            Assert(panelTabsHost.Background is Brush, "EtherPanelTabs style did not apply its themed track Background brush.");
+            var tooltipLight = DescribeBrush(tooltip.Background);
+            var panelTabsLight = DescribeBrush(panelTabsHost.Background);
             var lightBrushes = cardBorders.Select(border => DescribeBrush(border.Background)).ToArray();
 
             themeRoot.RequestedTheme = ElementTheme.Dark;
@@ -70,9 +99,17 @@ internal static partial class RuntimeVerification
                 border.UpdateLayout();
             switchControl.UpdateLayout();
             scrollBar.UpdateLayout();
+            tooltip.UpdateLayout();
+            panelTabsHost.UpdateLayout();
             var darkBrushes = cardBorders.Select(border => DescribeBrush(border.Background)).ToArray();
             if (lightBrushes.SequenceEqual(darkBrushes, StringComparer.Ordinal))
                 throw new InvalidOperationException("EtherCard themed brushes did not re-resolve between Light and Dark.");
+            var tooltipDark = DescribeBrush(tooltip.Background);
+            var panelTabsDark = DescribeBrush(panelTabsHost.Background);
+            if (string.Equals(tooltipLight, tooltipDark, StringComparison.Ordinal))
+                throw new InvalidOperationException("EtherTooltip themed brush did not re-resolve between Light and Dark.");
+            if (string.Equals(panelTabsLight, panelTabsDark, StringComparison.Ordinal))
+                throw new InvalidOperationException("EtherPanelTabs themed track brush did not re-resolve between Light and Dark.");
 
             return new StyleResourceVerification(
                 CardStyleKeys,
@@ -80,7 +117,11 @@ internal static partial class RuntimeVerification
                 true,
                 lightBrushes,
                 darkBrushes,
-                false);
+                false,
+                TooltipStyleKeys,
+                true,
+                PanelTabsStyleKeys,
+                true);
         }
         finally
         {
@@ -123,6 +164,14 @@ internal static partial class RuntimeVerification
             thumb.UpdateLayout();
             var thumbFill = GetTemplatePart<Border>(thumb, "ThumbFill", "EtherScrollBar High Contrast style fixture");
             Assert(thumbFill.Background is SolidColorBrush, "EtherScrollBar did not resolve a High Contrast thumb brush.");
+
+            var tooltipHc = new Border { Style = FindApplicationResource("EtherTooltip") as Style };
+            var panelTabsHc = new EtherSegmentedControl { Style = FindApplicationResource("EtherPanelTabs") as Style };
+            scratch.Children.Add(tooltipHc);
+            scratch.Children.Add(panelTabsHc);
+            tooltipHc.UpdateLayout();
+            Assert(tooltipHc.Background is SolidColorBrush, "EtherTooltip did not resolve a High Contrast background brush.");
+            Assert(panelTabsHc.Background is SolidColorBrush, "EtherPanelTabs did not resolve a High Contrast track brush.");
             return true;
         }
         finally

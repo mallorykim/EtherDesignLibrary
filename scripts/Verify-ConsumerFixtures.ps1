@@ -882,7 +882,7 @@ try {
 
     $unpackagedOutput = Join-Path $repoRoot "tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/bin/$platform/$configuration/$tfm"
     Assert-OutputFile (Join-Path $unpackagedOutput 'Fonts/Instrument_Sans/InstrumentSans-VariableFont_wdth,wght.ttf')
-    Assert-OutputFile (Join-Path $unpackagedOutput 'Fonts/Inter/Inter-VariableFont_opsz,wght.ttf')
+    Assert-OutputFile (Join-Path $unpackagedOutput 'Fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf')
     Assert-OutputFile (Join-Path $unpackagedOutput 'Assets/Icons/dds2/dds2_add-cir.svg')
     Assert-OutputFile (Join-Path $unpackagedOutput 'Ether.DesignSystem.Foundation.dll')
     Assert-OutputFile (Join-Path $unpackagedOutput 'Ether.DesignSystem.Controls.dll')
@@ -935,10 +935,10 @@ try {
                 throw "The unpackaged runtime smoke fixture exited without its required result marker: $markerPath"
             }
             $runtimeResult = Get-Content -LiteralPath $markerPath -Raw | ConvertFrom-Json
-            $expectedResourceKeys = @('Spacing8', 'InterFont', 'InstrumentSans', 'IconAddCir')
+            $expectedResourceKeys = @('Spacing8', 'RobotoFont', 'InstrumentSans', 'IconAddCir')
             $expectedAssetUris = @(
                 'ms-appx:///Fonts/Instrument_Sans/InstrumentSans-VariableFont_wdth%2Cwght.ttf',
-                'ms-appx:///Fonts/Inter/Inter-VariableFont_opsz%2Cwght.ttf',
+                'ms-appx:///Fonts/Roboto/Roboto-VariableFont_wdth%2Cwght.ttf',
                 'ms-appx:///Assets/Icons/dds2/dds2_add-cir.svg'
             )
             $reportedResourceKeys = @($runtimeResult.resourceKeys)
@@ -947,7 +947,7 @@ try {
             $attemptedAssetUris = @($runtimeResult.attemptedAssetUris)
             $expectedFontSources = @(
                 'ms-appx:///Fonts/Instrument_Sans/InstrumentSans-VariableFont_wdth,wght.ttf#Instrument Sans',
-                'ms-appx:///Fonts/Inter/Inter-VariableFont_opsz,wght.ttf#Inter'
+                'ms-appx:///Fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf#Roboto'
             )
             $reportedFontSources = @($runtimeResult.fontFamilySources)
             $progressBar = $runtimeResult.progressBar
@@ -978,8 +978,10 @@ try {
             $expectedDropDownStates = @('Opened', 'Closed')
             $expectedSegmentedControlTemplateParts = @('TrackSurface')
             $expectedSegmentCheckStates = @('Unchecked', 'Checked')
-            $expectedIntelligenceButtonTemplateParts = @('Bg', 'BorderIntelligenceBlue', 'BorderIntelligenceGradient', 'BlueGlowOuter', 'BlueGlowMiddle', 'BlueGlowCore', 'PurpleGlow', 'Cp', 'FocusRing')
+            $expectedIntelligenceButtonTemplateParts = @('Bg', 'BorderIntelligenceBlue', 'BorderIntelligenceGradient', 'BlueGlowOuter', 'BlueGlowMiddle', 'BlueGlowCore', 'PurpleGlow', 'Cp', 'FocusRing', 'LeftIcon', 'RightIcon')
             $expectedIntelligenceButtonCommonStates = @('Normal', 'PointerOver', 'Pressed', 'Disabled')
+            $expectedIntelligenceButtonLeftIconStates = @('LeftIconVisible', 'LeftIconCollapsed')
+            $expectedIntelligenceButtonRightIconStates = @('RightIconVisible', 'RightIconCollapsed')
             $expectedSteeringBarTemplateParts = @('LayoutRoot', 'InteractionSurface', 'FillBorder', 'ThumbHost', 'LabelRow', 'TitleText', 'ValueLabel')
             $expectedSteeringBarLabelStates = @('BothLabelsVisible', 'TitleOnly', 'ValueOnly', 'LabelsHidden')
             $expectedSteeringBarGradient = @('#FF0021F3', '#FF0015FF', '#FF0EB2FF', '#FF40E1FD')
@@ -999,22 +1001,24 @@ try {
                 'EtherMasthead.EnableWindowCommands', 'EtherMasthead.ShowChevron', 'EtherMasthead.ShowMenuIcon', 'EtherMasthead.ShowSearch', 'EtherMasthead.ShowSettings',
                 'EtherTabItem.Icon'
             )
-            $expectedInventoryPublicProperties = 1768
-            $expectedWritablePublicProperties = 1399
-            $expectedVisualPublicProperties = 555
+            $expectedInventoryPublicProperties = 1770
+            $expectedWritablePublicProperties = 1401
+            $expectedVisualPublicProperties = 557
             $expectedSemanticPublicProperties = 87
             $expectedPlatformPublicProperties = 1126
             $allowedVisualEvidenceMethods = @('pixel-difference', 'layout-difference', 'visibility-transition', 'platform-dp-contract', 'ether-component-dp-contract', 'platform-clr-visual-contract')
-            # R-06: the 555 visual properties are not uniformly "observable" - split by Evidence.Method
+            # R-06: the 557 visual properties are not uniformly "observable" - split by Evidence.Method
             # into the subset that proved a visible effect (pixel/layout/visibility differences on a
             # rendered, attached control) versus the subset that only proved a DP round-trip (getter/setter
             # invoked without throwing; bitmap pixels unchanged). See docs/plans/2026-08-31-release-blockers-spec.md R-06.
             # (Baseline was 445/270/175 at R-06; the 2026-09-01 consumability remediation added
             # EtherTabNavigation/EtherTabItem/EtherSegmentRadioButton + 7 new DPs, growing the audited
-            # visual-property set to 555 = 344 observable + 211 contract-only.)
+            # visual-property set to 555 = 344 observable + 211 contract-only. The 2026-09-03 consumability
+            # re-audit added EtherIntelligenceButton.LeftIcon/RightIcon (2 visibility-toggling icon DPs),
+            # taking it to 557 = 346 observable + 211 contract-only.)
             $observableVisualEvidenceMethods = @('pixel-difference', 'layout-difference', 'visibility-transition')
             $contractOnlyVisualEvidenceMethods = @('platform-dp-contract', 'ether-component-dp-contract')
-            $expectedObservableVisualProperties = 344
+            $expectedObservableVisualProperties = 346
             $expectedContractOnlyVisualProperties = 211
             $missingResources = @($expectedResourceKeys | Where-Object { $_ -cnotin $reportedResourceKeys })
             $missingAssets = @($expectedAssetUris | Where-Object { $_ -cnotin $reportedAssetUris })
@@ -1143,6 +1147,10 @@ try {
                 $intelligenceButton.defaultUseSystemFocusVisuals -ne $false -or
                 @($expectedIntelligenceButtonTemplateParts | Where-Object { $_ -cnotin @($intelligenceButton.templateParts) }).Count -ne 0 -or
                 @($expectedIntelligenceButtonCommonStates | Where-Object { $_ -cnotin @($intelligenceButton.commonStates) }).Count -ne 0 -or
+                @($expectedIntelligenceButtonLeftIconStates | Where-Object { $_ -cnotin @($intelligenceButton.leftIconStates) }).Count -ne 0 -or
+                @($expectedIntelligenceButtonRightIconStates | Where-Object { $_ -cnotin @($intelligenceButton.rightIconStates) }).Count -ne 0 -or
+                $intelligenceButton.leftIconCollapsed -ne $true -or
+                $intelligenceButton.rightIconCollapsed -ne $true -or
                 $intelligenceButton.disabledOpacityApplied -ne $true -or
                 $intelligenceButton.automationName -ne 'Package intelligence button' -or
                 (@($intelligenceButton.lightTemplateBrushColors) -join ',') -ceq (@($intelligenceButton.darkTemplateBrushColors) -join ',') -or
@@ -1274,6 +1282,8 @@ try {
             )
             $expectedCommandControls = @('EtherButton', 'EtherIntelligenceButton', 'EtherCheckbox', 'EtherRadioButton')
             $expectedCardStyleKeys = @('EtherCardNormal', 'EtherCardNormalBody', 'EtherCardIntelligence', 'EtherCardIntelligenceBody', 'EtherCardCalloutShell', 'EtherCardCalloutBody')
+            $expectedTooltipStyleKeys = @('EtherTooltip')
+            $expectedPanelTabsStyleKeys = @('EtherPanelTabs', 'EtherPanelTabSegment')
             if ($null -eq $runtimeResult.twoWayBindings -or
                 @($expectedTwoWayProperties | Where-Object { $_ -cnotin @($runtimeResult.twoWayBindings.properties) }).Count -ne 0 -or
                 $null -eq $runtimeResult.automationPatterns -or
@@ -1288,6 +1298,10 @@ try {
                 $runtimeResult.dataPaths.segmentSelectionSynchronized -ne $true -or
                 $null -eq $runtimeResult.styleResources -or
                 @($expectedCardStyleKeys | Where-Object { $_ -cnotin @($runtimeResult.styleResources.cardStyleKeys) }).Count -ne 0 -or
+                @($expectedTooltipStyleKeys | Where-Object { $_ -cnotin @($runtimeResult.styleResources.tooltipStyleKeys) }).Count -ne 0 -or
+                @($expectedPanelTabsStyleKeys | Where-Object { $_ -cnotin @($runtimeResult.styleResources.panelTabsStyleKeys) }).Count -ne 0 -or
+                $runtimeResult.styleResources.tooltipStyleResolved -ne $true -or
+                $runtimeResult.styleResources.panelTabsStyleResolved -ne $true -or
                 $runtimeResult.styleResources.switchStyleResolved -ne $true -or
                 $runtimeResult.styleResources.scrollBarStyleResolved -ne $true -or
                 $runtimeResult.styleResources.highContrastBrushesResolved -ne $true) {
@@ -1332,10 +1346,10 @@ try {
     }
 
     $expectedTokenHashes = @{
-        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml' = 'd6ff0e5301b3672dbb492484c8d0ea584aca12be'
-        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = '7f717d918a48dee2a241f57ef975eaf0ddafddc3'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml' = 'fd09b521886ab82b1e9fb28fa79e0bd687a2f980'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = '8eebe4503a9fb09524d7f0d2ac02687f599d9e44'
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherSpacing.xaml' = '5d631cd2ebde306d389a1fa8999000359441bcd2'
-        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml' = 'b24444567ee95467408e004fe7fab622eba79759'
+        'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml' = '1093cf0dd384046e86b27386b71e8da96a9a89f5'
         'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherIconGeometries.xaml' = '134c1667934376ba4943cf350b110a02607c81f4'
     }
     foreach ($tokenPath in $expectedTokenHashes.Keys) {

@@ -49,8 +49,49 @@ internal static partial class RuntimeVerification
             "PurpleGlow",
             "Cp",
             "FocusRing",
+            "LeftIcon",
+            "RightIcon",
         };
         var commonStates = new List<string>();
+
+        var leftIcon = GetTemplatePart<ContentPresenter>(intelligenceButton, "LeftIcon", nameof(EtherIntelligenceButton));
+        var rightIcon = GetTemplatePart<ContentPresenter>(intelligenceButton, "RightIcon", nameof(EtherIntelligenceButton));
+        var leftIconStates = new List<string>();
+        var rightIconStates = new List<string>();
+        // Capture the genuine defaults (LeftIcon defaults to the sparkles glyph, RightIcon to null) so the
+        // shared instance is restored after this proof - a leaked LeftIcon=null would change the sparkles
+        // pixels in the screenshot stage that runs later on this same control.
+        var originalLeftIcon = intelligenceButton.LeftIcon;
+        // default sparkles LeftIcon -> leading slot visible
+        intelligenceButton.UpdateLayout();
+        if (leftIcon.Visibility != Visibility.Visible)
+            throw new InvalidOperationException("The default sparkles LeftIcon did not show the leading icon slot on EtherIntelligenceButton.");
+        leftIconStates.Add("LeftIconVisible");
+        intelligenceButton.LeftIcon = null;
+        intelligenceButton.UpdateLayout();
+        var leftIconCollapsed = leftIcon.Visibility == Visibility.Collapsed;
+        if (!leftIconCollapsed)
+            throw new InvalidOperationException("Clearing LeftIcon did not collapse the leading icon slot on EtherIntelligenceButton.");
+        leftIconStates.Add("LeftIconCollapsed");
+        // RightIcon defaults null -> collapsed; set one -> visible
+        if (rightIcon.Visibility != Visibility.Collapsed)
+            throw new InvalidOperationException("RightIcon defaulted non-null (expected collapsed trailing slot) on EtherIntelligenceButton.");
+        intelligenceButton.RightIcon = CreateLibraryChevron("IconChevronRight", 20);
+        intelligenceButton.UpdateLayout();
+        if (rightIcon.Visibility != Visibility.Visible)
+            throw new InvalidOperationException("Setting RightIcon did not show the trailing icon slot on EtherIntelligenceButton.");
+        rightIconStates.Add("RightIconVisible");
+        intelligenceButton.RightIcon = null;
+        intelligenceButton.UpdateLayout();
+        var rightIconCollapsed = rightIcon.Visibility == Visibility.Collapsed;
+        if (!rightIconCollapsed)
+            throw new InvalidOperationException("Clearing RightIcon did not collapse the trailing icon slot on EtherIntelligenceButton.");
+        rightIconStates.Add("RightIconCollapsed");
+
+        // Restore the genuine default icon state before the remaining stages (and the later screenshot) run.
+        intelligenceButton.LeftIcon = originalLeftIcon;
+        intelligenceButton.RightIcon = null;
+        intelligenceButton.UpdateLayout();
 
         intelligenceButton.IsHitTestVisible = false;
         intelligenceButton.IsTabStop = false;
@@ -124,7 +165,11 @@ internal static partial class RuntimeVerification
             Math.Abs(background.Opacity - 0.4) <= 0.02,
             peer.GetName(),
             lightTemplateBrushColors,
-            darkTemplateBrushColors);
+            darkTemplateBrushColors,
+            leftIconStates.ToArray(),
+            rightIconStates.ToArray(),
+            leftIconCollapsed,
+            rightIconCollapsed);
     }
 
     private static async Task<string[]> GetIntelligenceButtonForegroundBrushColorsAsync(

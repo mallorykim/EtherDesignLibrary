@@ -16,10 +16,10 @@ $colorsPath = Join-Path $repoRoot 'src\Ether.DesignSystem.Foundation\Resources\T
 $xamlNamespace = 'http://schemas.microsoft.com/winfx/2006/xaml'
 
 $expectedTokenHashes = [ordered]@{
-    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml' = 'd6ff0e5301b3672dbb492484c8d0ea584aca12be'
-    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = '7f717d918a48dee2a241f57ef975eaf0ddafddc3'
+    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherPrimitives.xaml' = 'fd09b521886ab82b1e9fb28fa79e0bd687a2f980'
+    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherColors.xaml' = '8eebe4503a9fb09524d7f0d2ac02687f599d9e44'
     'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherSpacing.xaml' = '5d631cd2ebde306d389a1fa8999000359441bcd2'
-    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml' = 'b24444567ee95467408e004fe7fab622eba79759'
+    'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherTypography.xaml' = '1093cf0dd384046e86b27386b71e8da96a9a89f5'
     'src/Ether.DesignSystem.Foundation/Resources/Tokens/EtherIconGeometries.xaml' = '134c1667934376ba4943cf350b110a02607c81f4'
 }
 

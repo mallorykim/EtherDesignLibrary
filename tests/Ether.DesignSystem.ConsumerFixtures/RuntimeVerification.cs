@@ -15,7 +15,7 @@ internal static partial class RuntimeVerification
         // URI escaping is required for the frozen comma-named font files. The
         // corresponding ms-appx paths retain their original comma filenames.
         "ms-appx:///Fonts/Instrument_Sans/InstrumentSans-VariableFont_wdth%2Cwght.ttf",
-        "ms-appx:///Fonts/Inter/Inter-VariableFont_opsz%2Cwght.ttf",
+        "ms-appx:///Fonts/Roboto/Roboto-VariableFont_wdth%2Cwght.ttf",
         "ms-appx:///Assets/Icons/dds2/dds2_add-cir.svg",
     };
 
@@ -141,7 +141,11 @@ internal static partial class RuntimeVerification
         bool DisabledOpacityApplied,
         string AutomationName,
         string[] LightTemplateBrushColors,
-        string[] DarkTemplateBrushColors);
+        string[] DarkTemplateBrushColors,
+        string[] LeftIconStates,
+        string[] RightIconStates,
+        bool LeftIconCollapsed,
+        bool RightIconCollapsed);
 
     internal sealed record SteeringBarVerification(
         bool DefaultStyleResolved,
@@ -331,7 +335,11 @@ internal static partial class RuntimeVerification
         bool ScrollBarStyleResolved,
         string[] LightBrushes,
         string[] DarkBrushes,
-        bool HighContrastBrushesResolved);
+        bool HighContrastBrushesResolved,
+        string[] TooltipStyleKeys,
+        bool TooltipStyleResolved,
+        string[] PanelTabsStyleKeys,
+        bool PanelTabsStyleResolved);
 
     internal sealed record VerificationResult(
         string[] ResourceKeys,
@@ -409,7 +417,7 @@ internal static partial class RuntimeVerification
         var resourceKeys = new[]
         {
             AssertResource("Spacing8", typeof(double)),
-            AssertResource("InterFont", typeof(FontFamily)),
+            AssertResource("RobotoFont", typeof(FontFamily)),
             AssertResource("InstrumentSans", typeof(FontFamily)),
             AssertResource("IconAddCir", typeof(Style)),
             AssertResource("DefaultEtherProgressBarStyle", typeof(Style)),
@@ -428,7 +436,7 @@ internal static partial class RuntimeVerification
         var fontFamilySources = new[]
         {
             ((FontFamily)Application.Current.Resources["InstrumentSans"]).Source,
-            ((FontFamily)Application.Current.Resources["InterFont"]).Source,
+            ((FontFamily)Application.Current.Resources["RobotoFont"]).Source,
         };
 
         var assets = new List<AssetVerification>();
