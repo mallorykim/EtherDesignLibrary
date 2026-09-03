@@ -167,7 +167,7 @@
         <Setter Property="PlaceholderForeground" Value="{ThemeResource EtherInputPlaceholderBrush}"/>
         <Setter Property="Foreground" Value="{ThemeResource EtherInputForegroundBrush}"/>
         <Setter Property="SelectionHighlightColor" Value="{ThemeResource EtherInputSelectionHighlightBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize" Value="{StaticResource Size14}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>
         <Setter Property="Padding" Value="16,12"/>

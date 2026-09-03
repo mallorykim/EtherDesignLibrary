@@ -52,19 +52,19 @@ public sealed partial class TypographyPage : Page
             }),
             new TypographySemanticGroup("Body", new[]
             {
-                Item("Body XL Regular", "Inter / 18 epx / Regular", "body/xl-regular"),
-                Item("Body XL SemiBold", "Inter / 18 epx / SemiBold", "body/xl-semibold"),
-                Item("Body L Regular", "Inter / 16 epx / Regular", "body/l-regular"),
-                Item("Body L SemiBold", "Inter / 16 epx / SemiBold", "body/l-semibold"),
-                Item("Body M Regular", "Inter / 14 epx / Regular", "body/m-regular"),
-                Item("Body M SemiBold", "Inter / 14 epx / SemiBold", "body/m-semibold"),
-                Item("Body S Regular", "Inter / 12 epx / Regular", "body/s-regular"),
-                Item("Body S SemiBold", "Inter / 12 epx / SemiBold", "body/s-semibold"),
+                Item("Body XL Regular", "Roboto / 18 epx / Regular", "body/xl-regular"),
+                Item("Body XL SemiBold", "Roboto / 18 epx / SemiBold", "body/xl-semibold"),
+                Item("Body L Regular", "Roboto / 16 epx / Regular", "body/l-regular"),
+                Item("Body L SemiBold", "Roboto / 16 epx / SemiBold", "body/l-semibold"),
+                Item("Body M Regular", "Roboto / 14 epx / Regular", "body/m-regular"),
+                Item("Body M SemiBold", "Roboto / 14 epx / SemiBold", "body/m-semibold"),
+                Item("Body S Regular", "Roboto / 12 epx / Regular", "body/s-regular"),
+                Item("Body S SemiBold", "Roboto / 12 epx / SemiBold", "body/s-semibold"),
             }),
             new TypographySemanticGroup("Micro", new[]
             {
-                Item("Micro Regular", "Inter / 11 epx / Regular", "micro/regular"),
-                Item("Micro SemiBold", "Inter / 11 epx / SemiBold", "micro/semibold"),
+                Item("Micro Regular", "Roboto / 11 epx / Regular", "micro/regular"),
+                Item("Micro SemiBold", "Roboto / 11 epx / SemiBold", "micro/semibold"),
             }),
         };
     }
@@ -77,7 +77,7 @@ public sealed partial class TypographyPage : Page
             return Array.Empty<TypographyPrimitiveGroup>();
 
         var displayFamily = (FontFamily)Application.Current.Resources["InstrumentSans"];
-        var bodyFamily = (FontFamily)Application.Current.Resources["InterFont"];
+        var bodyFamily = (FontFamily)Application.Current.Resources["RobotoFont"];
         var regularWeight = (FontWeight)Application.Current.Resources["WeightRegular"];
 
         var sizes = new List<TypographyPrimitiveItem>();

@@ -44,7 +44,7 @@
                     Grid.ColumnSpan="2"
                     Spacing="8">
             <TextBlock x:Uid="ControlExampleExampleLabel"
-                       FontFamily="{StaticResource InterFont}"
+                       FontFamily="{StaticResource RobotoFont}"
                        FontSize="10" FontWeight="SemiBold"
                        CharacterSpacing="80"
                        Foreground="{ThemeResource TextTertiary}"/>
@@ -65,13 +65,13 @@
                     Spacing="8"
                     Visibility="{x:Bind ConvertHasText(OutputText), Mode=OneWay}">
             <TextBlock x:Uid="ControlExampleOutputLabel"
-                       FontFamily="{StaticResource InterFont}"
+                       FontFamily="{StaticResource RobotoFont}"
                        FontSize="10" FontWeight="SemiBold"
                        CharacterSpacing="80"
                        Foreground="{ThemeResource TextTertiary}"/>
             <TextBlock x:Name="OutputTextBlock"
                        Text="{x:Bind OutputText, Mode=OneWay}"
-                       FontFamily="{StaticResource InterFont}"
+                       FontFamily="{StaticResource RobotoFont}"
                        FontSize="14"
                        Foreground="{ThemeResource text/primary}"
                        TextWrapping="Wrap"
@@ -99,7 +99,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Uid="ControlExampleSourceLabel"
                            VerticalAlignment="Center"
-                           FontFamily="{StaticResource InterFont}"
+                           FontFamily="{StaticResource RobotoFont}"
                            FontSize="10" FontWeight="SemiBold"
                            CharacterSpacing="80"
                            Foreground="{ThemeResource TextTertiary}"/>

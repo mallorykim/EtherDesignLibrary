@@ -32,7 +32,7 @@
                 default:  transparent · Light AlphaBlack70 / Dark AlphaWhite70
                 hover:    AlphaBlack4 / Dark AlphaWhite4  (matches EtherTabNavigation)
                 pressed:  AlphaBlack6 / Dark AlphaWhite6  (matches EtherTabNavigation)
-      Font      body/s-semibold = Inter SemiBold 12 (Figma ramp "Body/S SemiBold (12)")
+      Font      body/s-semibold = Roboto SemiBold 12 (Figma ramp "Body/S SemiBold (12)")
 
     Skeleton copied from EtherSegmentedControl (which copied WinUI); only the skin
     is swapped. Segment template part names (HoverLayer/PressedLayer/CheckedLayer/
@@ -234,7 +234,7 @@
     </ControlTemplate>
 
     <Style x:Key="EtherPanelTabSegment" TargetType="RadioButton">
-        <Setter Property="FontFamily"                 Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily"                 Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"                   Value="{StaticResource Size12}"/>
         <Setter Property="FontWeight"                 Value="{StaticResource WeightSemibold}"/>
         <Setter Property="Padding"                    Value="12,10"/>

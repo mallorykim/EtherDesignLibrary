@@ -15,14 +15,14 @@
     FONTS REQUIRED:
       Instrument Sans (headers/display) - Google Fonts
         https://fonts.google.com/specimen/Instrument+Sans
-      Inter (body/UI) - Google Fonts
-        https://fonts.google.com/specimen/Inter
+      Roboto (body/UI) - Google Fonts, OFL
+        https://fonts.google.com/specimen/Roboto
 
     FONT REFERENCES:
       The FontFamily keys below use system-font names (simplest form).
       If bundling fonts as WinUI3 project assets, replace with:
         ms-appx:///Fonts/InstrumentSans-SemiBold.ttf#Instrument Sans
-        ms-appx:///Fonts/Inter-Regular.ttf#Inter
+        ms-appx:///Fonts/Roboto-Regular.ttf#Roboto
 
     USAGE:
       <TextBlock Style="{StaticResource headers/h1}" Text="Page Title"/>
@@ -30,7 +30,7 @@
 
     RULE:
       Instrument Sans = for all titles, headers, labels, button text
-      Inter          = for body copy, metadata, descriptions, fine print
+      Roboto         = for body copy, metadata, descriptions, fine print
       Never hand-set font sizes. Always reference a named style.
 -->
 <ResourceDictionary
@@ -48,14 +48,14 @@
 
          Actual files (variable fonts - preferred):
            Fonts/Instrument_Sans/InstrumentSans-VariableFont_wdth,wght.ttf
-           Fonts/Inter/Inter-VariableFont_opsz,wght.ttf
+           Fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf
 
          Internal family name (the #Name part) must match the font's
          embedded name. If XAML designer shows "Unknown font", verify
          the family name by opening the .ttf in Windows Font Viewer.
     ================================================================ -->
     <FontFamily x:Key="InstrumentSans">ms-appx:///Fonts/Instrument_Sans/InstrumentSans-VariableFont_wdth,wght.ttf#Instrument Sans</FontFamily>
-    <FontFamily x:Key="InterFont">ms-appx:///Fonts/Inter/Inter-VariableFont_opsz,wght.ttf#Inter</FontFamily>
+    <FontFamily x:Key="RobotoFont">ms-appx:///Fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf#Roboto</FontFamily>
 
     <!-- ============================================================
          INSTRUMENT SANS - Display and Headers
@@ -121,7 +121,7 @@
     </Style>
 
     <!-- ============================================================
-         INTER - Body and UI Text
+         ROBOTO - Body and UI Text
          Use for descriptive text, metadata, tooltips, form copy,
          navigation labels, status messages. Never for titles.
          Sizes in epx.
@@ -129,70 +129,70 @@
 
     <!-- Body/XL Regular - large introductory body text  (18 epx) -->
     <Style x:Key="body/xl-regular" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size18}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>
     </Style>
 
     <!-- Body/XL SemiBold - large emphasis, callouts  (18 epx) -->
     <Style x:Key="body/xl-semibold" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size18}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightSemibold}"/>
     </Style>
 
     <!-- Body/L Regular - standard body copy  (16 epx) -->
     <Style x:Key="body/l-regular" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size16}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>
     </Style>
 
     <!-- Body/L SemiBold - standard emphasis  (16 epx) -->
     <Style x:Key="body/l-semibold" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size16}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightSemibold}"/>
     </Style>
 
     <!-- Body/M Regular - default UI text (most commonly used)  (14 epx) -->
     <Style x:Key="body/m-regular" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size14}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>
     </Style>
 
     <!-- Body/M SemiBold - form labels, emphasized UI text  (14 epx) -->
     <Style x:Key="body/m-semibold" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size14}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightSemibold}"/>
     </Style>
 
     <!-- Body/S Regular - secondary text, helper copy  (12 epx) -->
     <Style x:Key="body/s-regular" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size12}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>
     </Style>
 
     <!-- Body/S SemiBold - small labels, badge text  (12 epx) -->
     <Style x:Key="body/s-semibold" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size12}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightSemibold}"/>
     </Style>
 
     <!-- Micro/Regular - timestamps, metadata, fine print  (11 epx) -->
     <Style x:Key="micro/regular" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size11}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightRegular}"/>
     </Style>
 
     <!-- Micro/SemiBold - micro labels, version numbers  (11 epx) -->
     <Style x:Key="micro/semibold" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"   Value="{StaticResource Size11}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightSemibold}"/>
     </Style>

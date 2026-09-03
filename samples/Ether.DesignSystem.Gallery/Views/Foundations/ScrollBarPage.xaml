@@ -30,17 +30,17 @@
                                       HorizontalScrollBarVisibility="Disabled"
                                       AutomationProperties.Name="Vertical scroll viewer">
                             <StackPanel Padding="12" Spacing="12">
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage262" Text="Battery" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage263" Text="Display" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage264" Text="Storage" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage265" Text="Network" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage266" Text="Devices" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage267" Text="Updates" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage268" Text="Security" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage269" Text="Performance" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage270" Text="Accessibility" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage271" Text="Support" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
-                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage272" Text="About" FontFamily="{StaticResource InterFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage262" Text="Battery" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage263" Text="Display" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage264" Text="Storage" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage265" Text="Network" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage266" Text="Devices" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage267" Text="Updates" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage268" Text="Security" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage269" Text="Performance" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage270" Text="Accessibility" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage271" Text="Support" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
+                                <TextBlock x:Uid="GalleryViewsFoundationsScrollBarPage272" Text="About" FontFamily="{StaticResource RobotoFont}" FontSize="13" Foreground="{ThemeResource text/primary}"/>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>

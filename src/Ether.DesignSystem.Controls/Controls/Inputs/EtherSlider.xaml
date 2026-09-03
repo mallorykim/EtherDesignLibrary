@@ -6,7 +6,7 @@
     2×40 epx ticks with a 3 epx gap, 4×45 epx knob (radius 2). Tick count is
     even and follows the parent width at Figma density (2 epx bar + 3 epx
     gap). Title is
-    Instrument Sans SemiBold 14; tick labels are Inter Medium 11. Title and
+    Instrument Sans SemiBold 14; tick labels are Roboto Medium 11. Title and
     labels are optional (`ShowTitle` / `ShowLabels`); at most 11 labels.
     Labels are UI only; the payload is RangeBase.Value.
 
@@ -65,7 +65,7 @@
            TargetType="TextBlock"
            BasedOn="{StaticResource EtherSingleLineTextBlockStyle}">
         <Setter Property="Foreground" Value="{ThemeResource EtherSliderLabelForegroundBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize" Value="{StaticResource Size11}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightMedium}"/>
         <Setter Property="CharacterSpacing" Value="20"/>

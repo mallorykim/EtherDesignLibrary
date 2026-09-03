@@ -14,7 +14,7 @@
             Padding="6,1,6,2"
             VerticalAlignment="Center">
 <TextBlock x:Uid="GalleryGalleryControlsUpdatedBadge006" Text="UPDATED"
-                   FontFamily="{StaticResource InterFont}"
+                   FontFamily="{StaticResource RobotoFont}"
                    FontSize="9"
                    FontWeight="SemiBold"
                    CharacterSpacing="80"

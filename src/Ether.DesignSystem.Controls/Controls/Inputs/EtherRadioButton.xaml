@@ -3,7 +3,7 @@
 
     Figma source: ursRC201v8IiVeafliI45F
       Light component set 62102:8755 · Dark specimens 62102:8800–8805
-    Circle 18 x 18, 1.5 px stroke drawn inside. Label is Inter SemiBold 12 with an
+    Circle 18 x 18, 1.5 px stroke drawn inside. Label is Roboto SemiBold 12 with an
     8 px gap. When checked, an 8 x 8 Gray25 (#F5F7F8) dot sits in the centre
     (Figma radio SVG r=4). No indeterminate state (IsThreeState = False via
     DefaultEtherRadioButtonStyle).
@@ -307,7 +307,7 @@
 
     <Style x:Key="DefaultEtherRadioButtonStyle" TargetType="controls:EtherRadioButton">
         <Setter Property="Foreground" Value="{ThemeResource EtherRadioButtonLabelBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontWeight" Value="{StaticResource WeightSemibold}"/>
         <Setter Property="IsThreeState" Value="False"/>
         <Setter Property="UseSystemFocusVisuals" Value="False"/>

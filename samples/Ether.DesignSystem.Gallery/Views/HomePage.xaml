@@ -24,7 +24,7 @@
                            FontSize="32" FontWeight="SemiBold"
                            Foreground="{ThemeResource text/primary}"/>
 <TextBlock x:Uid="GalleryViewsHomePage008" Text="Every component, grouped by category. Click a card to open its page."
-                           FontFamily="{StaticResource InterFont}"
+                           FontFamily="{StaticResource RobotoFont}"
                            FontSize="14"
                            Foreground="{ThemeResource TextSecondary}"
                            TextWrapping="Wrap"/>

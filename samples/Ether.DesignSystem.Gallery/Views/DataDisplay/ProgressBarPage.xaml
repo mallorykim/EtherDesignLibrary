@@ -30,7 +30,7 @@
                             Click="Replay_Click"
                             Content="▶ Replay"
                             HorizontalAlignment="Left"
-                            FontFamily="{StaticResource InterFont}"
+                            FontFamily="{StaticResource RobotoFont}"
                             FontSize="12"/>
                 </StackPanel>
             </views:ControlExample>
@@ -41,7 +41,7 @@
 
                 <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsDataDisplayProgressBarPage245" Text="TITLE + VALUE"
-                               FontFamily="{StaticResource InterFont}"
+                               FontFamily="{StaticResource RobotoFont}"
                                FontSize="11" FontWeight="SemiBold"
                                Foreground="{ThemeResource TextTertiary}"/>
 <controls:EtherProgressBar x:Uid="GalleryViewsDataDisplayProgressBarPage246" Title="Storage" ValueContent="65%"
@@ -52,7 +52,7 @@
 
                 <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsDataDisplayProgressBarPage247" Text="TITLE ONLY"
-                               FontFamily="{StaticResource InterFont}"
+                               FontFamily="{StaticResource RobotoFont}"
                                FontSize="11" FontWeight="SemiBold"
                                Foreground="{ThemeResource TextTertiary}"/>
 <controls:EtherProgressBar x:Uid="GalleryViewsDataDisplayProgressBarPage248" Title="Storage" ValueContent="65%"
@@ -63,7 +63,7 @@
 
                 <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsDataDisplayProgressBarPage249" Text="VALUE ONLY"
-                               FontFamily="{StaticResource InterFont}"
+                               FontFamily="{StaticResource RobotoFont}"
                                FontSize="11" FontWeight="SemiBold"
                                Foreground="{ThemeResource TextTertiary}"/>
 <controls:EtherProgressBar x:Uid="GalleryViewsDataDisplayProgressBarPage250" Title="Storage" ValueContent="65%"
@@ -74,7 +74,7 @@
 
                 <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsDataDisplayProgressBarPage251" Text="BAR ONLY"
-                               FontFamily="{StaticResource InterFont}"
+                               FontFamily="{StaticResource RobotoFont}"
                                FontSize="11" FontWeight="SemiBold"
                                Foreground="{ThemeResource TextTertiary}"/>
 <controls:EtherProgressBar x:Uid="GalleryViewsDataDisplayProgressBarPage252" Title="Storage" ValueContent="65%"

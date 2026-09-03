@@ -28,7 +28,7 @@
       Height      32 px (MinHeight)
       Padding     8 all sides
       CornerRadius 4 (RadiusSm)
-      Font        Inter SemiBold 11 px · letter-spacing 0.22 px
+      Font        Roboto SemiBold 11 px · letter-spacing 0.22 px
       Arrow icon  16×16 slot · filled triangle Path
 
     MENU MEASUREMENTS
@@ -337,7 +337,7 @@
         <Setter Property="Margin" Value="0,2,0,2"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="FontFamily" Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize" Value="{StaticResource Size11}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -446,7 +446,7 @@
         <Setter Property="HorizontalAlignment"       Value="Left"/>
         <Setter Property="MinWidth"                   Value="{StaticResource DropdownMinWidth}"/>
         <Setter Property="MinHeight"                  Value="32"/>
-        <Setter Property="FontFamily"                 Value="{StaticResource InterFont}"/>
+        <Setter Property="FontFamily"                 Value="{StaticResource RobotoFont}"/>
         <Setter Property="FontSize"                   Value="{StaticResource Size11}"/>
         <Setter Property="MaxVisibleItems"            Value="6"/>
         <Setter Property="MenuGap"                    Value="{StaticResource Spacing4}"/>

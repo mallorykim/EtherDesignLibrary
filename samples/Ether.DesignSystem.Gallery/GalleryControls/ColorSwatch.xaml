@@ -16,7 +16,7 @@
         <Border x:Name="SampleBorder" Height="28" CornerRadius="6" VerticalAlignment="Center">
             <TextBlock x:Name="SampleText"
                        Text="Aa"
-                       FontFamily="{StaticResource InterFont}"
+                       FontFamily="{StaticResource RobotoFont}"
                        FontSize="14"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"
@@ -26,12 +26,12 @@
 
         <StackPanel x:Name="ContentPanel" Grid.Column="1" Spacing="2" VerticalAlignment="Center">
             <TextBlock x:Name="LabelBlock"
-                       FontFamily="{StaticResource InterFont}"
+                       FontFamily="{StaticResource RobotoFont}"
                        FontSize="11"
                        TextWrapping="Wrap"
                        Foreground="{ThemeResource text/primary}"/>
             <TextBlock x:Name="ValueBlock"
-                       FontFamily="{StaticResource InterFont}"
+                       FontFamily="{StaticResource RobotoFont}"
                        FontSize="10"
                        TextWrapping="Wrap"
                        Foreground="{ThemeResource TextTertiary}"

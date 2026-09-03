@@ -53,7 +53,7 @@
                                                  VerticalAlignment="Center"/>
                     </StackPanel>
                     <TextBlock Text="{x:Bind Description, Mode=OneTime}"
-                               FontFamily="{StaticResource InterFont}"
+                               FontFamily="{StaticResource RobotoFont}"
                                FontSize="14"
                                Foreground="{ThemeResource TextSecondary}"
                                TextWrapping="Wrap"/>
@@ -73,7 +73,7 @@
                         <Grid>
                             <TextBlock x:Uid="ComponentPageInteractive"
                                        VerticalAlignment="Center"
-                                       FontFamily="{StaticResource InterFont}"
+                                       FontFamily="{StaticResource RobotoFont}"
                                        FontSize="10" FontWeight="SemiBold"
                                        CharacterSpacing="80"
                                        Foreground="{ThemeResource TextTertiary}"/>
@@ -108,7 +108,7 @@
                         Padding="24">
                     <StackPanel Spacing="16">
                         <TextBlock Text="{x:Bind StatesTitle, Mode=OneTime}"
-                                   FontFamily="{StaticResource InterFont}"
+                                   FontFamily="{StaticResource RobotoFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>

@@ -31,7 +31,7 @@
 <Button x:Uid="GalleryMainWindow002" x:Name="ThemeToggle"
                         Click="ThemeToggle_Click"
                         Content="☀ Light"
-                        FontFamily="{StaticResource InterFont}"
+                        FontFamily="{StaticResource RobotoFont}"
                         FontSize="11" FontWeight="SemiBold"
                         Padding="8,4,8,4"
                         Margin="8"
@@ -62,7 +62,7 @@
                                    Foreground="{ThemeResource TextPrimary}"
                                    VerticalAlignment="Center"/>
 <TextBlock x:Uid="GalleryMainWindow004" Text="v1.0 = Ether Design System"
-                                   FontFamily="{StaticResource InterFont}"
+                                   FontFamily="{StaticResource RobotoFont}"
                                    FontSize="11"
                                    Foreground="{ThemeResource TextTertiary}"
                                    HorizontalAlignment="Right"

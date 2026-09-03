@@ -23,7 +23,7 @@
       Stroke    2 px · Light Gray600 (#414553) · Dark Gray150 (#dfe7ed)
       Text      inverse: Light Gray0 (#fff) · Dark Gray1000 (#000)
       Radius    RadiusMd 8 (outer stroke) · Padding 16,8 · MaxWidth 240
-      Text      body/s-regular style (Inter Regular 12, the DS body font) - set it on
+      Text      body/s-regular style (Roboto Regular 12, the DS body font) - set it on
                 the TextBlock plus TextWrapping=Wrap so long copy wraps at MaxWidth
                 (Figma tags this "Body/S Regular (12)")
 

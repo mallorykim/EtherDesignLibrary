@@ -168,7 +168,7 @@
 
                     <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsControlsButtonPage029" Text="LARGE"
-                                   FontFamily="{StaticResource InterFont}"
+                                   FontFamily="{StaticResource RobotoFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
@@ -222,7 +222,7 @@
 
                     <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsControlsButtonPage038" Text="SMALL"
-                                   FontFamily="{StaticResource InterFont}"
+                                   FontFamily="{StaticResource RobotoFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
@@ -285,7 +285,7 @@
 
                     <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsControlsButtonPage048" Text="LARGE"
-                                   FontFamily="{StaticResource InterFont}"
+                                   FontFamily="{StaticResource RobotoFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
@@ -339,7 +339,7 @@
 
                     <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsControlsButtonPage057" Text="SMALL"
-                                   FontFamily="{StaticResource InterFont}"
+                                   FontFamily="{StaticResource RobotoFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
@@ -402,7 +402,7 @@
 
                     <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsControlsButtonPage067" Text="LARGE"
-                                   FontFamily="{StaticResource InterFont}"
+                                   FontFamily="{StaticResource RobotoFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
@@ -456,7 +456,7 @@
 
                     <StackPanel Spacing="8">
 <TextBlock x:Uid="GalleryViewsControlsButtonPage076" Text="SMALL"
-                                   FontFamily="{StaticResource InterFont}"
+                                   FontFamily="{StaticResource RobotoFont}"
                                    FontSize="10" FontWeight="SemiBold"
                                    CharacterSpacing="80"
                                    Foreground="{ThemeResource TextTertiary}"/>
