@@ -35,6 +35,10 @@ gates — each with a fix and a pre-flight checklist so they do not recur. These
 by hosted CI**, so a fully green PR can still fail the release rehearsal. Runtime-harness gotchas
 (WinUI UIA patterns, shared-fixture state, external-consumer XAML paths) live in
 [`.claude/skills/consumability-review/references/lessons-learned.md`](.claude/skills/consumability-review/references/lessons-learned.md).
+WinUI control-authoring + build gotchas (FocusStates per base type, selector item VSM state names,
+shared-`Geometry` recycle, keyed-style min-size leak, the "design-system-owned ≠ no effect" rule,
+the Gallery `x64` build/`MSB4276` fix, the UIA/`CopyFromScreen` self-verify recipe) live in
+[`docs/internal/technical-gotchas.md`](docs/internal/technical-gotchas.md).
 
 ## Core principle: Reuse the official WinUI skeleton — reskin, don't rewrite
 
