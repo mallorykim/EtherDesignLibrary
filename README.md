@@ -14,7 +14,7 @@ skeletons per this repo's [AGENTS.md](AGENTS.md) rule.
 | Package | What it is for |
 | --- | --- |
 | `Ether.DesignSystem.Foundation` | Design tokens, fonts, and icon assets. Supported entry point is `Themes/Foundation.xaml`; consumed transitively by Controls. |
-| `Ether.DesignSystem.Controls` | The 15 WinUI 3 controls themselves (`EtherButton`, `EtherInput`, `EtherSegmentedControl`, `EtherTabNavigation`, ...) plus the design-system resource dictionary, `Themes/DesignSystem.xaml`. This is the package most applications reference for XAML usage. |
+| `Ether.DesignSystem.Controls` | The 17 WinUI 3 controls themselves (`EtherButton`, `EtherInput`, `EtherSegmentedControl`, `EtherTabNavigation`, ...) plus the design-system resource dictionary, `Themes/DesignSystem.xaml`. This is the package most applications reference for XAML usage. |
 | `Ether.DesignSystem.Interactions` | Optional, UI-only adapter (`ControlInteractionAdapter`) that turns control events into versioned, backend-consumable interaction envelopes for an application's own outbox. Not required for ordinary MVVM data binding — see [§7 of the getting-started guide](docs/consumers/getting-started.md#7-interactions-adapter-optional-backend-telemetry). |
 
 Foundation and Controls are released in lockstep and should be upgraded together; Interactions
@@ -63,7 +63,7 @@ action, are in the getting-started guide linked below.
 
 - [`docs/consumers/getting-started.md`](docs/consumers/getting-started.md) — full consumer guide:
   GitHub Packages access, a minimal WinUI 3 app, troubleshooting, known boundaries, a
-  copy-paste "appearance → bind data → wire an action" reference for all 15 controls, MVVM
+  copy-paste "appearance → bind data → wire an action" reference for all 17 controls, MVVM
   binding patterns, and the Interactions adapter.
 - [`docs/internal/consumability/`](docs/internal/consumability/) — per-component consumability +
   completeness review reports (evidence-grounded, file:line citations) and

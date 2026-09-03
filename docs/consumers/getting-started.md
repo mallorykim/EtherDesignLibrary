@@ -762,6 +762,53 @@ type with its own dependency properties — put bound content (a title, body tex
 `Border`'s children the same way you would with a plain `Border`. There is no Ether-specific
 property to bind and no interaction surface to wire; a card is a static surface, not a control.
 
+**EtherTooltip** (`Views/Surfaces/TooltipPage.xaml`) — likewise not a standalone type; it is a
+keyed `Style` applied on top of `Border`, painting the inverse-surface tooltip chrome (dark on
+light, light on dark):
+```xml
+<Border Style="{StaticResource EtherTooltip}">
+    <TextBlock Text="Tooltip"
+               Style="{StaticResource body/s-regular}"
+               Foreground="{ThemeResource EtherTooltipForegroundBrush}"
+               TextWrapping="Wrap"/>
+</Border>
+```
+
+**Bind data / wire an action:** none. `EtherTooltip` is a keyed `Style` on `Border`, not a type
+with its own dependency properties — `MaxWidth="240"` and the `body/s-regular` text style are
+baked into the style, so pair the `TextBlock`'s `Text` with `TextWrapping="Wrap"` the way the
+sample above does and longer copy wraps on its own. There is no Ether-specific property to bind
+and no interaction surface to wire; this is a static visual surface, not the WinUI `ToolTip`/
+`ToolTipService` — it carries no hover/dismiss/placement behavior of its own.
+
+**EtherPanelTabs** (`Views/Navigation/PanelTabsPage.xaml`) — not a standalone type either; it
+reuses the same `EtherSegmentedControl`/`EtherSegmentPanel`/`EtherSegmentRadioButton` skeleton as
+the `EtherSegmentedControl` entry above, only with a different keyed `Style` on the host and on
+each segment — a translucent track and a near-black/near-white selected pill instead of the
+brand-blue one:
+```xml
+<controls:EtherSegmentedControl Style="{StaticResource EtherPanelTabs}"
+                                AutomationProperties.Name="Package panel tabs">
+    <controls:EtherSegmentPanel>
+        <controls:EtherSegmentRadioButton Style="{StaticResource EtherPanelTabSegment}"
+                     GroupName="package-panel-tabs"
+                     Content="Overview"
+                     IsChecked="True"/>
+        <controls:EtherSegmentRadioButton Style="{StaticResource EtherPanelTabSegment}"
+                     GroupName="package-panel-tabs"
+                     Content="Details"/>
+    </controls:EtherSegmentPanel>
+</controls:EtherSegmentedControl>
+```
+
+**Bind data / wire an action:** the identical contract to `EtherSegmentedControl` above —
+`ItemsSource`/`ItemTemplate`/`DisplayMemberPath`/`SelectedIndex`/`SelectedItem`/`SelectedValue`
+(all `TwoWay`-capable), `SelectionChanged`, and the user-initiated-only `SelectionCommand`/
+`SelectionCommandParameter` pair. Swapping `Style="{StaticResource EtherPanelTabs}"` on the host
+and `Style="{StaticResource EtherPanelTabSegment}"` on each segment for `EtherSegmentedControl`'s
+defaults is the only difference — see the `EtherSegmentedControl` entry above for the
+data-driven and `SelectionCommand` markup, which applies here unchanged.
+
 **EtherScrollBar** (`Views/Foundations/ScrollBarPage.xaml`) — once `DesignSystem.xaml` is
 merged, this applies implicitly to the native `ScrollBar`/`ScrollViewer`; no extra `Style=`
 is needed:
