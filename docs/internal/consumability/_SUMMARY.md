@@ -31,6 +31,61 @@
 > the packaged MSIX interactive runtime, which is an environment constraint (see
 > [`_RUN-ON-DESKTOP.md`](_RUN-ON-DESKTOP.md)), not a code or fixture gap.
 
+> ---
+>
+> **2026-09-03 re-audit + green run (today's 10 modified components).** A grounded re-audit of the
+> components touched by today's commits (Segmented Control, Tooltip, Panel Tabs, Masthead, Card,
+> Intelligence Button, Input, Dropdown, Progress Bar, Steering Bar) found the **product surface
+> consumer-ready**, and the **harness has since been driven back to green** on `codex/refine-components`
+> — the "15/15 green" narrative below reflects the 2026-09-01 wave; this note supersedes it for today's
+> commits. Two NEW style-only resources are now reviewed ([EtherTooltip](EtherTooltip.md),
+> [EtherPanelTabs](EtherPanelTabs.md)), bringing the set to 17. `scripts/Verify-ConsumerFixtures.ps1`
+> now reaches `{"marker":"ETHER_CONSUMER_SMOKE","outcome":"success", ...}` UNPACKAGED **and** PACKAGED
+> on x64 (interactive desktop); evidence
+> `artifacts/consumer-fixtures/runtime-result-101ef2918b2143728697bbf6cd4c90c5.json` (run 2026-09-03).
+> The success marker reports 1770 public properties (1401 writable), 557 visual (346 observable + 211
+> contract-only), 47 Ether DPs written/read with callbacks raised, resources incl. **`RobotoFont`** (not
+> `InterFont`), Light/Dark/RTL/UIA/2.25-scale/localization/screenshots/SVG/High-Contrast all verified,
+> and `styleResources.tooltipStyleResolved=true` + `styleResources.panelTabsStyleResolved=true`.
+>
+> The six harness/contract residuals today's commits introduced are all now **CLOSED** (product was
+> never affected):
+>
+> 1. **`InterFont`→`RobotoFont` rename propagated to fixtures — CLOSED.** The harness fixture and the
+>    verify scripts were repointed to `RobotoFont` (commit `test(consumer-fixtures) 115363c`); the run
+>    confirms `RobotoFont` resolves. *(Remaining, non-blocking: the Inter `.ttf` still physically ships
+>    under `Fonts/Inter/` but is now unreferenced/orphaned — see follow-up (a) below.)*
+> 2. **Frozen token hashes reconciled ×3 — hard gate green.** The `EtherPrimitives.xaml`,
+>    `EtherColors.xaml`, and `EtherTypography.xaml` frozen-hash constants in
+>    `scripts/Verify-ConsumerFixtures.ps1` and `scripts/Verify-ResourceKeys.ps1` were updated to the
+>    current values; both gates pass. (Spacing/IconGeometries unchanged.)
+> 3. **`Verify-ResourceGraph.ps1` merge set reconciled — gate green.** `EtherPanelTabs.xaml`
+>    (`Generic.xaml:22`) and `EtherTooltip.xaml` (`Generic.xaml:26`) were added to the hardcoded expected
+>    Generic.xaml merge set (`Verify-ResourceGraph.ps1:86-99`); `Assert-SetEquals` now passes.
+> 4. **Tooltip style-resource fixture coverage — CLOSED.** `EtherTooltip` is now resolved by
+>    `tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.StyleResources.cs`: the `Border`
+>    style resolves + its themed Background/Stroke brushes re-resolve across Light/Dark plus a
+>    High-Contrast `SolidColorBrush` check; emitted as `styleResources.tooltipStyleResolved=true` and
+>    gated in `Verify-ConsumerFixtures.ps1`.
+> 5. **Panel Tabs style-resource fixture coverage — CLOSED.** The same fixture resolves `EtherPanelTabs`
+>    (`TargetType EtherSegmentedControl`) + `EtherPanelTabSegment` (`TargetType RadioButton`, Template
+>    setter) and re-resolves the themed track brush across Light/Dark + HC;
+>    `styleResources.panelTabsStyleResolved=true`, gated.
+> 6. **Intelligence Button `LeftIcon`/`RightIcon` proof + constants — CLOSED.**
+>    `RuntimeVerification.IntelligenceButton.cs` now probes the default sparkles `LeftIcon` (leading slot
+>    shows; clearing collapses) and `RightIcon` (setting shows the trailing slot; clearing collapses) via
+>    `LeftIconStates`/`RightIconStates`, restoring the default sparkles icon afterward; the reflection
+>    acceptance constants were reconciled to 1770/1401/557/346 (the 2 new visual icon DPs). The row moves
+>    from PARTIAL to ✅ PASS.
+>
+> **Remaining, non-blocking follow-ups (honestly open):** (a) the orphaned Inter `.ttf` still ships —
+> remove in a follow-up; (b) no dedicated `Verify-EtherTooltipContract.ps1` /
+> `Verify-EtherPanelTabsContract.ps1` parity scripts (optional — the StyleResources fixture + the
+> ResourceGraph gate already cover them); (c) `Verify-EtherIntelligenceButtonContract.ps1` does not yet
+> assert the new `LeftIcon`/`RightIcon` TemplateParts/states (optional completeness; the ConsumerFixtures
+> fixture proves them); (d) `docs/consumers/getting-started.md` understates the new IntelligenceButton
+> icon API (doc enhancement). None of these block packaging.
+
 ## Rollup
 
 | Component | Base type | B verdict | A verdict | harness-covered? | residual follow-ups |
@@ -40,9 +95,10 @@
 | [EtherCheckbox](EtherCheckbox.md) | `CheckBox` (`EtherCheckbox.cs:30`) | 🚫 D4 documented (`EtherCheckbox.md:13-31`) | ✅ PASS (`EtherCheckbox.md:65-107`) | YES (`EtherCheckbox.md:95-103`) | 0 |
 | [EtherDropdown](EtherDropdown.md) | `ComboBox` (`EtherDropdown.cs:64`) | ✅ PASS (`EtherDropdown.md:13-35`, `MaxDropDownHeight` resolved and confirmed) | ✅ PASS (`EtherDropdown.md:88-131`) | YES — confirmed by the green run (`dropdown.MaxDropDownHeightConstrainsPopup:true`, `runtime-result-9a2b552efe3b4c8bb6c9280635e54b77.json`) | 0 — CLOSED, confirmed by the green run |
 | [EtherInput](EtherInput.md) | `TextBox` (`EtherInput.cs:28`) | ✅ PASS (`EtherInput.md:13-30`) | ✅ PASS (`EtherInput.md:67-110`) | YES (`EtherInput.md:99-107`) | 0 |
-| [EtherIntelligenceButton](EtherIntelligenceButton.md) | `Button` (`EtherIntelligenceButton.cs:33`) | ✅ PASS (`EtherIntelligenceButton.md:13-27`) | ✅ PASS (`EtherIntelligenceButton.md:58-95`) | YES (`EtherIntelligenceButton.md:83-90`) | 0 |
+| [EtherIntelligenceButton](EtherIntelligenceButton.md) | `Button` (`EtherIntelligenceButton.cs:43`) | ✅ PASS — now has `LeftIcon`/`RightIcon` (`EtherIntelligenceButton.md:14-20`) | ✅ PASS — icon slots/states proven component-specifically; constants reconciled 1770/1401/557/346 (`EtherIntelligenceButton.md`) | YES — `RuntimeVerification.IntelligenceButton.cs` (green run) | 2 (guide example; optional contract script) |
 | [EtherMasthead](EtherMasthead.md) | `Control` (`EtherMasthead.xaml.cs:57`) | 🚫 D2 documented (`EtherMasthead.md:14-37`) | ✅ PASS (`EtherMasthead.md:77-125`, per-caption `Invoke` confirmed for Minimize/Close) | YES — confirmed by the green run (`masthead.MinimizeButtonInvokeExposed:true`, `masthead.CloseButtonInvokeExposed:true`, `runtime-result-9a2b552efe3b4c8bb6c9280635e54b77.json`) | 0 — CLOSED, confirmed by the green run |
-| [EtherProgressBar](EtherProgressBar.md) | `RangeBase` (`EtherProgressBar.cs:34`) | ✅ PASS (`EtherProgressBar.md:13-25`) | ✅ PASS (`EtherProgressBar.md:59-97`) | YES (`EtherProgressBar.md:92-96`) | 0 |
+| [EtherPanelTabs](EtherPanelTabs.md) | style-only re-skin of `EtherSegmentedControl` (`ContentControl`) + `EtherSegmentRadioButton` (`RadioButton`); no Ether type (`EtherPanelTabs.xaml:236-261`) | ✅ PASS — style-only re-skin (`EtherPanelTabs.md:14-22`) | ✅ PASS — skin keys now fixture-proven; reused host API covered (`EtherPanelTabs.md`) | YES — style-resource fixture (`panelTabsStyleResolved=true`, green run) | 1 (optional contract script) |
+| [EtherProgressBar](EtherProgressBar.md) | `RangeBase` (`EtherProgressBar.cs:34`) | ✅ PASS (`EtherProgressBar.md:13-25`) | ✅ PASS (`EtherProgressBar.md:59-97`) | YES (`EtherProgressBar.md:92-96`) — confirmed by the 2026-09-03 green run | 0 |
 | [EtherRadioButton](EtherRadioButton.md) | `RadioButton` (`EtherRadioButton.cs:30`) | 🚫 D4 documented (`EtherRadioButton.md:13-29`) | ✅ PASS (`EtherRadioButton.md:64-108`, `GroupName` mutual exclusion confirmed) | YES — confirmed by the green run (`radioButton.GroupNameMutualExclusionVerified:true`, `runtime-result-9a2b552efe3b4c8bb6c9280635e54b77.json`) | 0 — CLOSED, confirmed by the green run |
 | [EtherScrollBar](EtherScrollBar.md) | `ScrollBar` (implicit Style; no Ether type) (`EtherScrollBar.xaml:106-205`) | ✅ PASS (`EtherScrollBar.md:13-29`) | ✅ PASS (`EtherScrollBar.md:65-110`, RangeValue automation + `Minimum`/`Maximum` round-trip confirmed) | YES — confirmed by the green run (`scrollBar.RangeValuePatternExposed:true`, `scrollBar.RangeValueTracksValue:true`, `scrollBar.MinimumRoundTrip:5`, `scrollBar.MaximumRoundTrip:120`, `runtime-result-9a2b552efe3b4c8bb6c9280635e54b77.json`) | 0 — CLOSED, confirmed by the green run |
 | [EtherSegmentedControl](EtherSegmentedControl.md) | `ContentControl` + `Panel`/`RadioButton` (`EtherSegmentedControl.cs:28`; `EtherSegmentPanel.cs:15`; `EtherSegmentRadioButton.cs:8`) | ✅ PASS — D1 additive contract shipped (`EtherSegmentedControl.md:17-41`) | ✅ PASS (`EtherSegmentedControl.md:83-137`) | YES (`EtherSegmentedControl.md:126-136`) | 0 |
@@ -50,6 +106,7 @@
 | [EtherSteeringBar](EtherSteeringBar.md) | `Control` (`EtherSteeringBar.xaml.cs:78`) | ✅ PASS — `StepFrequency` closed (`EtherSteeringBar.md:13-27`) | ✅ PASS (`EtherSteeringBar.md:68-111`) | YES (`EtherSteeringBar.md:103-109`) | 0 |
 | [EtherSwitch](EtherSwitch.md) | `ToggleSwitch` (keyed Style; no Ether type) (`EtherSwitch.xaml:212-223`) | ✅ PASS (`EtherSwitch.md:13-34`) | ✅ PASS (`EtherSwitch.md:72-117`) | YES (`EtherSwitch.md:106-116`) | 0 |
 | [EtherTabNavigation](EtherTabNavigation.md) | `ListView` + `ListViewItem` (`EtherTabNavigation.cs:9,21`) | 🚫 D3 documented (`EtherTabNavigation.md:15-35`) | ✅ PASS (`EtherTabNavigation.md:70-116`) | YES (`EtherTabNavigation.md:105-115`) | 0 |
+| [EtherTooltip](EtherTooltip.md) | style-only resource for `Border` (WinUI `ToolTip` NOT reused); no Ether type (`EtherTooltip.xaml:67-79`) | ✅ PASS — style-only, static visual (`EtherTooltip.md:14-22`) | ✅ PASS — keys now fixture-proven (`EtherTooltip.md:29-35`) | YES — style-resource fixture (`tooltipStyleResolved=true`, green run) | 1 (optional contract script) |
 
 **All fifteen components now have zero *named* residual follow-ups** — a follow-up session added
 fixture assertions (and, for Dropdown, one small product edit) closing the four residuals the prior

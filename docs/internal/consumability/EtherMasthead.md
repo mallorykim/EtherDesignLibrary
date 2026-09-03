@@ -9,7 +9,23 @@
 > [EtherMasthead.xaml.cs](../../../src/Ether.DesignSystem.Controls/Controls/Navigation/EtherMasthead.xaml.cs),
 > [EtherMasthead.xaml](../../../src/Ether.DesignSystem.Controls/Controls/Navigation/EtherMasthead.xaml),
 > [MastheadAction.cs](../../../src/Ether.DesignSystem.Controls/Controls/Navigation/MastheadAction.cs).
-> **Package:** `Ether.DesignSystem.Controls`. **Date:** 2026-09-01 (post-remediation, R3).
+> **Package:** `Ether.DesignSystem.Controls`. **Date:** 2026-09-03 (post-reskin re-cite; base verdict
+> per 2026-09-01 R3).
+>
+> **Post-reskin re-cite (2026-09-03, commit `fc88e83` — font-glyph caption buttons, 46×40 flush
+> cells, red close-hover):** the reskin did **not** change the reviewed contract — the template part
+> names, resource keys, the public `ActionInvoked` event, and the `EtherButton` caption structure are
+> all intact, so every verdict below stands. Only source line numbers drifted. Current anchors,
+> re-verified against HEAD: base `public sealed class EtherMasthead : Control` (`EtherMasthead.xaml.cs:46`);
+> `public event EventHandler<MastheadActionInvokedEventArgs>? ActionInvoked` (`EtherMasthead.xaml.cs:89`),
+> raised at `EtherMasthead.xaml.cs:337` (Minimize) / `:355` (MaximizeRestore) / `:379` (Close); the
+> three caption buttons remain `controls:EtherButton` — `MinimizeButton` (`EtherMasthead.xaml:347`),
+> `MaximizeRestoreButton` (`:352`), `CloseButton` (`:357`); the decorative `SettingsButton` (`:321`)
+> and `SearchIconSlot` (`:308`) slots stay non-button `Grid`s. The older `EtherMasthead.xaml.cs:120`
+> / `:531-590` / `:543,561,585` and `EtherMasthead.xaml:261-330` citations in the body predate
+> `fc88e83` and have shifted to these anchors; the harness template-part contract
+> (`Verify-ConsumerFixtures.ps1:987` `SearchIconSlot`/`SettingsButton`/`MinimizeButton`/
+> `MaximizeRestoreButton`/`CloseButton`) is unaffected.
 
 ## Verdict at a glance
 - **Base-control parity (B):** the confirmed base is bare `Control`

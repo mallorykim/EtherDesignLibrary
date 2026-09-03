@@ -12,7 +12,20 @@
 > [EtherSegmentPanel.cs](../../../src/Ether.DesignSystem.Controls/Controls/Inputs/EtherSegmentPanel.cs),
 > [EtherSegmentRadioButton.cs](../../../src/Ether.DesignSystem.Controls/Controls/Inputs/EtherSegmentRadioButton.cs),
 > [SegmentedSelectionChangedEventArgs.cs](../../../src/Ether.DesignSystem.Controls/Controls/Inputs/SegmentedSelectionChangedEventArgs.cs).
-> **Package:** `Ether.DesignSystem.Controls`. **Date:** 2026-09-01 (post-remediation, R3).
+> **Package:** `Ether.DesignSystem.Controls`. **Date:** 2026-09-03 (post-reskin re-cite; base verdict
+> per 2026-09-01 R3).
+>
+> **Post-reskin re-cite (2026-09-03):** commit `45c9349` applied the new Figma skin (colours/sizes)
+> with **behaviour unchanged**, and commit `4e4596d` added the separate **Panel Tabs** re-skin of this
+> same control ([EtherPanelTabs.md](EtherPanelTabs.md)). Neither changed the public API, the class
+> declaration, the `TrackSurface` template part (`EtherSegmentedControl.xaml:103`), the templates
+> (`EtherSegmentTemplate` `:136`; `EtherSegment` style `:259`; `DefaultEtherSegmentedControlStyle`
+> `:274`), or the `EtherSegmentedControl*` resource-key names (`:54-92`) — only brush values and sizes
+> moved. All `.cs` citations below are unaffected (`45c9349` touched only the XAML skin); a few inline
+> `EtherSegmentedControl.xaml` line ranges (e.g. `:221-245`, `:151-170`) may be shifted by a handful of
+> lines within the reskinned template but still point at the same content/font bindings and segment
+> Disabled state. The harness template-part contract (`Verify-ConsumerFixtures.ps1:979` `TrackSurface`)
+> is unaffected. Every verdict below stands.
 
 ## Verdict at a glance
 - **Base-control parity (B):** the host stays `ContentControl` per locked decision D1 (not
