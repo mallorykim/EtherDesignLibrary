@@ -81,6 +81,7 @@ public static class ComponentCatalog
         {
             new ComponentEntry("Masthead", typeof(MastheadPage), IsUpdated: true),
             new ComponentEntry("Tab Navigation", typeof(TabNavigationPage), IsUpdated: true),
+            new ComponentEntry("Panel Tabs", typeof(PanelTabsPage), IsUpdated: true),
         }),
         new CatalogCategory("Data Display", new[]
         {

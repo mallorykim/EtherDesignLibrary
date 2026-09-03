@@ -19,6 +19,7 @@
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Navigation/EtherMasthead.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Navigation/EtherTabNavigation.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherSegmentedControl.xaml" />
+        <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherPanelTabs.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherDropdown.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml" />
         <ResourceDictionary Source="ms-appx:///Ether.DesignSystem.Controls/Resources/Foundations/EtherCard.xaml" />

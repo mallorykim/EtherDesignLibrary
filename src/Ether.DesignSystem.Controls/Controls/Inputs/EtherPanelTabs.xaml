@@ -1,0 +1,263 @@
+<!--
+    EtherPanelTabs.xaml - Ether Design System · Panel Tabs
+    ═══════════════════════════════════════════════════════════════════════
+
+    WHAT THIS IS
+      A compact segmented navigation for side panels. Same behaviour and skeleton
+      as the Segmented Control (it REUSES the EtherSegmentedControl host and the
+      EtherSegmentRadioButton segments) - only the skin differs: a translucent
+      track, a near-black / near-white selected pill (not the brand-blue one), a
+      slightly larger segment, and a soft native drop shadow so the panel reads as
+      floating. Figma calls it "SidePanelTab" / Tab Navigation Inside Panel.
+
+    USAGE
+        <controls:EtherSegmentedControl Style="{StaticResource EtherPanelTabs}">
+            <controls:EtherSegmentPanel>
+                <controls:EtherSegmentRadioButton Style="{StaticResource EtherPanelTabSegment}"
+                             GroupName="MyPanel" Content="Overview" IsChecked="True"/>
+                <controls:EtherSegmentRadioButton Style="{StaticResource EtherPanelTabSegment}"
+                             GroupName="MyPanel" Content="Details"/>
+            </controls:EtherSegmentPanel>
+        </controls:EtherSegmentedControl>
+
+    KEY MEASUREMENTS (Figma: ursRC201v8IiVeafliI45F
+      Light 62110:24735 · Dark 62110:24850)
+      Track     padding 4 · RadiusSm 4 · gap 4 · Light AlphaWhite40 · Dark AlphaBlack70
+                shadow: native ThemeShadow via Translation Z=28 (Figma's blue elevation-1, rendered
+                        gray). ThemeShadow can't be coloured/themed, so Dark reads fainter than Light;
+                        a per-theme colour would need a Composition shadow, but both CommunityToolkit
+                        shadows failed to render on this reused-control template - revisit later.
+      Segment   px=12 py=10 · RadiusSm 4
+                selected: Gray850 (#181A1F) L / Gray75 (#E8EDEF) D · label inverse Gray0 / Gray1000
+                default:  transparent · Light AlphaBlack70 / Dark AlphaWhite70
+                hover:    AlphaBlack4 / Dark AlphaWhite4  (matches EtherTabNavigation)
+                pressed:  AlphaBlack6 / Dark AlphaWhite6  (matches EtherTabNavigation)
+      Font      body/s-semibold = Inter SemiBold 12 (Figma ramp "Body/S SemiBold (12)")
+
+    Skeleton copied from EtherSegmentedControl (which copied WinUI); only the skin
+    is swapped. Segment template part names (HoverLayer/PressedLayer/CheckedLayer/
+    Bg/Cp/FocusRing/TextContent) match so EtherSegmentRadioButton drives it unchanged.
+
+    Light/Dark component brushes bind Color to primitive StaticResources.
+    High Contrast uses Windows SystemColor*.
+
+    LOCATION
+      Merged AFTER EtherSegmentedControl.xaml from the Controls Generic.xaml entry
+      point (keyed only - it never becomes the implicit EtherSegmentedControl style).
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Ether.DesignSystem.Controls">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="EtherPanelTabsFocusStrokeBrush" Color="{StaticResource Blue600}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentCheckedBrush" Color="{StaticResource Gray850}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundCheckedBrush" Color="{StaticResource Gray0}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundHoverBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundPressedBrush" Color="{StaticResource AlphaBlack70}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentHoverBrush" Color="{StaticResource AlphaBlack4}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentPressedBrush" Color="{StaticResource AlphaBlack6}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsTrackBackgroundBrush" Color="{StaticResource AlphaWhite40}"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="EtherPanelTabsFocusStrokeBrush" Color="{StaticResource Blue500}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentCheckedBrush" Color="{StaticResource Gray75}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundCheckedBrush" Color="{StaticResource Gray1000}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundHoverBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundPressedBrush" Color="{StaticResource AlphaWhite70}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentHoverBrush" Color="{StaticResource AlphaWhite4}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentPressedBrush" Color="{StaticResource AlphaWhite6}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsTrackBackgroundBrush" Color="{StaticResource AlphaBlack70}"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="EtherPanelTabsFocusStrokeBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentCheckedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundCheckedBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundHoverBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentForegroundPressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentHoverBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsSegmentPressedBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="EtherPanelTabsTrackBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <SolidColorBrush x:Key="EtherPanelTabsTransparentBrush" Color="Transparent"/>
+
+    <!-- Track container template - a soft native ThemeShadow (via Translation Z) so the panel
+         floats. Note: ThemeShadow cannot be coloured or themed, so the Dark shadow reads fainter
+         than Light against a dark surface. A per-theme colour would need a Composition shadow, but
+         both CommunityToolkit shadows (AttachedDropShadow, AttachedCardShadow) failed to render on
+         this reused-control template, so the native ThemeShadow stands for now. -->
+    <ControlTemplate x:Key="EtherPanelTabsTrackTemplate" TargetType="controls:EtherSegmentedControl">
+        <Grid>
+            <Border x:Name="TrackSurface"
+                    Background="{TemplateBinding Background}"
+                    Padding="{TemplateBinding Padding}"
+                    CornerRadius="{StaticResource RadiusSm}"
+                    Translation="0,0,28">
+                <Border.Shadow>
+                    <ThemeShadow/>
+                </Border.Shadow>
+                <Grid>
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                      Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
+                                      ContentTransitions="{TemplateBinding ContentTransitions}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      AutomationProperties.AccessibilityView="Raw"/>
+                    <TextBlock Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                               Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=String}"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               AutomationProperties.AccessibilityView="Raw"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </ControlTemplate>
+
+    <!-- Individual segment (RadioButton). Same layer/opacity model as EtherSegmentTemplate;
+         only the brush keys are swapped for the EtherPanelTabs* set. -->
+    <ControlTemplate x:Key="EtherPanelTabSegmentTemplate" TargetType="RadioButton">
+        <Grid HorizontalAlignment="Stretch">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal"/>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherPanelTabsSegmentForegroundHoverBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherPanelTabsSegmentForegroundPressedBrush}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Target="Bg.Opacity" Value="0.4"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Checked">
+                        <VisualState.Setters>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherPanelTabsSegmentForegroundCheckedBrush}"/>
+                            <Setter Target="CheckedLayer.Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="CheckedPointerOver">
+                        <VisualState.Setters>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherPanelTabsSegmentForegroundCheckedBrush}"/>
+                            <Setter Target="CheckedLayer.Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="CheckedPressed">
+                        <VisualState.Setters>
+                            <Setter Target="Cp.Foreground" Value="{ThemeResource EtherPanelTabsSegmentForegroundCheckedBrush}"/>
+                            <Setter Target="CheckedLayer.Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Indeterminate"/>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="FocusStates">
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Target="FocusRing.Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Unfocused"/>
+                    <VisualState x:Name="PointerFocused"/>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+            <Border x:Name="HoverLayer"
+                    Background="{ThemeResource EtherPanelTabsSegmentHoverBrush}"
+                    CornerRadius="{StaticResource RadiusSm}"
+                    Opacity="0"/>
+            <Border x:Name="PressedLayer"
+                    Background="{ThemeResource EtherPanelTabsSegmentPressedBrush}"
+                    CornerRadius="{StaticResource RadiusSm}"
+                    Opacity="0"/>
+            <Border x:Name="CheckedLayer"
+                    Background="{ThemeResource EtherPanelTabsSegmentCheckedBrush}"
+                    CornerRadius="{StaticResource RadiusSm}"
+                    Opacity="0"/>
+
+            <Border x:Name="Bg"
+                    Background="{StaticResource EtherPanelTabsTransparentBrush}"
+                    CornerRadius="{StaticResource RadiusSm}"
+                    Padding="{TemplateBinding Padding}">
+                <Grid>
+                    <ContentPresenter x:Name="Cp"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                      ContentTransitions="{TemplateBinding ContentTransitions}"
+                                      Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Foreground="{ThemeResource EtherPanelTabsSegmentForegroundBrush}"
+                                      FontFamily="{TemplateBinding FontFamily}"
+                                      FontSize="{TemplateBinding FontSize}"
+                                      FontWeight="{TemplateBinding FontWeight}"
+                                      AutomationProperties.AccessibilityView="Raw"/>
+                    <TextBlock x:Name="TextContent"
+                               Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                               Visibility="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource EtherStringContentVisibilityConverter}, ConverterParameter=String}"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                               Foreground="{Binding Foreground, ElementName=Cp}"
+                               FontFamily="{TemplateBinding FontFamily}"
+                               FontSize="{TemplateBinding FontSize}"
+                               FontWeight="{TemplateBinding FontWeight}"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               AutomationProperties.AccessibilityView="Raw"/>
+                </Grid>
+            </Border>
+
+            <Border x:Name="FocusRing"
+                    Margin="-3"
+                    BorderBrush="{ThemeResource EtherPanelTabsFocusStrokeBrush}"
+                    BorderThickness="2"
+                    CornerRadius="{StaticResource RadiusSm}"
+                    IsHitTestVisible="False"
+                    Opacity="0"/>
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="EtherPanelTabSegment" TargetType="RadioButton">
+        <Setter Property="FontFamily"                 Value="{StaticResource InterFont}"/>
+        <Setter Property="FontSize"                   Value="{StaticResource Size12}"/>
+        <Setter Property="FontWeight"                 Value="{StaticResource WeightSemibold}"/>
+        <Setter Property="Padding"                    Value="12,10"/>
+        <Setter Property="MinWidth"                   Value="0"/>
+        <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment"   Value="Center"/>
+        <Setter Property="UseSystemFocusVisuals"      Value="False"/>
+        <Setter Property="HighContrastAdjustment"     Value="None"/>
+        <Setter Property="Template" Value="{StaticResource EtherPanelTabSegmentTemplate}"/>
+    </Style>
+
+    <Style x:Key="EtherPanelTabs" TargetType="controls:EtherSegmentedControl">
+        <Setter Property="Padding"                    Value="4"/>
+        <Setter Property="Background"                 Value="{ThemeResource EtherPanelTabsTrackBackgroundBrush}"/>
+        <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+        <Setter Property="VerticalAlignment"          Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment"   Value="Center"/>
+        <Setter Property="IsTabStop"                  Value="False"/>
+        <Setter Property="UseSystemFocusVisuals"      Value="False"/>
+        <Setter Property="HighContrastAdjustment"     Value="None"/>
+        <Setter Property="Template" Value="{StaticResource EtherPanelTabsTrackTemplate}"/>
+    </Style>
+
+</ResourceDictionary>

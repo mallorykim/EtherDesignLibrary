@@ -1,0 +1,48 @@
+<Page
+    x:Class="EtherSandbox.Views.Navigation.PanelTabsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Ether.DesignSystem.Controls"
+    xmlns:views="using:EtherSandbox.Views">
+
+    <views:ComponentPage
+        Title="Panel Tabs"
+        Description="Compact segmented navigation for side panels - same behavior as the Segmented Control, with a translucent track, a near-black / near-white selected pill, and a soft native shadow so the panel reads as floating.">
+
+        <views:ComponentPage.InteractiveContent>
+            <views:ControlExample SourceXaml="{x:Bind SpecimenXaml, Mode=OneTime}">
+                <StackPanel Width="1216" Spacing="24">
+
+                    <TextBlock Text="2 SEGMENTS"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherSegmentedControl Style="{StaticResource EtherPanelTabs}"
+                                                    HorizontalAlignment="Left" Width="267">
+                        <controls:EtherSegmentPanel>
+                            <controls:EtherSegmentRadioButton Style="{StaticResource EtherPanelTabSegment}"
+                                         GroupName="PanelTwo" Content="Overview" IsChecked="True"/>
+                            <controls:EtherSegmentRadioButton Style="{StaticResource EtherPanelTabSegment}"
+                                         GroupName="PanelTwo" Content="Details"/>
+                        </controls:EtherSegmentPanel>
+                    </controls:EtherSegmentedControl>
+
+                    <TextBlock Text="3 SEGMENTS"
+                               Style="{StaticResource micro/semibold}"
+                               Foreground="{ThemeResource TextTertiary}"/>
+                    <controls:EtherSegmentedControl Style="{StaticResource EtherPanelTabs}"
+                                                    HorizontalAlignment="Left" Width="360">
+                        <controls:EtherSegmentPanel>
+                            <controls:EtherSegmentRadioButton Style="{StaticResource EtherPanelTabSegment}"
+                                         GroupName="PanelThree" Content="Overview" IsChecked="True"/>
+                            <controls:EtherSegmentRadioButton Style="{StaticResource EtherPanelTabSegment}"
+                                         GroupName="PanelThree" Content="Activity"/>
+                            <controls:EtherSegmentRadioButton Style="{StaticResource EtherPanelTabSegment}"
+                                         GroupName="PanelThree" Content="Settings"/>
+                        </controls:EtherSegmentPanel>
+                    </controls:EtherSegmentedControl>
+
+                </StackPanel>
+            </views:ControlExample>
+        </views:ComponentPage.InteractiveContent>
+    </views:ComponentPage>
+</Page>
