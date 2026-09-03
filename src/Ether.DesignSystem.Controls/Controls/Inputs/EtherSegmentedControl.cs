@@ -445,6 +445,13 @@ public class EtherSegmentedControl : ContentControl
 
     private void SelectSegmentForValue(object? value)
     {
+        // Defer while the segments are not realized yet - e.g. a SelectedValue/SelectedItem set from a
+        // XAML attribute runs before the inline content (or ItemsSource) exists. Clearing the property
+        // here would discard the consumer's value; WireSegments -> SynchronizeSelectionFromProperties
+        // re-applies it once the segments are wired.
+        if (_segments.Count == 0)
+            return;
+
         var selected = value is null
             ? null
             : _segments.FirstOrDefault(segment => Equals(GetSegmentValue(segment), value));
@@ -453,6 +460,10 @@ public class EtherSegmentedControl : ContentControl
 
     private void SelectSegmentAtIndex(int index)
     {
+        // See SelectSegmentForValue: don't coerce a XAML-set SelectedIndex back to -1 before the segments exist.
+        if (_segments.Count == 0)
+            return;
+
         ApplySelection(index >= 0 && index < _segments.Count ? _segments[index] : null);
     }
 

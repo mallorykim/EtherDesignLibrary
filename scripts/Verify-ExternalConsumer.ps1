@@ -318,7 +318,23 @@ public partial class App : Application
             <ether:EtherInput x:Name="InputProbe" Text="External text" PlaceholderText="External placeholder" />
             <ether:EtherCheckbox x:Name="CheckboxProbe" Content="Checked from XAML" IsChecked="True" />
             <ether:EtherRadioButton x:Name="RadioProbe" GroupName="external" Content="Selected from XAML" IsChecked="True" />
-            <ether:EtherIntelligenceButton x:Name="IntelligenceProbe" Content="Ask Ether" />
+
+            <!-- IntelligenceButton exercises the icon API: the default sparkles LeftIcon plus an explicit RightIcon. -->
+            <ether:EtherIntelligenceButton x:Name="IntelligenceProbe" Content="Ask Ether">
+                <ether:EtherIntelligenceButton.RightIcon><SymbolIcon Symbol="Forward" /></ether:EtherIntelligenceButton.RightIcon>
+            </ether:EtherIntelligenceButton>
+
+            <!-- Style-only components consumed the real way: Style="{StaticResource ...}" on their host. -->
+            <Border x:Name="TooltipProbe" Style="{StaticResource EtherTooltip}">
+                <TextBlock Text="Tooltip from external XAML" />
+            </Border>
+
+            <ether:EtherSegmentedControl x:Name="PanelTabsProbe" Style="{StaticResource EtherPanelTabs}" SelectedValue="overview">
+                <ether:EtherSegmentPanel>
+                    <RadioButton Style="{StaticResource EtherPanelTabSegment}" Tag="overview" Content="Overview" />
+                    <RadioButton Style="{StaticResource EtherPanelTabSegment}" Tag="details" Content="Details" />
+                </ether:EtherSegmentPanel>
+            </ether:EtherSegmentedControl>
         </StackPanel>
     </ScrollViewer>
 </Window>
@@ -349,7 +365,7 @@ public sealed partial class MainWindow : Window
 
     public IReadOnlyList<string> GetResolvedResourceKeys()
     {
-        var expected = new[] { "Spacing8", "RobotoFont", "InstrumentSans", "IconAddCir", "DefaultEtherButtonStyle", "DefaultEtherSliderStyle" };
+        var expected = new[] { "Spacing8", "RobotoFont", "InstrumentSans", "IconAddCir", "DefaultEtherButtonStyle", "DefaultEtherSliderStyle", "EtherTooltip", "EtherPanelTabs" };
         return expected.Where(key => Application.Current.Resources.TryGetValue(key, out _)).ToArray();
     }
 
@@ -375,6 +391,10 @@ public sealed partial class MainWindow : Window
             !MastheadProbe.ShowMenuIcon && MastheadProbe.ShowChevron,
         ["inherited.controls"] = InputProbe.Text == "External text" && CheckboxProbe.IsChecked == true &&
             RadioProbe.IsChecked == true && Equals(IntelligenceProbe.Content, "Ask Ether"),
+        ["intelligence.icons"] = IntelligenceProbe.LeftIcon is not null && IntelligenceProbe.RightIcon is SymbolIcon,
+        ["tooltip.style"] = TooltipProbe.Style is not null && TooltipProbe.Background is Microsoft.UI.Xaml.Media.Brush,
+        ["paneltabs.style"] = PanelTabsProbe.Style is not null && Equals(PanelTabsProbe.SelectedValue, "overview") &&
+            PanelTabsProbe.Background is Microsoft.UI.Xaml.Media.Brush,
     };
 
     public object GetLayoutAssertion() => new
@@ -399,7 +419,7 @@ function Assert-RuntimeMarker {
     }
 
     $marker = Get-Content -LiteralPath $MarkerPath -Raw | ConvertFrom-Json
-    $expectedResources = @('Spacing8', 'RobotoFont', 'InstrumentSans', 'IconAddCir', 'DefaultEtherButtonStyle', 'DefaultEtherSliderStyle')
+    $expectedResources = @('Spacing8', 'RobotoFont', 'InstrumentSans', 'IconAddCir', 'DefaultEtherButtonStyle', 'DefaultEtherSliderStyle', 'EtherTooltip', 'EtherPanelTabs')
     $missingResources = @($expectedResources | Where-Object { $_ -cnotin @($marker.resourceKeys) })
     $failedProperties = @($marker.xamlProperties.PSObject.Properties | Where-Object { $_.Value -ne $true })
     $missingAssemblies = @('Ether.DesignSystem.Foundation', 'Ether.DesignSystem.Controls', 'Ether.DesignSystem.Interactions' |

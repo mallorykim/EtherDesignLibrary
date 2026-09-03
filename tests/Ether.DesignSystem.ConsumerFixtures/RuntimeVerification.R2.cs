@@ -223,6 +223,34 @@ internal static partial class RuntimeVerification
             Assert(ReferenceEquals(segmented.SelectedItem, segments[1]) && ReferenceEquals(segmented.SelectedValue, segments[1]), "EtherSegmentedControl data selection did not synchronize SelectedItem and SelectedValue.");
             Assert((panel!.Children[1] as RadioButton)?.Content as string == "Beta", "EtherSegmentedControl DisplayMemberPath did not shape generated content.");
 
+            // Regression: a SelectedValue set BEFORE the inline content exists (the order a XAML
+            // attribute is applied, ahead of the panel child) must survive and resolve once the
+            // segments are wired - it must not be coerced to null during initialization.
+            var preContentValue = new EtherSegmentedControl();
+            preContentValue.SelectedValue = "beta";
+            var preContentValuePanel = new EtherSegmentPanel();
+            preContentValuePanel.Children.Add(new EtherSegmentRadioButton { Tag = "alpha", Content = "Alpha" });
+            preContentValuePanel.Children.Add(new EtherSegmentRadioButton { Tag = "beta", Content = "Beta" });
+            preContentValue.Content = preContentValuePanel;
+            scratch.Children.Add(preContentValue);
+            preContentValue.ApplyTemplate();
+            preContentValue.UpdateLayout();
+            Assert(Equals(preContentValue.SelectedValue, "beta"), "EtherSegmentedControl discarded a SelectedValue set before its inline content was assigned (XAML-attribute order).");
+            Assert(preContentValue.SelectedIndex == 1, "EtherSegmentedControl did not resolve SelectedIndex from a pre-content SelectedValue.");
+            Assert((preContentValuePanel.Children[1] as RadioButton)?.IsChecked == true, "EtherSegmentedControl did not check the segment matching a pre-content SelectedValue.");
+
+            // Same guarantee for a SelectedIndex set before the inline content exists.
+            var preContentIndex = new EtherSegmentedControl();
+            preContentIndex.SelectedIndex = 1;
+            var preContentIndexPanel = new EtherSegmentPanel();
+            preContentIndexPanel.Children.Add(new EtherSegmentRadioButton { Tag = "alpha", Content = "Alpha" });
+            preContentIndexPanel.Children.Add(new EtherSegmentRadioButton { Tag = "beta", Content = "Beta" });
+            preContentIndex.Content = preContentIndexPanel;
+            scratch.Children.Add(preContentIndex);
+            preContentIndex.ApplyTemplate();
+            preContentIndex.UpdateLayout();
+            Assert(preContentIndex.SelectedIndex == 1 && Equals(preContentIndex.SelectedValue, "beta"), "EtherSegmentedControl discarded a SelectedIndex set before its inline content was assigned (XAML-attribute order).");
+
             return new DataPathVerification(
                 tabNavigation.Items.Count,
                 panel.Children.Count,
