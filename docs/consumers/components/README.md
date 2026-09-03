@@ -59,8 +59,9 @@ below assumes you have declared `xmlns:ether="using:Ether.DesignSystem.Controls"
 Some entries are **real Ether types** (a C# class you place as `<ether:EtherButton .../>`); others
 are **style-only resources** — a keyed `Style` you apply to an existing control
 (`<ToggleSwitch Style="{StaticResource EtherSwitch}"/>`), with no new type. Each page says which it
-is at the top. A couple of public types are template-implementation only, not consumer controls: `HandContentControl`
-and `EtherStringContentVisibilityConverter` (its `ConvertBack` throws). Use the named `Ether*`
+is at the top. A couple of public types are template-implementation only, not consumer controls: `HandContentControl`,
+`EtherStringContentVisibilityConverter` (its `ConvertBack` throws), and the generated
+`EtherScrollBarResources`/`EtherSwitchResources` resource-dictionary plumbing. Use the named `Ether*`
 controls instead. Style-only ones (Card, Tooltip, PanelTabs, Switch, ScrollBar) expose the underlying
 control's own API (minus a few slots the style collapses, e.g. `ToggleSwitch.Header`) — the design
 system mainly changes their skin. For most of them the underlying

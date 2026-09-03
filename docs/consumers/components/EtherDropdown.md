@@ -72,10 +72,12 @@ Setting these has no effect (the control has no editable text part / header slot
 
 | Property | Instead |
 |----------|---------|
-| `IsEditable`, `Text`, `TextSubmitted` | Selection-only — no editable-text part, so these do nothing. For free text use [EtherInput](EtherInput.md) or a plain styled `ComboBox`; observe picks with `SelectionChanged`. |
+| `IsEditable`, `Text` | Selection-only — no editable-text part. For free text use [EtherInput](EtherInput.md) or a plain styled `ComboBox`; observe picks with `SelectionChanged`. |
 | `Header`, `HeaderTemplate` | Build the label markup outside the control (a `TextBlock` above it). |
 | `Description` | Place a second `TextBlock` below the control. |
 | `PlaceholderForeground` | `PlaceholderText` itself works; its color is not template-bound — use an external placeholder treatment if the color must be controlled. |
+
+The inherited `TextSubmitted` event also never fires (there is no editable-text mode).
 
 ## Appearance & overrides
 

@@ -340,7 +340,7 @@ namespace prefix is omitted in the samples; after declaring
 own prefix.
 
 > **Want the full picture for one control?** Each control also has a dedicated guide —
-> overview, the complete consumer API (Ether-specific *and* inherited members), binding/wiring, and
+> overview, the consumer API (all Ether-specific members plus the common inherited ones), binding/wiring, and
 > what the design system owns — under [`docs/consumers/components/`](components/README.md). This
 > section stays as the quick copy-paste markup reference.
 
@@ -420,7 +420,8 @@ two-state (§4.1: `null` coerces to `false`, `IsThreeState=true` is rejected), s
 Proven at `R2.cs:68-76` (`VerifyTwoWayBindings`).
 
 **Wire an action:** `EtherCheckbox` is a `ToggleButton`, so `Command`/`CommandParameter` fire on
-every check/uncheck, exactly like a native `CheckBox`:
+user activation (a click/toggle), not on a programmatic/bound `IsChecked` change — use
+`Checked`/`Unchecked` to observe every state change:
 ```xml
 <ether:EtherCheckbox Content="Send me updates"
                      Command="{x:Bind ViewModel.ToggleSubscriptionCommand}"
@@ -449,7 +450,8 @@ Proven at `R2.cs:78-86` (TwoWay) and group-name mutual exclusion (`RadioButtonVe
 GroupNameMutualExclusionVerified`).
 
 **Wire an action:** `EtherRadioButton`'s UIA actuation is `SelectionItem.Select()`, not `Toggle()`,
-but it still fires `Command`/`CommandParameter` once per selection:
+but it still fires `Command`/`CommandParameter` on user activation (including re-activating an
+already-selected radio), not on a programmatic `IsChecked` change:
 ```xml
 <ether:EtherRadioButton GroupName="delivery-speed" Content="Express"
                         Command="{x:Bind ViewModel.SelectDeliverySpeedCommand}"
@@ -593,8 +595,9 @@ Proven at `R2.cs:168-186` (`SelectedIndex`/`SelectedItem` TwoWay) and `R2.cs:205
 (`VerifyDataPaths`: `ItemsSource` drives item count and selection resolves to the right item).
 **Known limitation:** `Icon` is a per-container property on inline `EtherTabItem`
 (`EtherTabItem.cs:28-41`); the `ItemsSource`-generated path has no
-`PrepareContainerForItemOverride`, so data-bound tabs cannot show a per-item icon — use inline
-`EtherTabItem` if icons are required.
+`PrepareContainerForItemOverride`, so data binding cannot populate the dedicated `EtherTabItem.Icon`
+slot — render an icon inside a (non-string model) `ItemTemplate` instead; the built-in `Icon` slot is
+inline-`EtherTabItem` only.
 
 **Wire an action:** no `Command`; bind the native `SelectionChanged` event:
 ```xml
@@ -814,10 +817,13 @@ brand-blue one:
 `SelectionCommandParameter` pair. Swapping `Style="{StaticResource EtherPanelTabs}"` on the host
 and `Style="{StaticResource EtherPanelTabSegment}"` on each **inline** segment for
 `EtherSegmentedControl`'s defaults is the visual difference; the selection/command contract is
-shared. **Note:** `ItemsSource`-generated segments are always created with the built-in `EtherSegment`
-(blue) style — the generator has no per-item style hook — so a data-driven Panel Tabs renders with
-the segmented-control skin, not the panel-tab one. Author inline `EtherSegmentRadioButton`s with
-`EtherPanelTabSegment` for the panel-tab look.
+shared. **Note:** `ItemsSource`-generated segments resolve the `EtherSegment` resource **key** from the
+control/ancestor/application scope (there is no per-item style property), so by default a data-driven
+Panel Tabs uses the blue segmented-control skin. Either author inline `EtherSegmentRadioButton`s with
+`EtherPanelTabSegment`, or define a scoped `EtherSegment` resource (based on `EtherPanelTabSegment`)
+in the control's/page's `Resources` so generated segments pick up the panel-tab skin.
+Also note `ItemTemplate` applies to non-string model items only; a string `ItemsSource` renders the
+raw string.
 
 **EtherScrollBar** (`Views/Foundations/ScrollBarPage.xaml`) — once `DesignSystem.xaml` is
 merged, this applies implicitly to the native `ScrollBar`/`ScrollViewer`; no extra `Style=`
