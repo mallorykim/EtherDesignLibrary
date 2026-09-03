@@ -352,6 +352,12 @@ internal static partial class RuntimeVerification
     // sees RequiredStableFingerprintReadings consecutive matches.
     private static async Task<VisualSnapshot> CaptureSettledScreenshotSnapshotAsync(FrameworkElement element, string label)
     {
+        // A freshly launched/activated window can momentarily report RasterizationScale = 1.0 before its
+        // PerMonitorV2 DPI context applies. RenderTargetBitmap.RenderAsync(control) then rasterizes the
+        // whole tree at 1x, so the capture comes out at 1/scale of the settled pixel size and reads as a
+        // baseline SIZE mismatch (e.g. 861x29 vs 2160x73) - the inter-run flake that fails Publish-Internal's
+        // two-round determinism gate. Wait for the scale to stop changing before the first capture.
+        await WaitForRasterizationScaleSettledAsync(element);
         var snapshot = await CaptureVisualSnapshotAsync(element, label);
         var stableReadings = 1;
         var samples = 1;
@@ -380,6 +386,31 @@ internal static partial class RuntimeVerification
         }
 
         return snapshot;
+    }
+
+    // Sample the window's rasterization (DPI) scale a composition frame apart until it stops changing,
+    // so a screenshot is never taken while a just-shown window is still transitioning from 1.0 to its
+    // real PerMonitorV2 scale. Screenshot-path only - the locked AttachedVisualProperties audit is
+    // unaffected. If the scale is genuinely 1.0 on the host (a 96-DPI machine), it settles at 1.0 and
+    // the baseline captured on that same host matches; the guard only removes the transient-1.0 race.
+    private static async Task WaitForRasterizationScaleSettledAsync(FrameworkElement element)
+    {
+        var last = element.XamlRoot?.RasterizationScale ?? 0d;
+        var stable = 1;
+        for (var i = 0; i < MaxFingerprintSettleAttempts && stable < RequiredStableFingerprintReadings; i++)
+        {
+            await WaitForCompositionFrameAsync();
+            var current = element.XamlRoot?.RasterizationScale ?? 0d;
+            if (current > 0d && current == last)
+            {
+                stable++;
+            }
+            else
+            {
+                stable = 1;
+                last = current;
+            }
+        }
     }
 
     // Per-control override of the changed-pixel count that AssertControlVisualBaselineAsync will
