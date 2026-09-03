@@ -5,7 +5,7 @@ to a **company-owned GitHub Packages feed**. Publishing is done from a company m
 GitHub account — not from the agent/machine that prepared this release.
 
 - **Version:** `0.1.0-preview.7` (`Directory.Build.props` → `EtherDesignSystemPreviewVersion`)
-- **Prepared on branch:** `codex/refine-components` (HEAD `4e3f025` at time of writing)
+- **Prepared on branch:** `codex/refine-components`, **merged to `main`** (`93ded04`)
 - **Source repo (prepared here):** `github.com/yiqizhong/ether-lib`
 - **Packages (3):** `Ether.DesignSystem.Foundation`, `Ether.DesignSystem.Controls`,
   `Ether.DesignSystem.Interactions` — all at `0.1.0-preview.7`
@@ -25,7 +25,7 @@ GitHub account — not from the agent/machine that prepared this release.
 | 6 | **PackageOwner decided** — the company GitHub org/user that owns the private feed (feed becomes `https://nuget.pkg.github.com/<owner>/index.json`) | **you** | ⬜ |
 | 7 | **Company PAT** created with `write:packages` **and** `read:packages` (and SSO-authorized if the org requires it). This is more privileged than the read-only consumer PAT — do **not** reuse a consumer token | **you** | ⬜ |
 | 8 | **Company machine** has: this repo at HEAD `4e3f025` **or later** (so it includes the moved docs + the gate-path fix); .NET 8 SDK + WinApp SDK **x64** build toolchain; and — for the canonical path — a **real interactive Windows desktop** (the `ConsumerFixtures` runtime gates fail headless) | **you / next agent** | ⬜ |
-| 9 | Decide whether to **merge `codex/refine-components` → `main`** before tagging the release (`main` is currently ~15 commits behind; the release tag should sit on the commit you consider canonical) | **you** | ⬜ |
+| 9 | **Merge `codex/refine-components` → `main`** so the release tag sits on `main` | prep | ✅ (fast-forwarded to `93ded04`) |
 | 10 | **Package ↔ repo linkage** confirmed for the company owner: GitHub Packages associates a NuGet package with a repo via the package's `RepositoryUrl` (currently `github.com/yiqizhong/ether-lib`). Confirm the company org accepts the push, or point the source/`RepositoryUrl` at a company repo, per your org's GitHub Packages policy | **you** | ⬜ |
 | 11 | **The actual push** completed and the 3 packages are visible under the owner's **Packages** | next agent + you | ⬜ |
 
@@ -85,7 +85,7 @@ Requirements: the toolchain + interactive desktop in item 8, and ~40 minutes.
    ```bash
    git clone https://github.com/yiqizhong/ether-lib.git
    cd ether-lib
-   git checkout codex/refine-components   # or main, if it was merged (item 9)
+   git checkout main   # release is merged to main (item 9)
    ```
 2. **Provide the feed owner + PAT in the current PowerShell session** (the human types/pastes the PAT;
    it is never written to a file or committed):
