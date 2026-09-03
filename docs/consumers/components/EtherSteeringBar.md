@@ -5,6 +5,7 @@ Like `EtherProgressBar`, the value label **always** reflects the live `Value` �
 desync from it; you choose whether to show it and how to format it.
 
 - **Type:** `Ether.DesignSystem.Controls.EtherSteeringBar` (real control)
+- **Base:** `Microsoft.UI.Xaml.Controls.Control` (it declares its own `Value`/`Minimum`/`Maximum`)
 - **Gallery:** `Views/Controls/SteeringBarPage.xaml`
 
 ## Use it
@@ -70,8 +71,11 @@ settled value:
 
 Proven at `RuntimeVerification.R2.cs:138-146` (`VerifyTwoWayBindings`).
 
-## Design-system-owned (no effect if you set them)
+## Design-system-owned appearance
 
-Appearance properties — `Background`, `BorderBrush`, `CornerRadius`, `Foreground`, `Font*`,
-`Padding`, `*ContentAlignment` — are inert by design. Full list:
-[getting-started §4](../getting-started.md#4-known-boundaries).
+The design system owns this control's look. Most standard appearance properties — background,
+borders, corner radius, colors, most typography, padding, content alignment — are
+**design-system-owned**: setting them typically has no visible effect, by design, so every consuming
+app stays consistent. A few *are* honored by the template, and which ones varies by control — so
+treat [getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative
+per-property list (inert vs. consumed), not this summary.

@@ -89,10 +89,11 @@ Proven at `tests/Ether.DesignSystem.ConsumerFixtures/RuntimeVerification.R2.cs`
 (`VerifyButtonCommand`): `Command`/`CommandParameter` fire exactly once per click, with the
 expected parameter.
 
-## Design-system-owned (no effect if you set them)
+## Design-system-owned appearance
 
-The design system owns the button's look, so the standard appearance properties — `Background`,
-`BorderBrush`, `BorderThickness`, `CornerRadius`, `Foreground`, `Font*`, `Padding`,
-`*ContentAlignment`, `CharacterSpacing` — are inert on `EtherButton` by design (they keep every app
-on the same visual language). Choose the look with `Variant`/`Size` instead. The full per-property
-list and rationale are in [getting-started §4](../getting-started.md#4-known-boundaries).
+The design system owns the button's look. Most standard appearance properties — background, borders,
+corner radius, colors, most typography, padding, content alignment — are **design-system-owned**:
+setting them typically has no visible effect, by design. Choose the emphasis and size with
+`Variant`/`Size` instead. A few appearance properties *are* honored by the template — treat
+[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property list
+(inert vs. consumed), not this summary.

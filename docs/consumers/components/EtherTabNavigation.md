@@ -4,7 +4,7 @@ A horizontal tab strip. A thin `ListView` subclass, so selection binding uses th
 `Selector` properties. Tabs are `EtherTabItem`s (inline, or generated from `ItemsSource`).
 
 - **Type:** `Ether.DesignSystem.Controls.EtherTabNavigation` (real control)
-- **Item type:** `Ether.DesignSystem.Controls.EtherTabItem`
+- **Item type:** `Ether.DesignSystem.Controls.EtherTabItem` (a `ListViewItem`)
 - **Base:** `Microsoft.UI.Xaml.Controls.ListView`
 - **Gallery:** `Views/Navigation/TabNavigationPage.xaml`
 
@@ -56,8 +56,10 @@ No `Command`; bind the native `SelectionChanged`:
 > `ItemsSource`-generated path has no `PrepareContainerForItemOverride`, so **data-bound tabs cannot
 > show a per-item icon** — use inline `EtherTabItem` if icons are required.
 
-## Design-system-owned (no effect if you set them)
+## Design-system-owned appearance
 
-Appearance properties on the strip and on each `EtherTabItem` — `Background`, `BorderBrush`,
-`CornerRadius`, `Foreground`, `Font*`, `Padding`, `*ContentAlignment` — are inert by design. Full
-list: [getting-started §4](../getting-started.md#4-known-boundaries).
+The design system owns the look of the tab strip and each `EtherTabItem`. Most standard appearance
+properties are **design-system-owned** and have no visible effect when set; a few *are* honored by
+the template (some fonts, content alignment, and the item padding) — treat
+[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property list
+(inert vs. consumed), not this summary.

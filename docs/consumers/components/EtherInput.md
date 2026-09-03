@@ -61,8 +61,11 @@ No `Command`; bind the native `TextChanged` event straight to a VM method (the h
 
 This is a design decision (see the `EtherInput.cs` remarks), not an oversight.
 
-## Design-system-owned (no effect if you set them)
+## Design-system-owned appearance
 
-Appearance properties — `Background`, `BorderBrush`, `CornerRadius`, `Foreground`, `Font*`,
-`Padding` — are inert by design. Full list:
-[getting-started §4](../getting-started.md#4-known-boundaries).
+The design system owns this control's look. Most standard appearance properties — background,
+borders, corner radius, colors, most typography, padding — are **design-system-owned**: setting them
+typically has no visible effect, by design. A few *are* honored by the template (for example text
+alignment and the placeholder text) — treat
+[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property list
+(inert vs. consumed), not this summary.

@@ -4,8 +4,9 @@ A content surface. **Style-only** — a set of keyed `Style`s applied to `Border
 (`Normal` / `Intelligence` / `Callout`). Not a type with its own dependency properties; a card is a
 static surface, not a control.
 
-- **Kind:** keyed `Style`s on `Border` (`EtherCardNormal`, `EtherCardIntelligence`,
-  `EtherCardCallout`, plus matching `…Body` inner styles)
+- **Kind:** keyed `Style`s on `Border`. Outer/body pairs: `EtherCardNormal` + `EtherCardNormalBody`,
+  `EtherCardIntelligence` + `EtherCardIntelligenceBody`, and `EtherCardCalloutShell` +
+  `EtherCardCalloutBody` (the callout is a composite shell + body).
 - **Gallery:** `Views/Surfaces/CardPage.xaml`
 
 ## Use it
@@ -25,8 +26,9 @@ None. `EtherCard` is a set of keyed `Style`s on `Border`, with no Ether-specific
 interaction surface. Put your content (title, body, icon) in the `Border`'s children exactly as you
 would with a plain `Border`, and bind that content normally.
 
-Pick the variant by choosing the style key: `EtherCardNormal`, `EtherCardIntelligence`, or
-`EtherCardCallout` (each with its matching `…Body` inner style).
+Pick the variant by choosing the outer style key — `EtherCardNormal`, `EtherCardIntelligence`, or
+`EtherCardCalloutShell` — with its matching `…Body` inner style (see the Gallery
+`Views/Surfaces/CardPage.xaml`).
 
 ## Design-system-owned
 

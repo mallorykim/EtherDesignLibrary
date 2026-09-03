@@ -35,5 +35,6 @@ The **only** difference is the two style keys: `EtherPanelTabs` on the host and
 
 ## Design-system-owned
 
-The panel-tab skin (track, pill) is fixed by the two styles. Appearance overrides are inert, exactly
-as on `EtherSegmentedControl` — see [getting-started §4](../getting-started.md#4-known-boundaries).
+The panel-tab skin (track, pill) is fixed by the two styles. Appearance is design-system-owned
+exactly as on `EtherSegmentedControl` — most overrides have no effect, a few *are* honored; see
+[getting-started §4](../getting-started.md#4-known-boundaries) for the authoritative per-property list.

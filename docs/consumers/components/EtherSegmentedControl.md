@@ -6,6 +6,7 @@ authoring styles: **inline** segments (`EtherSegmentRadioButton`s you write by h
 instances.
 
 - **Type:** `Ether.DesignSystem.Controls.EtherSegmentedControl` (real control)
+- **Base:** `Microsoft.UI.Xaml.Controls.ContentControl` (so `ItemsSource`/`Selected*` are Ether-added, not inherited `Selector` members)
 - **Segment item:** `Ether.DesignSystem.Controls.EtherSegmentRadioButton` (apply the `EtherSegment`
   style, inside an `EtherSegmentPanel`)
 - **Gallery:** `Views/Controls/SegmentedControlPage.xaml`
@@ -92,12 +93,13 @@ zero when `CanExecute` is `false`.
 > control defers and re-applies the value once its items exist (fixed in `preview.7`). You do not
 > need to set the initial selection in code-behind.
 
-## Design-system-owned (no effect if you set them)
+## Design-system-owned appearance
 
-Appearance properties — `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`,
-`Foreground`, `Font*`, `Padding`, `CharacterSpacing`, `*ContentAlignment` — are inert on
-`EtherSegmentedControl` and on `EtherSegmentRadioButton` by design. The selected-pill look is fixed
-by the design system. Full list and rationale: [getting-started §4](../getting-started.md#4-known-boundaries).
+The design system owns the look of `EtherSegmentedControl` and `EtherSegmentRadioButton` — the
+selected-pill styling is fixed. Most standard appearance properties are **design-system-owned** and
+have no visible effect when set; a few *are* honored by the template, and which ones varies — treat
+[getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative per-property list
+(inert vs. consumed), not this summary.
 
 ## Related
 

@@ -53,8 +53,11 @@ Same as `EtherButton` — `Content`/`IsEnabled` `OneWay`, and `Command`/`Command
 
 Proven at `RuntimeVerification.R2.cs:378, 388-398` (`VerifyButtonCommand`).
 
-## Design-system-owned (no effect if you set them)
+## Design-system-owned appearance
 
-Appearance properties — `Background`, `BorderBrush`, `CornerRadius`, `Foreground`, `Font*`,
-`Padding`, `*ContentAlignment` — are inert by design. Full list:
-[getting-started §4](../getting-started.md#4-known-boundaries).
+The design system owns this control's look. Most standard appearance properties — background,
+borders, corner radius, colors, most typography, padding, content alignment — are
+**design-system-owned**: setting them typically has no visible effect, by design, so every consuming
+app stays consistent. A few *are* honored by the template, and which ones varies by control — so
+treat [getting-started §4](../getting-started.md#4-known-boundaries) as the authoritative
+per-property list (inert vs. consumed), not this summary.
