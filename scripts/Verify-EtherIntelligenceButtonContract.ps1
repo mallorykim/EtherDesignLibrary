@@ -21,6 +21,8 @@ $templateParts = @(
     'BlueGlowCorePart',
     'PurpleGlowPart',
     'ContentPresenterPart',
+    'LeftIconPart',
+    'RightIconPart',
     'FocusRingPart'
 )
 
@@ -58,6 +60,12 @@ foreach ($state in 'Normal', 'PointerOver', 'Pressed', 'Disabled') {
 }
 foreach ($state in 'Focused', 'Unfocused', 'PointerFocused') {
     Assert-Contains $control "TemplateVisualState\(GroupName = FocusStatesGroup, Name = ${state}State\)" "EtherIntelligenceButton TemplateVisualState contract for FocusStates/$state"
+}
+foreach ($state in 'LeftIconVisible', 'LeftIconCollapsed') {
+    Assert-Contains $control "TemplateVisualState\(GroupName = LeftIconStatesGroup, Name = ${state}State\)" "EtherIntelligenceButton TemplateVisualState contract for LeftIconStates/$state"
+}
+foreach ($state in 'RightIconVisible', 'RightIconCollapsed') {
+    Assert-Contains $control "TemplateVisualState\(GroupName = RightIconStatesGroup, Name = ${state}State\)" "EtherIntelligenceButton TemplateVisualState contract for RightIconStates/$state"
 }
 
 [xml]$xaml = Get-Content -LiteralPath $xamlPath -Raw
@@ -109,6 +117,13 @@ foreach ($template in $templates) {
             $_.GetAttribute('Name', $xamlNamespace) -eq $state
         }).Count -ne 1) {
             throw "EtherIntelligenceButton template is missing FocusStates/$state."
+        }
+    }
+    foreach ($state in 'LeftIconVisible', 'LeftIconCollapsed', 'RightIconVisible', 'RightIconCollapsed') {
+        if (@($template.SelectNodes(".//*[local-name()='VisualState']") | Where-Object {
+            $_.GetAttribute('Name', $xamlNamespace) -eq $state
+        }).Count -ne 1) {
+            throw "EtherIntelligenceButton template is missing the $state icon-slot visual state."
         }
     }
 }

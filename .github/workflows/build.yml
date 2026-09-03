@@ -95,6 +95,12 @@ jobs:
       - name: Verify EtherScrollBar L3 contract
         shell: pwsh
         run: ./scripts/Verify-EtherScrollBarContract.ps1
+      - name: Verify EtherTooltip L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherTooltipContract.ps1
+      - name: Verify EtherPanelTabs L3 contract
+        shell: pwsh
+        run: ./scripts/Verify-EtherPanelTabsContract.ps1
       - name: Verify silently-ineffective public properties are documented and genuinely unconsumed
         shell: pwsh
         run: ./scripts/Verify-UnsupportedProperties.ps1
