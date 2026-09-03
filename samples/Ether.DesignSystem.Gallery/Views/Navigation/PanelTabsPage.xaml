@@ -6,6 +6,7 @@
     xmlns:views="using:EtherSandbox.Views">
 
     <views:ComponentPage
+        x:Uid="GalleryViewsNavigationPanelTabsPage"
         Title="Panel Tabs"
         Description="Compact segmented navigation for side panels - same behavior as the Segmented Control, with a translucent track, a near-black / near-white selected pill, and a soft native shadow so the panel reads as floating.">
 

@@ -6,6 +6,7 @@
     xmlns:views="using:EtherSandbox.Views">
 
     <views:ComponentPage
+        x:Uid="GalleryViewsSurfacesTooltipPage"
         Title="Tooltip"
         Description="Inverse-surface tooltip - dark on light, light on dark. A static UI sample (a styled Border), no behavior. Text uses the body/s-regular style; it wraps at MaxWidth 240.">
 

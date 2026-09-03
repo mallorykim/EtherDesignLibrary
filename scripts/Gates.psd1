@@ -62,6 +62,8 @@
         @{ Name = 'EtherMastheadContract';        Script = 'Verify-EtherMastheadContract.ps1';        Environments = @('ci'); Args = @{} }
         @{ Name = 'EtherSwitchContract';          Script = 'Verify-EtherSwitchContract.ps1';          Environments = @('ci'); Args = @{} }
         @{ Name = 'EtherScrollBarContract';       Script = 'Verify-EtherScrollBarContract.ps1';       Environments = @('ci'); Args = @{} }
+        @{ Name = 'EtherTooltipContract';         Script = 'Verify-EtherTooltipContract.ps1';         Environments = @('ci'); Args = @{} }
+        @{ Name = 'EtherPanelTabsContract';       Script = 'Verify-EtherPanelTabsContract.ps1';       Environments = @('ci'); Args = @{} }
         @{ Name = 'UnsupportedProperties';        Script = 'Verify-UnsupportedProperties.ps1';        Environments = @('ci'); Args = @{} }
         @{ Name = 'InteractionContracts';         Script = 'Verify-InteractionContracts.ps1';         Environments = @('ci'); Args = @{} }
         @{ Name = 'WinUiConventions';             Script = 'Verify-WinUiConventions.ps1';             Environments = @('ci'); Args = @{} }

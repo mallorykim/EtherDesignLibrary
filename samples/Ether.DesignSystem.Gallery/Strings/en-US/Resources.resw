@@ -997,6 +997,18 @@
   <data name="GalleryViewsSurfacesCardPage285.Description" xml:space="preserve">
     <value>Card component with gradient border effect, available in Normal, Intelligence (dark), and Callout (with header) types.</value>
   </data>
+  <data name="GalleryViewsNavigationPanelTabsPage.Title" xml:space="preserve">
+    <value>Panel Tabs</value>
+  </data>
+  <data name="GalleryViewsNavigationPanelTabsPage.Description" xml:space="preserve">
+    <value>Compact segmented navigation for side panels - same behavior as the Segmented Control, with a translucent track, a near-black / near-white selected pill, and a soft native shadow so the panel reads as floating.</value>
+  </data>
+  <data name="GalleryViewsSurfacesTooltipPage.Title" xml:space="preserve">
+    <value>Tooltip</value>
+  </data>
+  <data name="GalleryViewsSurfacesTooltipPage.Description" xml:space="preserve">
+    <value>Inverse-surface tooltip - dark on light, light on dark. A static UI sample (a styled Border), no behavior. Text uses the body/s-regular style; it wraps at MaxWidth 240.</value>
+  </data>
   <data name="GalleryViewsSurfacesCardPage286.Text" xml:space="preserve">
     <value>TYPE PREVIEWS</value>
   </data>
