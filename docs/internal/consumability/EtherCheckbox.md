@@ -43,7 +43,7 @@
 | `Command` / `CommandParameter` | base | invoke an MVVM command on activation | inherited from the ToggleButton lineage; not shadowed `EtherCheckbox.cs:30-71`; now proven to execute once with the expected parameter via UIA Toggle `RuntimeVerification.R2.cs:400-411` | ✔ DP | ✅ |
 | `IsThreeState` / indeterminate | base | optionally expose a third state | inherited DP is forced back to false and null `IsChecked` is forced to false `EtherCheckbox.cs:75-104` | DP is observable but true/null cannot persist | 🚫 use boolean `IsChecked`; Ether design is two-state (D4) `EtherCheckbox.cs:6-13` |
 | `IsEnabled` | base | disable interaction | inherited; Disabled state retained `EtherCheckbox.cs:24-30` | ✔ DP | ✅ |
-| locked appearance (`Background`, `Border*`, `CornerRadius`, `FontSize`, `Padding`, content alignment) | base | customize stock chrome | inherited but deliberately not template-consumed `scripts/UnsupportedProperties.psd1:280-293` | writable DPs; no Ether visual effect | 🚫 use the fixed Ether checkbox skin `docs/consumers/getting-started.md:290-304` |
+| locked appearance (`Background`, `Border*`, `CornerRadius`, `FontSize`, `Padding`, content alignment) | base | customize stock chrome | inherited but deliberately not template-consumed `scripts/UnsupportedProperties.psd1:280-293` | writable DPs; no Ether visual effect | 🚫 use the fixed Ether checkbox skin `design library handoff/getting-started.md:290-304` |
 
 **Notes / gaps (B):**
 - **Two-state is a documented design deviation (D4), not a missing accidental state.** The class
@@ -114,7 +114,7 @@ x64 build: green (Controls + Interactions + ConsumerFixtures, per the R2.11 runt
    `VerifyTwoStateCoercion` (renamed from `VerifyIsThreeStateRejected`) now asserts
    `IsChecked=null ⇒ false` and `IsThreeState=true ⇒ false` instead of expecting an exception
    (`Checkbox.cs:64-88`), and the registry/consumer-guide description was updated to match
-   (`scripts/UnsupportedProperties.psd1`; `docs/consumers/getting-started.md:254-260`).
+   (`scripts/UnsupportedProperties.psd1`; `design library handoff/getting-started.md:254-260`).
 2. ~~**[R4, C3, C4, harness] Prove the inherited consumer paths.**~~ DONE — `RuntimeVerification.R2.cs`
    adds a TwoWay-bound nullable-boolean VM (`R2.cs:68-76`), an `ICommand`/parameter activation
    assertion through UIA Toggle (`R2.cs:400-411`), and a `PatternInterface.Toggle`/`IToggleProvider`

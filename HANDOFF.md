@@ -312,7 +312,7 @@ Expect hosted CI to skip the GUI lines.
 | `docs/releases/0.1.0-preview.1.md` | Pack vs publish hold |
 | `SEMVER.md` | Preview/stable and resource-key compatibility |
 | `docs/architecture/2026-08-26-foundation-refactor-full-review-handoff.md` | Independent review at L4 deepen; **paths in §4/§5 are stale** (pre-`git mv`) |
-| `docs/consumers/getting-started.md` | **[2026-08-30 addition]** How an internal consuming team adds the packages; more current than this file for consumption steps |
+| `design library handoff/getting-started.md` | **[2026-08-30 addition]** How an internal consuming team adds the packages; more current than this file for consumption steps |
 | `docs/plans/2026-08-30-third-party-consumability-plan.md` | **[2026-08-30 addition]** Third-party consumability plan with dated "execution progress update" notes on top of the original plan text — same annotate-in-place convention used in this update |
 | `docs/handoff/2026-08-29-winui3-full-property-audit-handoff.md` | **[2026-08-30 addition]** Full-property backend-consumable audit handoff; current authoritative property-evidence numbers live here, not in this file — 1,388 public writable properties total, 445 carry per-property evidence (270 proven to visibly take effect, 175 proven only as a DP round-trip), 943 verified only as callable (R-06) |
 

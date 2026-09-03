@@ -5,7 +5,7 @@
     # nothing happens functionally either).
     #
     # scripts/Verify-UnsupportedProperties.ps1 asserts every entry below is genuinely
-    # zero-consumption in the named template file(s), and that docs/consumers/getting-started.md
+    # zero-consumption in the named template file(s), and that design library handoff/getting-started.md
     # documents the exact same property list. Both the gate and the docs read this file; there
     # is no second copy of the list anywhere else. If someone later implements one of these
     # properties, remove its entry here (the gate will otherwise start failing the moment the
@@ -24,7 +24,7 @@
     #     scripts/Verify-UnsupportedProperties.ps1 statically re-checks only THESE 9 - it cannot
     #     discover a 13th silently-ineffective property, by design (it is a regression guard for
     #     known traps, not a scanner). Do not add new entries here without also adding an
-    #     Alternative and updating docs/consumers/getting-started.md's machine-checked table -
+    #     Alternative and updating design library handoff/getting-started.md's machine-checked table -
     #     this list must stay hand-curated and small; that is what keeps every entry in it a
     #     genuine "a reasonable consumer would expect this to work" trap.
     #

@@ -3,7 +3,7 @@
     Verifies that every property listed in scripts/UnsupportedProperties.psd1 (the single
     source of truth for "public, inherited, but silently ineffective" properties) is genuinely
     zero-consumption in its control's template, and that
-    docs/consumers/getting-started.md documents exactly that same set - no more, no less.
+    design library handoff/getting-started.md documents exactly that same set - no more, no less.
 
 .DESCRIPTION
     Two independent drifts are guarded against:
@@ -26,7 +26,7 @@ $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $dataPath = Join-Path $PSScriptRoot 'UnsupportedProperties.psd1'
-$docsPath = Join-Path $repoRoot 'docs\consumers\getting-started.md'
+$docsPath = Join-Path $repoRoot 'design library handoff\getting-started.md'
 
 if (-not (Test-Path -LiteralPath $dataPath)) {
     throw "Single source of truth file not found: $dataPath"
@@ -81,7 +81,7 @@ foreach ($entry in $entries) {
                     "$key is listed as unsupported (CheckKind=TemplateBindingAbsent) but " +
                     "$($entry.TemplateFile) contains '{TemplateBinding $($entry.Property)}'. " +
                     "The property has been implemented - remove this entry from UnsupportedProperties.psd1 " +
-                    "and from docs/consumers/getting-started.md.")
+                    "and from design library handoff/getting-started.md.")
             }
         }
         'TemplatePartAbsent' {
@@ -96,7 +96,7 @@ foreach ($entry in $entries) {
                     "$key is listed as unsupported (CheckKind=TemplatePartAbsent) but " +
                     "$($entry.TemplateFile) declares a part named `"$($entry.TemplatePartName)`". " +
                     "The property may now be functional - remove this entry from UnsupportedProperties.psd1 " +
-                    "and from docs/consumers/getting-started.md, or re-verify.")
+                    "and from design library handoff/getting-started.md, or re-verify.")
             }
         }
         default {
@@ -105,7 +105,7 @@ foreach ($entry in $entries) {
     }
 }
 
-# --- Cross-check against docs/consumers/getting-started.md ---
+# --- Cross-check against design library handoff/getting-started.md ---
 $docsText = Get-Content -LiteralPath $docsPath -Raw
 $startMarker = '<!-- UNSUPPORTED-PROPERTIES:START -->'
 $endMarker = '<!-- UNSUPPORTED-PROPERTIES:END -->'
@@ -113,7 +113,7 @@ $startIndex = $docsText.IndexOf($startMarker, [System.StringComparison]::Ordinal
 $endIndex = $docsText.IndexOf($endMarker, [System.StringComparison]::Ordinal)
 if ($startIndex -lt 0 -or $endIndex -lt 0 -or $endIndex -le $startIndex) {
     $failures.Add(
-        "docs/consumers/getting-started.md is missing the '$startMarker' / '$endMarker' " +
+        "design library handoff/getting-started.md is missing the '$startMarker' / '$endMarker' " +
         "markers that bound the machine-checked unsupported-properties table.")
 }
 else {
@@ -130,10 +130,10 @@ else {
     $extraInDocs = @($docKeys | Where-Object { $_ -cnotin $canonicalKeys })
 
     foreach ($m in $missingFromDocs) {
-        $failures.Add("UnsupportedProperties.psd1 lists $m but docs/consumers/getting-started.md's known-boundaries table does not document it.")
+        $failures.Add("UnsupportedProperties.psd1 lists $m but design library handoff/getting-started.md's known-boundaries table does not document it.")
     }
     foreach ($e in $extraInDocs) {
-        $failures.Add("docs/consumers/getting-started.md documents $e as unsupported but UnsupportedProperties.psd1 has no such entry (single source of truth drift).")
+        $failures.Add("design library handoff/getting-started.md documents $e as unsupported but UnsupportedProperties.psd1 has no such entry (single source of truth drift).")
     }
 }
 
@@ -144,4 +144,4 @@ if ($failures.Count -gt 0) {
 }
 
 $uniqueControlCount = @($entries | ForEach-Object { $_.Control } | Select-Object -Unique).Count
-Write-Host "Verify-UnsupportedProperties passed: $($entries.Count) documented-unsupported properties across $uniqueControlCount controls are all genuinely zero-consumption, and docs/consumers/getting-started.md matches UnsupportedProperties.psd1 exactly."
+Write-Host "Verify-UnsupportedProperties passed: $($entries.Count) documented-unsupported properties across $uniqueControlCount controls are all genuinely zero-consumption, and design library handoff/getting-started.md matches UnsupportedProperties.psd1 exactly."

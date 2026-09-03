@@ -80,7 +80,7 @@ The repo already ships a consumer-facing contract. For **every** component, cros
   `needs-review`. **If a property is implemented in code but still listed unsupported/needs-review
   there (or vice-versa), that is a stale-contract follow-up** — flag it (as with `EtherDropdown`
   `PlaceholderText`).
-- `docs/consumers/getting-started.md` — the consumer guide. If it names an external alternative for
+- `design library handoff/getting-started.md` — the consumer guide. If it names an external alternative for
   an excluded property, cite it in the 🚫 row's reason.
 - `docs/handoff/2026-08-29-winui3-full-property-audit-handoff.md` — the prior full-property audit;
   use it for context, but re-verify against live source (do not trust it blindly).

@@ -16,7 +16,7 @@
   and scroll behavior remain in the template/style (`EtherInput.xaml:128-156,166-189`).
 - **Design coverage (B):** the intended single-line input is present, and
   `Header`/`HeaderTemplate`/`Description` are documented exclusions with external-layout
-  alternatives (`EtherInput.cs:15-19`; `docs/consumers/getting-started.md:273-275`).
+  alternatives (`EtherInput.cs:15-19`; `design library handoff/getting-started.md:273-275`).
   `HorizontalTextAlignment` is now wired, not `needs-review`: the template binds the placeholder's
   `TextAlignment` to `HorizontalTextAlignment` (`EtherInput.xaml:151`), and the property was
   removed from the `needs-review` list (`scripts/UnsupportedProperties.psd1`, previously
@@ -55,7 +55,7 @@
 - **The three slot exclusions reconcile with the shipped contract.** The registry lists
   `Header`/`HeaderTemplate`/`Description` with external-label alternatives
   (`scripts/UnsupportedProperties.psd1:214-237`), and the consumer guide publishes the same
-  alternatives (`docs/consumers/getting-started.md:273-275`).
+  alternatives (`design library handoff/getting-started.md:273-275`).
 - **`HorizontalTextAlignment` is resolved, not a genuine unknown anymore.** The template's
   placeholder `TextBlock` now binds `TextAlignment="{TemplateBinding HorizontalTextAlignment}"`
   (`EtherInput.xaml:151`, previously bound to the unrelated `TextAlignment` property), and the

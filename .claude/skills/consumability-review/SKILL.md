@@ -57,7 +57,7 @@ the audit + remediation to green.
    `docs/internal/consumability/<EtherType>.md` per component + a `_SUMMARY.md` rollup. Templates and
    the rubric (R1–R5) / contracts (C1–C4) / property matrix are in `references/review-method.md`.
    **Reconcile against the existing consumer contract** — `scripts/UnsupportedProperties.psd1`
-   (properties declared unsupported/needs-review) and `docs/consumers/getting-started.md` — a
+   (properties declared unsupported/needs-review) and `design library handoff/getting-started.md` — a
    property implemented in code but still listed unsupported (or vice-versa) is a stale-contract
    finding.
 

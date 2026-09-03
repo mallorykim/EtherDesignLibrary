@@ -82,7 +82,7 @@
 > was removed (`c999c96`); (b) `Verify-EtherTooltipContract.ps1` + `Verify-EtherPanelTabsContract.ps1`
 > were added and wired into CI + `Gates.psd1` (`c999c96`, `abd6b33`); (c)
 > `Verify-EtherIntelligenceButtonContract.ps1` now asserts the `LeftIcon`/`RightIcon` TemplateParts and
-> LeftIconStates/RightIconStates (`c999c96`); (d) `docs/consumers/getting-started.md` documents the new
+> LeftIconStates/RightIconStates (`c999c96`); (d) `design library handoff/getting-started.md` documents the new
 > IntelligenceButton icon API (`8318b14`). No consumability residuals remain open. (Separately, the
 > `ValueContent` desync footgun on EtherProgressBar/EtherSteeringBar was replaced with `ValueFormat`,
 > `dd805f9`.)
@@ -187,7 +187,7 @@ records how — or whether — this remediation wave closed it.
   template — `OuterBorder`/`OnTrackBacking`/`KnobFrame`/`SwitchAreaGrid`
   (`RuntimeVerification.ToggleSwitch.cs:57-90`). Dropdown: `PlaceholderText` was removed from
   `scripts/UnsupportedProperties.psd1`'s unsupported registry, dropped from the generated table in
-  `docs/consumers/getting-started.md`, and the fixture now asserts the unselected-state render
+  `design library handoff/getting-started.md`, and the fixture now asserts the unselected-state render
   (`RuntimeVerification.Dropdown.cs:63-70`). Input: `HorizontalTextAlignment` is now
   template-bound (the placeholder's `TextAlignment` binds to it,
   `src/Ether.DesignSystem.Controls/Controls/Inputs/EtherInput.xaml:151`) and was removed from
@@ -224,7 +224,7 @@ have since been **confirmed by a green `Verify-ConsumerFixtures.ps1` run**
   `PatternInterface.RangeValue` to resolve to `IRangeValueProvider` and asserts `Value` tracks the
   control; (2) `VerifyScrollBarMinimumMaximumRoundTrip` asserts `Minimum`/`Maximum` round-trip
   through `GetValue` and the CLR wrapper; (3) a persistent-only-mode callout was added next to the
-  usage sample in `docs/consumers/getting-started.md`. All wired into `VerifyScrollBarAsync`.
+  usage sample in `design library handoff/getting-started.md`. All wired into `VerifyScrollBarAsync`.
   **Confirmed by the green run:** the marker's `scrollBar` record carries
   `RangeValuePatternExposed: true`, `RangeValueTracksValue: true`, `MinimumRoundTrip: 5`, and
   `MaximumRoundTrip: 120`.

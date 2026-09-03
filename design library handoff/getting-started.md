@@ -80,7 +80,7 @@ requirements provided by the publishing team.
 
 The project properties, three package references, `App.xaml` resource merging, and control
 XAML below are all distilled from the successful Variant A of
-[`scripts/Verify-ExternalConsumer.ps1`](../../scripts/Verify-ExternalConsumer.ps1). That
+[`scripts/Verify-ExternalConsumer.ps1`](../scripts/Verify-ExternalConsumer.ps1). That
 variant completes restore, x64 build, and runtime marker verification using **only the three
 Ether packages**.
 
@@ -332,7 +332,7 @@ silently ineffective.
 ## 5. Per-control markup reference
 
 Below, each control has a copy-paste-ready markup sample, taken from the `*Proof` elements
-in [`tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml`](../../tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml)
+in [`tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml`](../tests/Ether.DesignSystem.ConsumerFixtures/Unpackaged/MainWindow.xaml)
 — this is the exact markup shape actually exercised by the out-of-repo consumer verification
 (A1/A4), and it matches the corresponding page in `samples/Ether.DesignSystem.Gallery`. The
 namespace prefix is omitted in the samples; after declaring
@@ -341,7 +341,7 @@ own prefix.
 
 > **Want the full picture for one control?** Each control also has a dedicated guide —
 > overview, the consumer API (all Ether-specific members plus the common inherited ones), binding/wiring, and
-> what the design system owns — under [`docs/consumers/components/`](components/README.md). This
+> what the design system owns — under [`components/`](components/README.md). This
 > section stays as the quick copy-paste markup reference.
 
 **EtherButton** (matches Gallery `Views/Controls/ButtonPage.xaml`):

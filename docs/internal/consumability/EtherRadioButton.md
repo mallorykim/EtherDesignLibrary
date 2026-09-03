@@ -43,7 +43,7 @@
 | `Command` / `CommandParameter` | base | invoke an MVVM command on activation | inherited from the ToggleButton lineage; not shadowed `EtherRadioButton.cs:30-71`; now proven to execute once with the expected parameter via UIA SelectionItem.Select() `RuntimeVerification.R2.cs:419-430` | ✔ DP | ✅ |
 | `IsThreeState` / indeterminate | base | optionally expose a third state | inherited DP is forced back to false; null is also forced false `EtherRadioButton.cs:75-103` | DP is observable but true/null cannot persist | 🚫 use boolean `IsChecked`; Ether radio is two-state (D4) `EtherRadioButton.cs:6-13` |
 | `IsEnabled` | base | disable interaction | inherited; Disabled state retained `EtherRadioButton.cs:24-30` | ✔ DP | ✅ |
-| locked appearance (`Background`, `Border*`, `CornerRadius`, `FontSize`, `Padding`, content alignment) | base | customize stock chrome | inherited but deliberately not template-consumed `scripts/UnsupportedProperties.psd1:374-387` | writable DPs; no Ether visual effect | 🚫 use the fixed Ether radio skin `docs/consumers/getting-started.md:290-304` |
+| locked appearance (`Background`, `Border*`, `CornerRadius`, `FontSize`, `Padding`, content alignment) | base | customize stock chrome | inherited but deliberately not template-consumed `scripts/UnsupportedProperties.psd1:374-387` | writable DPs; no Ether visual effect | 🚫 use the fixed Ether radio skin `design library handoff/getting-started.md:290-304` |
 
 **Notes / gaps (B):**
 - **Native grouping remains the selection mechanism.** The class identifies `GroupName` as the
@@ -59,10 +59,10 @@
   `IsThreeState` and coerces null `IsChecked` (`EtherRadioButton.cs:92-103`); the fixture asserts
   that coercion directly (`RuntimeVerification.RadioButton.cs:67,85-94`), and the consumer guide
   describes the two-state contract instead of the old "intercept + throw" behavior
-  (`docs/consumers/getting-started.md:254-260`).
+  (`design library handoff/getting-started.md:254-260`).
 - The registry's RadioButton entries consistently classify fixed appearance as
   design-system-owned/platform-noop (`scripts/UnsupportedProperties.psd1:374-387`), matching the
-  consumer guide's locked-token policy (`docs/consumers/getting-started.md:290-304`).
+  consumer guide's locked-token policy (`design library handoff/getting-started.md:290-304`).
 
 ---
 
@@ -126,7 +126,7 @@ x64 build: green — confirmed by that same subsequent Verify-ConsumerFixtures.p
    Checkbox report's identical fix; `RuntimeVerification.RadioButton.cs`'s
    `VerifyRadioButtonTwoStateCoercion` now asserts both coercions instead of expecting an exception
    (`RadioButton.cs:67,85-94`), and the consumer guide matches
-   (`docs/consumers/getting-started.md:254-260`).
+   (`design library handoff/getting-started.md:254-260`).
 2. ~~**[B, R4, C3, C4, harness] Prove inherited consumer paths.**~~ DONE for TwoWay/Command/
    automation — `RuntimeVerification.R2.cs` adds a TwoWay-bound boolean VM (`R2.cs:78-86`), an
    `ICommand`/parameter assertion through the control's real SelectionItem UIA actuation

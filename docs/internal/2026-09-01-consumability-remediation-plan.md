@@ -86,11 +86,11 @@
 - [ ] **R2.1 — Checkbox/Radio two-state (D4).** Update `RuntimeVerification.Checkbox.cs:80-104` and
   `RuntimeVerification.RadioButton.cs:80-104` to assert the coercion (set `IsChecked=null` ⇒ ends
   `false`; set `IsThreeState=true` ⇒ coerced `false`) instead of expecting an exception. Reconcile
-  `scripts/UnsupportedProperties.psd1` + `docs/consumers/getting-started.md` to describe two-state.
+  `scripts/UnsupportedProperties.psd1` + `design library handoff/getting-started.md` to describe two-state.
 - [ ] **R2.2 — Switch fixture parts.** Update `RuntimeVerification.ToggleSwitch.cs:40,53-63` to the
   template part names actually in `EtherSwitch.xaml` (verify against `…xaml:104-223`).
 - [ ] **R2.3 — Dropdown PlaceholderText.** Remove it from `scripts/UnsupportedProperties.psd1:180-187`,
-  regenerate the `docs/consumers/getting-started.md` row, add an unselected-`PlaceholderText` assertion
+  regenerate the `design library handoff/getting-started.md` row, add an unselected-`PlaceholderText` assertion
   to `RuntimeVerification.Dropdown.cs`.
 
 **Inventory + declared-DP coverage:**

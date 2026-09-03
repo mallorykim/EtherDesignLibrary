@@ -68,7 +68,7 @@ This means the entire remediation effort has never gone through the hosted CI in
 
 **One-liner:** the current onboarding docs tell developers what a control "looks like," but not "how to bind data to it, how to make a click trigger your own code."
 
-### 1.1 Current-state assessment (`docs/consumers/getting-started.md`)
+### 1.1 Current-state assessment (`design library handoff/getting-started.md`)
 
 Parts already in good shape: GitHub Packages onboarding (§1), the minimal project and `App.xaml` merge (§2, `:75-227`),
 the troubleshooting table (§3, `:231-239`), the unsupported-properties registry (§4.1, `:261-273`), version discipline (§6).
@@ -82,7 +82,7 @@ the troubleshooting table (§3, `:231-239`), the unsupported-properties registry
 | G3 | SegmentedControl's D1 data-driven contract (`ItemsSource`/`ItemTemplate`/`DisplayMemberPath`/`SelectedIndex`/`SelectedItem`, `src/Ether.DesignSystem.Controls/Controls/Inputs/EtherSegmentedControl.cs:37-126`) **is not written into the docs**; §5 still only teaches the inline `EtherSegmentRadioButton` pattern (`:363-379`) | Same as above |
 | G4 | `Ether.DesignSystem.Interactions` (one of the three packages) **has no usage examples at all**; its README is prose only, with no code (`src/Ether.DesignSystem.Interactions/README.md:1-12`) | `ControlInteractionAdapter` already has 10 Observe\* methods (`src/Ether.DesignSystem.Interactions/ControlInteractionAdapter.cs:21-182`), yet no one knows how to call them |
 | G5 | Masthead's `ActionInvoked` event (`Controls/Navigation/EtherMasthead.xaml.cs:119-120`), Slider/SteeringBar's `StepFrequency`/`Stops`/`SnapToStops`, Dropdown's `MaxVisibleItems`/`MenuGap` (`EtherDropdown.cs:126-154`), Button's `Variant`/`Size`/`LeftIcon`/`RightIcon` (`EtherButton.cs:87-145`, appearing only incidentally in the §2 example) — these "knobs," whether added by remediation or already existing, have no examples in §5 | Cross-referenced against each control's DP list |
-| G6 | **There is no README.md at the repo root**; the only thing pointing people to `docs/consumers/getting-started.md` is a single line in the package README (`src/Ether.DesignSystem.Controls/README.md:5`) | `Glob README.md` finds no hit at the root |
+| G6 | **There is no README.md at the repo root**; the only thing pointing people to `design library handoff/getting-started.md` is a single line in the package README (`src/Ether.DesignSystem.Controls/README.md:5`) | `Glob README.md` finds no hit at the root |
 | G7 | The documentation's own anti-rot rule (from the previous plan, B6.4: "every code block in the README must have an equivalent findable in a fixture/Gallery," `docs/plans/2026-08-30-third-party-consumability-plan.md:283`) only holds for the existing 14 sections; the newly added binding/command examples currently have **no XAML-form counterpart** in the fixtures (the TwoWay/Command proofs are constructed in C# code, `R2.cs:49-55, 388-398`) | — |
 
 ### 1.2 Concrete changes

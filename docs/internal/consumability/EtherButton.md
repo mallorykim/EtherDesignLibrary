@@ -52,7 +52,7 @@
   labels `BackgroundSizing`/`CompositeMode` platform no-ops and `CharacterSpacing`/`FontStretch`
   design-system-owned (`scripts/UnsupportedProperties.psd1:272-276`); the general consumer guide
   explains that fixed-token appearance properties are deliberately locked
-  (`docs/consumers/getting-started.md:290-304`).
+  (`design library handoff/getting-started.md:290-304`).
 
 ---
 

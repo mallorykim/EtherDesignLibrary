@@ -164,7 +164,7 @@ x64 build: green; the icon DPs compile and the PublicAPI analyzer passes (Public
    (`runtime-result-101ef2918b2143728697bbf6cd4c90c5.json`, 2026-09-03).
 3. **[docs] Enrich the consumer guide.** Add a `LeftIcon`/`RightIcon` example (and note the default
    sparkles glyph + `LeftIcon="{x:Null}"` clear) to the IntelligenceButton section of
-   `docs/consumers/getting-started.md:597-610`, matching the `EtherButton` icon example at
+   `design library handoff/getting-started.md:597-610`, matching the `EtherButton` icon example at
    `getting-started.md:174-179`.
 4. **[harness, optional] Extend `Verify-EtherIntelligenceButtonContract.ps1`** to assert the new
    `LeftIconPart`/`RightIconPart` `TemplatePart`s and the `LeftIconStates`/`RightIconStates`

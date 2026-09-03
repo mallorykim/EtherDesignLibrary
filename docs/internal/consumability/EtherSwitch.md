@@ -57,7 +57,7 @@
   `HeaderContentPresenter` stays `Visibility="Collapsed"` (`EtherSwitch.xaml:185`), documented in
   the class remarks (`EtherSwitch.xaml:9`). The two `EtherSwitch.Header`/`HeaderTemplate` entries
   were removed from `scripts/UnsupportedProperties.psd1`'s closed allowlist and from the generated
-  table in `docs/consumers/getting-started.md`, because that mechanism statically re-checks
+  table in `design library handoff/getting-started.md`, because that mechanism statically re-checks
   evidence keyed by *type name* and a keyed Style applied to stock `ToggleSwitch` was never
   attributed evidence under `"EtherSwitch"` to re-check in the first place — removing the dead
   entries is a bookkeeping cleanup, not a behavior change.

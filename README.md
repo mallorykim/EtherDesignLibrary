@@ -6,7 +6,7 @@ skeletons per this repo's [AGENTS.md](AGENTS.md) rule.
 
 > **Status:** preview (`0.1.0-preview.7`), distributed **internally only** through a private
 > GitHub Packages feed — not nuget.org. `x64` only. See
-> [`docs/consumers/getting-started.md`](docs/consumers/getting-started.md) for full setup,
+> [`design library handoff/getting-started.md`](design%20library%20handoff/getting-started.md) for full setup,
 > troubleshooting, and per-control reference; this file is a short map and quick-start.
 
 ## The three packages
@@ -15,7 +15,7 @@ skeletons per this repo's [AGENTS.md](AGENTS.md) rule.
 | --- | --- |
 | `Ether.DesignSystem.Foundation` | Design tokens, fonts, and icon assets. Supported entry point is `Themes/Foundation.xaml`; consumed transitively by Controls. |
 | `Ether.DesignSystem.Controls` | The 17 WinUI 3 controls themselves (`EtherButton`, `EtherInput`, `EtherSegmentedControl`, `EtherTabNavigation`, ...) plus the design-system resource dictionary, `Themes/DesignSystem.xaml`. This is the package most applications reference for XAML usage. |
-| `Ether.DesignSystem.Interactions` | Optional, UI-only adapter (`ControlInteractionAdapter`) that turns control events into versioned, backend-consumable interaction envelopes for an application's own outbox. Not required for ordinary MVVM data binding — see [§7 of the getting-started guide](docs/consumers/getting-started.md#7-interactions-adapter-optional-backend-telemetry). |
+| `Ether.DesignSystem.Interactions` | Optional, UI-only adapter (`ControlInteractionAdapter`) that turns control events into versioned, backend-consumable interaction envelopes for an application's own outbox. Not required for ordinary MVVM data binding — see [§7 of the getting-started guide](design%20library%20handoff/getting-started.md#7-interactions-adapter-optional-backend-telemetry). |
 
 Foundation and Controls are released in lockstep and should be upgraded together; Interactions
 should track the version combination announced with a given release.
@@ -29,7 +29,7 @@ dotnet add package Ether.DesignSystem.Interactions --version 0.1.0-preview.7
 ```
 
 These resolve only from the private GitHub Packages feed described in
-[§1 of the getting-started guide](docs/consumers/getting-started.md#1-configuring-github-packages-access) —
+[§1 of the getting-started guide](design%20library%20handoff/getting-started.md#1-configuring-github-packages-access) —
 `dotnet add package` alone will not authenticate you against it.
 
 ## Hello button (quick-start)
@@ -61,10 +61,10 @@ action, are in the getting-started guide linked below.
 
 ## Where to go next
 
-- [`docs/consumers/components/`](docs/consumers/components/README.md) — **per-component usage
+- [`design library handoff/components/`](design%20library%20handoff/components/README.md) — **per-component usage
   guides**: one page per control with its complete consumer API (Ether-specific + inherited),
   copy-paste markup, binding/wiring, and what the design system owns. Start here to use a control.
-- [`docs/consumers/getting-started.md`](docs/consumers/getting-started.md) — full consumer guide:
+- [`design library handoff/getting-started.md`](design%20library%20handoff/getting-started.md) — full consumer guide:
   GitHub Packages access, a minimal WinUI 3 app, troubleshooting, known boundaries, a
   copy-paste "appearance → bind data → wire an action" reference for all 17 controls, MVVM
   binding patterns, and the Interactions adapter.

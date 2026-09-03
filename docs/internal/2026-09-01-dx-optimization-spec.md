@@ -1,7 +1,7 @@
 # DX optimization spec — consumer docs + Gallery data-binding + SegmentedControl command
 
 > **Status update (2026-09-02):** all of P1, P2, and P3 below are implemented and verified —
-> `docs/consumers/getting-started.md` has the per-component appearance/bind-data/wire-action blocks
+> `design library handoff/getting-started.md` has the per-component appearance/bind-data/wire-action blocks
 > plus the §6 MVVM patterns and §7 Interactions-adapter sections (including a Tab Navigation entry),
 > root `README.md` exists, the Gallery `ItemsSource`/TwoWay demo blocks are on `SegmentedControlPage`,
 > `TabNavigationPage`, and `DropdownPage`, `ButtonPage` has a `Command=` example, and
@@ -28,12 +28,12 @@
 
 Goal: a third-party developer can, for **every** component, copy-paste a working example that shows
 not just how it *looks* but how to **bind data** and **wire actions**. Grounded gaps (per the plan):
-`docs/consumers/getting-started.md` has no `x:Bind`/`Command=`/`ItemsSource`/adapter usage; Tab
+`design library handoff/getting-started.md` has no `x:Bind`/`Command=`/`ItemsSource`/adapter usage; Tab
 Navigation is the only component with no §5 entry; the D1 SegmentedControl data-driven contract is
 undocumented; the Interactions package appears only in a package-reference line; the repo has no root
 README.
 
-- [x] **P1.1 — Per-component usage, three-part structure.** In `docs/consumers/getting-started.md`,
+- [x] **P1.1 — Per-component usage, three-part structure.** In `design library handoff/getting-started.md`,
   give each of the 15 components a copy-paste block in the shape **appearance → bind data → wire an
   action**. Show the real API: a `{x:Bind …, Mode=TwoWay}` on the state property, `ItemsSource` +
   `SelectedIndex/SelectedItem` for the collection controls (Dropdown, SegmentedControl,
@@ -51,7 +51,7 @@ README.
   to a backend. Frame it as the optional backend-telemetry path, distinct from ordinary MVVM binding.
 - [x] **P1.4 — Root `README.md`.** Create `README.md` at the repo root: what Ether is, the three
   packages (Foundation/Controls/Interactions) and what each is for, install (`dotnet add package`),
-  a 10-line "hello button" quick-start, and links to `docs/consumers/getting-started.md` + the
+  a 10-line "hello button" quick-start, and links to `design library handoff/getting-started.md` + the
   component reports. Keep it tight.
 
 Acceptance (P1): docs render; every component has a data-binding + action example; Tab Navigation

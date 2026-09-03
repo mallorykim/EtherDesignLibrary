@@ -15,7 +15,7 @@
   selection, placeholder, open/close, and `SelectionChanged` are inherited from the confirmed
   `ComboBox` base (`EtherDropdown.cs:12-18,64`), and the adapter accepts it as a `ComboBox`
   (`ControlInteractionAdapter.cs:42-54`). `Header`/`HeaderTemplate`/`Description` are documented
-  exclusions with external-layout alternatives (`docs/consumers/getting-started.md:247-268`).
+  exclusions with external-layout alternatives (`design library handoff/getting-started.md:247-268`).
   `PlaceholderText` is now a reconciled ✅, not stale (see below); `MaxDropDownHeight` is now
   resolved ✅ as well (see below) — `EtherDropdown.ApplyMaxVisibleHeight` composes it with
   `MaxVisibleItems` as an additional pixel ceiling on the popup (`EtherDropdown.cs`).
@@ -70,12 +70,12 @@
   rows are 🚫 rather than accidental gaps.
 - **Header/Description is an intentional exclusion.** The custom template contains no presenter
   (`EtherDropdown.xaml:130-327`), while the consumer guide names external `TextBlock`/form layout as
-  the alternative (`docs/consumers/getting-started.md:247-268`).
+  the alternative (`design library handoff/getting-started.md:247-268`).
 - **The Placeholder contract is now reconciled, not stale.** Code watches `PlaceholderTextProperty`
   and displays it when no item is selected (`EtherDropdown.cs:112-114,269-281`); the registry entry
   was removed (it no longer lists `EtherDropdown.PlaceholderText` as unsupported,
   `scripts/UnsupportedProperties.psd1`), the consumer guide row was dropped
-  (`docs/consumers/getting-started.md`), and the fixture asserts the trigger text shows the
+  (`design library handoff/getting-started.md`), and the fixture asserts the trigger text shows the
   placeholder while unselected and the selected item once one is chosen
   (`RuntimeVerification.Dropdown.cs:63-77`). `PlaceholderForeground` stays unbound and is now
   described accordingly (`scripts/UnsupportedProperties.psd1` PlaceholderForeground entry).
@@ -174,7 +174,7 @@ x64 build: green — confirmed by that same subsequent Verify-ConsumerFixtures.p
 
 1. ~~**[B, docs, harness] Reconcile the implemented Placeholder contract.**~~ DONE — removed from
    `scripts/UnsupportedProperties.psd1`, the consumer-guide row was dropped
-   (`docs/consumers/getting-started.md`), and `RuntimeVerification.Dropdown.cs:63-70` now asserts
+   (`design library handoff/getting-started.md`), and `RuntimeVerification.Dropdown.cs:63-70` now asserts
    the unselected placeholder render.
 2. ~~**[B, harness] Resolve `MaxDropDownHeight`.**~~ DONE. `ApplyMaxVisibleHeight`
    (`EtherDropdown.cs`) composes `MaxDropDownHeight` with `MaxVisibleItems` as an additional

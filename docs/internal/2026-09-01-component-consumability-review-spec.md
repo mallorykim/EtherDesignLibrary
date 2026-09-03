@@ -15,7 +15,7 @@
 >
 > **A consumer contract already exists in the repo** and both reviews reconcile with it, rather than
 > running parallel to it: `scripts/UnsupportedProperties.psd1` (inherited properties declared
-> unsupported / needs-review) and `docs/consumers/getting-started.md` (the consumer guide). A property
+> unsupported / needs-review) and `design library handoff/getting-started.md` (the consumer guide). A property
 > implemented in code but still listed unsupported there — or vice-versa — is a **stale-contract**
 > finding (Review B), e.g. `EtherDropdown.PlaceholderText`.
 

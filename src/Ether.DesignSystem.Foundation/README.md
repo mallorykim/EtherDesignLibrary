@@ -7,7 +7,7 @@ consume Controls' `Themes/DesignSystem.xaml`. The repository's Foundation resour
 documents merge ordering, host-root `Fonts`/`Assets` behavior, elevation boundaries, and the
 MSIX font-name limitation.
 
-This package is a preview, distributed internally only through a private GitHub Packages feed — not nuget.org. Preview notes: `docs/releases/0.1.0-preview.1.md`. Consumption guide: `docs/consumers/getting-started.md`.
+This package is a preview, distributed internally only through a private GitHub Packages feed — not nuget.org. Preview notes: `docs/releases/0.1.0-preview.1.md`. Consumption guide: `design library handoff/getting-started.md`.
 
 **Verified, with in-repo consumer-fixture runtime evidence** (NuGet `PackageReference` only, no `ProjectReference`, but the fixture shares this repository's build configuration): x64 unpackaged and packaged (MSIX build/produce, not install) hosts consuming Foundation as a transitive dependency of Controls; resource, font, and icon asset resolution in both host forms; Light/Dark theming and OS-selected High Contrast, including a dedicated High Contrast foreground/background pairing gate (`Verify-HighContrastPairing.ps1`).
 

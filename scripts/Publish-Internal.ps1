@@ -40,7 +40,7 @@
 
     Version discipline: NuGet versions are immutable and this repository has already shipped a
     consumer-visible incident from a reused version number silently resolving to a stale cached
-    package (see SEMVER.md / docs/consumers/getting-started.md 5th section). This script reads
+    package (see SEMVER.md / design library handoff/getting-started.md 5th section). This script reads
     the version once (from the Controls project's MSBuild PackageVersion property - the single
     source of truth also used by dotnet pack) and refuses to proceed if that exact version has
     already been recorded as pushed in artifacts/release-evidence/published-versions.json, or if
@@ -291,7 +291,7 @@ Write-Host "Resolved package version: $version"
 # 1. Version discipline (local ledger + git tag), unconditionally. NuGet
 #    versions are immutable - reusing one silently hands consumers a stale
 #    package while restore still reports success (this has happened before;
-#    see SEMVER.md and docs/consumers/getting-started.md).
+#    see SEMVER.md and design library handoff/getting-started.md).
 # ---------------------------------------------------------------------------
 Write-Section 'Version discipline (local)'
 New-Item -ItemType Directory -Path $releaseEvidenceRoot -Force | Out-Null
@@ -523,7 +523,7 @@ if ([string]::IsNullOrWhiteSpace($ApiKey)) {
     $ApiKey = $env:ETHER_PUBLISH_PAT
 }
 if ([string]::IsNullOrWhiteSpace($ApiKey)) {
-    throw 'Publish-Internal aborted: -Push was given but no PAT is available (-ApiKey or $env:ETHER_PUBLISH_PAT). The PAT needs write:packages (and read:packages for the pre-push version check) - this is a different, more privileged token than the read:packages-only PAT documented for consumers in docs/consumers/getting-started.md; do not reuse a consumer token here.'
+    throw 'Publish-Internal aborted: -Push was given but no PAT is available (-ApiKey or $env:ETHER_PUBLISH_PAT). The PAT needs write:packages (and read:packages for the pre-push version check) - this is a different, more privileged token than the read:packages-only PAT documented for consumers in design library handoff/getting-started.md; do not reuse a consumer token here.'
 }
 Write-Host "Feed: $Feed"
 
