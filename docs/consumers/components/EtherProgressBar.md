@@ -39,7 +39,7 @@ system bakes the logic in; you only choose whether to show it and, optionally, h
 |--------|------|--------------|
 | `Value` | `double` | Current progress; the label tracks it live. |
 | `Minimum` / `Maximum` | `double` | Range bounds. |
-| `ValueChanged` | event | Fires when `Value` changes (user or code); observable via the Interactions `ObserveRange` adapter. |
+| `ValueChanged` | event | Fires when `Value` changes (code/binding-driven — the control is read-only); observable via the Interactions `ObserveRange` adapter. |
 
 ## Bind & wire
 
@@ -54,7 +54,7 @@ composite format string — set it once, don't bind it per value:
                         HorizontalAlignment="Stretch"/>
 ```
 
-**Wire an action:** none — no user interaction. You *can* observe programmatic progress changes via the inherited `ValueChanged` event (or the Interactions `ObserveRange` adapter).
+**Wire an action:** none — no user interaction. You *can* observe code/binding-driven progress changes via the inherited `ValueChanged` event (or the Interactions `ObserveRange` adapter).
 
 **Determinate only.** `EtherProgressBar` has no `IsIndeterminate`, error, or paused states — for a
 looping/indeterminate bar use the stock WinUI `ProgressBar`. A `ValueContentConverter` receives the

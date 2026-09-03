@@ -1,6 +1,6 @@
 # EtherSlider
 
-A value slider with optional stops, a title, and end labels. A `RangeBase`-derived control with the
+A value slider with optional stops, a title, and tick labels. A `RangeBase`-derived control with the
 standard `Value`/`Minimum`/`Maximum` contract.
 
 - **Type:** `Ether.DesignSystem.Controls.EtherSlider` (real control)
@@ -23,7 +23,7 @@ standard `Value`/`Minimum`/`Maximum` contract.
 |--------|------|--------------|
 | `Title` | `string?` | Optional label above the track. |
 | `ShowTitle` | `bool` | Show/hide the title. |
-| `ShowLabels` | `bool` | Show/hide end labels. |
+| `ShowLabels` | `bool` | Show/hide the tick-label set (up to 11 labels). |
 | `Labels` | `EtherSliderLabelCollection?` | Custom label set. |
 | `Stops` | `DoubleCollection?` | Discrete stop positions. |
 | `SnapToStops` | `bool` | Snap value to the nearest stop. |

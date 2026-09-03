@@ -1,6 +1,6 @@
 # EtherIntelligenceButton
 
-An AI-affordance button — like `EtherButton`, but with a built-in sparkles icon by default. A
+An AI-affordance button — like `EtherButton`, but with a built-in sparkles icon by default (and **no** `Variant`/`Size` — it has a single design; use `EtherButton` if you need variants/sizes). A
 `Button`, so click/command/focus/accessibility are the platform's.
 
 - **Type:** `Ether.DesignSystem.Controls.EtherIntelligenceButton` (real control)

@@ -47,7 +47,7 @@ Data-driven — bind a collection and a selection:
 |--------|------|--------------|
 | `ItemsSource` | `object?` | Collection that generates one `EtherSegmentRadioButton` per item. |
 | `DisplayMemberPath` | `string?` | Property path used to render each generated segment's content. |
-| `ItemTemplate` | `DataTemplate?` | Template for each generated segment (alternative to `DisplayMemberPath`). |
+| `ItemTemplate` | `DataTemplate?` | Template for each generated segment (alternative to `DisplayMemberPath`). Applies to **non-string** model items only; a string `ItemsSource` bypasses it and renders the raw string. |
 | `SelectedIndex` | `int` | Selected position; `TwoWay`-capable. |
 | `SelectedItem` | `object?` | Selected data item; `TwoWay`-capable. |
 | `SelectedValue` | `object?` | Selected value; `TwoWay`-capable. For **inline** segments it is the segment's `Tag` (falling back to `Content`); for **generated** segments it is the source item. There is no `SelectedValuePath`. |

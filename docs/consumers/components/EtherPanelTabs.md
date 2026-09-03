@@ -24,19 +24,21 @@ near-black/near-white selected pill instead of the brand-blue one. Same selectio
 
 ## Consumer API
 
-Identical to [EtherSegmentedControl](EtherSegmentedControl.md): `ItemsSource` / `ItemTemplate` /
+Same contract as [EtherSegmentedControl](EtherSegmentedControl.md) (including that `ItemTemplate`
+applies to non-string model items only): `ItemsSource` / `ItemTemplate` /
 `DisplayMemberPath` / `SelectedIndex` / `SelectedItem` / `SelectedValue` (all TwoWay-capable),
 `SelectionChanged`, and the user-initiated-only `SelectionCommand` / `SelectionCommandParameter`
 pair. See that page for the selection/command semantics, which apply here unchanged. `EtherSegmentPanel.Spacing` (a `double`, default `4`) sets the inter-segment gap. The visual
 difference is the two style keys: `EtherPanelTabs` on the host and `EtherPanelTabSegment` on each
 **inline** segment.
 
-> **Data-driven segments do not get the panel-tab skin.** `ItemsSource`-generated segments are always
-> created with the built-in `EtherSegment` style (the blue segmented-control skin) — the generator
-> hard-codes it and has no per-item style hook. So for Panel Tabs, author **inline**
-> `EtherSegmentRadioButton`s with `Style="{StaticResource EtherPanelTabSegment}"` (as above). Data
-> binding still works, but data-driven Panel Tab segments render with the default segmented-control
-> skin, not the panel-tab one.
+> **Skinning data-driven segments.** `ItemsSource`-generated segments resolve the `EtherSegment`
+> **resource key** from the control/ancestor/application scope (not a fixed style object) and have no
+> per-item style property. By default that key is the blue segmented-control style, so a data-driven
+> Panel Tabs renders with that skin. Two options: author **inline** `EtherSegmentRadioButton`s with
+> `Style="{StaticResource EtherPanelTabSegment}"` (simplest), **or** define a scoped `EtherSegment`
+> resource (based on `EtherPanelTabSegment`) in the control's/page's `Resources` so generated segments
+> pick up the panel-tab skin.
 
 ## Design-system-owned
 

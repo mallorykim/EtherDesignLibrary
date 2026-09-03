@@ -35,7 +35,7 @@ A horizontal tab strip. A thin `ListView` subclass, so selection binding uses th
 | `SelectedIndex` / `SelectedItem` | — | Selection (TwoWay-capable). `SelectedItem` is the `EtherTabItem` container for inline tabs, but the bound **model** for `ItemsSource` tabs. |
 | `SelectedValue` / `SelectedValuePath` | — | Stable model-key selection (TwoWay). |
 | `SelectionMode` | `ListViewSelectionMode` | Ships as `Single`. |
-| `ItemTemplate` / `ItemTemplateSelector` | — | Template data-bound tabs (icons still need inline `EtherTabItem`). |
+| `ItemTemplate` / `ItemTemplateSelector` | — | Template **non-string** data-bound tabs; a string `ItemsSource` renders the raw string, bypassing the template. A model `ItemTemplate` can include an icon. |
 | `SelectionChanged` | event | Fires on selection change (no `Command`). |
 
 Per-item `EtherTabItem` also exposes the inherited `IsSelected` and `IsEnabled`.
@@ -57,9 +57,9 @@ No `Command`; bind the native `SelectionChanged`:
                           SelectionChanged="{x:Bind ViewModel.OnSectionSelectionChanged}"/>
 ```
 
-> **Known limitation:** `Icon` is a per-container property on inline `EtherTabItem`. The
-> `ItemsSource`-generated path has no `PrepareContainerForItemOverride`, so **data-bound tabs cannot
-> show a per-item icon** — use inline `EtherTabItem` if icons are required.
+> **Icons on data-bound tabs:** data binding cannot populate the dedicated `EtherTabItem.Icon` slot
+> (generated containers get no per-item `Icon`). To show an icon on a data-bound tab, render it inside
+> a (non-string model) `ItemTemplate`; the built-in `Icon` slot is inline-`EtherTabItem` only.
 
 ## Appearance & overrides
 

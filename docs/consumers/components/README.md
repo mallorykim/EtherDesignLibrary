@@ -62,6 +62,7 @@ are **style-only resources** — a keyed `Style` you apply to an existing contro
 is at the top. A couple of public types are template-implementation only, not consumer controls: `HandContentControl`
 and `EtherStringContentVisibilityConverter` (its `ConvertBack` throws). Use the named `Ether*`
 controls instead. Style-only ones (Card, Tooltip, PanelTabs, Switch, ScrollBar) expose the underlying
-control's own API — the design system only changes their skin. For most of them the underlying
+control's own API (minus a few slots the style collapses, e.g. `ToggleSwitch.Header`) — the design
+system mainly changes their skin. For most of them the underlying
 control is a stock WinUI one; for **PanelTabs** it is the Ether type `EtherSegmentedControl` (styled
 with `EtherPanelTabs`/`EtherPanelTabSegment`).

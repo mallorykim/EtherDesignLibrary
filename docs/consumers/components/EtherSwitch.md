@@ -1,8 +1,8 @@
 # EtherSwitch
 
 An on/off toggle. **Style-only** — `EtherSwitch` is a keyed `Style` applied to the native
-`ToggleSwitch`, not a new type. You keep the full `ToggleSwitch` API; the design system only changes
-the skin.
+`ToggleSwitch`, not a new type. You keep the `ToggleSwitch` API — except `Header`/`HeaderTemplate`,
+which the style collapses (see below); the design system changes the skin.
 
 - **Kind:** keyed `Style` (`EtherSwitch`) on `Microsoft.UI.Xaml.Controls.ToggleSwitch`
 - **Gallery:** `Views/Controls/ToggleSwitchPage.xaml`
