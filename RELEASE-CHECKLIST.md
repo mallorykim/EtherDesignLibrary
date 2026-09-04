@@ -134,6 +134,9 @@ dotnet nuget push "Ether.DesignSystem.Interactions.0.1.0-preview.7.nupkg" --sour
 
 ### After a successful publish
 
+- **Announce to consuming teams** — email developers that `0.1.0-preview.7` is live. Use the playbook
+  + ready email template in [`docs/releases/consumer-announcement.md`](docs/releases/consumer-announcement.md)
+  (this is a human step you do from your email client, not a build-machine step).
 - Consumers install via `nuget.pkg.github.com/<owner>/index.json` (a `read:packages` PAT) — see
   `design library handoff/getting-started.md` §1.
 - The next code change ships as `0.1.0-preview.8` (bump `EtherDesignSystemPreviewVersion`); never
